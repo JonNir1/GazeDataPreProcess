@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from abc import ABC, abstractmethod
 
@@ -5,6 +6,8 @@ from abc import ABC, abstractmethod
 class BaseGazeDataParser(ABC):
 
     def __init__(self, path: str):
+        if not os.path.exists(path):
+            raise FileNotFoundError(f'File not found: {path}')
         self.path = path
 
     @property
