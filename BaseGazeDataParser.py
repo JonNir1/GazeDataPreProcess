@@ -32,7 +32,8 @@ class BaseGazeDataParser(ABC):
 
     @classmethod
     def get_columns(cls) -> List[str]:
-        return [cls.TIME_COLUMN(), cls.LEFT_X_COLUMN(), cls.LEFT_Y_COLUMN(), cls.RIGHT_X_COLUMN(), cls.RIGHT_Y_COLUMN()]
+        return [cls.TIME_COLUMN(), cls.LEFT_X_COLUMN(), cls.LEFT_Y_COLUMN(), cls.LEFT_PUPIL_COLUMN(),
+                cls.RIGHT_X_COLUMN(), cls.RIGHT_Y_COLUMN(), cls.RIGHT_PUPIL_COLUMN()]
 
     @classmethod
     @abstractmethod
@@ -54,6 +55,12 @@ class BaseGazeDataParser(ABC):
 
     @classmethod
     @abstractmethod
+    def LEFT_PUPIL_COLUMN(cls) -> str:
+        # column name for left eye pupil diameter
+        raise NotImplementedError
+
+    @classmethod
+    @abstractmethod
     def RIGHT_X_COLUMN(cls) -> str:
         # column name for right eye x coordinate
         raise NotImplementedError
@@ -62,6 +69,12 @@ class BaseGazeDataParser(ABC):
     @abstractmethod
     def RIGHT_Y_COLUMN(cls) -> str:
         # column name for right eye y coordinate
+        raise NotImplementedError
+
+    @classmethod
+    @abstractmethod
+    def RIGHT_PUPIL_COLUMN(cls) -> str:
+        # column name for right eye pupil diameter
         raise NotImplementedError
 
     @abstractmethod

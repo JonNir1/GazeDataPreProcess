@@ -25,12 +25,20 @@ class TobiiGazeDataParser(BaseGazeDataParser):
         return 'GazePointPositionDisplayYLeftEye'
 
     @classmethod
+    def LEFT_PUPIL_COLUMN(cls) -> str:
+        return "PupilDiameterLeftEye"
+
+    @classmethod
     def RIGHT_X_COLUMN(cls) -> str:
         return 'GazePointPositionDisplayXRightEye'
 
     @classmethod
     def RIGHT_Y_COLUMN(cls) -> str:
         return 'GazePointPositionDisplayYRightEye'
+
+    @classmethod
+    def RIGHT_PUPIL_COLUMN(cls) -> str:
+        return "PupilDiameterRightEye"
 
     def parse_gaze_data(self) -> pd.DataFrame:
         df = pd.read_csv(self.path, sep='\t')
