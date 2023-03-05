@@ -1,5 +1,7 @@
+import numpy as np
 import pandas as pd
 
+import constants as cnst
 from BaseGazeDataParser import BaseGazeDataParser
 
 
@@ -7,6 +9,22 @@ class TobiiGazeDataParser(BaseGazeDataParser):
 
     def __init__(self, path: str):
         super().__init__(path)
+
+    def parse_gaze_data(self) -> pd.DataFrame:
+        df = pd.read_csv(self.path, sep='\t')
+        df.drop(columns=[col for col in df.columns if col not in self.get_columns()], inplace=True)
+        df.replace(to_replace=self.MISSING_VALUE(), value=np.nan, inplace=True)
+
+        # correct for screen resolution
+        df[self.LEFT_X_COLUMN()] = df[self.LEFT_X_COLUMN()] * cnst.SCREEN_WIDTH
+        df[self.LEFT_Y_COLUMN()] = df[self.LEFT_Y_COLUMN()] * cnst.SCREEN_HEIGHT
+        df[self.RIGHT_X_COLUMN()] = df[self.RIGHT_X_COLUMN()] * cnst.SCREEN_WIDTH
+        df[self.RIGHT_Y_COLUMN()] = df[self.RIGHT_Y_COLUMN()] * cnst.SCREEN_HEIGHT
+
+        # reorder + rename columns to match the standard
+        df = df[self.get_columns()]
+        df.rename(columns=lambda col: self._column_name_mapper(col), inplace=True)
+        return df
 
     @classmethod
     def MISSING_VALUE(cls) -> float:
@@ -39,14 +57,6 @@ class TobiiGazeDataParser(BaseGazeDataParser):
     @classmethod
     def RIGHT_PUPIL_COLUMN(cls) -> str:
         return "PupilDiameterRightEye"
-
-    def parse_gaze_data(self) -> pd.DataFrame:
-        df = pd.read_csv(self.path, sep='\t')
-        df = df.drop(columns=['LX', 'LY', 'RX', 'RY'])
-        df = df.rename(columns={'Time': 'time', 'LX': 'left_x', 'LY': 'left_y', 'RX': 'right_x', 'RY': 'right_y'})
-        df = df.dropna()
-        df = df.reset_index(drop=True)
-        return df
 
     def _compute_sample_size_and_sr(self) -> (int, float):
         df = pd.read_csv(self.path, sep='\t')

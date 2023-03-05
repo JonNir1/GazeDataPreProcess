@@ -87,7 +87,7 @@ class BaseGazeDataParser(ABC):
     def _compute_sample_size_and_sr(self) -> (int, float):
         raise NotImplementedError
 
-    def __column_name_mapper(self, column_name):
+    def _column_name_mapper(self, column_name):
         if column_name == self.TIME_COLUMN():
             return cnst.TIME
         if column_name == self.LEFT_X_COLUMN():
