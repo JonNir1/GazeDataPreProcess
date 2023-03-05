@@ -9,12 +9,12 @@ class BaseGazeDataParser(ABC):
         if not os.path.exists(path):
             raise FileNotFoundError(f'File not found: {path}')
         self.path = path
+        self.__sampling_rate = self._compute_sampling_rate()
 
     @property
-    @abstractmethod
-    def SAMPLING_RATE(self) -> float:
+    def sampling_rate(self) -> float:
         # sampling rate of the data
-        raise NotImplementedError
+        return self.__sampling_rate
 
     @classmethod
     @abstractmethod
@@ -54,6 +54,10 @@ class BaseGazeDataParser(ABC):
 
     @abstractmethod
     def parse_gaze_data(self) -> pd.DataFrame:
+        raise NotImplementedError
+
+    @abstractmethod
+    def _compute_sampling_rate(self):
         raise NotImplementedError
 
 

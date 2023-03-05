@@ -43,3 +43,6 @@ class TobiiGazeDataParser(BaseGazeDataParser):
         df = df.dropna()
         df = df.reset_index(drop=True)
         return df
+
+    def _compute_sampling_rate(self):
+        pass
