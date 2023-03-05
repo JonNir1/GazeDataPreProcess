@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 from typing import List
 
-import constants as cnst
 import experiment_config as conf
 from BaseGazeDataParser import BaseGazeDataParser
 
@@ -18,10 +17,10 @@ class TobiiGazeDataParser(BaseGazeDataParser):
         df.replace(to_replace=self.MISSING_VALUE(), value=np.nan, inplace=True)
 
         # correct for screen resolution
-        df[self.LEFT_X_COLUMN()] = df[self.LEFT_X_COLUMN()] * cnst.SCREEN_WIDTH
-        df[self.LEFT_Y_COLUMN()] = df[self.LEFT_Y_COLUMN()] * cnst.SCREEN_HEIGHT
-        df[self.RIGHT_X_COLUMN()] = df[self.RIGHT_X_COLUMN()] * cnst.SCREEN_WIDTH
-        df[self.RIGHT_Y_COLUMN()] = df[self.RIGHT_Y_COLUMN()] * cnst.SCREEN_HEIGHT
+        df[self.LEFT_X_COLUMN()] = df[self.LEFT_X_COLUMN()] * conf.SCREEN_WIDTH
+        df[self.LEFT_Y_COLUMN()] = df[self.LEFT_Y_COLUMN()] * conf.SCREEN_HEIGHT
+        df[self.RIGHT_X_COLUMN()] = df[self.RIGHT_X_COLUMN()] * conf.SCREEN_WIDTH
+        df[self.RIGHT_Y_COLUMN()] = df[self.RIGHT_Y_COLUMN()] * conf.SCREEN_HEIGHT
 
         # reorder + rename columns to match the standard
         df = df[self.get_columns()]
