@@ -42,9 +42,16 @@ class BaseGazeDataParser(ABC):
 
     @classmethod
     def get_columns(cls) -> List[str]:
-        common_columns = [cls.TIME_COLUMN(), cls.LEFT_X_COLUMN(), cls.LEFT_Y_COLUMN(), cls.LEFT_PUPIL_COLUMN(),
+        common_columns = [cls. TRIAL_COLUMN(), cls.TIME_COLUMN(),
+                          cls.LEFT_X_COLUMN(), cls.LEFT_Y_COLUMN(), cls.LEFT_PUPIL_COLUMN(),
                           cls.RIGHT_X_COLUMN(), cls.RIGHT_Y_COLUMN(), cls.RIGHT_PUPIL_COLUMN()]
         return common_columns + cls.ADDITIONAL_COLUMNS()
+
+    @classmethod
+    @abstractmethod
+    def TRIAL_COLUMN(cls) -> str:
+        # column name for time
+        raise NotImplementedError
 
     @classmethod
     @abstractmethod
@@ -94,6 +101,8 @@ class BaseGazeDataParser(ABC):
         return []
 
     def _column_name_mapper(self, column_name):
+        if column_name == self.TRIAL_COLUMN():
+            return cnst.TRIAL
         if column_name == self.TIME_COLUMN():
             return cnst.TIME
         if column_name == self.LEFT_X_COLUMN():

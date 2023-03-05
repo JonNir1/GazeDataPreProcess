@@ -2,6 +2,7 @@
 List of all the constants used as field names, column names, etc.
 """
 
+TRIAL = "trial"
 TIME = "time"
 
 LEFT_X = "left_x"

@@ -32,6 +32,10 @@ class TobiiGazeDataParser(BaseGazeDataParser):
         return -1
 
     @classmethod
+    def TRIAL_COLUMN(cls) -> str:
+        return 'RunningSample'
+
+    @classmethod
     def TIME_COLUMN(cls) -> str:
         return 'RTTime'
 
