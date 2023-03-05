@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 from abc import ABC, abstractmethod
+from typing import List
 
 
 class BaseGazeDataParser(ABC):
@@ -28,6 +29,10 @@ class BaseGazeDataParser(ABC):
     def MISSING_VALUE(cls) -> float:
         # default value for missing data
         raise NotImplementedError
+
+    @classmethod
+    def get_columns(cls) -> List[str]:
+        return [cls.TIME_COLUMN(), cls.LEFT_X_COLUMN(), cls.LEFT_Y_COLUMN(), cls.RIGHT_X_COLUMN(), cls.RIGHT_Y_COLUMN()]
 
     @classmethod
     @abstractmethod
