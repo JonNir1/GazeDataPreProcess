@@ -73,3 +73,11 @@ class TobiiGazeDataParser(BaseGazeDataParser):
         num_samples = len(rt_time_micro)
         sampling_rate = 10**6 / rt_time_micro.diff().mode()
         return num_samples, sampling_rate
+
+    @classmethod
+    def _column_name_mapper(cls, column_name: str) -> str:
+        if column_name in cls._get_common_columns():
+            return super()._column_name_mapper(column_name)
+        if column_name in cls.ADDITIONAL_COLUMNS():
+            return column_name
+        raise ValueError(f'No name-mapping for column {column_name}')

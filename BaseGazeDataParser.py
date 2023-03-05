@@ -42,10 +42,7 @@ class BaseGazeDataParser(ABC):
 
     @classmethod
     def get_columns(cls) -> List[str]:
-        common_columns = [cls. TRIAL_COLUMN(), cls.TIME_COLUMN(),
-                          cls.LEFT_X_COLUMN(), cls.LEFT_Y_COLUMN(), cls.LEFT_PUPIL_COLUMN(),
-                          cls.RIGHT_X_COLUMN(), cls.RIGHT_Y_COLUMN(), cls.RIGHT_PUPIL_COLUMN()]
-        return common_columns + cls.ADDITIONAL_COLUMNS()
+        return cls.__get_common_columns() + cls.ADDITIONAL_COLUMNS()
 
     @classmethod
     @abstractmethod
@@ -100,21 +97,29 @@ class BaseGazeDataParser(ABC):
         # column names for additional data
         return []
 
-    def _column_name_mapper(self, column_name):
-        if column_name == self.TRIAL_COLUMN():
+    @classmethod
+    def _column_name_mapper(cls, column_name: str) -> str:
+        # maps column names to constants
+        if column_name == cls.TRIAL_COLUMN():
             return cnst.TRIAL
-        if column_name == self.TIME_COLUMN():
+        if column_name == cls.TIME_COLUMN():
             return cnst.TIME
-        if column_name == self.LEFT_X_COLUMN():
+        if column_name == cls.LEFT_X_COLUMN():
             return cnst.LEFT_X
-        if column_name == self.LEFT_Y_COLUMN():
+        if column_name == cls.LEFT_Y_COLUMN():
             return cnst.LEFT_Y
-        if column_name == self.LEFT_PUPIL_COLUMN():
+        if column_name == cls.LEFT_PUPIL_COLUMN():
             return cnst.LEFT_PUPIL
-        if column_name == self.RIGHT_X_COLUMN():
+        if column_name == cls.RIGHT_X_COLUMN():
             return cnst.RIGHT_X
-        if column_name == self.RIGHT_Y_COLUMN():
+        if column_name == cls.RIGHT_Y_COLUMN():
             return cnst.RIGHT_Y
-        if column_name == self.RIGHT_PUPIL_COLUMN():
+        if column_name == cls.RIGHT_PUPIL_COLUMN():
             return cnst.RIGHT_PUPIL
         return column_name
+
+    @classmethod
+    def _get_common_columns(cls):
+        return [cls.TRIAL_COLUMN(), cls.TIME_COLUMN(),
+                cls.LEFT_X_COLUMN(), cls.LEFT_Y_COLUMN(), cls.LEFT_PUPIL_COLUMN(),
+                cls.RIGHT_X_COLUMN(), cls.RIGHT_Y_COLUMN(), cls.RIGHT_PUPIL_COLUMN()]
