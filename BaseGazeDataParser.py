@@ -3,6 +3,8 @@ import pandas as pd
 from abc import ABC, abstractmethod
 from typing import List
 
+import constants as cnst
+
 
 class BaseGazeDataParser(ABC):
 
@@ -85,5 +87,19 @@ class BaseGazeDataParser(ABC):
     def _compute_sample_size_and_sr(self) -> (int, float):
         raise NotImplementedError
 
-
-
+    def __column_name_mapper(self, column_name):
+        if column_name == self.TIME_COLUMN():
+            return cnst.TIME
+        if column_name == self.LEFT_X_COLUMN():
+            return cnst.LEFT_X
+        if column_name == self.LEFT_Y_COLUMN():
+            return cnst.LEFT_Y
+        if column_name == self.LEFT_PUPIL_COLUMN():
+            return cnst.LEFT_PUPIL
+        if column_name == self.RIGHT_X_COLUMN():
+            return cnst.RIGHT_X
+        if column_name == self.RIGHT_Y_COLUMN():
+            return cnst.RIGHT_Y
+        if column_name == self.RIGHT_PUPIL_COLUMN():
+            return cnst.RIGHT_PUPIL
+        return column_name
