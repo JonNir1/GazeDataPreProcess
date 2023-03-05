@@ -1,7 +1,9 @@
 import numpy as np
 import pandas as pd
+from typing import List
 
 import constants as cnst
+import experiment_config as conf
 from BaseGazeDataParser import BaseGazeDataParser
 
 
@@ -57,6 +59,10 @@ class TobiiGazeDataParser(BaseGazeDataParser):
     @classmethod
     def RIGHT_PUPIL_COLUMN(cls) -> str:
         return "PupilDiameterRightEye"
+
+    @classmethod
+    def ADDITIONAL_COLUMNS(cls) -> List[str]:
+        return conf.ADDITIONAL_COLUMNS
 
     def _compute_sample_size_and_sr(self) -> (int, float):
         df = pd.read_csv(self.path, sep='\t')
