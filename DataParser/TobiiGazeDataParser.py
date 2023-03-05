@@ -3,7 +3,7 @@ import pandas as pd
 from typing import List
 
 import experiment_config as conf
-from BaseGazeDataParser import BaseGazeDataParser
+from DataParser.BaseGazeDataParser import BaseGazeDataParser
 
 
 class TobiiGazeDataParser(BaseGazeDataParser):
