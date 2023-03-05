@@ -16,6 +16,14 @@ class BaseGazeDataParser(ABC):
         self.__num_samples = num_samples
         self.__sampling_rate = sampling_rate
 
+    @abstractmethod
+    def parse_gaze_data(self) -> pd.DataFrame:
+        raise NotImplementedError
+
+    @abstractmethod
+    def _compute_sample_size_and_sr(self) -> (int, float):
+        raise NotImplementedError
+
     @property
     def num_samples(self) -> float:
         # number of samples in the data
@@ -77,14 +85,6 @@ class BaseGazeDataParser(ABC):
     @abstractmethod
     def RIGHT_PUPIL_COLUMN(cls) -> str:
         # column name for right eye pupil diameter
-        raise NotImplementedError
-
-    @abstractmethod
-    def parse_gaze_data(self) -> pd.DataFrame:
-        raise NotImplementedError
-
-    @abstractmethod
-    def _compute_sample_size_and_sr(self) -> (int, float):
         raise NotImplementedError
 
     def _column_name_mapper(self, column_name):
