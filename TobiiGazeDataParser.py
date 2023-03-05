@@ -32,10 +32,6 @@ class TobiiGazeDataParser(BaseGazeDataParser):
     def RIGHT_Y_COLUMN(cls) -> str:
         return 'GazePointPositionDisplayYRightEye'
 
-    @property
-    def SAMPLING_RATE(self) -> float:
-        raise NotImplementedError
-
     def parse_gaze_data(self) -> pd.DataFrame:
         df = pd.read_csv(self.path, sep='\t')
         df = df.drop(columns=['LX', 'LY', 'RX', 'RY'])
@@ -44,5 +40,9 @@ class TobiiGazeDataParser(BaseGazeDataParser):
         df = df.reset_index(drop=True)
         return df
 
-    def _compute_sampling_rate(self):
-        pass
+    def _compute_sample_size_and_sr(self) -> (int, float):
+        df = pd.read_csv(self.path, sep='\t')
+        rt_time_micro = df['RTTimeMicro']
+        num_samples = len(rt_time_micro)
+        sampling_rate = 10**6 / rt_time_micro.diff().mode()
+        return num_samples, sampling_rate
