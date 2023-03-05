@@ -2,6 +2,9 @@
 List of all the constants used as field names, column names, etc.
 """
 
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
+
 TIME = "time"
 
 LEFT_X = "left_x"
