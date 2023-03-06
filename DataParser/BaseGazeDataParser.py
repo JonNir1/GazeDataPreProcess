@@ -21,6 +21,10 @@ class BaseGazeDataParser(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def parse_and_split(self) -> List[pd.DataFrame]:
+        raise NotImplementedError
+
+    @abstractmethod
     def _compute_sample_size_and_sr(self) -> (int, float):
         raise NotImplementedError
 

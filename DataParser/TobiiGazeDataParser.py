@@ -28,6 +28,11 @@ class TobiiGazeDataParser(BaseGazeDataParser):
         df.rename(columns=lambda col: self._column_name_mapper(col), inplace=True)
         return df
 
+    def parse_and_split(self) -> List[pd.DataFrame]:
+        df = self.parse()
+        trial_values = df[self.TRIAL_COLUMN()].unique()
+        return [df[df[self.TRIAL_COLUMN()] == trial] for trial in trial_values]
+
     @classmethod
     def MISSING_VALUE(cls) -> float:
         return -1
