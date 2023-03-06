@@ -8,6 +8,7 @@ from DataParser.BaseGazeDataParser import BaseGazeDataParser
 
 
 class TobiiGazeDataParser(BaseGazeDataParser):
+    # TODO: implement save_data
 
     def __init__(self, input_path: str, output_path=None):
         super().__init__(input_path, output_path)
