@@ -9,11 +9,11 @@ from DataParser.BaseGazeDataParser import BaseGazeDataParser
 
 class TobiiGazeDataParser(BaseGazeDataParser):
 
-    def __init__(self, path: str):
-        super().__init__(path)
+    def __init__(self, input_path: str):
+        super().__init__(input_path)
 
     def parse(self) -> pd.DataFrame:
-        df = pd.read_csv(self.path, sep='\t')
+        df = pd.read_csv(self.input_path, sep='\t')
         df.drop(columns=[col for col in df.columns if col not in self.get_columns()], inplace=True)
         df.replace(to_replace=self.MISSING_VALUE(), value=np.nan, inplace=True)
 
