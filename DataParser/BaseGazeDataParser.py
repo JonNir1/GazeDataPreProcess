@@ -17,7 +17,7 @@ class BaseGazeDataParser(ABC):
         self.__sampling_rate = sampling_rate
 
     @abstractmethod
-    def parse_gaze_data(self) -> pd.DataFrame:
+    def parse(self) -> pd.DataFrame:
         raise NotImplementedError
 
     @abstractmethod

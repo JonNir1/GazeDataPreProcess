@@ -12,7 +12,7 @@ class TobiiGazeDataParser(BaseGazeDataParser):
     def __init__(self, path: str):
         super().__init__(path)
 
-    def parse_gaze_data(self) -> pd.DataFrame:
+    def parse(self) -> pd.DataFrame:
         df = pd.read_csv(self.path, sep='\t')
         df.drop(columns=[col for col in df.columns if col not in self.get_columns()], inplace=True)
         df.replace(to_replace=self.MISSING_VALUE(), value=np.nan, inplace=True)
