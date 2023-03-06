@@ -31,8 +31,8 @@ class TobiiGazeDataParser(BaseGazeDataParser):
 
     def parse_and_split(self) -> List[pd.DataFrame]:
         df = self.parse()
-        trial_values = df[self.TRIAL_COLUMN()].unique()
-        return [df[df[self.TRIAL_COLUMN()] == trial] for trial in trial_values]
+        trial_values = df[cnst.TRIAL].unique()
+        return [df[df[cnst.TRIAL] == trial] for trial in trial_values]
 
     @classmethod
     def MISSING_VALUE(cls) -> float:
