@@ -47,7 +47,7 @@ class BaseGazeDataParser(ABC):
     @classmethod
     @abstractmethod
     def TRIAL_COLUMN(cls) -> str:
-        # column name for time
+        # column name for trial number
         raise NotImplementedError
 
     @classmethod
