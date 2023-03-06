@@ -3,6 +3,7 @@ import pandas as pd
 from typing import List
 
 import experiment_config as conf
+import constants as cnst
 from DataParser.BaseGazeDataParser import BaseGazeDataParser
 
 
@@ -71,7 +72,7 @@ class TobiiGazeDataParser(BaseGazeDataParser):
         df = pd.read_csv(self.path, sep='\t')
         rt_time_micro = df['RTTimeMicro']
         num_samples = len(rt_time_micro)
-        sampling_rate = 10**6 / rt_time_micro.diff().mode()
+        sampling_rate = cnst.MICROSECONDS_PER_SECOND / rt_time_micro.diff().mode()
         return num_samples, sampling_rate
 
     @classmethod
