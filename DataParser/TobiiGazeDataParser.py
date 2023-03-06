@@ -27,6 +27,9 @@ class TobiiGazeDataParser(BaseGazeDataParser):
         # reorder + rename columns to match the standard
         df = df[self.get_columns()]
         df.rename(columns=lambda col: self._column_name_mapper(col), inplace=True)
+
+        # avoid NaNs by replacing them with default missing value
+        df.fillna(value=cnst.MISSING_VALUE, inplace=True)
         return df
 
     def parse_and_split(self) -> List[pd.DataFrame]:
