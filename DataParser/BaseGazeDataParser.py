@@ -46,7 +46,7 @@ class BaseGazeDataParser(ABC):
 
     @classmethod
     def get_columns(cls) -> List[str]:
-        return cls.__get_common_columns() + cls.ADDITIONAL_COLUMNS()
+        return cls._get_common_columns() + cls.ADDITIONAL_COLUMNS()
 
     @classmethod
     @abstractmethod
