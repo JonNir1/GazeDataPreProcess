@@ -1,17 +1,18 @@
 import os
 import pandas as pd
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 
 import constants as cnst
 
 
 class BaseGazeDataParser(ABC):
 
-    def __init__(self, input_path: str):
+    def __init__(self, input_path: str, output_path: Optional[str] = None):
         if not os.path.exists(input_path):
             raise FileNotFoundError(f'File not found: {input_path}')
         self.input_path = input_path
+        self.output_path = output_path
         num_samples, sampling_rate = self._compute_sample_size_and_sr()
         self.__num_samples = num_samples
         self.__sampling_rate = sampling_rate

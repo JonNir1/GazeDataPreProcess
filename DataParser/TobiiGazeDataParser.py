@@ -9,8 +9,8 @@ from DataParser.BaseGazeDataParser import BaseGazeDataParser
 
 class TobiiGazeDataParser(BaseGazeDataParser):
 
-    def __init__(self, input_path: str):
-        super().__init__(input_path)
+    def __init__(self, input_path: str, output_path=None):
+        super().__init__(input_path, output_path)
 
     def parse(self) -> pd.DataFrame:
         df = pd.read_csv(self.input_path, sep='\t')
