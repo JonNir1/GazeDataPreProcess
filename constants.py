@@ -5,10 +5,6 @@ List of all the constants used as field names, column names, etc.
 TRIAL = "trial"
 TIME = "time"
 
-LEFT = "left"
-RIGHT = "right"
-BOTH = "both"
-
 LEFT_X = "left_x"
 LEFT_Y = "left_y"
 LEFT_PUPIL = "left_pupil"
