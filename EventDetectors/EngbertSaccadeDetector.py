@@ -1,5 +1,7 @@
 import numpy as np
+import pandas as pd
 
+import EventDetectors.utils as u
 from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector
 
 
@@ -12,6 +14,20 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         - https://github.com/esdalmaijer/PyGazeAnalyser/blob/master/pygazeanalyser/detectors.py#L175
     """
 
-    def detect(self, gaze_data: np.ndarray) -> np.ndarray:
+    DERIVATION_WINDOW_SIZE = 3
+    LAMBDA_NOISE_THRESHOLD = 5
+
+    def detect(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+        """
+        Detects saccades of a single eye, in the given gaze data.
+        :param x:
+        :param y:
+        :return:
+        """
+        if len(x) != len(y):
+            raise ValueError("x and y must be of the same length")
+        vel_x = u.numerical_derivative(x, n=self.DERIVATION_WINDOW_SIZE)
+        vel_y = u.numerical_derivative(y, n=self.DERIVATION_WINDOW_SIZE)
         raise NotImplementedError
+
 
