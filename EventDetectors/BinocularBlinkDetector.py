@@ -1,4 +1,6 @@
 import numpy as np
+
+import constants as cnst
 from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
 from EventDetectors.MonocularBlinkDetector import MonocularBlinkDetector
 
@@ -11,8 +13,14 @@ class BinocularBlinkDetector(BaseBlinkDetector):
     - "OR": a blink is detected if at least one eye is missing data for a period longer than min_duration
     """
 
-    def __init__(self, time_between_blinks: float = 20, min_duration: float = 50, criterion: str = "OR"):
-        super().__init__(min_duration, time_between_blinks)
+    def __init__(self,
+                 missing_value=cnst.MISSING_VALUE,
+                 time_between_blinks: float = 20,
+                 min_duration: float = 50,
+                 criterion: str = "OR"):
+        super().__init__(missing_value=missing_value,
+                         min_duration=min_duration,
+                         time_between_blinks=time_between_blinks)
         if criterion.upper() not in ["AND", "OR"]:
             raise ValueError("criterion must be either 'AND' or 'OR'")
         self.__criterion = criterion
@@ -24,8 +32,10 @@ class BinocularBlinkDetector(BaseBlinkDetector):
             raise ValueError("timestamps, left_x and left_y must have the same length")
         if len(timestamps) != len(right_x) or len(timestamps) != len(right_y):
             raise ValueError("timestamps, right_x and right_y must have the same length")
-        left_detector = MonocularBlinkDetector(self.min_duration, self.time_between_blinks)
-        right_detector = MonocularBlinkDetector(self.min_duration, self.time_between_blinks)
+        left_detector = MonocularBlinkDetector(min_duration=self.min_duration,
+                                               time_between_blinks=self.time_between_blinks)
+        right_detector = MonocularBlinkDetector(min_duration=self.min_duration,
+                                                time_between_blinks=self.time_between_blinks)
 
         left_blinks = left_detector.detect(timestamps, left_x, left_y)
         right_blinks = right_detector.detect(timestamps, right_x, right_y)
