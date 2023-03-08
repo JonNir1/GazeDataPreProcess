@@ -57,8 +57,14 @@ class BaseGazeDataParser(ABC):
 
     @classmethod
     @abstractmethod
-    def TIME_COLUMN(cls) -> str:
-        # column name for time
+    def MILLISECONDS_COLUMN(cls) -> str:
+        # column name for time in milliseconds
+        raise NotImplementedError
+
+    @classmethod
+    @abstractmethod
+    def MICROSECONDS_COLUMN(cls) -> str:
+        # column name for time in microseconds
         raise NotImplementedError
 
     @classmethod
@@ -107,8 +113,10 @@ class BaseGazeDataParser(ABC):
         # maps column names to constants
         if column_name == cls.TRIAL_COLUMN():
             return cnst.TRIAL
-        if column_name == cls.TIME_COLUMN():
-            return cnst.TIME
+        if column_name == cls.MILLISECONDS_COLUMN():
+            return cnst.MILLISECONDS
+        if column_name == cls.MICROSECONDS_COLUMN():
+            return cnst.MICROSECONDS
         if column_name == cls.LEFT_X_COLUMN():
             return cnst.LEFT_X
         if column_name == cls.LEFT_Y_COLUMN():
@@ -125,6 +133,6 @@ class BaseGazeDataParser(ABC):
 
     @classmethod
     def _get_common_columns(cls):
-        return [cls.TRIAL_COLUMN(), cls.TIME_COLUMN(),
+        return [cls.TRIAL_COLUMN(), cls.MILLISECONDS_COLUMN(), cls.MICROSECONDS_COLUMN(),
                 cls.LEFT_X_COLUMN(), cls.LEFT_Y_COLUMN(), cls.LEFT_PUPIL_COLUMN(),
                 cls.RIGHT_X_COLUMN(), cls.RIGHT_Y_COLUMN(), cls.RIGHT_PUPIL_COLUMN()]

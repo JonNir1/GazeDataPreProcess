@@ -6,6 +6,8 @@ MISSING_VALUE = -1
 
 TRIAL = "trial"
 TIME = "time"
+MILLISECONDS = "milliseconds"
+MICROSECONDS = "microseconds"
 
 LEFT_X = "left_x"
 LEFT_Y = "left_y"

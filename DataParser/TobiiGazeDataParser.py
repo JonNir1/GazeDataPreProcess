@@ -46,8 +46,12 @@ class TobiiGazeDataParser(BaseGazeDataParser):
         return 'RunningSample'
 
     @classmethod
-    def TIME_COLUMN(cls) -> str:
+    def MILLISECONDS_COLUMN(cls) -> str:
         return 'RTTime'
+
+    @classmethod
+    def MICROSECONDS_COLUMN(cls) -> str:
+        return 'RTTimeMicro'
 
     @classmethod
     def LEFT_X_COLUMN(cls) -> str:
@@ -79,7 +83,7 @@ class TobiiGazeDataParser(BaseGazeDataParser):
 
     def _compute_sample_size_and_sr(self) -> (int, float):
         df = pd.read_csv(self.input_path, sep='\t')
-        rt_time_micro = df['RTTimeMicro']
+        rt_time_micro = df[self.MICROSECONDS_COLUMN()]
         num_samples = len(rt_time_micro)
         sampling_rate = cnst.MICROSECONDS_PER_SECOND / rt_time_micro.diff().mode()
         return num_samples, sampling_rate
