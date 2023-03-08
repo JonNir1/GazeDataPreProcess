@@ -6,6 +6,9 @@ from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
 
 
 class MonocularBlinkDetector(BaseBlinkDetector):
+    """
+    Detects blinks from a single eye.
+    """
 
     def detect(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
