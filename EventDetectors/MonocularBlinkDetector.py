@@ -14,7 +14,8 @@ class MonocularBlinkDetector(BaseBlinkDetector):
         """
         Detects blinks in a single eye, defined as periods of missing data that last longer than min_duration.
         Based on implementation in https://github.com/esdalmaijer/PyGazeAnalyser/blob/master/pygazeanalyser/detectors.py#L43
-        :param timestamps, x, y: 1D arrays of timestamps, x-coordinates and y-coordinates, all in the same length
+        :param timestamps: 1D arrays of timestamps in microseconds
+        :param x, y: 1D arrays of x- and y-coordinates, all in the same length
 
         :return: 1D array of booleans, True for blinks
         :raises ValueError: if timestamps, x and y are not of equal lengths
