@@ -1,7 +1,5 @@
-import numpy as np
-from abc import ABC, abstractmethod
+from abc import ABC
 
-import experiment_config as conf
 from EventDetectors.BaseDetector import BaseDetector
 
 
@@ -32,5 +30,3 @@ class BaseBlinkDetector(BaseDetector, ABC):
     @property
     def min_duration(self) -> float:
         return self.__min_duration
-
-
