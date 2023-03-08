@@ -8,10 +8,10 @@ import constants as c
 def calculate_sampling_rate(timestamps: np.ndarray) -> float:
     """
     Calculates the sampling rate of the given timestamps.
-    :param timestamps: 1D array of timestamps in milliseconds
+    :param timestamps: 1D array of timestamps in microseconds
     :return: sampling rate in Hz
     """
-    return c.MILLISECONDS_PER_SECOND / st.mode(np.diff(timestamps))
+    return c.MICROSECONDS / st.mode(np.diff(timestamps))
 
 
 def calculate_minimum_sample_count(min_duration: float, sampling_rate: float) -> int:
