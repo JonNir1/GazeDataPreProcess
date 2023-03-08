@@ -53,7 +53,7 @@ class MonocularBlinkDetector(BaseBlinkDetector):
 
         # find idxs of missing data that are close enough to merge together
         split_idxs = np.where(np.diff(missing_idxs) > merge_threshold)[0] + 1
-        candidate_idxs_with_holes = np.split(is_missing, split_idxs)
+        candidate_idxs_with_holes = np.split(missing_idxs, split_idxs)
         candidate_start_end = [(arr.min(), arr.max()) for arr in candidate_idxs_with_holes]
         return candidate_start_end
 
