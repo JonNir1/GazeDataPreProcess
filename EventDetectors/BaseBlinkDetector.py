@@ -2,9 +2,10 @@ import numpy as np
 from abc import ABC, abstractmethod
 
 import experiment_config as conf
+from EventDetectors.BaseDetector import BaseDetector
 
 
-class BaseBlinkDetector(ABC):
+class BaseBlinkDetector(BaseDetector, ABC):
     """
     Baseclass for all blink event detectors.
     Defines these properties:
@@ -15,8 +16,7 @@ class BaseBlinkDetector(ABC):
     """
 
     def __init__(self, time_between_blinks: float = 20, min_duration: float = 50):
-        self.__sampling_rate = conf.SAMPLING_RATE
-        self.__missing_value = conf.MISSING_VALUE
+        super().__init__()
         self.__time_between_blinks = time_between_blinks
         self.__min_duration = min_duration
 
@@ -24,20 +24,6 @@ class BaseBlinkDetector(ABC):
     # def detect(self, gaze_data: np.ndarray) -> np.ndarray:
     #     raise NotImplementedError
     # TODO: find a way to make this agnostic to function arguments
-
-    @property
-    def sampling_rate(self) -> float:
-        return self.__sampling_rate
-
-    def set_sampling_rate(self, sampling_rate: float):
-        self.__sampling_rate = sampling_rate
-
-    @property
-    def missing_value(self) -> float:
-        return self.__missing_value
-
-    def set_missing_value(self, missing_value: float):
-        self.__missing_value = missing_value
 
     @property
     def time_between_blinks(self) -> float:
