@@ -1,0 +1,48 @@
+import numpy as np
+from typing import List
+
+import EventDetectors.utils as u
+from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
+from EventDetectors.MonocularBlinkDetector import MonocularBlinkDetector
+
+
+class BinocularBlinkDetector(BaseBlinkDetector):
+    """
+    Detects blinks from both eyes, using two MonocularBlinkDetectors objects.
+    Define a criterion for merging the results of the two detectors:
+    - "AND": a blink is detected if both eyes are missing data for a period longer than min_duration
+    - "OR": a blink is detected if at least one eye is missing data for a period longer than min_duration
+    """
+
+    def __init__(self, min_duration: float, time_between_blinks: float, criterion: str = "OR"):
+        super().__init__(min_duration, time_between_blinks)
+        if criterion.upper() not in ["AND", "OR"]:
+            raise ValueError("criterion must be either 'AND' or 'OR'")
+        self.__criterion = criterion
+
+    def detect(self, timestamps: np.ndarray,
+               left_x: np.ndarray, left_y: np.ndarray,
+               right_x: np.ndarray, right_y: np.ndarray) -> np.ndarray:
+        if len(timestamps) != len(left_x) or len(timestamps) != len(left_y):
+            raise ValueError("timestamps, left_x and left_y must have the same length")
+        if len(timestamps) != len(right_x) or len(timestamps) != len(right_y):
+            raise ValueError("timestamps, right_x and right_y must have the same length")
+        left_detector = MonocularBlinkDetector(self.min_duration, self.time_between_blinks)
+        right_detector = MonocularBlinkDetector(self.min_duration, self.time_between_blinks)
+
+        left_blinks = left_detector.detect(timestamps, left_x, left_y)
+        right_blinks = right_detector.detect(timestamps, right_x, right_y)
+
+        if self.criterion == "AND":
+            return np.logical_and(left_blinks, right_blinks)
+        return np.logical_or(left_blinks, right_blinks)
+
+    @property
+    def criterion(self) -> str:
+        return self.__criterion
+
+    def set_criterion(self, criterion: str):
+        if criterion.upper() not in ["AND", "OR"]:
+            raise ValueError("criterion must be either 'AND' or 'OR'")
+        self.__criterion = criterion
+
