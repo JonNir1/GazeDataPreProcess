@@ -21,8 +21,8 @@ class BaseBlinkDetector(ABC):
 
     # @abstractmethod
     # def detect(self, gaze_data: np.ndarray) -> np.ndarray:
-    # TODO: find a way to make this agnostic to function arguments
     #     raise NotImplementedError
+    # TODO: find a way to make this agnostic to function arguments
 
     @property
     def missing_value(self) -> float:
