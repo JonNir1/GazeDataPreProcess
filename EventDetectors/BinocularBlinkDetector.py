@@ -22,20 +22,20 @@ class BinocularBlinkDetector(BaseBlinkDetector):
             raise ValueError("criterion must be either 'AND' or 'OR'")
         self.__criterion = criterion
 
-    def detect(self, timestamps: np.ndarray,
+    def detect(self,
                left_x: np.ndarray, left_y: np.ndarray,
                right_x: np.ndarray, right_y: np.ndarray) -> np.ndarray:
-        if len(timestamps) != len(left_x) or len(timestamps) != len(left_y):
-            raise ValueError("timestamps, left_x and left_y must have the same length")
-        if len(timestamps) != len(right_x) or len(timestamps) != len(right_y):
-            raise ValueError("timestamps, right_x and right_y must have the same length")
+        if len(left_x) != len(left_y):
+            raise ValueError("left_x and left_y must have the same length")
+        if len(right_x) != len(right_y):
+            raise ValueError("right_x and right_y must have the same length")
         left_detector = MonocularBlinkDetector(min_duration=self.min_duration,
                                                time_between_blinks=self.time_between_blinks)
         right_detector = MonocularBlinkDetector(min_duration=self.min_duration,
                                                 time_between_blinks=self.time_between_blinks)
 
-        left_blinks = left_detector.detect(timestamps, left_x, left_y)
-        right_blinks = right_detector.detect(timestamps, right_x, right_y)
+        left_blinks = left_detector.detect(left_x, left_y)
+        right_blinks = right_detector.detect(right_x, right_y)
 
         if self.criterion.upper() == "AND":
             return np.logical_and(left_blinks, right_blinks)

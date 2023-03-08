@@ -10,18 +10,17 @@ class MonocularBlinkDetector(BaseBlinkDetector):
     Detects blinks from a single eye.
     """
 
-    def detect(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    def detect(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
         Detects blinks in a single eye, defined as periods of missing data that last longer than min_duration.
         Based on implementation in https://github.com/esdalmaijer/PyGazeAnalyser/blob/master/pygazeanalyser/detectors.py#L43
-        :param timestamps: 1D arrays of timestamps in microseconds
         :param x, y: 1D arrays of x- and y-coordinates, all in the same length
 
         :return: 1D array of booleans, True for blinks
         :raises ValueError: if timestamps, x and y are not of equal lengths
         """
-        if len(timestamps) != len(x) or len(timestamps) != len(y):
-            raise ValueError("timestamps, x and y must have the same length")
+        if len(x) != len(y):
+            raise ValueError("x and y must have the same length")
 
         # find blink candidates
         max_length_between_candidates = u.calculate_minimum_sample_count(self.time_between_blinks, self.sampling_rate)
@@ -34,7 +33,7 @@ class MonocularBlinkDetector(BaseBlinkDetector):
 
         # convert to boolean array
         blink_idxs = np.concatenate([np.arange(start, end + 1) for start, end in blink_start_end_idxs])
-        is_blink = np.zeros(len(timestamps), dtype=bool)
+        is_blink = np.zeros(len(x), dtype=bool)
         is_blink[blink_idxs] = True
         return is_blink
 
