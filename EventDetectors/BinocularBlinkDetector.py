@@ -40,7 +40,7 @@ class BinocularBlinkDetector(BaseBlinkDetector):
         left_blinks = left_detector.detect(timestamps, left_x, left_y)
         right_blinks = right_detector.detect(timestamps, right_x, right_y)
 
-        if self.criterion == "AND":
+        if self.criterion.upper() == "AND":
             return np.logical_and(left_blinks, right_blinks)
         return np.logical_or(left_blinks, right_blinks)
 
