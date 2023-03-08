@@ -11,7 +11,7 @@ class BinocularBlinkDetector(BaseBlinkDetector):
     - "OR": a blink is detected if at least one eye is missing data for a period longer than min_duration
     """
 
-    def __init__(self, min_duration: float, time_between_blinks: float, criterion: str = "OR"):
+    def __init__(self, min_duration: float = 20, time_between_blinks: float = 50, criterion: str = "OR"):
         super().__init__(min_duration, time_between_blinks)
         if criterion.upper() not in ["AND", "OR"]:
             raise ValueError("criterion must be either 'AND' or 'OR'")
