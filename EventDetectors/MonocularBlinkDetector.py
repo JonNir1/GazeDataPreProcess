@@ -22,14 +22,13 @@ class MonocularBlinkDetector(BaseBlinkDetector):
         """
         if len(timestamps) != len(x) or len(timestamps) != len(y):
             raise ValueError("timestamps, x and y must have the same length")
-        sr = u.calculate_sampling_rate(timestamps)
 
         # find blink candidates
-        max_length_between_candidates = u.calculate_minimum_sample_count(self.time_between_blinks, sr)
+        max_length_between_candidates = u.calculate_minimum_sample_count(self.time_between_blinks, self.sampling_rate)
         candidate_start_end_idxs = self.__find_blink_candidates(x, y, max_length_between_candidates)
 
         # exclude blinks that are too short
-        min_length_for_blink = u.calculate_minimum_sample_count(self.min_duration, sr)
+        min_length_for_blink = u.calculate_minimum_sample_count(self.min_duration, self.sampling_rate)
         blink_start_end_idxs = [(start, end) for start, end in candidate_start_end_idxs if
                                 end - start >= min_length_for_blink]
 

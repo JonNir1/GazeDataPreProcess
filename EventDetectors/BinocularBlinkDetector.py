@@ -14,13 +14,10 @@ class BinocularBlinkDetector(BaseBlinkDetector):
     """
 
     def __init__(self,
-                 missing_value=cnst.MISSING_VALUE,
                  time_between_blinks: float = 20,
                  min_duration: float = 50,
                  criterion: str = "OR"):
-        super().__init__(missing_value=missing_value,
-                         min_duration=min_duration,
-                         time_between_blinks=time_between_blinks)
+        super().__init__(min_duration=min_duration, time_between_blinks=time_between_blinks)
         if criterion.upper() not in ["AND", "OR"]:
             raise ValueError("criterion must be either 'AND' or 'OR'")
         self.__criterion = criterion
