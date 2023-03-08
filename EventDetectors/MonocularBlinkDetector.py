@@ -28,7 +28,7 @@ class MonocularBlinkDetector(BaseBlinkDetector):
         candidate_start_end_idxs = self.__find_blink_candidates(x, y, max_length_between_candidates)
 
         # exclude blinks that are too short
-        min_length_for_blink = u.calculate_minimum_sample_count(min_duration, sr)
+        min_length_for_blink = u.calculate_minimum_sample_count(self.min_duration, sr)
         blink_start_end_idxs = [(start, end) for start, end in candidate_start_end_idxs if
                                 end - start >= min_length_for_blink]
 
