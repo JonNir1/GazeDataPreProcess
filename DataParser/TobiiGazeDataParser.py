@@ -29,7 +29,7 @@ class TobiiGazeDataParser(BaseGazeDataParser):
         df.rename(columns=lambda col: self._column_name_mapper(col), inplace=True)
 
         # avoid NaNs by replacing them with default missing value
-        df.fillna(value=cnst.MISSING_VALUE, inplace=True)
+        df.fillna(value=conf.MISSING_VALUE, inplace=True)
         return df
 
     def parse_and_split(self) -> List[pd.DataFrame]:

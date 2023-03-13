@@ -2,8 +2,6 @@
 List of all the constants used as field names, column names, etc.
 """
 
-MISSING_VALUE = -1
-
 TRIAL = "trial"
 TIME = "time"
 MILLISECONDS = "milliseconds"

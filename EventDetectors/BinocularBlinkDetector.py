@@ -1,7 +1,6 @@
 import numpy as np
 
 import experiment_config as conf
-import constants as cnst
 from EventDetectors.BaseBlinkDetector import BaseBlinkDetector, DEFAULT_MINIMUM_DURATION
 from EventDetectors.MonocularBlinkDetector import MonocularBlinkDetector
 
@@ -17,7 +16,7 @@ class BinocularBlinkDetector(BaseBlinkDetector):
     def __init__(self,
                  criterion: str = "OR",
                  min_duration: float = DEFAULT_MINIMUM_DURATION,
-                 missing_value: float = cnst.MISSING_VALUE,
+                 missing_value: float = conf.MISSING_VALUE,
                  sr: float = conf.SAMPLING_RATE,
                  iet: float = conf.INTER_EVENT_TIME):
         super().__init__(min_duration=min_duration,
