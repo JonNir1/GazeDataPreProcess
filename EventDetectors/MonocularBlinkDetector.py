@@ -23,8 +23,7 @@ class MonocularBlinkDetector(BaseBlinkDetector):
             raise ValueError("x and y must have the same length")
 
         # find blink candidates
-        max_length_between_candidates = u.calculate_minimum_sample_count(self.inter_event_time, self.sampling_rate)
-        candidate_start_end_idxs = self.__find_blink_candidates(x, y, max_length_between_candidates)
+        candidate_start_end_idxs = self.__find_blink_candidates(x, y)
 
         # exclude blinks that are too short
         min_length_for_blink = u.calculate_minimum_sample_count(self.min_duration, self.sampling_rate)
@@ -37,21 +36,18 @@ class MonocularBlinkDetector(BaseBlinkDetector):
         is_blink[blink_idxs] = True
         return is_blink
 
-    def __find_blink_candidates(self, x: np.ndarray, y: np.ndarray, merge_threshold: int) -> List[tuple]:
+    def __find_blink_candidates(self, x: np.ndarray, y: np.ndarray) -> List[tuple]:
         """
         Detects periods of missing data and merges them together if they are close enough
         :param x, y: 1D arrays of x-coordinates and y-coordinates
-        :param merge_threshold: maximum number of samples between two missing data periods to merge them together
         :return: list of tuples, each containing the start and end index of a blink candidate
         """
-        assert merge_threshold >= 0, "merge_threshold must be non-negative"
-
         # find idxs of missing data
         is_missing = np.logical_or(x == self.missing_value, y == self.missing_value)
         missing_idxs = np.where(is_missing)[0]
 
         # find idxs of missing data that are close enough to merge together
-        split_idxs = np.where(np.diff(missing_idxs) > merge_threshold)[0] + 1
+        split_idxs = np.where(np.diff(missing_idxs) > self._min_samples_between_events)[0] + 1
         candidate_idxs_with_holes = np.split(missing_idxs, split_idxs)
         candidate_start_end = [(arr.min(), arr.max()) for arr in candidate_idxs_with_holes if arr.size > 0]
         return candidate_start_end
