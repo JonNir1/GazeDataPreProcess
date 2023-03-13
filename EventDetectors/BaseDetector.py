@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from math import ceil
+from math import ceil, floor
 
 import constants as c
 import experiment_config as conf
@@ -39,6 +39,13 @@ class BaseDetector(ABC):
 
     def set_inter_event_time(self, inter_event_time: float):
         self.__inter_event_time = inter_event_time
+
+    @property
+    def _min_samples_within_event(self) -> int:
+        """
+        Defines the minimal number of samples required to identify an event.
+        """
+        return max(1, floor(self.min_duration * self.sampling_rate / c.MILLISECONDS_PER_SECOND))
 
     @property
     def _min_samples_between_events(self) -> int:

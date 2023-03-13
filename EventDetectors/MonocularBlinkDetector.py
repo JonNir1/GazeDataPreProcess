@@ -26,9 +26,8 @@ class MonocularBlinkDetector(BaseBlinkDetector):
         candidate_start_end_idxs = self.__find_blink_candidates(x, y)
 
         # exclude blinks that are too short
-        min_length_for_blink = u.calculate_minimum_sample_count(self.min_duration, self.sampling_rate)
         blink_start_end_idxs = [(start, end) for start, end in candidate_start_end_idxs if
-                                end - start >= min_length_for_blink]
+                                end - start >= self._min_samples_within_event]
 
         # convert to boolean array
         blink_idxs = np.concatenate([np.arange(start, end + 1) for start, end in blink_start_end_idxs])
