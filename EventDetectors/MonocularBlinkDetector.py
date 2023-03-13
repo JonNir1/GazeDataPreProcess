@@ -23,7 +23,7 @@ class MonocularBlinkDetector(BaseBlinkDetector):
             raise ValueError("x and y must have the same length")
 
         # find blink candidates
-        max_length_between_candidates = u.calculate_minimum_sample_count(self.time_between_blinks, self.sampling_rate)
+        max_length_between_candidates = u.calculate_minimum_sample_count(self.inter_event_time, self.sampling_rate)
         candidate_start_end_idxs = self.__find_blink_candidates(x, y, max_length_between_candidates)
 
         # exclude blinks that are too short
@@ -55,4 +55,3 @@ class MonocularBlinkDetector(BaseBlinkDetector):
         candidate_idxs_with_holes = np.split(missing_idxs, split_idxs)
         candidate_start_end = [(arr.min(), arr.max()) for arr in candidate_idxs_with_holes if arr.size > 0]
         return candidate_start_end
-

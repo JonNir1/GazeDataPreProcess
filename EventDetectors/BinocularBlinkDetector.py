@@ -17,24 +17,21 @@ class BinocularBlinkDetector(BaseBlinkDetector):
     def __init__(self,
                  criterion: str = "OR",
                  min_duration: float = DEFAULT_MINIMUM_DURATION,
-                 time_between_blinks: float = 20,
                  missing_value: float = cnst.MISSING_VALUE,
-                 sr: float = conf.SAMPLING_RATE):
+                 sr: float = conf.SAMPLING_RATE,
+                 iet: float = conf.INTER_EVENT_TIME):
         super().__init__(min_duration=min_duration,
-                         time_between_blinks=time_between_blinks,
                          missing_value=missing_value,
-                         sr=sr)
+                         sr=sr, iet=iet)
         if criterion.upper() not in ["AND", "OR"]:
             raise ValueError("criterion must be either 'AND' or 'OR'")
         self.__criterion = criterion
         self.__left_detector = MonocularBlinkDetector(min_duration=min_duration,
-                                                      time_between_blinks=time_between_blinks,
                                                       missing_value=missing_value,
-                                                      sr=sr)
+                                                      sr=sr, iet=iet)
         self.__right_detector = MonocularBlinkDetector(min_duration=min_duration,
-                                                       time_between_blinks=time_between_blinks,
                                                        missing_value=missing_value,
-                                                       sr=sr)
+                                                       sr=sr, iet=iet)
 
     def detect(self,
                left_x: np.ndarray, left_y: np.ndarray,
@@ -74,3 +71,7 @@ class BinocularBlinkDetector(BaseBlinkDetector):
         self.__left_detector.set_sampling_rate(sampling_rate)
         self.__right_detector.set_sampling_rate(sampling_rate)
 
+    def set_inter_event_time(self, inter_event_time: float):
+        self.__inter_event_time = inter_event_time
+        self.__left_detector.set_inter_event_time(inter_event_time)
+        self.__right_detector.set_inter_event_time(inter_event_time)

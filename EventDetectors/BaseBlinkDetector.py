@@ -19,12 +19,11 @@ class BaseBlinkDetector(BaseDetector, ABC):
 
     def __init__(self,
                  min_duration: float = DEFAULT_MINIMUM_DURATION,
-                 time_between_blinks: float = 20,
                  missing_value: float = conf.MISSING_VALUE,
-                 sr: float = conf.SAMPLING_RATE):
-        super().__init__(sr)
+                 sr: float = conf.SAMPLING_RATE,
+                 iet: float = conf.INTER_EVENT_TIME):
+        super().__init__(sr, iet)
         self.__min_duration = min_duration
-        self.__time_between_blinks = time_between_blinks
         self.__missing_value = missing_value
 
     # @abstractmethod
@@ -38,10 +37,6 @@ class BaseBlinkDetector(BaseDetector, ABC):
 
     def set_min_duration(self, min_duration: float):
         self.__min_duration = min_duration
-
-    @property
-    def time_between_blinks(self) -> float:
-        return self.__time_between_blinks
 
     @property
     def missing_value(self) -> float:
