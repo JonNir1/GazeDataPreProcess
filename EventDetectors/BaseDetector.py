@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 import experiment_config as conf
 
@@ -6,11 +6,12 @@ import experiment_config as conf
 class BaseDetector(ABC):
     """
     Baseclass for all gaze-event detectors.
+    Defines these properties:
+    - sr: sampling rate of the data in Hz                (default: experiment_config.SAMPLING_RATE)
     """
 
-    def __init__(self, sr: float = conf.SAMPLING_RATE, mv: float = conf.MISSING_VALUE):
+    def __init__(self, sr: float = conf.SAMPLING_RATE):
         self.__sampling_rate = sr
-        self.__missing_value = mv
 
     @property
     def sampling_rate(self) -> float:
@@ -20,8 +21,10 @@ class BaseDetector(ABC):
         self.__sampling_rate = sampling_rate
 
     @property
-    def missing_value(self) -> float:
-        return self.__missing_value
+    @abstractmethod
+    def min_duration(self) -> float:
+        raise NotImplementedError
 
-    def set_missing_value(self, missing_value: float):
-        self.__missing_value = missing_value
+    @abstractmethod
+    def set_min_duration(self, min_duration: float):
+        raise NotImplementedError
