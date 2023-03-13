@@ -43,6 +43,6 @@ class BaseDetector(ABC):
     @property
     def _min_samples_between_events(self) -> int:
         """
-        Returns the minimal number of samples required to identify two adjacent events as separate events.
+        Defines the minimal number of samples required to identify two adjacent events as separate events.
         """
         return ceil(self.inter_event_time * self.sampling_rate / c.MILLISECONDS_PER_SECOND)
