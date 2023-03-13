@@ -21,13 +21,9 @@ class MonocularBlinkDetector(BaseBlinkDetector):
         """
         if len(x) != len(y):
             raise ValueError("x and y must have the same length")
-
-        # find blink candidates
-        candidate_start_end_idxs = self.__find_blink_candidates(x, y)
-
-        # exclude blinks that are too short
+        candidate_start_end_idxs = self.__find_blink_candidates(x, y)  # find blink candidates
         blink_start_end_idxs = [(start, end) for start, end in candidate_start_end_idxs if
-                                end - start >= self._min_samples_within_event]
+                                end - start >= self._min_samples_within_event]  # exclude blinks that are too short
 
         # convert to boolean array
         blink_idxs = np.concatenate([np.arange(start, end + 1) for start, end in blink_start_end_idxs])
