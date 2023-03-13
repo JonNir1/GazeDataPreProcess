@@ -11,6 +11,6 @@ SAMPLING_RATE = 599.88
 ADDITIONAL_COLUMNS = []  # additional columns to be added to the gaze data
 
 
-INTER_EVENT_TIME = 25  # minimal time between two (same) events in milliseconds (two saccades, two fixations, etc.)
+INTER_EVENT_TIME = 10  # minimal time between two (same) events in milliseconds (two saccades, two fixations, etc.)
 BLINK_MINIMUM_DURATION = 50  # minimum duration of a blink in milliseconds
 SACCADE_MINIMUM_DURATION = 5  # minimum duration of a saccade in milliseconds
