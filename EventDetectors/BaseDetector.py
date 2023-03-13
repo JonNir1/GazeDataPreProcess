@@ -16,6 +16,15 @@ class BaseDetector(ABC):
         self.__inter_event_time = iet
 
     @property
+    @abstractmethod
+    def min_duration(self) -> float:
+        raise NotImplementedError
+
+    @abstractmethod
+    def set_min_duration(self, min_duration: float):
+        raise NotImplementedError
+
+    @property
     def sampling_rate(self) -> float:
         return self.__sampling_rate
 
@@ -28,12 +37,3 @@ class BaseDetector(ABC):
 
     def set_inter_event_time(self, inter_event_time: float):
         self.__inter_event_time = inter_event_time
-
-    @property
-    @abstractmethod
-    def min_duration(self) -> float:
-        raise NotImplementedError
-
-    @abstractmethod
-    def set_min_duration(self, min_duration: float):
-        raise NotImplementedError
