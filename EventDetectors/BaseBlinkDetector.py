@@ -4,9 +4,6 @@ import experiment_config as conf
 from EventDetectors.BaseDetector import BaseDetector
 
 
-DEFAULT_MINIMUM_DURATION = 50
-
-
 class BaseBlinkDetector(BaseDetector, ABC):
     """
     Baseclass for all blink event detectors.
@@ -18,7 +15,7 @@ class BaseBlinkDetector(BaseDetector, ABC):
     """
 
     def __init__(self,
-                 min_duration: float = DEFAULT_MINIMUM_DURATION,
+                 min_duration: float = conf.BLINK_MINIMUM_DURATION,
                  missing_value: float = conf.MISSING_VALUE,
                  sr: float = conf.SAMPLING_RATE,
                  iet: float = conf.INTER_EVENT_TIME):
