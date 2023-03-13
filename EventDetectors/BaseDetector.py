@@ -8,9 +8,9 @@ class BaseDetector(ABC):
     Baseclass for all gaze-event detectors.
     """
 
-    def __init__(self):
-        self.__sampling_rate = conf.SAMPLING_RATE
-        self.__missing_value = conf.MISSING_VALUE
+    def __init__(self, sr: float = conf.SAMPLING_RATE, mv: float = conf.MISSING_VALUE):
+        self.__sampling_rate = sr
+        self.__missing_value = mv
 
     @property
     def sampling_rate(self) -> float:
