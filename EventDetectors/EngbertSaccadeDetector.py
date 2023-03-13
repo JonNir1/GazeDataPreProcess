@@ -24,10 +24,38 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         :param y:
         :return:
         """
+        is_saccade_candidate = self._detect_saccade_candidates(x, y)
+
+        raise NotImplementedError
+
+    @classmethod
+    def __find_saccade_candidates(cls, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+        """
+        Detects saccade candidates of a single eye, in the given gaze data.
+        A saccade candidate is a sample that has a velocity greater than the noise threshold, calculated as the multiple
+            of the velocity's median-standard-deviation with the constant LAMBDA_NOISE_THRESHOLD.
+        :param x: gaze positions on the x-axis
+        :param y: gaze positions on the y-axis
+
+        :return: boolean array of the same length as the given data, indicating whether a sample is a saccade candidate
+
+        :raises ValueError: if the given data is not of the same length
+        :raises ValueError: if the given data is not of length at least 2 * DERIVATION_WINDOW_SIZE
+        """
         if len(x) != len(y):
             raise ValueError("x and y must be of the same length")
-        vel_x = u.numerical_derivative(x, n=self.DERIVATION_WINDOW_SIZE)
-        vel_y = u.numerical_derivative(y, n=self.DERIVATION_WINDOW_SIZE)
-        raise NotImplementedError
+        if len(x) < 2 * cls.DERIVATION_WINDOW_SIZE:
+            raise ValueError(f"x and y must be of length at least 2 * DERIVATION_WINDOW_SIZE (={2 * cls.DERIVATION_WINDOW_SIZE})")
+
+        vel_x = u.numerical_derivative(x, n=cls.DERIVATION_WINDOW_SIZE)
+        sd_x = u.median_standard_deviation(vel_x)
+        vel_y = u.numerical_derivative(y, n=cls.DERIVATION_WINDOW_SIZE)
+        sd_y = u.median_standard_deviation(vel_y)
+
+        ellipse_thresholds = np.power(vel_x / (sd_x * cls.LAMBDA_NOISE_THRESHOLD), 2) + np.power(vel_y / (sd_y * cls.LAMBDA_NOISE_THRESHOLD), 2)
+        is_saccade_candidate = ellipse_thresholds > 1
+        return is_saccade_candidate.values
+
+
 
 
