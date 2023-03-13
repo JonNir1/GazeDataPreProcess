@@ -9,9 +9,9 @@ class BaseBlinkDetector(BaseDetector, ABC):
     Baseclass for all blink event detectors.
     Defines these properties:
     - min_duration: minimum duration of a blink in milliseconds             (default: 50)
-    - time_between_blinks: minimum time between two blinks in milliseconds  (default: 20)
     - missing_value: default value indicating missing data                  (default: experiment_config.MISSING_VALUE)
     - sampling_rate: sampling rate of the data in Hz                        (default: experiment_config.SAMPLING_RATE)
+    - inter_event_time: minimal time between two (same) events in ms        (default: experiment_config.INTER_EVENT_TIME)
     """
 
     def __init__(self,
