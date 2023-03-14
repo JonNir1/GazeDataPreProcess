@@ -25,8 +25,8 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         :param y:
         :return:
         """
-        is_saccade_candidate = self.__find_candidates(x, y)
-        saccades_start_end_idxs = self.__find_start_end_indices(is_saccade_candidate)
+        is_saccade_candidate = self._find_candidates(x, y)
+        saccades_start_end_idxs = self._find_start_end_indices(is_saccade_candidate)
 
         # convert to boolean array
         saccade_idxs = np.concatenate([np.arange(start, end + 1) for start, end in saccades_start_end_idxs])
@@ -34,8 +34,7 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         is_saccade[saccade_idxs] = True
         return is_saccade
 
-    @classmethod
-    def __find_candidates(cls, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    def _find_candidates(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
         Detects saccade candidates of a single eye, in the given gaze data.
         A saccade candidate is a sample that has a velocity greater than the noise threshold, calculated as the multiple
@@ -50,19 +49,19 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         """
         if len(x) != len(y):
             raise ValueError("x and y must be of the same length")
-        if len(x) < 2 * cls.DERIVATION_WINDOW_SIZE:
-            raise ValueError(f"x and y must be of length at least 2 * DERIVATION_WINDOW_SIZE (={2 * cls.DERIVATION_WINDOW_SIZE})")
+        if len(x) < 2 * self.DERIVATION_WINDOW_SIZE:
+            raise ValueError(f"x and y must be of length at least 2 * DERIVATION_WINDOW_SIZE (={2 * self.DERIVATION_WINDOW_SIZE})")
 
-        vel_x = u.numerical_derivative(x, n=cls.DERIVATION_WINDOW_SIZE)
+        vel_x = self.__numerical_derivative(x, n=self.DERIVATION_WINDOW_SIZE)
         sd_x = u.median_standard_deviation(vel_x)
-        vel_y = u.numerical_derivative(y, n=cls.DERIVATION_WINDOW_SIZE)
+        vel_y = self.__numerical_derivative(y, n=self.DERIVATION_WINDOW_SIZE)
         sd_y = u.median_standard_deviation(vel_y)
 
-        ellipse_thresholds = np.power(vel_x / (sd_x * cls.LAMBDA_NOISE_THRESHOLD), 2) + np.power(vel_y / (sd_y * cls.LAMBDA_NOISE_THRESHOLD), 2)
+        ellipse_thresholds = np.power(vel_x / (sd_x * self.LAMBDA_NOISE_THRESHOLD), 2) + np.power(vel_y / (sd_y * self.LAMBDA_NOISE_THRESHOLD), 2)
         is_saccade_candidate = ellipse_thresholds > 1
         return is_saccade_candidate.values
 
-    def __find_start_end_indices(self, is_saccade_candidate: np.ndarray) -> List[Tuple[int, int]]:
+    def _find_start_end_indices(self, is_saccade_candidate: np.ndarray) -> List[Tuple[int, int]]:
         """
         Excludes saccade candidates that are shorter than the minimum duration of a saccade.
         :param is_saccade_candidate: boolean array indicating whether a sample is a saccade candidate
@@ -78,3 +77,26 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         saccades_start_end = list(filter(lambda sac: sac[1] - sac[0] >= self._min_samples_within_event, saccades_start_end))
         return saccades_start_end
 
+    def __numerical_derivative(self, v, n: int) -> np.ndarray:
+        """
+        Calculates the numerical derivative of the given values, as described by Engbert & Kliegl(2003):
+            dX/dt = [(v[X+(N-1)] + v[X+(N-2)] + ... + v[X+1]) - (v[X-(N-1)] + v[X-(N-2)] + ... + v[X-1])] / 2N
+
+        :param v: series of length N to calculate the derivative for
+        :param n: number of samples to use for the calculation
+        :return: numerical derivative of the given values
+                Note: the first and last (n-1) samples will be NaN
+        """
+        N = len(v)
+        if n <= 0:
+            raise ValueError("n must be greater than 0")
+        if n >= int(0.5 * N):
+            raise ValueError("n must be less than half the length of the given values")
+        if not isinstance(v, pd.Series):
+            # convert to pd series to use rolling window function
+            v = pd.Series(v)
+        v[v < 0] = np.nan
+        prev_elements_sum = v.rolling(n - 1).sum().shift(1)
+        next_elements_sum = v.rolling(n - 1).sum().shift(1 - n)
+        deriv = (next_elements_sum - prev_elements_sum) / (2 * n)
+        return deriv
