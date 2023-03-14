@@ -1,7 +1,6 @@
 import numpy as np
 from typing import List
 
-import EventDetectors.utils as u
 from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
 
 
