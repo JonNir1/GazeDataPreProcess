@@ -85,7 +85,7 @@ class TobiiGazeDataParser(BaseGazeDataParser):
         df = pd.read_csv(self.input_path, sep='\t')
         rt_time_micro = df[self.MICROSECONDS_COLUMN()]
         num_samples = len(rt_time_micro)
-        sampling_rate = cnst.MICROSECONDS_PER_SECOND / rt_time_micro.diff().mode()
+        sampling_rate = cnst.MICROSECONDS_PER_SECOND / rt_time_micro.diff().mode()[0]
         return num_samples, sampling_rate
 
     @classmethod
