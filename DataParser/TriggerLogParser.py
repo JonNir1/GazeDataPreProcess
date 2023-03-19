@@ -47,7 +47,7 @@ class TriggerLogParser(BaseParser):
     @classmethod
     def _column_name_mapper(cls, column_name: str) -> str:
         if column_name == cls.TIME_COLUMN:
-            return cnst.TIME
+            return cnst.MILLISECONDS
         if column_name == cls.TRIGGER_COLUMN:
             return cnst.TRIGGER
         raise ValueError(f'No name-mapping for column {column_name} in TriggerParser')
