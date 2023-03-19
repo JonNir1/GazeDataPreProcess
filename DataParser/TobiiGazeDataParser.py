@@ -94,4 +94,4 @@ class TobiiGazeDataParser(BaseGazeDataParser):
             return super()._column_name_mapper(column_name)
         if column_name in cls.ADDITIONAL_COLUMNS():
             return column_name
-        raise ValueError(f'No name-mapping for column {column_name}')
+        raise ValueError(f'No name-mapping for column {column_name} in TobiiGazeDataParser')
