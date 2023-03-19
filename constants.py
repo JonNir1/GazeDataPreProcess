@@ -4,6 +4,7 @@ List of all the constants used as field names, column names, etc.
 
 TRIAL = "trial"
 TIME = "time"
+TRIGGER = "trigger"
 MILLISECONDS = "milliseconds"
 MICROSECONDS = "microseconds"
 
