@@ -1,12 +1,12 @@
 import os
-import pandas as pd
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
 import constants as cnst
+from DataParser.BaseParser import BaseParser
 
 
-class BaseGazeDataParser(ABC):
+class BaseGazeDataParser(BaseParser, ABC):
 
     def __init__(self, input_path: str, output_path: Optional[str] = None):
         if not os.path.exists(input_path):
@@ -16,14 +16,6 @@ class BaseGazeDataParser(ABC):
         num_samples, sampling_rate = self._compute_sample_size_and_sr()
         self.__num_samples = num_samples
         self.__sampling_rate = sampling_rate
-
-    @abstractmethod
-    def parse(self) -> pd.DataFrame:
-        raise NotImplementedError
-
-    @abstractmethod
-    def parse_and_split(self) -> List[pd.DataFrame]:
-        raise NotImplementedError
 
     @abstractmethod
     def _compute_sample_size_and_sr(self) -> (int, float):
@@ -53,12 +45,6 @@ class BaseGazeDataParser(ABC):
     @abstractmethod
     def TRIAL_COLUMN(cls) -> str:
         # column name for trial number
-        raise NotImplementedError
-
-    @classmethod
-    @abstractmethod
-    def MILLISECONDS_COLUMN(cls) -> str:
-        # column name for time in milliseconds
         raise NotImplementedError
 
     @classmethod
