@@ -2,8 +2,10 @@
 This file contains the configuration for each specific experiment.
 """
 
-SCREEN_WIDTH = 1920
-SCREEN_HEIGHT = 1080
+SCREEN_DISTANCE = 65  # distance between the screen and the participant in cm
+SCREEN_WIDTH = 53.5   # width of the screen in cm
+SCREEN_HEIGHT = 31    # height of the screen in cm
+SCREEN_RESOLUTION = (1920, 1080)  # resolution of the screen in pixels
 
 MISSING_VALUE = -1
 SAMPLING_RATE = 599.88
