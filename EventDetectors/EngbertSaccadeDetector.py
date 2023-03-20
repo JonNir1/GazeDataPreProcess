@@ -18,12 +18,6 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
     LAMBDA_NOISE_THRESHOLD = 5
 
     def detect(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
-        """
-        Detects saccades of a single eye, in the given gaze data.
-        :param x:
-        :param y:
-        :return:
-        """
         is_saccade_candidate = self._find_candidates(x, y)
         saccades_start_end_idxs = self._find_start_end_indices(is_saccade_candidate)
 
