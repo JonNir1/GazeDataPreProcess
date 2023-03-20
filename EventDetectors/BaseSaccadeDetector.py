@@ -13,12 +13,4 @@ class BaseSaccadeDetector(BaseDetector, ABC):
                  min_duration: float = conf.SACCADE_MINIMUM_DURATION,
                  sr: float = conf.SAMPLING_RATE,
                  iet: float = conf.INTER_EVENT_TIME):
-        super().__init__(sr, iet)
-        self.__min_duration = min_duration
-
-    @property
-    def min_duration(self) -> float:
-        return self.__min_duration
-
-    def set_min_duration(self, min_duration: float):
-        self.__min_duration = min_duration
+        super().__init__(min_duration, sr, iet)

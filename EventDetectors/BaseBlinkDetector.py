@@ -15,25 +15,17 @@ class BaseBlinkDetector(BaseDetector, ABC):
     """
 
     def __init__(self,
-                 min_duration: float = conf.BLINK_MINIMUM_DURATION,
                  missing_value: float = conf.MISSING_VALUE,
+                 min_duration: float = conf.BLINK_MINIMUM_DURATION,
                  sr: float = conf.SAMPLING_RATE,
                  iet: float = conf.INTER_EVENT_TIME):
-        super().__init__(sr, iet)
-        self.__min_duration = min_duration
+        super().__init__(min_duration, sr, iet)
         self.__missing_value = missing_value
 
     # @abstractmethod
     # def detect(self, gaze_data: np.ndarray) -> np.ndarray:
     #     raise NotImplementedError
     # TODO: find a way to make this agnostic to function arguments
-
-    @property
-    def min_duration(self) -> float:
-        return self.__min_duration
-
-    def set_min_duration(self, min_duration: float):
-        self.__min_duration = min_duration
 
     @property
     def missing_value(self) -> float:

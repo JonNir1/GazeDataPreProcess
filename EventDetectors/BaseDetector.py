@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from math import ceil, floor
 
 import constants as c
@@ -13,18 +13,17 @@ class BaseDetector(ABC):
     - iet: minimal time between two (same) events in ms  (default: experiment_config.INTER_EVENT_TIME)
     """
 
-    def __init__(self, sr: float = conf.SAMPLING_RATE, iet: float = conf.INTER_EVENT_TIME):
+    def __init__(self, min_duration: float, sr: float = conf.SAMPLING_RATE, iet: float = conf.INTER_EVENT_TIME):
+        self.__min_duration = min_duration
         self.__sampling_rate = sr
         self.__inter_event_time = iet
 
     @property
-    @abstractmethod
     def min_duration(self) -> float:
-        raise NotImplementedError
+        return self.__min_duration
 
-    @abstractmethod
     def set_min_duration(self, min_duration: float):
-        raise NotImplementedError
+        self.__min_duration = min_duration
 
     @property
     def sampling_rate(self) -> float:
