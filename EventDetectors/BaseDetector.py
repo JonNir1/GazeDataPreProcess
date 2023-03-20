@@ -22,19 +22,19 @@ class BaseDetector(ABC):
     def min_duration(self) -> float:
         return self.__min_duration
 
-    def set_min_duration(self, min_duration: float):
-        self.__min_duration = min_duration
-
     @property
     def sampling_rate(self) -> float:
         return self.__sampling_rate
 
-    def set_sampling_rate(self, sampling_rate: float):
-        self.__sampling_rate = sampling_rate
-
     @property
     def inter_event_time(self) -> float:
         return self.__inter_event_time
+
+    def set_min_duration(self, min_duration: float):
+        self.__min_duration = min_duration
+
+    def set_sampling_rate(self, sampling_rate: float):
+        self.__sampling_rate = sampling_rate
 
     def set_inter_event_time(self, inter_event_time: float):
         self.__inter_event_time = inter_event_time
