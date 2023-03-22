@@ -31,7 +31,7 @@ class TriggerLogParser(BaseParser):
         if len(start_idxs) != len(end_idxs):
             raise AssertionError(f'Number of start triggers ({len(start_idxs)}) does not match number of end triggers ({len(end_idxs)})')
         start_end_idxs = np.vstack([start_idxs, end_idxs]).T
-        df_list = [full_df.iloc[start:end + 1] for start, end in start_end_idxs]
+        df_list = [full_df.iloc[start:end + 1].copy(deep=True) for start, end in start_end_idxs]
         for i, sub_df in enumerate(df_list):
             sub_df[cnst.TRIAL] = i+1
         return df_list
