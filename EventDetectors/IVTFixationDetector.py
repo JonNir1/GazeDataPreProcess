@@ -4,22 +4,22 @@ import experiment_config as conf
 import EventDetectors.utils as u
 from EventDetectors.BaseFixationDetector import BaseFixationDetector
 
+DEFAULT_VELOCITY_THRESHOLD = 20  # degrees per second
+
 
 class IVTFixationDetector(BaseFixationDetector):
     """
-    Detects fixations using the algorithm described by Salvucci & Goldberg (2000):
-        "Identifying fixations and saccades in eye-tracking protocols".
+    Detects fixations using the algorithm described by Salvucci & Goldberg (2000): "Identifying fixations and saccades
+        in eye-tracking protocols".
 
     This Detector determines if a sample is a fixation by checking if the velocity of the sample
-        is below a predefined threshold.
-    In the original paper they used a threshold of 20 degrees per second. In a review paper by Andersson et al. (2016,
-        "One algorithm to rule them all? An evaluation and discussion of ten eye movement event-detection algorithms"),
+        is below a predefined velocity threshold.
+    In the original paper they used a threshold of 20 degrees per second. In a review paper by Andersson et al. ("One
+        algorithm to rule them all? An evaluation and discussion of ten eye movement event-detection algorithms"; 2016),
         they used a threshold of 45 degrees per second.
 
     See original implementation: https://github.com/ecekt/eyegaze/blob/master/gaze.py
     """
-
-    DEFAULT_VELOCITY_THRESHOLD = 20  # degrees per second; can also use 45 which is more strict
 
     def __init__(self,
                  velocity_threshold: float = DEFAULT_VELOCITY_THRESHOLD,
