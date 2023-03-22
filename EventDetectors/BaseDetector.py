@@ -29,6 +29,17 @@ class BaseDetector(ABC):
         """
         raise NotImplementedError
 
+    @classmethod
+    def event_type(cls):
+        class_name = cls.__name__.lower()
+        if "blink" in class_name:
+            return "blink"
+        if "saccade" in class_name:
+            return "saccade"
+        if "fixation" in class_name:
+            return "fixation"
+        raise ValueError("Unknown event type for detector: {}".format(class_name))
+
     @property
     def min_duration(self) -> float:
         return self.__min_duration
