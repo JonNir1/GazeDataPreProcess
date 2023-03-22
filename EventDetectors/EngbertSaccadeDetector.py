@@ -52,14 +52,16 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         if len(x) != len(y):
             raise ValueError("x and y must be of the same length")
         if len(x) < 2 * self.__derivation_window_size:
-            raise ValueError(f"x and y must be of length at least 2 * derivation_window_size (={2 * self.__derivation_window_size})")
+            raise ValueError(
+                f"x and y must be of length at least 2 * derivation_window_size (={2 * self.__derivation_window_size})")
 
         vel_x = self.__numerical_derivative(x, n=self.__derivation_window_size)
         sd_x = self.__median_standard_deviation(vel_x)
         vel_y = self.__numerical_derivative(y, n=self.__derivation_window_size)
         sd_y = self.__median_standard_deviation(vel_y)
 
-        ellipse_thresholds = np.power(vel_x / (sd_x * self.__lambda_noise_threshold), 2) + np.power(vel_y / (sd_y * self.__lambda_noise_threshold), 2)
+        ellipse_thresholds = np.power(vel_x / (sd_x * self.__lambda_noise_threshold), 2) + np.power(
+            vel_y / (sd_y * self.__lambda_noise_threshold), 2)
         is_saccade_candidate = ellipse_thresholds > 1
         return is_saccade_candidate.values
 
@@ -71,12 +73,14 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         """
         # split saccade candidates to separate saccades
         saccade_candidate_idxs = np.nonzero(is_saccade_candidate)[0]
-        splitting_idxs = np.where(np.diff(saccade_candidate_idxs) > self._min_samples_between_events)[0] + 1  # +1 because we want the index after the split
+        splitting_idxs = np.where(np.diff(saccade_candidate_idxs) > self._min_samples_between_events)[
+                             0] + 1  # +1 because we want the index after the split
         separate_saccade_idxs = np.split(saccade_candidate_idxs, splitting_idxs)
 
         # exclude saccades that are shorter than the minimum duration
         saccades_start_end = list(map(lambda sac_idxs: (sac_idxs.min(), sac_idxs.max()), separate_saccade_idxs))
-        saccades_start_end = list(filter(lambda sac: sac[1] - sac[0] >= self._min_samples_within_event, saccades_start_end))
+        saccades_start_end = list(
+            filter(lambda sac: sac[1] - sac[0] >= self._min_samples_within_event, saccades_start_end))
         return saccades_start_end
 
     @staticmethod
@@ -117,4 +121,3 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         median_of_squared = np.nanmedian(np.power(v, 2))
         sd = np.sqrt(median_of_squared - squared_median)
         return max(sd, min_sd)
-
