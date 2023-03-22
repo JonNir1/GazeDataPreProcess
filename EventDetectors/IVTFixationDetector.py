@@ -46,7 +46,6 @@ class IVTFixationDetector(BaseFixationDetector):
         """
         velocities = self.__calculate_angular_velocity(x, y)
         is_fixation_candidate = velocities <= self.velocity_threshold
-
         # TODO: merge close candidates and filter out short ones
         raise NotImplementedError
 
