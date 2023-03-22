@@ -2,27 +2,21 @@ import numpy as np
 import pandas as pd
 
 import constants as cnst
-import EventDetectors.utils as u
+import experiment_config as conf
 
-from DataParser.TobiiGazeDataParser import TobiiGazeDataParser
-from EventDetectors.MonocularBlinkDetector import MonocularBlinkDetector
-from EventDetectors.BinocularBlinkDetector import BinocularBlinkDetector
+from scripts.calculate_sampling_rate import calculate_sampling_rate_for_tobii
+from scripts.parse_and_merge import parse_tobii_gaze_and_triggers
+from scripts.detect_events import detect_all_events
 
+sr = calculate_sampling_rate_for_tobii(r"C:\Users\jonathanni\Desktop\GazeData.txt")
+trial_dfs = parse_tobii_gaze_and_triggers(r"C:\Users\jonathanni\Desktop\GazeData.txt",
+                                          r"C:\Users\jonathanni\Desktop\TriggerLog.txt", start_trigger=254,
+                                          end_trigger=255)
+t2 = trial_dfs[2]
 
-path = r"C:\Users\jonathanni\Desktop\b.txt"
-tobii_parser = TobiiGazeDataParser(path)
-sr = tobii_parser.sampling_rate
+is_blink, is_saccade, is_fixation = detect_all_events(x=t2[cnst.LEFT_X].values, y=t2[cnst.LEFT_Y].values,
+                                                     sampling_rate=sr, inter_event_time=5,
+                                                     blink_detector_type='missing data', blink_min_duration=conf.BLINK_MINIMUM_DURATION,
+                                                     saccade_detector_type='engbert', saccade_min_duration=conf.SACCADE_MINIMUM_DURATION)
 
-trial_dfs = tobii_parser.parse_and_split()
-trial2 = trial_dfs[1]
-
-
-binoc_blink_detector = BinocularBlinkDetector(criterion="and")
-binoc_blink_detector.set_sampling_rate(sr)
-is_blink_binoc = binoc_blink_detector.detect(trial2[cnst.LEFT_X].values, trial2[cnst.LEFT_Y].values,
-                                             trial2[cnst.RIGHT_X].values, trial2[cnst.RIGHT_Y].values)
-
-
-left_x = trial2[cnst.LEFT_X].values
-left_y = trial2[cnst.LEFT_Y].values
 
