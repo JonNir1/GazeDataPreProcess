@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from typing import List, Tuple
 
+import experiment_config as conf
 from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector
 
 
@@ -14,8 +15,16 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         - https://github.com/esdalmaijer/PyGazeAnalyser/blob/master/pygazeanalyser/detectors.py#L175
     """
 
-    DERIVATION_WINDOW_SIZE = 3
-    LAMBDA_NOISE_THRESHOLD = 5
+    DEFAULT_DERIVATION_WINDOW_SIZE = 3
+    DEFAULT_LAMBDA_NOISE_THRESHOLD = 5
+
+    def __init__(self,
+                 min_duration: float = conf.SACCADE_MINIMUM_DURATION,
+                 sr: float = conf.SAMPLING_RATE,
+                 iet: float = conf.INTER_EVENT_TIME):
+        super().__init__(min_duration, sr, iet)
+        self.__derivation_window_size = self.DEFAULT_DERIVATION_WINDOW_SIZE
+        self.__lambda_noise_threshold = self.DEFAULT_LAMBDA_NOISE_THRESHOLD
 
     def detect(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         is_saccade_candidate = self._find_candidates(x, y)
@@ -31,26 +40,26 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         """
         Detects saccade candidates of a single eye, in the given gaze data.
         A saccade candidate is a sample that has a velocity greater than the noise threshold, calculated as the multiple
-            of the velocity's median-standard-deviation with the constant LAMBDA_NOISE_THRESHOLD.
+            of the velocity's median-standard-deviation with the constant self.__lambda_noise_threshold.
         :param x: gaze positions on the x-axis
         :param y: gaze positions on the y-axis
 
         :return: boolean array of the same length as the given data, indicating whether a sample is a saccade candidate
 
         :raises ValueError: if the given data is not of the same length
-        :raises ValueError: if the given data is not of length at least 2 * DERIVATION_WINDOW_SIZE
+        :raises ValueError: if the given data is not of length at least 2 * self.derivation_window_size
         """
         if len(x) != len(y):
             raise ValueError("x and y must be of the same length")
-        if len(x) < 2 * self.DERIVATION_WINDOW_SIZE:
-            raise ValueError(f"x and y must be of length at least 2 * DERIVATION_WINDOW_SIZE (={2 * self.DERIVATION_WINDOW_SIZE})")
+        if len(x) < 2 * self.__derivation_window_size:
+            raise ValueError(f"x and y must be of length at least 2 * derivation_window_size (={2 * self.__derivation_window_size})")
 
-        vel_x = self.__numerical_derivative(x, n=self.DERIVATION_WINDOW_SIZE)
+        vel_x = self.__numerical_derivative(x, n=self.__derivation_window_size)
         sd_x = self.__median_standard_deviation(vel_x)
-        vel_y = self.__numerical_derivative(y, n=self.DERIVATION_WINDOW_SIZE)
+        vel_y = self.__numerical_derivative(y, n=self.__derivation_window_size)
         sd_y = self.__median_standard_deviation(vel_y)
 
-        ellipse_thresholds = np.power(vel_x / (sd_x * self.LAMBDA_NOISE_THRESHOLD), 2) + np.power(vel_y / (sd_y * self.LAMBDA_NOISE_THRESHOLD), 2)
+        ellipse_thresholds = np.power(vel_x / (sd_x * self.__lambda_noise_threshold), 2) + np.power(vel_y / (sd_y * self.__lambda_noise_threshold), 2)
         is_saccade_candidate = ellipse_thresholds > 1
         return is_saccade_candidate.values
 
