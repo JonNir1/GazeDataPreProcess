@@ -21,10 +21,12 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
     def __init__(self,
                  min_duration: float = conf.SACCADE_MINIMUM_DURATION,
                  sr: float = conf.SAMPLING_RATE,
-                 iet: float = conf.INTER_EVENT_TIME):
+                 iet: float = conf.INTER_EVENT_TIME,
+                 derivation_window_size: int = DEFAULT_DERIVATION_WINDOW_SIZE,
+                 lambda_noise_threshold: int = DEFAULT_LAMBDA_NOISE_THRESHOLD):
         super().__init__(min_duration, sr, iet)
-        self.__derivation_window_size = self.DEFAULT_DERIVATION_WINDOW_SIZE
-        self.__lambda_noise_threshold = self.DEFAULT_LAMBDA_NOISE_THRESHOLD
+        self.__derivation_window_size = derivation_window_size
+        self.__lambda_noise_threshold = lambda_noise_threshold
 
     def detect(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         is_saccade_candidate = self._find_candidates(x, y)
