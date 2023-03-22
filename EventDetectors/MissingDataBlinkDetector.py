@@ -25,8 +25,10 @@ class MissingDataBlinkDetector(BaseBlinkDetector):
                                 end - start >= self._min_samples_within_event]  # exclude blinks that are too short
 
         # convert to boolean array
-        blink_idxs = np.concatenate([np.arange(start, end + 1) for start, end in blink_start_end_idxs])
         is_blink = np.zeros(len(x), dtype=bool)
+        if len(blink_start_end_idxs) == 0:
+            return is_blink
+        blink_idxs = np.concatenate([np.arange(start, end + 1) for start, end in blink_start_end_idxs])
         is_blink[blink_idxs] = True
         return is_blink
 
