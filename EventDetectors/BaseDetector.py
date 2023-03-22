@@ -1,4 +1,5 @@
-from abc import ABC
+import numpy as np
+from abc import ABC, abstractmethod
 from math import ceil, floor
 
 import constants as c
@@ -17,6 +18,16 @@ class BaseDetector(ABC):
         self.__min_duration = min_duration
         self.__sampling_rate = sr
         self.__inter_event_time = iet
+
+    @abstractmethod
+    def detect(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+        """
+        Detects events in the given gaze data.
+        :param x: x-coordinates of gaze data
+        :param y: y-coordinates of gaze data
+        :return: array of booleans, where True indicates an event
+        """
+        raise NotImplementedError
 
     @property
     def min_duration(self) -> float:
