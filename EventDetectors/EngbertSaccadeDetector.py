@@ -70,7 +70,8 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         saccades_start_end = list(filter(lambda sac: sac[1] - sac[0] >= self._min_samples_within_event, saccades_start_end))
         return saccades_start_end
 
-    def __numerical_derivative(self, v, n: int) -> np.ndarray:
+    @staticmethod
+    def __numerical_derivative(v, n: int) -> np.ndarray:
         """
         Calculates the numerical derivative of the given values, as described by Engbert & Kliegl(2003):
             dX/dt = [(v[X+(N-1)] + v[X+(N-2)] + ... + v[X+1]) - (v[X-(N-1)] + v[X-(N-2)] + ... + v[X-1])] / 2N
