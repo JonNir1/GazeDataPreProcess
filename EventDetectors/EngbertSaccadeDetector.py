@@ -5,6 +5,9 @@ from typing import List, Tuple
 import experiment_config as conf
 from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector
 
+DEFAULT_DERIVATION_WINDOW_SIZE = 3
+DEFAULT_LAMBDA_NOISE_THRESHOLD = 5
+
 
 class EngbertSaccadeDetector(BaseSaccadeDetector):
     """
@@ -14,9 +17,6 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         - https://github.com/odedwer/EyelinkProcessor/blob/66f56463ba8d2ad75f7935e3d020b051fb2aa4a4/SaccadeDetectors.py
         - https://github.com/esdalmaijer/PyGazeAnalyser/blob/master/pygazeanalyser/detectors.py#L175
     """
-
-    DEFAULT_DERIVATION_WINDOW_SIZE = 3
-    DEFAULT_LAMBDA_NOISE_THRESHOLD = 5
 
     def __init__(self,
                  min_duration: float = conf.SACCADE_MINIMUM_DURATION,
