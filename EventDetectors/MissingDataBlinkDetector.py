@@ -4,7 +4,7 @@ from typing import List
 from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
 
 
-class MonocularBlinkDetector(BaseBlinkDetector):
+class MissingDataBlinkDetector(BaseBlinkDetector):
     """
     Detects blinks from a single eye.
     """

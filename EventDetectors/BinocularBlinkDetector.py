@@ -2,7 +2,7 @@ import numpy as np
 
 import experiment_config as conf
 from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
-from EventDetectors.MonocularBlinkDetector import MonocularBlinkDetector
+from EventDetectors.MissingDataBlinkDetector import MissingDataBlinkDetector
 
 
 class BinocularBlinkDetector(BaseBlinkDetector):
@@ -25,12 +25,12 @@ class BinocularBlinkDetector(BaseBlinkDetector):
         if criterion.upper() not in ["AND", "OR"]:
             raise ValueError("criterion must be either 'AND' or 'OR'")
         self.__criterion = criterion
-        self.__left_detector = MonocularBlinkDetector(min_duration=min_duration,
-                                                      missing_value=missing_value,
-                                                      sr=sr, iet=iet)
-        self.__right_detector = MonocularBlinkDetector(min_duration=min_duration,
-                                                       missing_value=missing_value,
-                                                       sr=sr, iet=iet)
+        self.__left_detector = MissingDataBlinkDetector(min_duration=min_duration,
+                                                        missing_value=missing_value,
+                                                        sr=sr, iet=iet)
+        self.__right_detector = MissingDataBlinkDetector(min_duration=min_duration,
+                                                         missing_value=missing_value,
+                                                         sr=sr, iet=iet)
 
     def detect(self,
                left_x: np.ndarray, left_y: np.ndarray,
