@@ -3,11 +3,9 @@ from typing import Optional
 
 import experiment_config as conf
 from EventDetectors.BaseDetector import BaseDetector
-from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
 from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector
 from EventDetectors.BaseFixationDetector import BaseFixationDetector
 
-from EventDetectors.MissingDataBlinkDetector import MissingDataBlinkDetector
 from EventDetectors.EngbertSaccadeDetector import DEFAULT_DERIVATION_WINDOW_SIZE, DEFAULT_LAMBDA_NOISE_THRESHOLD
 from EventDetectors.IVTFixationDetector import DEFAULT_VELOCITY_THRESHOLD
 
@@ -61,9 +59,12 @@ def detect_blinks(blink_detector_type: Optional[str],
     if not blink_detector_type:
         return np.zeros_like(x, dtype=bool)
 
-    min_duration = kwargs.get("blink_min_duration", BaseBlinkDetector.DEFAULT_BLINK_MINIMUM_DURATION)
+    from EventDetectors.BaseBlinkDetector import DEFAULT_BLINK_MINIMUM_DURATION
+    from EventDetectors.MissingDataBlinkDetector import DEFAULT_MISSING_VALUE
+
+    min_duration = kwargs.get("blink_min_duration", DEFAULT_BLINK_MINIMUM_DURATION)
     blink_kwargs = {
-            "missing_value": kwargs.get("missing_value", MissingDataBlinkDetector.DEFAULT_MISSING_VALUE)
+            "missing_value": kwargs.get("missing_value", DEFAULT_MISSING_VALUE)
     }
     blink_detector = _get_event_detector(blink_detector_type,
                                          min_duration=min_duration,
