@@ -11,12 +11,11 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
     :param x: x-coordinates of gaze data
     :param y: y-coordinates of gaze data
     :param sampling_rate: sampling rate of the data in Hz
-    :param inter_event_time: minimal time between two events in ms
 
     :keyword
-        - blink_detector_type: type of blink detector to use, None for no blink detection
-        - saccade_detector_type: type of saccade detector to use, None for no saccade detection
-        - fixation_detector_type: type of fixation detector to use, None for no fixation detection
+        - blink_detector_type: str; type of blink detector to use, None for no blink detection
+        - saccade_detector_type: str; type of saccade detector to use, None for no saccade detection
+        - fixation_detector_type: str; type of fixation detector to use, None for no fixation detection
         - See additional keyword arguments in the respective detection functions.
 
     :return: is_blink, is_saccade, is_fixation: arrays of booleans, where True indicates an event
