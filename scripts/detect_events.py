@@ -3,6 +3,7 @@ import numpy as np
 import experiment_config as conf
 from EventDetectors.BaseDetector import BaseDetector
 from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
+from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector
 from EventDetectors.EngbertSaccadeDetector import DEFAULT_DERIVATION_WINDOW_SIZE, DEFAULT_LAMBDA_NOISE_THRESHOLD
 from EventDetectors.IVTFixationDetector import DEFAULT_VELOCITY_THRESHOLD
 
@@ -40,7 +41,7 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
     # detect saccades:
     saccade_detector_type = kwargs.get("saccade_detector_type", None)
     if saccade_detector_type:
-        min_duration = kwargs.get("saccade_min_duration", conf.SACCADE_MINIMUM_DURATION)
+        min_duration = kwargs.get("saccade_min_duration", BaseSaccadeDetector.SACCADE_MINIMUM_DURATION)
         saccade_kwargs = {
             "derivation_window_size": kwargs.get("derivation_window_size", DEFAULT_DERIVATION_WINDOW_SIZE),
             "lambda_noise_threshold": kwargs.get("lambda_noise_threshold", DEFAULT_LAMBDA_NOISE_THRESHOLD)

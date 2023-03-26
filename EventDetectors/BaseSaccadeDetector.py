@@ -9,8 +9,10 @@ class BaseSaccadeDetector(BaseDetector, ABC):
     Baseclass for all saccade event detectors.
     """
 
+    SACCADE_MINIMUM_DURATION = 5  # minimum duration of a saccade in milliseconds
+
     def __init__(self,
-                 min_duration: float = conf.SACCADE_MINIMUM_DURATION,
+                 min_duration: float = SACCADE_MINIMUM_DURATION,
                  sr: float = conf.SAMPLING_RATE,
                  iet: float = BaseDetector.INTER_EVENT_TIME):
         super().__init__(min_duration, sr, iet)

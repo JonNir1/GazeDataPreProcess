@@ -19,7 +19,7 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
     """
 
     def __init__(self,
-                 min_duration: float = conf.SACCADE_MINIMUM_DURATION,
+                 min_duration: float = BaseSaccadeDetector.SACCADE_MINIMUM_DURATION,
                  sr: float = conf.SAMPLING_RATE,
                  iet: float = BaseSaccadeDetector.INTER_EVENT_TIME,
                  derivation_window_size: int = DEFAULT_DERIVATION_WINDOW_SIZE,
