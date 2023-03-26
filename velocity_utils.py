@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 
+import visual_angle_utils as vau
+
 
 def shift_array(array: np.ndarray, shift: int) -> np.ndarray:
     """
@@ -17,6 +19,22 @@ def shift_array(array: np.ndarray, shift: int) -> np.ndarray:
     elif shift < 0:
         shifted_array[shift:] = np.nan
     return shifted_array
+
+
+def calculate_angular_velocity(x: np.ndarray, y: np.ndarray, sr: float) -> np.ndarray:
+    """
+    Calculates the angular velocity of the gaze data between two adjacent samples.
+    :param x: 1D array of x-coordinates.
+    :param y: 1D array of y-coordinates.
+    :param sr: sampling rate of the data.
+    :return: 1D array of angular velocities.
+    """
+    x_shifted = shift_array(x, 1)
+    y_shifted = shift_array(y, 1)
+    pixels = np.vstack([x, y, x_shifted, y_shifted])  # shape (4, N)
+    pixels2D = np.array([pixels[:, i].reshape(2, 2) for i in range(pixels.shape[1])])  # shape (N, 2, 2)
+    angles = np.array([vau.pixels2deg(pixels2D[i]) for i in range(pixels2D.shape[0])])
+    return angles * sr
 
 
 def numerical_derivative(v, n: int) -> np.ndarray:
