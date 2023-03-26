@@ -56,3 +56,14 @@ class SaccadeEvent(BaseEvent):
     @classmethod
     def _event_type(cls):
         return "saccade"
+
+    def __eq__(self, other):
+        if not isinstance(other, SaccadeEvent):
+            return False
+        if not super().__eq__(other):
+            return False
+        if not np.array_equal(self.__x, other.__x):
+            return False
+        if not np.array_equal(self.__y, other.__y):
+            return False
+        return True

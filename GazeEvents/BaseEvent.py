@@ -51,3 +51,14 @@ class BaseEvent(ABC):
 
     def __str__(self):
         return f"{self._event_type()} ({self.duration:.1f} ms)"
+
+    def __eq__(self, other):
+        if not isinstance(other, BaseEvent):
+            return False
+        if self.__sampling_rate != other.__sampling_rate:
+            return False
+        if self.__timestamps.shape != other.__timestamps.shape:
+            return False
+        if not np.allclose(self.__timestamps, other.__timestamps):
+            return False
+        return True
