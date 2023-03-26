@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-import EventDetectors.scripts.event_detector_utils as eu
+import velocity_utils as vu
 
 
 class TestUtils(unittest.TestCase):
@@ -10,13 +10,13 @@ class TestUtils(unittest.TestCase):
         arr = np.arange(8)
         n = 1
 
-        shifted_plus = eu.shift_array(arr, 1)
+        shifted_plus = vu.shift_array(arr, 1)
         for i in range(n):
             self.assertTrue(np.isnan(shifted_plus[i]))
         for i in range(n, len(arr)):
             self.assertEqual(arr[i - 1], shifted_plus[i])
 
-        shifted_minus = eu.shift_array(arr, -2)
+        shifted_minus = vu.shift_array(arr, -2)
         for i in range(len(arr) - n):
             self.assertEqual(arr[i + n], shifted_minus[i])
         for i in range(len(arr) - n, len(arr)):
