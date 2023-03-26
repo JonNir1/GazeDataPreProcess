@@ -21,7 +21,7 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
     def __init__(self,
                  min_duration: float = conf.SACCADE_MINIMUM_DURATION,
                  sr: float = conf.SAMPLING_RATE,
-                 iet: float = conf.INTER_EVENT_TIME,
+                 iet: float = BaseSaccadeDetector.INTER_EVENT_TIME,
                  derivation_window_size: int = DEFAULT_DERIVATION_WINDOW_SIZE,
                  lambda_noise_threshold: int = DEFAULT_LAMBDA_NOISE_THRESHOLD):
         super().__init__(min_duration, sr, iet)

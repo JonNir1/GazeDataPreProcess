@@ -18,7 +18,7 @@ class BaseBlinkDetector(BaseDetector, ABC):
                  missing_value: float = conf.MISSING_VALUE,
                  min_duration: float = conf.BLINK_MINIMUM_DURATION,
                  sr: float = conf.SAMPLING_RATE,
-                 iet: float = conf.INTER_EVENT_TIME):
+                 iet: float = BaseDetector.INTER_EVENT_TIME):
         super().__init__(min_duration, sr, iet)
         self.__missing_value = missing_value
 
