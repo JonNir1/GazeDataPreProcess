@@ -11,5 +11,3 @@ MISSING_VALUE = -1
 SAMPLING_RATE = 599.88
 
 ADDITIONAL_COLUMNS = []  # additional columns to be added to the gaze data
-
-FIXATION_MINIMUM_DURATION = 55  # minimum duration of a fixation in milliseconds

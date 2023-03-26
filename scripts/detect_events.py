@@ -4,6 +4,8 @@ import experiment_config as conf
 from EventDetectors.BaseDetector import BaseDetector
 from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
 from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector
+from EventDetectors.BaseFixationDetector import BaseFixationDetector
+
 from EventDetectors.EngbertSaccadeDetector import DEFAULT_DERIVATION_WINDOW_SIZE, DEFAULT_LAMBDA_NOISE_THRESHOLD
 from EventDetectors.IVTFixationDetector import DEFAULT_VELOCITY_THRESHOLD
 
@@ -56,7 +58,7 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
     # detect fixations:
     fixation_detector_type = kwargs.get("fixation_detector_type", None)
     if fixation_detector_type:
-        min_duration = kwargs.get("fixation_min_duration", conf.FIXATION_MINIMUM_DURATION)
+        min_duration = kwargs.get("fixation_min_duration", BaseFixationDetector.FIXATION_MINIMUM_DURATION)
         fixation_kwargs = {
             "velocity_threshold": kwargs.get("velocity_threshold", DEFAULT_VELOCITY_THRESHOLD)
         }
