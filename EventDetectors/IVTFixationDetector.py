@@ -1,6 +1,7 @@
 import numpy as np
 
-import EventDetectors.scripts.event_detector_utils as u
+import visual_angle_utils as vau
+import EventDetectors.scripts.event_detector_utils as eu
 from EventDetectors.BaseFixationDetector import BaseFixationDetector, DEFAULT_FIXATION_MINIMUM_DURATION
 
 DEFAULT_VELOCITY_THRESHOLD = 20  # degrees per second
@@ -61,11 +62,11 @@ class IVTFixationDetector(BaseFixationDetector):
         :param y: 1D array of y-coordinates.
         :return: 1D array of angular velocities.
         """
-        x_shifted = u.shift_array(x, 1)
-        y_shifted = u.shift_array(y, 1)
+        x_shifted = eu.shift_array(x, 1)
+        y_shifted = eu.shift_array(y, 1)
         pixels = np.vstack([x, y, x_shifted, y_shifted])  # shape (4, N)
         pixels2D = np.array([pixels[:, i].reshape(2, 2) for i in range(pixels.shape[1])])  # shape (N, 2, 2)
-        angles = np.array([u.pixels2deg(pixels2D[i]) for i in range(pixels2D.shape[0])])
+        angles = np.array([vau.pixels2deg(pixels2D[i]) for i in range(pixels2D.shape[0])])
         return angles * self.sampling_rate
 
 
