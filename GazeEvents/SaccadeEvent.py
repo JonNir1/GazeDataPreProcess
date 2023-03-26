@@ -8,21 +8,6 @@ from GazeEvents.BaseEvent import BaseEvent
 
 class SaccadeEvent(BaseEvent):
 
-    @staticmethod
-    def extract_saccade_events(timestamps: np.ndarray, x: np.ndarray, y: np.ndarray, is_saccade: np.ndarray,
-                               sampling_rate: float) -> List["SaccadeEvent"]:
-        """
-        Extracts saccade events from the given data and returns a list of SaccadeEvent objects.
-        """
-        if len(timestamps) != len(x) or len(timestamps) != len(y) or len(timestamps) != len(is_saccade):
-            raise ValueError("Arrays of timestamps, x, y and is_fixation must have the same length")
-        different_event_idxs = BaseEvent._split_samples_between_events(is_saccade)
-        saccade_events = [SaccadeEvent(timestamps=timestamps[idxs],
-                                       sampling_rate=sampling_rate,
-                                       x=x[idxs],
-                                       y=y[idxs]) for idxs in different_event_idxs]
-        return saccade_events
-
     def __init__(self, timestamps: np.ndarray, sampling_rate: float, x: np.ndarray, y: np.ndarray):
         super().__init__(timestamps=timestamps, sampling_rate=sampling_rate)
         if len(timestamps) != len(x) or len(timestamps) != len(y):
