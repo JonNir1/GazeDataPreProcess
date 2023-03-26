@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-import EventDetectors.event_detector_utils as u
+import EventDetectors.scripts.event_detector_utils as u
 
 
 class TestUtils(unittest.TestCase):
