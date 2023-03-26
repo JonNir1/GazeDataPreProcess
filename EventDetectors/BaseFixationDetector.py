@@ -3,6 +3,8 @@ from abc import ABC
 import experiment_config as conf
 from EventDetectors.BaseDetector import BaseDetector
 
+DEFAULT_FIXATION_MINIMUM_DURATION = 55  # minimum duration of a fixation in milliseconds
+
 
 class BaseFixationDetector(BaseDetector, ABC):
     """
@@ -12,8 +14,6 @@ class BaseFixationDetector(BaseDetector, ABC):
     - min_duration: minimum duration of a blink in milliseconds             (default: 55)
     - inter_event_time: minimal time between two (same) events in ms        (default: 5)
     """
-
-    DEFAULT_FIXATION_MINIMUM_DURATION = 55  # minimum duration of a fixation in milliseconds
 
     def __init__(self,
                  sr: float,

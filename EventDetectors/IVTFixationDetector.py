@@ -2,7 +2,7 @@ import numpy as np
 
 import experiment_config as conf
 import EventDetectors.utils as u
-from EventDetectors.BaseFixationDetector import BaseFixationDetector
+from EventDetectors.BaseFixationDetector import BaseFixationDetector, DEFAULT_FIXATION_MINIMUM_DURATION
 
 DEFAULT_VELOCITY_THRESHOLD = 20  # degrees per second
 
@@ -30,7 +30,7 @@ class IVTFixationDetector(BaseFixationDetector):
     def __init__(self,
                  sr: float,
                  velocity_threshold: float = DEFAULT_VELOCITY_THRESHOLD,
-                 min_duration: float = BaseFixationDetector.DEFAULT_FIXATION_MINIMUM_DURATION,
+                 min_duration: float = DEFAULT_FIXATION_MINIMUM_DURATION,
                  iet: float = BaseFixationDetector.DEFAULT_INTER_EVENT_TIME):
         super().__init__(sr=sr, min_duration=min_duration, iet=iet)
         self.__velocity_threshold = velocity_threshold
