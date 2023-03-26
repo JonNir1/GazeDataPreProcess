@@ -10,7 +10,7 @@ class BlinkEvent(BaseEvent):
     def extract_blink_events(timestamps: np.ndarray, is_blink: np.ndarray,
                              sampling_rate: float) -> List["BlinkEvent"]:
         """
-        Extracts fixation events from the given data and returns a list of FixationEvent objects.
+        Extracts blink events from the given data and returns a list of BlinkEvent objects.
         """
         if len(timestamps) != len(is_blink):
             raise ValueError("Arrays of timestamps, x, y and is_fixation must have the same length")

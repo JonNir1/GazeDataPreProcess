@@ -9,10 +9,10 @@ from GazeEvents.BaseEvent import BaseEvent
 class SaccadeEvent(BaseEvent):
 
     @staticmethod
-    def extract_fixation_events(timestamps: np.ndarray, x: np.ndarray, y: np.ndarray, is_saccade: np.ndarray,
-                                sampling_rate: float) -> List["SaccadeEvent"]:
+    def extract_saccade_events(timestamps: np.ndarray, x: np.ndarray, y: np.ndarray, is_saccade: np.ndarray,
+                               sampling_rate: float) -> List["SaccadeEvent"]:
         """
-        Extracts fixation events from the given data and returns a list of FixationEvent objects.
+        Extracts saccade events from the given data and returns a list of SaccadeEvent objects.
         """
         if len(timestamps) != len(x) or len(timestamps) != len(y) or len(timestamps) != len(is_saccade):
             raise ValueError("Arrays of timestamps, x, y and is_fixation must have the same length")
