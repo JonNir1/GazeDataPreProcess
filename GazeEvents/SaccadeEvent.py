@@ -2,7 +2,7 @@ import numpy as np
 
 import visual_angle_utils as vau
 import velocity_utils as vu
-from GazeEvents.model.BaseEvent import BaseEvent
+from GazeEvents.BaseEvent import BaseEvent
 
 
 class SaccadeEvent(BaseEvent):

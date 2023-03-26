@@ -1,6 +1,6 @@
 import numpy as np
 
-from GazeEvents.model.BaseEvent import BaseEvent
+from GazeEvents.BaseEvent import BaseEvent
 
 
 class FixationEvent(BaseEvent):
