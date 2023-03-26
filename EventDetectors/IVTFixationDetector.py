@@ -1,7 +1,7 @@
 import numpy as np
 
 import experiment_config as conf
-import EventDetectors.utils as u
+import EventDetectors.event_detector_utils as u
 from EventDetectors.BaseFixationDetector import BaseFixationDetector, DEFAULT_FIXATION_MINIMUM_DURATION
 
 DEFAULT_VELOCITY_THRESHOLD = 20  # degrees per second
