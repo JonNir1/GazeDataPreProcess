@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 from GazeEvents.BaseEvent import BaseEvent
 
@@ -11,6 +12,21 @@ class FixationEvent(BaseEvent):
             raise ValueError("Arrays of timestamps, x and y must have the same length")
         self.__x = x
         self.__y = y
+
+    def to_series(self) -> pd.Series:
+        """
+        creates a pandas Series with summary of fixation information.
+        :return: a pd.Series with the following index:
+            - start_time: fixation's start time in milliseconds
+            - end_time: fixation's end time in milliseconds
+            - duration: fixation's duration in milliseconds
+            - center_of_mass: fixation's center of mass (2D pixel coordinates)
+            - std: fixation's standard deviation (in pixels units)
+        """
+        series = super().to_series()
+        series["center_of_mass"] = self.center_of_mass
+        series["std"] = self.std
+        return series
 
     @property
     def center_of_mass(self) -> np.ndarray:

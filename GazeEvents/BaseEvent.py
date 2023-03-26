@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from abc import ABC, abstractmethod
 
 
@@ -15,6 +16,17 @@ class BaseEvent(ABC):
             raise ValueError("sampling_rate must be greater than 0")
         self.__timestamps = timestamps
         self.__sampling_rate = sampling_rate
+
+    def to_series(self) -> pd.Series:
+        """
+        creates a pandas Series with summary of event information.
+        :return: a pd.Series with the following index:
+            - start_time: event's start time in milliseconds
+            - end_time: event's end time in milliseconds
+            - duration: event's duration in milliseconds
+        """
+        return pd.Series(data=[self.start_time, self.end_time, self.duration],
+                         index=["start_time", "end_time", "duration"])
 
     @property
     def start_time(self) -> float:

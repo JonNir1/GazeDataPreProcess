@@ -1,5 +1,5 @@
 import numpy as np
-from typing import List
+import pandas as pd
 
 import visual_angle_utils as vau
 import velocity_utils as vu
@@ -14,6 +14,26 @@ class SaccadeEvent(BaseEvent):
             raise ValueError("Arrays of timestamps, x and y must have the same length")
         self.__x = x
         self.__y = y
+
+    def to_series(self) -> pd.Series:
+        """
+        creates a pandas Series with summary of saccade information.
+        :return: a pd.Series with the following index:
+            - start_time: saccade's start time in milliseconds
+            - end_time: saccade's end time in milliseconds
+            - duration: saccade's duration in milliseconds
+            - start_point: saccade's start point (2D pixel coordinates)
+            - end_point: saccade's end point (2D pixel coordinates)
+            - mean_velocity: event's mean velocity in degrees per second
+            - peak_velocity: event's peak velocity in degrees per second
+        """
+        series = super().to_series()
+        series["start_point"] = self.start_point
+        series["end_point"] = self.end_point
+        series["mean_velocity"] = self.mean_velocity
+        series["peak_velocity"] = self.peak_velocity
+        return series
+
 
     @property
     def start_point(self) -> np.ndarray:
