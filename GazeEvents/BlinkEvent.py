@@ -1,6 +1,3 @@
-import numpy as np
-from typing import List
-
 from GazeEvents.BaseEvent import BaseEvent
 
 
