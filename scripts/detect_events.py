@@ -36,17 +36,7 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
 
     # detect fixations:
     fixation_detector_type = kwargs.get("fixation_detector_type", None)
-    if fixation_detector_type:
-        min_duration = kwargs.get("fixation_min_duration", BaseFixationDetector.DEFAULT_FIXATION_MINIMUM_DURATION)
-        fixation_kwargs = {
-            "velocity_threshold": kwargs.get("velocity_threshold", DEFAULT_VELOCITY_THRESHOLD)
-        }
-        fixation_detector = _get_event_detector(fixation_detector_type, min_duration=min_duration,
-                                                sampling_rate=sampling_rate, inter_event_time=inter_event_time,
-                                                **fixation_kwargs)
-        is_fixation = fixation_detector.detect(x, y)
-    else:
-        is_fixation = np.zeros_like(x, dtype=bool)
+    is_fixation = detect_fixations(fixation_detector_type, x, y, sampling_rate, inter_event_time, **kwargs)
     return is_blink, is_saccade, is_fixation
 
 
@@ -114,6 +104,23 @@ def detect_saccades(saccade_detector_type: Optional[str], x: np.ndarray, y: np.n
                                            **saccade_kwargs)
     is_saccade = saccade_detector.detect(x, y)
     return is_saccade
+
+
+def detect_fixations(fixation_detector_type: Optional[str], x: np.ndarray, y: np.ndarray,
+                     sampling_rate: float, inter_event_time: float,
+                     **kwargs) -> np.ndarray:
+    if not fixation_detector_type:
+        return np.zeros_like(x, dtype=bool)
+
+    min_duration = kwargs.get("fixation_min_duration", BaseFixationDetector.DEFAULT_FIXATION_MINIMUM_DURATION)
+    fixation_kwargs = {
+        "velocity_threshold": kwargs.get("velocity_threshold", DEFAULT_VELOCITY_THRESHOLD)
+    }
+    fixation_detector = _get_event_detector(fixation_detector_type, min_duration=min_duration,
+                                            sampling_rate=sampling_rate, inter_event_time=inter_event_time,
+                                            **fixation_kwargs)
+    is_fixation = fixation_detector.detect(x, y)
+    return is_fixation
 
 
 def _get_event_detector(detector_type: str, min_duration: float, sampling_rate: float,
