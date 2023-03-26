@@ -1,3 +1,4 @@
+import warnings as w
 import numpy as np
 from typing import Optional
 
@@ -5,12 +6,22 @@ from EventDetectors.BaseDetector import BaseDetector
 
 
 def detect_all_events(x: np.ndarray, y: np.ndarray,
-                      sampling_rate: float, **kwargs) -> (np.ndarray, np.ndarray, np.ndarray):
+                      sampling_rate: float, stuff_with: Optional[str] = None,
+                      **kwargs) -> (np.ndarray, np.ndarray, np.ndarray):
     """
     Detects blinks, saccades and fixations in the given gaze data (in that order).
     :param x: x-coordinates of gaze data
     :param y: y-coordinates of gaze data
     :param sampling_rate: sampling rate of the data in Hz
+    :param stuff_with: str; either "saccade", "fixation" or None. Controls how to fill unidentified samples.
+        - If None: returns the events as identified by the respective detectors
+        - If "saccade":
+            -- if a saccade detector was specified, returns the events as identified by the saccade detector and warns
+                for unexpected usage
+            --  if no saccade detector was specified, returns True for samples that were not identified as blinks or
+                fixations.
+        - If "fixation":
+            -- same behavior as "saccade", but for fixations.
 
     :keyword
         - blink_detector_type: str; type of blink detector to use, None for no blink detection
@@ -28,6 +39,27 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
 
     fixation_detector_type = kwargs.pop("fixation_detector_type", None)
     is_fixation = detect_fixations(fixation_detector_type, x, y, sampling_rate, **kwargs)
+
+    # classify unidentified samples with value specified in stuff_with:
+    if not stuff_with:
+        return is_blink, is_saccade, is_fixation
+    if type(stuff_with) != str:
+        raise TypeError("stuff_with must be a string or None")
+    if stuff_with.lower() not in ["saccade", "fixation"]:
+        raise ValueError("stuff_with must be either 'saccade' or 'fixation'")
+
+    if stuff_with.lower() == "saccade":
+        if saccade_detector_type:
+            w.warn("WARNING: ignoring stuff_with='saccade' when a saccade detector is specified")
+            return is_blink, is_saccade, is_fixation
+        is_saccade = np.logical_not(np.logical_or(is_blink, is_fixation))
+
+    if stuff_with.lower() == "fixation":
+        if fixation_detector_type:
+            w.warn("WARNING: ignoring stuff_with='fixation' when a fixation detector is specified")
+            return is_blink, is_saccade, is_fixation
+        is_fixation = np.logical_not(np.logical_or(is_blink, is_saccade))
+
     return is_blink, is_saccade, is_fixation
 
 
