@@ -16,7 +16,7 @@ t2 = trial_dfs[2]
 
 is_blink, is_saccade, is_fixation = detect_all_events(x=t2[cnst.LEFT_X].values, y=t2[cnst.LEFT_Y].values,
                                                      sampling_rate=sr, inter_event_time=5,
-                                                     blink_detector_type='missing data', blink_min_duration=conf.BLINK_MINIMUM_DURATION,
+                                                     blink_detector_type='missing data',
                                                      saccade_detector_type='engbert', saccade_min_duration=conf.SACCADE_MINIMUM_DURATION)
 
 

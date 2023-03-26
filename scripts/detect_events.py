@@ -2,6 +2,7 @@ import numpy as np
 
 import experiment_config as conf
 from EventDetectors.BaseDetector import BaseDetector
+from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
 from EventDetectors.EngbertSaccadeDetector import DEFAULT_DERIVATION_WINDOW_SIZE, DEFAULT_LAMBDA_NOISE_THRESHOLD
 from EventDetectors.IVTFixationDetector import DEFAULT_VELOCITY_THRESHOLD
 
@@ -25,7 +26,7 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
     # detect blinks:
     blink_detector_type = kwargs.get("blink_detector_type", None)
     if blink_detector_type:
-        min_duration = kwargs.get("blink_min_duration", conf.BLINK_MINIMUM_DURATION)
+        min_duration = kwargs.get("blink_min_duration", BaseBlinkDetector.BLINK_MINIMUM_DURATION)
         blink_kwargs = {
             "missing_value": kwargs.get("missing_value", conf.MISSING_VALUE)
         }

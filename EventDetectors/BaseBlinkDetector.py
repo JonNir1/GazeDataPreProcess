@@ -14,9 +14,11 @@ class BaseBlinkDetector(BaseDetector, ABC):
     - inter_event_time: minimal time between two (same) events in ms        (default: experiment_config.INTER_EVENT_TIME)
     """
 
+    BLINK_MINIMUM_DURATION = 50  # minimum duration of a blink in milliseconds
+
     def __init__(self,
                  missing_value: float = conf.MISSING_VALUE,
-                 min_duration: float = conf.BLINK_MINIMUM_DURATION,
+                 min_duration: float = BLINK_MINIMUM_DURATION,
                  sr: float = conf.SAMPLING_RATE,
                  iet: float = BaseDetector.INTER_EVENT_TIME):
         super().__init__(min_duration, sr, iet)

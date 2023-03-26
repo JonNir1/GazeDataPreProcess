@@ -12,6 +12,5 @@ SAMPLING_RATE = 599.88
 
 ADDITIONAL_COLUMNS = []  # additional columns to be added to the gaze data
 
-BLINK_MINIMUM_DURATION = 50  # minimum duration of a blink in milliseconds
 SACCADE_MINIMUM_DURATION = 5  # minimum duration of a saccade in milliseconds
 FIXATION_MINIMUM_DURATION = 55  # minimum duration of a fixation in milliseconds
