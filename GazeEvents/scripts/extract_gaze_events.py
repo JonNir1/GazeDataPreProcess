@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from typing import Optional, List
 
 from GazeEvents.BaseEvent import BaseEvent
@@ -46,6 +47,25 @@ def extract_events_to_list(event_type: str,
 
     raise ValueError(
         f"Unknown event type {event_type}. Argument event_type must be one of 'blink', 'saccade' or 'fixation'")
+
+
+def extract_events_to_dataframe(event_type: str,
+                                timestamps: np.ndarray, is_event: np.ndarray, sampling_rate: float,
+                                x: Optional[np.ndarray] = None, y: Optional[np.ndarray] = None) -> pd.DataFrame:
+    """
+    Extracts events of the given type from the given data and returns a pandas DataFrame with the events' information.
+    :param event_type: type of event to extract. Must be one of 'blink', 'saccade' or 'fixation'
+    :param timestamps: array of timestamps
+    :param is_event: array of booleans indicating whether a sample is part of the event or not
+    :param sampling_rate: float indicating the sampling rate of the data
+    :param x: array of x coordinates
+    :param y: array of y coordinates
+
+    :return: pandas DataFrame with the events' summary information
+    """
+    events_list = extract_events_to_list(event_type=event_type, timestamps=timestamps, is_event=is_event,
+                                         sampling_rate=sampling_rate, x=x, y=y)
+    return pd.concat([event.to_series() for event in events_list], axis=1).T
 
 
 def _split_samples_between_events(is_event: np.ndarray) -> List[np.ndarray]:
