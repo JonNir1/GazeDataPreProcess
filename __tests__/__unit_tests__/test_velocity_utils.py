@@ -22,5 +22,13 @@ class TestUtils(unittest.TestCase):
         for i in range(len(arr) - n, len(arr)):
             self.assertTrue(np.isnan(shifted_minus[i]))
 
+    def test_numerical_derivative(self):
+        # TODO
+        pass
+
+    def test_median_standard_deviation(self):
+        # TODO
+        pass
+
 
 
