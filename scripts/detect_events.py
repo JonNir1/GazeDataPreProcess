@@ -40,7 +40,8 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
     return is_blink, is_saccade, is_fixation
 
 
-def detect_blinks(blink_detector_type: Optional[str], x: np.ndarray, y: np.ndarray,
+def detect_blinks(blink_detector_type: Optional[str],
+                  x: np.ndarray, y: np.ndarray,
                   sampling_rate: float, inter_event_time: float,
                   **kwargs) -> np.ndarray:
     """
@@ -55,7 +56,7 @@ def detect_blinks(blink_detector_type: Optional[str], x: np.ndarray, y: np.ndarr
         - blink_min_duration: minimal duration of a blink in ms; default: 50 ms
         - missing_value: default value indicating missing data, used by MissingDataBlinkDetector; default: np.nan
 
-    :return:
+    :return: array of booleans, where True indicates a blink
     """
     if not blink_detector_type:
         return np.zeros_like(x, dtype=bool)
@@ -73,11 +74,12 @@ def detect_blinks(blink_detector_type: Optional[str], x: np.ndarray, y: np.ndarr
     return is_blink
 
 
-def detect_saccades(saccade_detector_type: Optional[str], x: np.ndarray, y: np.ndarray,
+def detect_saccades(saccade_detector_type: Optional[str],
+                    x: np.ndarray, y: np.ndarray,
                     sampling_rate: float, inter_event_time: float,
                     **kwargs) -> np.ndarray:
     """
-    Detects blinks in the given gaze data, based on the specified blink detector type.
+    Detects saccades in the given gaze data, based on the specified saccades detector type.
     :param saccade_detector_type: type of saccade detector to use, None for no saccade detection
     :param x: x-coordinates of gaze data
     :param y: y-coordinates of gaze data
@@ -85,11 +87,11 @@ def detect_saccades(saccade_detector_type: Optional[str], x: np.ndarray, y: np.n
     :param inter_event_time: minimal time between two events in ms
 
     :keyword
-        - saccade_min_duration: minimal duration of a blink in ms;  default: 50 ms
+        - saccade_min_duration: minimal duration of a blink in ms;  default: 5 ms
         - derivation_window_size: window size for derivation in ms; default: 3 ms
         - lambda_noise_threshold: threshold for lambda noise;       default: 5
 
-    :return:
+    :return: array of booleans, where True indicates a saccade
     """
     if not saccade_detector_type:
         return np.zeros_like(x, dtype=bool)
@@ -106,9 +108,24 @@ def detect_saccades(saccade_detector_type: Optional[str], x: np.ndarray, y: np.n
     return is_saccade
 
 
-def detect_fixations(fixation_detector_type: Optional[str], x: np.ndarray, y: np.ndarray,
+def detect_fixations(fixation_detector_type: Optional[str],
+                     x: np.ndarray, y: np.ndarray,
                      sampling_rate: float, inter_event_time: float,
                      **kwargs) -> np.ndarray:
+    """
+    Detects fixations in the given gaze data, based on the specified fixation detector type.
+    :param fixation_detector_type: type of fixation detector to use, None for no fixation detection
+    :param x: x-coordinates of gaze data
+    :param y: y-coordinates of gaze data
+    :param sampling_rate: sampling rate of the data in Hz
+    :param inter_event_time: minimal time between two events in ms
+
+    :keyword
+        - fixation_min_duration: minimal duration of a blink in ms;         default: 55 ms
+        - velocity_threshold: maximal velocity allowed within a fixation;   default: 30 deg/s
+
+    :return: array of booleans, where True indicates a saccade
+    """
     if not fixation_detector_type:
         return np.zeros_like(x, dtype=bool)
 
