@@ -10,14 +10,11 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
                       **kwargs) -> (np.ndarray, np.ndarray, np.ndarray):
     """
     Detects blinks, saccades and fixations in the given gaze data (in that order).
-
     :param x: x-coordinates of gaze data
     :param y: y-coordinates of gaze data
     :param sampling_rate: sampling rate of the data in Hz
     :param inter_event_time: minimal time between two events in ms
-
-    :keyword blink_detector_type: type of blink detector to use, None for no blink detection
-    :keyword blink_min_duration: minimal duration of a blink in ms
+    See additional keyword arguments in the respective detection functions.
 
     :return: is_blink, is_saccade, is_fixation: arrays of booleans, where True indicates an event
     """
