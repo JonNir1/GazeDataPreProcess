@@ -1,4 +1,5 @@
 import numpy as np
+from typing import List
 
 import visual_angle_utils as vau
 import velocity_utils as vu
@@ -6,6 +7,21 @@ from GazeEvents.BaseEvent import BaseEvent
 
 
 class SaccadeEvent(BaseEvent):
+
+    @staticmethod
+    def extract_fixation_events(timestamps: np.ndarray, x: np.ndarray, y: np.ndarray, is_fixation: np.ndarray,
+                                sampling_rate: float) -> List["SaccadeEvent"]:
+        """
+        Extracts fixation events from the given data and returns a list of FixationEvent objects.
+        """
+        if len(timestamps) != len(x) or len(timestamps) != len(y) or len(timestamps) != len(is_fixation):
+            raise ValueError("Arrays of timestamps, x, y and is_fixation must have the same length")
+        different_event_idxs = BaseEvent._split_samples_between_events(is_fixation)
+        saccade_events = [SaccadeEvent(timestamps=timestamps[idxs],
+                                       sampling_rate=sampling_rate,
+                                       x=x[idxs],
+                                       y=y[idxs]) for idxs in different_event_idxs]
+        return saccade_events
 
     def __init__(self, timestamps: np.ndarray, sampling_rate: float, x: np.ndarray, y: np.ndarray):
         super().__init__(timestamps=timestamps, sampling_rate=sampling_rate)
@@ -40,4 +56,3 @@ class SaccadeEvent(BaseEvent):
     @classmethod
     def _event_type(cls):
         return "saccade"
-

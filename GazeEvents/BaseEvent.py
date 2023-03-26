@@ -1,5 +1,6 @@
 import numpy as np
 from abc import ABC, abstractmethod
+from typing import List
 
 
 class BaseEvent(ABC):
@@ -35,3 +36,15 @@ class BaseEvent(ABC):
     @abstractmethod
     def _event_type(cls) -> str:
         raise NotImplementedError
+
+    @staticmethod
+    def _split_samples_between_events(is_event: np.ndarray) -> List[np.ndarray]:
+        """
+        returns a list of arrays, each array contains the indices of the samples that belong to the same event
+        """
+        event_idxs = np.nonzero(is_event)[0]
+        if len(event_idxs) == 0:
+            return []
+        event_end_idxs = np.nonzero(np.diff(event_idxs) != 1)[0]
+        different_event_idxs = np.split(event_idxs, event_end_idxs + 1)  # +1 because we want to include the last index
+        return different_event_idxs
