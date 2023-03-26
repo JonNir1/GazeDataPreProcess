@@ -6,6 +6,7 @@ from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
 from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector
 from EventDetectors.BaseFixationDetector import BaseFixationDetector
 
+from EventDetectors.MissingDataBlinkDetector import MissingDataBlinkDetector
 from EventDetectors.EngbertSaccadeDetector import DEFAULT_DERIVATION_WINDOW_SIZE, DEFAULT_LAMBDA_NOISE_THRESHOLD
 from EventDetectors.IVTFixationDetector import DEFAULT_VELOCITY_THRESHOLD
 
@@ -31,7 +32,7 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
     if blink_detector_type:
         min_duration = kwargs.get("blink_min_duration", BaseBlinkDetector.BLINK_MINIMUM_DURATION)
         blink_kwargs = {
-            "missing_value": kwargs.get("missing_value", conf.MISSING_VALUE)
+            "missing_value": kwargs.get("missing_value", MissingDataBlinkDetector.DEFAULT_MISSING_VALUE)
         }
         blink_detector = _get_event_detector(blink_detector_type, min_duration=min_duration,
                                              sampling_rate=sampling_rate, inter_event_time=inter_event_time,

@@ -14,9 +14,11 @@ class MissingDataBlinkDetector(BaseBlinkDetector):
     - inter_event_time: minimal time between two (same) events in ms        (default: experiment_config.INTER_EVENT_TIME)
     """
 
+    DEFAULT_MISSING_VALUE = np.nan
+
     def __init__(self,
                  sr: float,
-                 missing_value: float = None,
+                 missing_value: float = DEFAULT_MISSING_VALUE,
                  min_duration: float = BaseBlinkDetector.BLINK_MINIMUM_DURATION,
                  iet: float = BaseBlinkDetector.INTER_EVENT_TIME):
         super().__init__(sr=sr, min_duration=min_duration, iet=iet)
