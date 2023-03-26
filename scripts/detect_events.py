@@ -56,7 +56,7 @@ def detect_blinks(blink_detector_type: Optional[str],
 
     min_duration = kwargs.get("blink_min_duration", DEFAULT_BLINK_MINIMUM_DURATION)
     blink_kwargs = {
-            "missing_value": kwargs.get("missing_value", DEFAULT_MISSING_VALUE)
+        "missing_value": kwargs.get("missing_value", DEFAULT_MISSING_VALUE)
     }
     blink_detector = _get_event_detector(blink_detector_type,
                                          min_duration=min_duration,
@@ -195,4 +195,3 @@ def _get_event_detector(detector_type: str, min_duration: float, sampling_rate: 
 
     # reached here if the detector type is unknown
     raise ValueError("Unknown event detector type: {}".format(detector_type))
-
