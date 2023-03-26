@@ -3,7 +3,7 @@ import pandas as pd
 from typing import List, Tuple
 
 import experiment_config as conf
-from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector
+from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector, DEFAULT_SACCADE_MINIMUM_DURATION
 
 DEFAULT_DERIVATION_WINDOW_SIZE = 3
 DEFAULT_LAMBDA_NOISE_THRESHOLD = 5
@@ -27,7 +27,7 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
 
     def __init__(self,
                  sr: float,
-                 min_duration: float = BaseSaccadeDetector.DEFAULT_SACCADE_MINIMUM_DURATION,
+                 min_duration: float = DEFAULT_SACCADE_MINIMUM_DURATION,
                  iet: float = BaseSaccadeDetector.DEFAULT_INTER_EVENT_TIME,
                  derivation_window_size: int = DEFAULT_DERIVATION_WINDOW_SIZE,
                  lambda_noise_threshold: int = DEFAULT_LAMBDA_NOISE_THRESHOLD):

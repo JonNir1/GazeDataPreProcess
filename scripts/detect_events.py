@@ -3,10 +3,8 @@ from typing import Optional
 
 import experiment_config as conf
 from EventDetectors.BaseDetector import BaseDetector
-from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector
 from EventDetectors.BaseFixationDetector import BaseFixationDetector
 
-from EventDetectors.EngbertSaccadeDetector import DEFAULT_DERIVATION_WINDOW_SIZE, DEFAULT_LAMBDA_NOISE_THRESHOLD
 from EventDetectors.IVTFixationDetector import DEFAULT_VELOCITY_THRESHOLD
 
 
@@ -97,7 +95,10 @@ def detect_saccades(saccade_detector_type: Optional[str],
     if not saccade_detector_type:
         return np.zeros_like(x, dtype=bool)
 
-    min_duration = kwargs.get("saccade_min_duration", BaseSaccadeDetector.DEFAULT_SACCADE_MINIMUM_DURATION)
+    from EventDetectors.BaseSaccadeDetector import DEFAULT_SACCADE_MINIMUM_DURATION
+    from EventDetectors.EngbertSaccadeDetector import DEFAULT_DERIVATION_WINDOW_SIZE, DEFAULT_LAMBDA_NOISE_THRESHOLD
+
+    min_duration = kwargs.get("saccade_min_duration", DEFAULT_SACCADE_MINIMUM_DURATION)
     saccade_kwargs = {
         "derivation_window_size": kwargs.get("derivation_window_size", DEFAULT_DERIVATION_WINDOW_SIZE),
         "lambda_noise_threshold": kwargs.get("lambda_noise_threshold", DEFAULT_LAMBDA_NOISE_THRESHOLD)

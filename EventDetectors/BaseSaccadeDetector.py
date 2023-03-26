@@ -3,6 +3,8 @@ from abc import ABC
 import experiment_config as conf
 from EventDetectors.BaseDetector import BaseDetector
 
+DEFAULT_SACCADE_MINIMUM_DURATION = 5  # minimum duration of a saccade in milliseconds
+
 
 class BaseSaccadeDetector(BaseDetector, ABC):
     """
@@ -12,8 +14,6 @@ class BaseSaccadeDetector(BaseDetector, ABC):
     - min_duration: minimum duration of a blink in milliseconds             (default: 5)
     - inter_event_time: minimal time between two (same) events in ms        (default: 5)
     """
-
-    DEFAULT_SACCADE_MINIMUM_DURATION = 5  # minimum duration of a saccade in milliseconds
 
     def __init__(self,
                  sr: float,
