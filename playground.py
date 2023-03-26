@@ -4,7 +4,7 @@ import constants as cnst
 
 from DataParser.scripts.parse_and_merge import parse_tobii_gaze_and_triggers
 from EventDetectors.scripts.detect_events import detect_all_events
-from GazeEvents.FixationEvent import FixationEvent
+from GazeEvents.scripts.extract_gaze_events import extract_events_to_dataframe
 
 sr, trial_dfs = parse_tobii_gaze_and_triggers(r"C:\Users\jonathanni\Desktop\GazeData.txt",
                                               r"C:\Users\jonathanni\Desktop\TriggerLog.txt", start_trigger=254,
@@ -17,6 +17,6 @@ is_blink, is_saccade, is_fixation = detect_all_events(x=t2[cnst.LEFT_X].values, 
                                                       blink_detector_type='missing data',
                                                       saccade_detector_type='engbert')
 
-fe = FixationEvent.extract_fixation_events(timestamps=t2[cnst.MICROSECONDS].values / 1000,
-                                           is_fixation=is_fixation, x=t2[cnst.LEFT_X].values, y=t2[cnst.LEFT_Y].values,
-                                           sampling_rate=sr)
+fe = extract_events_to_dataframe(event_type='fixation', timestamps=t2[cnst.MICROSECONDS].values / 1000,
+                                 is_event=is_fixation, sampling_rate=sr,
+                                 x=t2[cnst.LEFT_X].values, y=t2[cnst.LEFT_Y].values)
