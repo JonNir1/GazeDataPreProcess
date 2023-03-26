@@ -49,8 +49,11 @@ class BaseEvent(ABC):
         different_event_idxs = np.split(event_idxs, event_end_idxs + 1)  # +1 because we want to include the last index
         return different_event_idxs
 
+    def __repr__(self):
+        return f"{self._event_type().capitalize()} ({self.duration:.1f} ms)"
+
     def __str__(self):
-        return f"{self._event_type()} ({self.duration:.1f} ms)"
+        return self.__repr__()
 
     def __eq__(self, other):
         if not isinstance(other, BaseEvent):
