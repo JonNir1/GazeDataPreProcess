@@ -24,6 +24,19 @@ class SaccadeEvent(BaseEvent):
         # returns a 2D array of the X,Y coordinates of the saccade's end point
         return np.array([self.__x[-1], self.__y[-1]])
 
+    @property
+    def mean_velocity(self) -> float:
+        # returns the mean velocity of the saccade in degrees per second
+        edge_points = np.array([self.start_point, self.end_point]).reshape((2, 2))
+        total_degrees = vau.pixels2deg(edge_points)
+        return 1000 * total_degrees / self.duration
+
+    @property
+    def peak_velocity(self) -> float:
+        # returns the peak velocity between two adjacent samples of the saccade, in degrees per second
+        velocities = vu.calculate_angular_velocity(self.__x, self.__y, self.__sampling_rate)
+        return np.nanmax(velocities)
+
     @classmethod
     def _event_type(cls):
         return "saccade"
