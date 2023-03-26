@@ -59,7 +59,10 @@ class MissingDataBlinkDetector(BaseBlinkDetector):
         :return: list of tuples, each containing the start and end index of a blink candidate
         """
         # find idxs of missing data
-        is_missing = np.logical_or(x == self.missing_value, y == self.missing_value)
+        if self.missing_value is None or np.isnan(self.missing_value):
+            is_missing = np.logical_or(np.isnan(x), np.isnan(y))
+        else:
+            is_missing = np.logical_or(x == self.missing_value, y == self.missing_value)
         missing_idxs = np.where(is_missing)[0]
 
         # find idxs of missing data that are close enough to merge together
