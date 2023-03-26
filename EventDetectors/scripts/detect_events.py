@@ -1,7 +1,6 @@
 import numpy as np
 from typing import Optional
 
-import experiment_config as conf
 from EventDetectors.BaseDetector import BaseDetector
 
 
