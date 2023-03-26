@@ -17,11 +17,11 @@ class BaseBlinkDetector(BaseDetector, ABC):
     BLINK_MINIMUM_DURATION = 50  # minimum duration of a blink in milliseconds
 
     def __init__(self,
+                 sr: float,
                  missing_value: float = conf.MISSING_VALUE,
                  min_duration: float = BLINK_MINIMUM_DURATION,
-                 sr: float = conf.SAMPLING_RATE,
                  iet: float = BaseDetector.INTER_EVENT_TIME):
-        super().__init__(min_duration, sr, iet)
+        super().__init__(sr=sr, min_duration=min_duration, iet=iet)
         self.__missing_value = missing_value
 
     # @abstractmethod

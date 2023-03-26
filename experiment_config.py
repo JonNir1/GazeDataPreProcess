@@ -8,6 +8,5 @@ SCREEN_HEIGHT = 31    # height of the screen in cm
 SCREEN_RESOLUTION = (1920, 1080)  # resolution of the screen in pixels
 
 MISSING_VALUE = -1
-SAMPLING_RATE = 599.88
 
 ADDITIONAL_COLUMNS = []  # additional columns to be added to the gaze data

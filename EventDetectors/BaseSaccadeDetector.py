@@ -12,7 +12,7 @@ class BaseSaccadeDetector(BaseDetector, ABC):
     SACCADE_MINIMUM_DURATION = 5  # minimum duration of a saccade in milliseconds
 
     def __init__(self,
+                 sr: float,
                  min_duration: float = SACCADE_MINIMUM_DURATION,
-                 sr: float = conf.SAMPLING_RATE,
                  iet: float = BaseDetector.INTER_EVENT_TIME):
-        super().__init__(min_duration, sr, iet)
+        super().__init__(sr=sr, min_duration=min_duration, iet=iet)

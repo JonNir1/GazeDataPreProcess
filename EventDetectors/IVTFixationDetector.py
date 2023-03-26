@@ -22,11 +22,11 @@ class IVTFixationDetector(BaseFixationDetector):
     """
 
     def __init__(self,
+                 sr: float,
                  velocity_threshold: float = DEFAULT_VELOCITY_THRESHOLD,
                  min_duration: float = BaseFixationDetector.FIXATION_MINIMUM_DURATION,
-                 sr: float = conf.SAMPLING_RATE,
                  iet: float = BaseFixationDetector.INTER_EVENT_TIME):
-        super().__init__(min_duration, sr, iet)
+        super().__init__(sr=sr, min_duration=min_duration, iet=iet)
         self.__velocity_threshold = velocity_threshold
 
     @property

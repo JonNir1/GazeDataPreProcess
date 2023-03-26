@@ -16,9 +16,9 @@ class BaseDetector(ABC):
 
     INTER_EVENT_TIME = 5  # minimal time between two (same) events in milliseconds (two saccades, two fixations, etc.)
 
-    def __init__(self, min_duration: float, sr: float, iet: float = INTER_EVENT_TIME):
-        self.__min_duration = min_duration
+    def __init__(self, sr: float, min_duration: float, iet: float = INTER_EVENT_TIME):
         self.__sampling_rate = sr
+        self.__min_duration = min_duration
         self.__inter_event_time = iet
 
     @abstractmethod
