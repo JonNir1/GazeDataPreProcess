@@ -16,12 +16,19 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         - https://github.com/Yuvishap/Gaze-Project/blob/67acb26fc90e5148a05b47ca7711306c94b79ed7/Gaze/src/pre_processing/business/EngbertFixationsLogic.py
         - https://github.com/odedwer/EyelinkProcessor/blob/66f56463ba8d2ad75f7935e3d020b051fb2aa4a4/SaccadeDetectors.py
         - https://github.com/esdalmaijer/PyGazeAnalyser/blob/master/pygazeanalyser/detectors.py#L175
+
+    Defines these properties:
+    - sampling_rate: sampling rate of the data in Hz
+    - min_duration: minimum duration of a blink in milliseconds                     (default: 5)
+    - inter_event_time: minimal time between two (same) events in ms                (default: 5)
+    - derivation_window_size: size of the window used to calculate the derivative   (default: 3)
+    - lambda_noise_threshold: threshold for the lambda noise value                  (default: 5)
     """
 
     def __init__(self,
                  sr: float,
-                 min_duration: float = BaseSaccadeDetector.SACCADE_MINIMUM_DURATION,
-                 iet: float = BaseSaccadeDetector.INTER_EVENT_TIME,
+                 min_duration: float = BaseSaccadeDetector.DEFAULT_SACCADE_MINIMUM_DURATION,
+                 iet: float = BaseSaccadeDetector.DEFAULT_INTER_EVENT_TIME,
                  derivation_window_size: int = DEFAULT_DERIVATION_WINDOW_SIZE,
                  lambda_noise_threshold: int = DEFAULT_LAMBDA_NOISE_THRESHOLD):
         super().__init__(sr=sr, min_duration=min_duration, iet=iet)

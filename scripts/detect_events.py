@@ -30,7 +30,7 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
     # detect blinks:
     blink_detector_type = kwargs.get("blink_detector_type", None)
     if blink_detector_type:
-        min_duration = kwargs.get("blink_min_duration", BaseBlinkDetector.BLINK_MINIMUM_DURATION)
+        min_duration = kwargs.get("blink_min_duration", BaseBlinkDetector.DEFAULT_BLINK_MINIMUM_DURATION)
         blink_kwargs = {
             "missing_value": kwargs.get("missing_value", MissingDataBlinkDetector.DEFAULT_MISSING_VALUE)
         }
@@ -44,7 +44,7 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
     # detect saccades:
     saccade_detector_type = kwargs.get("saccade_detector_type", None)
     if saccade_detector_type:
-        min_duration = kwargs.get("saccade_min_duration", BaseSaccadeDetector.SACCADE_MINIMUM_DURATION)
+        min_duration = kwargs.get("saccade_min_duration", BaseSaccadeDetector.DEFAULT_SACCADE_MINIMUM_DURATION)
         saccade_kwargs = {
             "derivation_window_size": kwargs.get("derivation_window_size", DEFAULT_DERIVATION_WINDOW_SIZE),
             "lambda_noise_threshold": kwargs.get("lambda_noise_threshold", DEFAULT_LAMBDA_NOISE_THRESHOLD)
@@ -59,7 +59,7 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
     # detect fixations:
     fixation_detector_type = kwargs.get("fixation_detector_type", None)
     if fixation_detector_type:
-        min_duration = kwargs.get("fixation_min_duration", BaseFixationDetector.FIXATION_MINIMUM_DURATION)
+        min_duration = kwargs.get("fixation_min_duration", BaseFixationDetector.DEFAULT_FIXATION_MINIMUM_DURATION)
         fixation_kwargs = {
             "velocity_threshold": kwargs.get("velocity_threshold", DEFAULT_VELOCITY_THRESHOLD)
         }

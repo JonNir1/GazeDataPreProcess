@@ -10,13 +10,14 @@ class BaseDetector(ABC):
     """
     Baseclass for all gaze-event detectors.
     Defines these properties:
-    - sr: sampling rate of the data in Hz                (default: experiment_config.SAMPLING_RATE)
-    - iet: minimal time between two (same) events in ms  (default: experiment_config.INTER_EVENT_TIME)
+    - sr: sampling rate of the data in Hz
+    - min_duration: minimal duration of an event in ms
+    - iet: minimal time between two (same) events in ms  (default: 5)
     """
 
-    INTER_EVENT_TIME = 5  # minimal time between two (same) events in milliseconds (two saccades, two fixations, etc.)
+    DEFAULT_INTER_EVENT_TIME = 5  # minimal time between two (same) events in milliseconds (two saccades, two fixations, etc.)
 
-    def __init__(self, sr: float, min_duration: float, iet: float = INTER_EVENT_TIME):
+    def __init__(self, sr: float, min_duration: float, iet: float = DEFAULT_INTER_EVENT_TIME):
         self.__sampling_rate = sr
         self.__min_duration = min_duration
         self.__inter_event_time = iet

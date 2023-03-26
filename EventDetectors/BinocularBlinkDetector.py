@@ -19,10 +19,10 @@ class BinocularBlinkDetector(BaseBlinkDetector):
     #
     # def __init__(self,
     #              criterion: str = "OR",
-    #              min_duration: float = conf.BLINK_MINIMUM_DURATION,
+    #              min_duration: float = conf.DEFAULT_BLINK_MINIMUM_DURATION,
     #              missing_value: float = conf.MISSING_VALUE,
     #              sr: float = conf.SAMPLING_RATE,
-    #              iet: float = conf.INTER_EVENT_TIME):
+    #              iet: float = conf.DEFAULT_INTER_EVENT_TIME):
     #     super().__init__(min_duration=min_duration,
     #                      missing_value=missing_value,
     #                      sr=sr, iet=iet)

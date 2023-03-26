@@ -3,24 +3,24 @@ from typing import List
 
 from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
 
+DEFAULT_MISSING_VALUE = np.nan
+
 
 class MissingDataBlinkDetector(BaseBlinkDetector):
     """
     Detects blinks from a single eye, defined as periods of missing data that last longer than min_duration.
     Defines these properties:
+    - sampling_rate: sampling rate of the data in Hz
     - min_duration: minimum duration of a blink in milliseconds             (default: 50)
     - missing_value: default value indicating missing data                  (default: np.nan)
-    - sampling_rate: sampling rate of the data in Hz                        (default: experiment_config.SAMPLING_RATE)
-    - inter_event_time: minimal time between two (same) events in ms        (default: experiment_config.INTER_EVENT_TIME)
+    - inter_event_time: minimal time between two (same) events in ms        (default: 5)
     """
-
-    DEFAULT_MISSING_VALUE = np.nan
 
     def __init__(self,
                  sr: float,
                  missing_value: float = DEFAULT_MISSING_VALUE,
-                 min_duration: float = BaseBlinkDetector.BLINK_MINIMUM_DURATION,
-                 iet: float = BaseBlinkDetector.INTER_EVENT_TIME):
+                 min_duration: float = BaseBlinkDetector.DEFAULT_BLINK_MINIMUM_DURATION,
+                 iet: float = BaseBlinkDetector.DEFAULT_INTER_EVENT_TIME):
         super().__init__(sr=sr, min_duration=min_duration, iet=iet)
         self.__missing_value = missing_value
 

@@ -19,13 +19,19 @@ class IVTFixationDetector(BaseFixationDetector):
         they used a threshold of 45 degrees per second.
 
     See original implementation: https://github.com/ecekt/eyegaze/blob/master/gaze.py
+
+    Defines these properties:
+    - sampling_rate: sampling rate of the data in Hz
+    - velocity_threshold: velocity threshold in degrees per second          (default: 20)
+    - min_duration: minimum duration of a blink in milliseconds             (default: 55)
+    - inter_event_time: minimal time between two (same) events in ms        (default: 5)
     """
 
     def __init__(self,
                  sr: float,
                  velocity_threshold: float = DEFAULT_VELOCITY_THRESHOLD,
-                 min_duration: float = BaseFixationDetector.FIXATION_MINIMUM_DURATION,
-                 iet: float = BaseFixationDetector.INTER_EVENT_TIME):
+                 min_duration: float = BaseFixationDetector.DEFAULT_FIXATION_MINIMUM_DURATION,
+                 iet: float = BaseFixationDetector.DEFAULT_INTER_EVENT_TIME):
         super().__init__(sr=sr, min_duration=min_duration, iet=iet)
         self.__velocity_threshold = velocity_threshold
 
