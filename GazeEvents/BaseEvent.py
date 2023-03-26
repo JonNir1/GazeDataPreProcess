@@ -48,3 +48,6 @@ class BaseEvent(ABC):
         event_end_idxs = np.nonzero(np.diff(event_idxs) != 1)[0]
         different_event_idxs = np.split(event_idxs, event_end_idxs + 1)  # +1 because we want to include the last index
         return different_event_idxs
+
+    def __str__(self):
+        return f"{self._event_type()} ({self.duration:.1f} ms)"
