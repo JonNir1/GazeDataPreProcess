@@ -1,12 +1,14 @@
 import numpy as np
 
+import visual_angle_utils as vau
+import velocity_utils as vu
 from GazeEvents.model.BaseEvent import BaseEvent
 
 
 class SaccadeEvent(BaseEvent):
 
-    def __init__(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray):
-        super().__init__(timestamps)
+    def __init__(self, timestamps: np.ndarray, sampling_rate: float, x: np.ndarray, y: np.ndarray, sr: float):
+        super().__init__(timestamps=timestamps, sampling_rate=sampling_rate)
         if len(timestamps) != len(x) or len(timestamps) != len(y):
             raise ValueError("Arrays of timestamps, x and y must have the same length")
         self.__x = x
