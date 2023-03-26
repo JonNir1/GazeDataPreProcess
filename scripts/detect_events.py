@@ -17,13 +17,13 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
 
     :return: is_blink, is_saccade, is_fixation: arrays of booleans, where True indicates an event
     """
-    blink_detector_type = kwargs.get("blink_detector_type", None)
+    blink_detector_type = kwargs.pop("blink_detector_type", None)
     is_blink = detect_blinks(blink_detector_type, x, y, sampling_rate, **kwargs)
 
-    saccade_detector_type = kwargs.get("saccade_detector_type", None)
+    saccade_detector_type = kwargs.pop("saccade_detector_type", None)
     is_saccade = detect_saccades(saccade_detector_type, x, y, sampling_rate, **kwargs)
 
-    fixation_detector_type = kwargs.get("fixation_detector_type", None)
+    fixation_detector_type = kwargs.pop("fixation_detector_type", None)
     is_fixation = detect_fixations(fixation_detector_type, x, y, sampling_rate, **kwargs)
     return is_blink, is_saccade, is_fixation
 
