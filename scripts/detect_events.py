@@ -31,20 +31,8 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
     blink_detector_type = kwargs.get("blink_detector_type", None)
     is_blink = detect_blinks(blink_detector_type, x, y, sampling_rate, inter_event_time, **kwargs)
 
-    # detect saccades:
     saccade_detector_type = kwargs.get("saccade_detector_type", None)
-    if saccade_detector_type:
-        min_duration = kwargs.get("saccade_min_duration", BaseSaccadeDetector.DEFAULT_SACCADE_MINIMUM_DURATION)
-        saccade_kwargs = {
-            "derivation_window_size": kwargs.get("derivation_window_size", DEFAULT_DERIVATION_WINDOW_SIZE),
-            "lambda_noise_threshold": kwargs.get("lambda_noise_threshold", DEFAULT_LAMBDA_NOISE_THRESHOLD)
-        }
-        saccade_detector = _get_event_detector(saccade_detector_type, min_duration=min_duration,
-                                               sampling_rate=sampling_rate, inter_event_time=inter_event_time,
-                                               **saccade_kwargs)
-        is_saccade = saccade_detector.detect(x, y)
-    else:
-        is_saccade = np.zeros_like(x, dtype=bool)
+    is_saccade = detect_saccades(saccade_detector_type, x, y, sampling_rate, inter_event_time, **kwargs)
 
     # detect fixations:
     fixation_detector_type = kwargs.get("fixation_detector_type", None)
@@ -93,6 +81,39 @@ def detect_blinks(blink_detector_type: Optional[str], x: np.ndarray, y: np.ndarr
                                          **blink_kwargs)
     is_blink = blink_detector.detect(x, y)
     return is_blink
+
+
+def detect_saccades(saccade_detector_type: Optional[str], x: np.ndarray, y: np.ndarray,
+                    sampling_rate: float, inter_event_time: float,
+                    **kwargs) -> np.ndarray:
+    """
+    Detects blinks in the given gaze data, based on the specified blink detector type.
+    :param saccade_detector_type: type of saccade detector to use, None for no saccade detection
+    :param x: x-coordinates of gaze data
+    :param y: y-coordinates of gaze data
+    :param sampling_rate: sampling rate of the data in Hz
+    :param inter_event_time: minimal time between two events in ms
+
+    :keyword
+        - saccade_min_duration: minimal duration of a blink in ms;  default: 50 ms
+        - derivation_window_size: window size for derivation in ms; default: 3 ms
+        - lambda_noise_threshold: threshold for lambda noise;       default: 5
+
+    :return:
+    """
+    if not saccade_detector_type:
+        return np.zeros_like(x, dtype=bool)
+
+    min_duration = kwargs.get("saccade_min_duration", BaseSaccadeDetector.DEFAULT_SACCADE_MINIMUM_DURATION)
+    saccade_kwargs = {
+        "derivation_window_size": kwargs.get("derivation_window_size", DEFAULT_DERIVATION_WINDOW_SIZE),
+        "lambda_noise_threshold": kwargs.get("lambda_noise_threshold", DEFAULT_LAMBDA_NOISE_THRESHOLD)
+    }
+    saccade_detector = _get_event_detector(saccade_detector_type, min_duration=min_duration,
+                                           sampling_rate=sampling_rate, inter_event_time=inter_event_time,
+                                           **saccade_kwargs)
+    is_saccade = saccade_detector.detect(x, y)
+    return is_saccade
 
 
 def _get_event_detector(detector_type: str, min_duration: float, sampling_rate: float,
