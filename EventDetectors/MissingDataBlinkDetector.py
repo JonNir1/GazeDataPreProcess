@@ -3,8 +3,6 @@ from typing import List
 
 from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
 
-DEFAULT_MISSING_VALUE = np.nan
-
 
 class MissingDataBlinkDetector(BaseBlinkDetector):
     """
@@ -15,6 +13,8 @@ class MissingDataBlinkDetector(BaseBlinkDetector):
     - missing_value: default value indicating missing data                  (default: np.nan)
     - inter_event_time: minimal time between two (same) events in ms        (default: 5)
     """
+
+    DEFAULT_MISSING_VALUE = np.nan  # default value indicating missing data in the gaze data (x, y)
 
     def __init__(self,
                  sr: float,

@@ -1,4 +1,5 @@
 import numpy as np
+from typing import Optional
 
 import experiment_config as conf
 from EventDetectors.BaseDetector import BaseDetector
@@ -27,19 +28,8 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
 
     :return: is_blink, is_saccade, is_fixation: arrays of booleans, where True indicates an event
     """
-    # detect blinks:
     blink_detector_type = kwargs.get("blink_detector_type", None)
-    if blink_detector_type:
-        min_duration = kwargs.get("blink_min_duration", BaseBlinkDetector.DEFAULT_BLINK_MINIMUM_DURATION)
-        blink_kwargs = {
-            "missing_value": kwargs.get("missing_value", MissingDataBlinkDetector.DEFAULT_MISSING_VALUE)
-        }
-        blink_detector = _get_event_detector(blink_detector_type, min_duration=min_duration,
-                                             sampling_rate=sampling_rate, inter_event_time=inter_event_time,
-                                             **blink_kwargs)
-        is_blink = blink_detector.detect(x, y)
-    else:
-        is_blink = np.zeros_like(x, dtype=bool)
+    is_blink = detect_blinks(blink_detector_type, x, y, sampling_rate, inter_event_time, **kwargs)
 
     # detect saccades:
     saccade_detector_type = kwargs.get("saccade_detector_type", None)
@@ -72,6 +62,39 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
     return is_blink, is_saccade, is_fixation
 
 
+def detect_blinks(blink_detector_type: Optional[str], x: np.ndarray, y: np.ndarray,
+                  sampling_rate: float, inter_event_time: float,
+                  **kwargs) -> np.ndarray:
+    """
+    Detects blinks in the given gaze data, based on the specified blink detector type.
+    :param blink_detector_type: type of blink detector to use, None for no blink detection
+    :param x: x-coordinates of gaze data
+    :param y: y-coordinates of gaze data
+    :param sampling_rate: sampling rate of the data in Hz
+    :param inter_event_time: minimal time between two events in ms
+
+    :keyword
+        - blink_min_duration: minimal duration of a blink in ms; default: 50 ms
+        - missing_value: default value indicating missing data, used by MissingDataBlinkDetector; default: np.nan
+
+    :return:
+    """
+    if not blink_detector_type:
+        return np.zeros_like(x, dtype=bool)
+
+    min_duration = kwargs.get("blink_min_duration", BaseBlinkDetector.DEFAULT_BLINK_MINIMUM_DURATION)
+    blink_kwargs = {
+            "missing_value": kwargs.get("missing_value", MissingDataBlinkDetector.DEFAULT_MISSING_VALUE)
+    }
+    blink_detector = _get_event_detector(blink_detector_type,
+                                         min_duration=min_duration,
+                                         sampling_rate=sampling_rate,
+                                         inter_event_time=inter_event_time,
+                                         **blink_kwargs)
+    is_blink = blink_detector.detect(x, y)
+    return is_blink
+
+
 def _get_event_detector(detector_type: str, min_duration: float, sampling_rate: float,
                         inter_event_time: float, **kwargs) -> BaseDetector:
     """
@@ -94,14 +117,12 @@ def _get_event_detector(detector_type: str, min_duration: float, sampling_rate: 
     if detector_type.lower() == "missing data" or detector_type.lower() == "missing_data":
         from EventDetectors.MissingDataBlinkDetector import MissingDataBlinkDetector
         missing_value = kwargs.get("missing_value", None)
-        if missing_value is None:
-            raise ValueError("Missing value for MissingDataBlinkDetector not specified.")
         return MissingDataBlinkDetector(sr=sampling_rate, iet=inter_event_time, min_duration=min_duration,
                                         missing_value=missing_value)
 
     if detector_type.lower() == "pupil size" or detector_type.lower() == "pupil_size":
         from EventDetectors.PupilSizeBlinkDetector import PupilSizeBlinkDetector
-        return PupilSizeBlinkDetector()
+        return PupilSizeBlinkDetector(sr=sampling_rate, iet=inter_event_time, min_duration=min_duration)
 
     if detector_type.lower() == "engbert":
         from EventDetectors.EngbertSaccadeDetector import EngbertSaccadeDetector
