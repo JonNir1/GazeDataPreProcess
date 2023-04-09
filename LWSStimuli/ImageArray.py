@@ -69,3 +69,14 @@ class ImageArray:
 
     def __repr__(self):
         return f"{self.__class__.__name__}_{self.array_id}"
+from enum import StrEnum, auto
+
+
+class ImageArrayType(StrEnum):
+    BW = auto()
+    COLOR = auto()
+    NOISE = auto()
+
+
+class ImageArray:
+    pass
