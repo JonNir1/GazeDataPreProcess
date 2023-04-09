@@ -1,5 +1,3 @@
-import numpy as np
-
 import constants as cnst
 
 from DataParser.scripts.parse_and_merge import parse_tobii_gaze_and_triggers
