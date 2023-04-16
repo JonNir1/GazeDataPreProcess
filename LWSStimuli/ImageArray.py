@@ -1,5 +1,3 @@
-import numpy as np
-from enum import IntEnum, auto
 import os
 import numpy as np
 from enum import IntEnum

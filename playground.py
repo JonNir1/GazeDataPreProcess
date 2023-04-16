@@ -15,6 +15,12 @@ ia1 = ImageArray.from_file(r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Sti
 
 
 
+from LWSStimuli.ImageArray import ImageArray
+
+ia1 = ImageArray.from_file(r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1\bw\image_1.mat")
+
+
+
 from DataParser.scripts.parse_and_merge import parse_tobii_gaze_and_triggers
 from EventDetectors.scripts.detect_events import detect_all_events
 from GazeEvents.scripts.extract_gaze_events import extract_events_to_dataframe
