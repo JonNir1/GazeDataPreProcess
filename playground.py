@@ -17,6 +17,8 @@ is_blink, is_saccade, is_fixation = detect_all_events(x=t2[cnst.LEFT_X].values, 
                                                       stuff_with='fixation',
                                                       blink_detector_type='missing data',
                                                       saccade_detector_type='engbert')
+t2_with_events = pd.concat([t2, pd.DataFrame({'is_blink': is_blink, 'is_saccade': is_saccade,
+                                              'is_fixation': is_fixation})], axis=1)
 
 fe = extract_events_to_dataframe(event_type='fixation', timestamps=t2[cnst.MICROSECONDS].values / 1000,
                                  is_event=is_fixation, sampling_rate=sr,
