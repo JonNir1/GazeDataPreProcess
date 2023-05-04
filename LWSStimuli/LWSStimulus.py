@@ -31,9 +31,9 @@ class LWSStimulus(LWSStimulusBase):
         plt.tight_layout()
         plt.show()
 
-    def __path_to_file(self, format: str) -> str:
+    def __path_to_file(self, fmt: str) -> str:
         subdir = self.stim_type.name.lower()
-        filename = f"image_{self.__stim_id}.{format}"
+        filename = f"image_{self.__stim_id}.{fmt}"
         fullpath = os.path.join(self.__super_dir, subdir, filename)
         if not os.path.isfile(fullpath):
             raise FileNotFoundError(f"File {fullpath} does not exist.")
