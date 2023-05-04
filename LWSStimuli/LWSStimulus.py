@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from LWSStimulusBase import LWSStimulusBase
+from LWSStimuli.LWSStimulusInfo import LWSStimulusInfo
 from LWSStimuli.LWSStimulusTypeEnum import LWSStimulusTypeEnum
 
 
@@ -16,13 +17,14 @@ class LWSStimulus(LWSStimulusBase):
         if not os.path.isdir(super_dir):
             raise NotADirectoryError(f"Directory {super_dir} does not exist.")
         self.__super_dir = super_dir
+        self.__metadata = LWSStimulusInfo.from_matlab_array(self.image_metadata_path)
 
     @property
     def image_array_path(self) -> str:
         return self.__path_to_file("bmp")
 
     @property
-    def image_info_path(self) -> str:
+    def image_metadata_path(self) -> str:
         return self.__path_to_file("mat")
 
     def read_image_array(self) -> np.ndarray:
