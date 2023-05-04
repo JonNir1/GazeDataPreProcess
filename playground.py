@@ -1,9 +1,11 @@
+import os
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 import cv2
 
 import constants as cnst
-
+import experiment_config as cnfg
 from DataParser.scripts.parse_and_merge import parse_tobii_gaze_and_triggers
 from EventDetectors.scripts.detect_events import detect_all_events
 from GazeEvents.scripts.extract_gaze_events import extract_events_to_dataframe
