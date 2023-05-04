@@ -29,12 +29,11 @@ class LWSStimulus:
 
     @property
     def image_array_path(self) -> str:
-        subdir = self.stim_type.name.lower()
-        filename = f"image_{self.__stim_id}.bmp"
-        full_path = os.path.join(self.__stimulus_directory, subdir, filename)
-        if not os.path.isfile(full_path):
-            raise FileNotFoundError(f"Image file {full_path} does not exist.")
-        return full_path
+        return self.__path_to_file("bmp")
+
+    @property
+    def image_info_path(self) -> str:
+        return self.__path_to_file("mat")
 
     def read_image_array(self) -> np.ndarray:
         return plt.imread(self.image_array_path)
@@ -56,6 +55,14 @@ class LWSStimulus:
         if stim_type == "NOISE" or stim_type == "noise" or stim_type == 2:
             return LWSStimulusType.NOISE
         raise ValueError(f"Stimulus type {stim_type} is not valid.")
+
+    def __path_to_file(self, format: str) -> str:
+        subdir = self.stim_type.name.lower()
+        filename = f"image_{self.__stim_id}.{format}"
+        fullpath = os.path.join(self.__stimulus_directory, subdir, filename)
+        if not os.path.isfile(fullpath):
+            raise FileNotFoundError(f"File {fullpath} does not exist.")
+        return fullpath
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}_{self.stim_type.name.upper()}{self.stim_id}"
