@@ -7,6 +7,9 @@ from LWSStimuli.LWSStimulusTypeEnum import LWSStimulusTypeEnum
 
 
 class LWSStimulus(LWSStimulusBase):
+    """
+    A class representing a single LWS stimulus, that is - an image array and its metadata.
+    """
 
     def __init__(self, stim_id: int, stim_type, super_dir: str):
         super().__init__(stim_id, stim_type)

@@ -6,6 +6,13 @@ from LWSStimulusBase import LWSStimulusBase
 
 
 class LWSStimulusInfo(LWSStimulusBase):
+    """
+    This class represents the metadata about a LWS stimulus:
+        - pixel location of image centers
+        - full paths to image files that comprise the stimulus (image array)
+        - categories of images in the stimulus (faces, animals, etc.)
+        - whether each image is a target image
+    """
 
     def __init__(self, stim_id: int, stim_type,
                  image_paths: np.ndarray, image_centers: np.ndarray,
