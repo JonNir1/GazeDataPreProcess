@@ -16,9 +16,9 @@ noise_stim = LWSStimulus(stim_id=1, stim_type='noise',
                       directory=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1")
 
 
-from LWSStimuli.StimulusInfo import StimulusInfo
+from LWSStimuli.LWSStimulusInfo import LWSStimulusInfo
 
-ia1 = StimulusInfo.from_matlab_array(r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1\bw\image_1.mat")
+ia1 = LWSStimulusInfo.from_matlab_array(r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1\bw\image_1.mat")
 
 
 
