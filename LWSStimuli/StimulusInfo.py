@@ -49,7 +49,7 @@ class StimulusInfo:
 
     @property
     def num_targets(self) -> int:
-        return np.sum(self.__is_target_image)
+        return int(np.sum(self.__is_target_image))
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}_{self.stim_type.name.upper()}{self.stim_id}"
