@@ -1,8 +1,9 @@
 import os
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
-from LWSStimulusBase import LWSStimulusBase
+from LWSStimuli.LWSStimulusBase import LWSStimulusBase
 from LWSStimuli.LWSStimulusInfo import LWSStimulusInfo
 from LWSStimuli.LWSStimulusTypeEnum import LWSStimulusTypeEnum
 
@@ -27,6 +28,20 @@ class LWSStimulus(LWSStimulusBase):
     def image_metadata_path(self) -> str:
         return self.__path_to_file("mat")
 
+    @property
+    def num_targets(self) -> int:
+        return self.__metadata.num_targets
+
+    def get_target_data(self) -> pd.DataFrame:
+        """
+        Returns a DataFrame with the following columns:
+            - image_path: full path to the image file
+            - image_category: category of the image
+            - center_x: x coordinate of the image center
+            - center_y: y coordinate of the image center
+        """
+        return self.__metadata.get_target_data()
+
     def read_image_array(self) -> np.ndarray:
         return plt.imread(self.image_array_path)
 
@@ -38,9 +53,8 @@ class LWSStimulus(LWSStimulusBase):
 
     def __path_to_file(self, fmt: str) -> str:
         subdir = self.stim_type.name.lower()
-        filename = f"image_{self.__stim_id}.{fmt}"
+        filename = f"image_{self.stim_id}.{fmt}"
         fullpath = os.path.join(self.__super_dir, subdir, filename)
         if not os.path.isfile(fullpath):
             raise FileNotFoundError(f"File {fullpath} does not exist.")
         return fullpath
-

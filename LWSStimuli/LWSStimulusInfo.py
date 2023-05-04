@@ -1,8 +1,9 @@
 import os
 import numpy as np
+import pandas as pd
 from scipy.io import loadmat
 
-from LWSStimulusBase import LWSStimulusBase
+from LWSStimuli.LWSStimulusBase import LWSStimulusBase
 
 
 class LWSStimulusInfo(LWSStimulusBase):
@@ -33,7 +34,7 @@ class LWSStimulusInfo(LWSStimulusBase):
         f = loadmat(file_path)
         stim_id = int(os.path.basename(file_path).split('_')[1].split('.')[0])
         stim_type_str = os.path.basename(os.path.dirname(file_path))
-        stim_type = LWSStimulusInfo.__identify_stimulus_type(stim_type_str)
+        stim_type = LWSStimulusInfo._identify_stimulus_type(stim_type_str)
 
         mat = f["imageInfo"]
         image_paths = np.vectorize(lambda arr: arr[0])(mat["stimInArray"][0][0])  # shape (r, c)
@@ -48,3 +49,20 @@ class LWSStimulusInfo(LWSStimulusBase):
     @property
     def num_targets(self) -> int:
         return int(np.sum(self.__is_target_image))
+
+    def get_target_data(self) -> pd.DataFrame:
+        """
+        Returns a DataFrame with the following columns:
+            - image_path: full path to the image file
+            - image_category: category of the image
+            - center_x: x coordinate of the image center
+            - center_y: y coordinate of the image center
+        """
+        target_indices = np.where(self.__is_target_image)
+        target_data = pd.DataFrame({
+            "image_path": self.__image_paths[target_indices],
+            "image_category": self.__image_categories[target_indices],
+            "center_x": self.__image_centers[target_indices][:, 0],
+            "center_y": self.__image_centers[target_indices][:, 1]
+        })
+        return target_data
