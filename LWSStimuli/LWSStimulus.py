@@ -1,4 +1,7 @@
+import os
 from enum import IntEnum
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 class LWSStimulusType(IntEnum):
@@ -9,9 +12,12 @@ class LWSStimulusType(IntEnum):
 
 class LWSStimulus:
 
-    def __init__(self, stim_id: int, stim_type):
+    def __init__(self, stim_id: int, stim_type, directory: str):
         self.__stim_id = stim_id
         self.__stim_type = self.__identify_stimulus_type(stim_type)
+        if not os.path.isdir(directory):
+            raise NotADirectoryError(f"Directory {directory} does not exist.")
+        self.__stimulus_directory = directory
 
     @property
     def stim_id(self) -> int:
@@ -20,6 +26,24 @@ class LWSStimulus:
     @property
     def stim_type(self) -> LWSStimulusType:
         return self.__stim_type
+
+    @property
+    def image_array_path(self) -> str:
+        subdir = self.stim_type.name.lower()
+        filename = f"image_{self.__stim_id}.bmp"
+        full_path = os.path.join(self.__stimulus_directory, subdir, filename)
+        if not os.path.isfile(full_path):
+            raise FileNotFoundError(f"Image file {full_path} does not exist.")
+        return full_path
+
+    def read_image_array(self) -> np.ndarray:
+        return plt.imread(self.image_array_path)
+
+    def show_image_array(self):
+        color_map = 'gray' if self.stim_type == LWSStimulusType.BW else None
+        plt.imshow(self.read_image_array(), cmap=color_map)
+        plt.tight_layout()
+        plt.show()
 
     @staticmethod
     def __identify_stimulus_type(stim_type) -> LWSStimulusType:

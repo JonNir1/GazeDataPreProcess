@@ -8,6 +8,14 @@ import cv2
 import constants as cnst
 import experiment_config as cnfg
 
+from LWSStimuli.LWSStimulus import LWSStimulus
+
+bw_stim = LWSStimulus(stim_id=1, stim_type='bw',
+                      directory=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1")
+noise_stim = LWSStimulus(stim_id=1, stim_type='noise',
+                      directory=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1")
+
+
 from LWSStimuli.StimulusInfo import StimulusInfo
 
 ia1 = StimulusInfo.from_matlab_array(r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1\bw\image_1.mat")
