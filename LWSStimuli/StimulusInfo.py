@@ -23,7 +23,12 @@ class StimulusInfo:
         self.__is_target_image = is_target_image
 
     @staticmethod
-    def from_file(file_path: str) -> "StimulusInfo":
+    def from_matlab_array(file_path: str) -> "StimulusInfo":
+        if not os.path.isfile(file_path):
+            raise FileNotFoundError(f"File {file_path} does not exist.")
+        if not file_path.endswith(".mat"):
+            raise ValueError(f"File {file_path} is not a .mat file.")
+
         f = loadmat(file_path)
         array_type_str = os.path.basename(os.path.dirname(file_path))
         array_type = StimulusInfo.__identify_array_type(array_type_str)

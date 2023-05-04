@@ -10,7 +10,7 @@ import experiment_config as cnfg
 
 from LWSStimuli.StimulusInfo import StimulusInfo
 
-ia1 = StimulusInfo.from_file(r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1\bw\image_1.mat")
+ia1 = StimulusInfo.from_matlab_array(r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1\bw\image_1.mat")
 
 
 
