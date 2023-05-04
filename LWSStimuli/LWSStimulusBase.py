@@ -11,7 +11,7 @@ class LWSStimulusBase(ABC):
 
     def __init__(self, stim_id: int, stim_type):
         self.__stim_id = stim_id
-        self.__stim_type = stim_type
+        self.__stim_type = LWSStimulusBase.__identify_stimulus_type(stim_type)
 
     @property
     def stim_id(self) -> int:
