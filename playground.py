@@ -8,9 +8,9 @@ import cv2
 import constants as cnst
 import experiment_config as cnfg
 
-from LWSStimuli.ImageArray import ImageArray
+from LWSStimuli.StimulusInfo import StimulusInfo
 
-ia1 = ImageArray.from_file(r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1\bw\image_1.mat")
+ia1 = StimulusInfo.from_file(r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1\bw\image_1.mat")
 
 
 

@@ -10,7 +10,7 @@ class ImageArrayType(IntEnum):
     NOISE = 2
 
 
-class ImageArray:
+class StimulusInfo:
 
     def __init__(self, array_type, array_id: int,
                  image_paths: np.ndarray, image_centers: np.ndarray,
@@ -23,10 +23,10 @@ class ImageArray:
         self.__is_target_image = is_target_image
 
     @staticmethod
-    def from_file(file_path: str) -> "ImageArray":
+    def from_file(file_path: str) -> "StimulusInfo":
         f = loadmat(file_path)
         array_type_str = os.path.basename(os.path.dirname(file_path))
-        array_type = ImageArray.__identify_array_type(array_type_str)
+        array_type = StimulusInfo.__identify_array_type(array_type_str)
         array_id = int(os.path.basename(file_path).split('_')[1].split('.')[0])
 
         mat = f["imageInfo"]
@@ -35,9 +35,9 @@ class ImageArray:
         image_categories = mat["categoryInArray"][0][0].astype(int)  # shape (r, c)
         is_target_image = mat["targetsInArray"][0][0].astype(bool)    # shape (r, c)
 
-        return ImageArray(array_type=array_type, array_id=array_id,
-                          image_paths=image_paths, image_centers=image_centers,
-                          image_categories=image_categories, is_target_image=is_target_image)
+        return StimulusInfo(array_type=array_type, array_id=array_id,
+                            image_paths=image_paths, image_centers=image_centers,
+                            image_categories=image_categories, is_target_image=is_target_image)
 
     @property
     def array_id(self) -> str:
