@@ -6,11 +6,21 @@ import constants as cnst
 import experiment_config as cnfg
 
 from LWS_DataModels.LWSStimuli.LWSArrayStimulus import LWSArrayStimulus
+from LWS_DataModels.LWSSubject.LWSSubjectInfo import LWSSubjectInfo
+
+PATH = r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo\v4-2-1.txt"
+subj = LWSSubjectInfo.from_eprime_file(PATH)
+
+
+
 
 bw_stim = LWSArrayStimulus(stim_id=1, stim_type='bw',
                            super_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1")
 noise_stim = LWSArrayStimulus(stim_id=1, stim_type='noise',
                               super_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1")
+
+
+
 
 
 
