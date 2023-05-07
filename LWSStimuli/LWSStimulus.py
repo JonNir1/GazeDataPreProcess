@@ -3,9 +3,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from LWSStimuli.LWSStimulusBase import LWSStimulusBase
+from LWSStimuli.LWSStimulusBase import LWSStimulusBase, LWSStimulusTypeEnum
 from LWSStimuli.LWSStimulusInfo import LWSStimulusInfo
-from LWSStimuli.LWSStimulusTypeEnum import LWSStimulusTypeEnum
 
 
 class LWSStimulus(LWSStimulusBase):

@@ -1,7 +1,11 @@
-import os
+from enum import IntEnum
 from abc import ABC
 
-from LWSStimuli.LWSStimulusTypeEnum import LWSStimulusTypeEnum
+
+class LWSStimulusTypeEnum(IntEnum):
+    BW = 0
+    COLOR = 1
+    NOISE = 2
 
 
 class LWSStimulusBase(ABC):
