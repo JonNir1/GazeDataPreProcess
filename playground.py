@@ -1,14 +1,11 @@
-import os
 import numpy as np
 import pandas as pd
-import scipy as sp
-import matplotlib.pyplot as plt
 import cv2
 
 import constants as cnst
 import experiment_config as cnfg
 
-from LWSStimuli.LWSArrayStimulus import LWSArrayStimulus
+from LWS_DataModels.LWSStimuli.LWSArrayStimulus import LWSArrayStimulus
 
 bw_stim = LWSArrayStimulus(stim_id=1, stim_type='bw',
                            super_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1")

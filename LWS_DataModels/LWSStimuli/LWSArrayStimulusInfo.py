@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from scipy.io import loadmat
 
-from LWSStimuli.LWSStimulusBase import LWSStimulusBase
+from LWS_DataModels.LWSStimuli.LWSStimulusBase import LWSStimulusBase
 
 
 class LWSArrayStimulusInfo(LWSStimulusBase):
