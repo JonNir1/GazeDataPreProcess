@@ -1,5 +1,6 @@
-import io
 import os
+import io
+import re
 import datetime
 import pandas as pd
 from typing import Optional, List
@@ -47,15 +48,20 @@ class LWSSubjectInfo:
         :return: A new LWSSubjectInfo object.
 
         :raises FileNotFoundError: If the E-Prime file does not exist.
+        :raises ValueError: If the specified file is not a subject-info E-Prime file.
         :raises ValueError: If the E-Prime file does not contain a mandatory field:
             subject id, age, sex, hand, eye, distance, date, time.
         """
+        # check if the file exists and is a subject info file:
         if not os.path.isfile(fullpath):
             raise FileNotFoundError(f"The E-Prime file {fullpath} does not exist.")
+        if not LWSSubjectInfo.__is_subject_info_file(fullpath):
+            raise ValueError(f"The E-Prime file {fullpath} is not a subject info file.")
+
+        # extract all fields as strings from the E-Prime file:
         f = io.open(fullpath, mode="r", encoding="utf-16")
         lines = f.readlines()
 
-        # extract all fields as strings from the E-Prime file:
         subject_id = LWSSubjectInfo.__extract_field(lines, LWSSubjectInfo.SUBJECT_ID)
         session = LWSSubjectInfo.__extract_field(lines, LWSSubjectInfo.SESSION_ID)
         name = LWSSubjectInfo.__extract_field(lines, LWSSubjectInfo.NAME)
@@ -171,6 +177,17 @@ class LWSSubjectInfo:
              "DistanceToScreen": self.distance_to_screen,
              "DateTime": pd.to_datetime(self.date_time.strftime("%Y-%m-%d %H:%M:%S")),
              "Sex": self.sex, "DominantHand": self.dominant_hand, "DominantEye": self.dominant_eye})
+
+    @staticmethod
+    def __is_subject_info_file(fullpath: str) -> bool:
+        """
+        Checks if the given file is a subject info file by comparing its name to the pattern:
+            <E-Prime Experiment Name>-<Subject ID>-<Session Number>.txt
+        """
+        if not os.path.isfile(fullpath):
+            raise FileNotFoundError(f"File {fullpath} does not exist.")
+        pattern = re.compile("[a-zA-z0-9]*-[0-9]+-[0-9]+.txt")
+        return pattern.match(os.path.basename(fullpath)) is not None
 
     @staticmethod
     def __extract_field(lines: List[str], field_name: str) -> Optional[str]:
