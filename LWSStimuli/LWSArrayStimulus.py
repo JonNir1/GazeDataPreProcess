@@ -4,10 +4,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from LWSStimuli.LWSStimulusBase import LWSStimulusBase, LWSStimulusTypeEnum
-from LWSStimuli.LWSStimulusInfo import LWSStimulusInfo
+from LWSStimuli.LWSArrayStimulusInfo import LWSArrayStimulusInfo
 
 
-class LWSStimulus(LWSStimulusBase):
+class LWSArrayStimulus(LWSStimulusBase):
     """
     A class representing a single LWS stimulus, that is - an image array and its metadata.
     """
@@ -17,7 +17,7 @@ class LWSStimulus(LWSStimulusBase):
         if not os.path.isdir(super_dir):
             raise NotADirectoryError(f"Directory {super_dir} does not exist.")
         self.__super_dir = super_dir
-        self.__metadata = LWSStimulusInfo.from_matlab_array(self.image_metadata_path)
+        self.__metadata = LWSArrayStimulusInfo.from_matlab_array(self.image_metadata_path)
 
     @property
     def image_array_path(self) -> str:

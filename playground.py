@@ -8,12 +8,12 @@ import cv2
 import constants as cnst
 import experiment_config as cnfg
 
-from LWSStimuli.LWSStimulus import LWSStimulus
+from LWSStimuli.LWSArrayStimulus import LWSArrayStimulus
 
-bw_stim = LWSStimulus(stim_id=1, stim_type='bw',
-                      super_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1")
-noise_stim = LWSStimulus(stim_id=1, stim_type='noise',
-                         super_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1")
+bw_stim = LWSArrayStimulus(stim_id=1, stim_type='bw',
+                           super_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1")
+noise_stim = LWSArrayStimulus(stim_id=1, stim_type='noise',
+                              super_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1")
 
 
 
