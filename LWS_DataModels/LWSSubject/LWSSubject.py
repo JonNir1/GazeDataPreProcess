@@ -43,6 +43,13 @@ class LWSSubject:
         self.__sampling_rate = sr
         self.__tobii_trials = tobii_trials
 
+    @property
+    def sampling_rate(self) -> float:
+        return self.__sampling_rate
+
+    def get_trial(self, trial_num: int) -> pd.DataFrame:
+        return self.__tobii_trials[trial_num]
+
     def __handle_multiple_sessions(self) -> Tuple[float, List[pd.DataFrame]]:
         """
         Merges data from multiple sessions to a single value of sampling rate and a single list of DataFrame trials.
