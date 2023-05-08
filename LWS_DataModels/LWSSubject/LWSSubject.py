@@ -38,7 +38,7 @@ class LWSSubject:
         if len(gaze_paths) > 1:
             sr, tobii_trials = self.__handle_multiple_sessions()
         else:
-            sr, tobii_trials = parse_tobii_gaze_and_triggers(gaze_paths, triggers_paths)
+            sr, tobii_trials = parse_tobii_gaze_and_triggers(gaze_paths[0], triggers_paths[0])
         self.__sampling_rate = sr
         self.__tobii_trials = tobii_trials
 
