@@ -1,6 +1,5 @@
 import os
 import io
-import re
 import datetime
 import pandas as pd
 from typing import Optional, List
