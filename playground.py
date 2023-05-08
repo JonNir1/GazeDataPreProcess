@@ -6,10 +6,10 @@ import constants as cnst
 import experiment_config as cnfg
 
 from LWS_DataModels.LWSStimuli.LWSArrayStimulus import LWSArrayStimulus
-from LWS_DataModels.LWSSubject.LWSSubjectInfo import LWSSubjectInfo
+from LWS_DataModels.LWSSubject.LWSSubject import LWSSubject
 
-PATH = r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo\v4-2-1.txt"
-subj = LWSSubjectInfo.from_eprime_file(PATH)
+PATH = r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo"
+subj = LWSSubject(PATH)
 
 
 
