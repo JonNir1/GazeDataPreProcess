@@ -54,3 +54,9 @@ class LWSSubject:
         Merges data from multiple sessions to a single value of sampling rate and a single list of DataFrame trials.
         """
         raise NotImplementedError
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}_{self.__subject_info.subject_id}"
+
+    def __str__(self) -> str:
+        return self.__repr__()
