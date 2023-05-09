@@ -13,12 +13,10 @@ class LWSTrial:
 
     def __init__(self,
                  trial_num: int,
-                 sr: float,
                  subject_info: LWSSubjectInfo,
                  stimulus: LWSArrayStimulus,
                  behavioral_data: pd.DataFrame):
         self.__trial_num = trial_num
-        self.__sampling_rate = sr
         self.__subject_info = subject_info
         self.__stimulus = stimulus
         self.__behavioral_data = behavioral_data
@@ -26,10 +24,6 @@ class LWSTrial:
     @property
     def trial_num(self) -> int:
         return self.__trial_num
-
-    @property
-    def sampling_rate(self) -> float:
-        return self.__sampling_rate
 
     @property
     def subject_info(self) -> LWSSubjectInfo:
