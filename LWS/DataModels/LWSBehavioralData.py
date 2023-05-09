@@ -16,7 +16,7 @@ class LWSBehavioralData:
         return self.get("trial")[0]
 
     @property
-    def stimulus_type(self) -> LWSStimulusTypeEnum:
+    def stim_type(self) -> LWSStimulusTypeEnum:
         stim_type_str = self.get("ConditionName")[0]
         return LWSStimulusTypeEnum(stim_type_str)
 
