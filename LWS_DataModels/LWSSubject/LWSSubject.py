@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from typing import List, Tuple
 
-from LWS_DataModels.LWSSubject.scripts.identify_data_files import find_data_files_by_suffix
+from LWS.scripts.identify_data_files import find_data_files_by_suffix
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 from DataParser.scripts.parse_and_merge import parse_tobii_gaze_and_triggers
 
