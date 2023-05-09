@@ -17,6 +17,7 @@ class LWSArrayStimulus:
         - categories of icon in the stimulus (faces, animals, etc.)
         - whether each icon is a target image
     """
+    # TODO: encode as hdf5 file
 
     def __init__(self, stim_id: int, stim_type, image: np.ndarray,
                  icon_paths: np.ndarray, icon_centers: np.ndarray,
