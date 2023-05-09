@@ -8,4 +8,8 @@ SCREEN_HEIGHT = 31    # height of the screen in cm
 SCREEN_RESOLUTION = (1920, 1080)  # resolution of the screen in pixels
 
 # ADDITIONAL_COLUMNS = []  # additional columns to be added to the gaze data
-ADDITIONAL_COLUMNS = ["ConditionName", "BlockNum", "TrialNum", "ImageNum"]  # LWS specific columns
+# STIMULI_DIR = ""  # directory containing the stimuli
+
+# LWS SPECIFIC CONFIGURATION
+ADDITIONAL_COLUMNS = ["ConditionName", "BlockNum", "TrialNum", "ImageNum"]
+STIMULI_DIR = r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1"
