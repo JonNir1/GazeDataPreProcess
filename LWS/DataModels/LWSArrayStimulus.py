@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from scipy.io import loadmat
 
 import experiment_config as cnfg
-from LWS_DataModels.LWSEnums import LWSStimulusTypeEnum
+from LWS.DataModels.LWSEnums import LWSStimulusTypeEnum
 
 
 class LWSArrayStimulus:

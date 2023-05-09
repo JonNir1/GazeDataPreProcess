@@ -4,7 +4,7 @@ import datetime
 import pandas as pd
 from typing import Optional, List
 
-from LWS_DataModels.LWSEnums import LWSSubjectSexEnum, LWSSubjectDominantHandEnum, LWSSubjectDominantEyeEnum
+from LWS.DataModels.LWSEnums import LWSSubjectSexEnum, LWSSubjectDominantHandEnum, LWSSubjectDominantEyeEnum
 
 
 class LWSSubjectInfo:

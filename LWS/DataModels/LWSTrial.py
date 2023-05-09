@@ -1,7 +1,7 @@
 import pandas as pd
 
-from LWS_DataModels.LWSSubjectInfo import LWSSubjectInfo
-from LWS_DataModels.LWSArrayStimulus import LWSArrayStimulus
+from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
+from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 
 
 class LWSTrial:
