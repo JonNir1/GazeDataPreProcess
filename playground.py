@@ -5,21 +5,9 @@ import cv2
 import constants as cnst
 import experiment_config as cnfg
 
-from LWS_DataModels.LWSStimuli.LWSArrayStimulus import LWSArrayStimulus
-from LWS_DataModels.LWSSubject.LWSSubject import LWSSubject
+from LWS.scripts.read_subject import read_subject
 
-PATH = r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo"
-subj = LWSSubject(PATH)
-
-
-
-
-bw_stim = LWSArrayStimulus(stim_id=1, stim_type='bw',
-                           super_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1")
-noise_stim = LWSArrayStimulus(stim_id=1, stim_type='noise',
-                              super_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1")
-
-
+sr, trials = read_subject(r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo")
 
 
 
