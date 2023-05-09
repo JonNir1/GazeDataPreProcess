@@ -2,6 +2,7 @@ import pandas as pd
 
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
+from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
 
 
 class LWSTrial:
@@ -15,7 +16,7 @@ class LWSTrial:
                  trial_num: int,
                  subject_info: LWSSubjectInfo,
                  stimulus: LWSArrayStimulus,
-                 behavioral_data: pd.DataFrame):
+                 behavioral_data: LWSBehavioralData):
         self.__trial_num = trial_num
         self.__subject_info = subject_info
         self.__stimulus = stimulus
@@ -34,7 +35,7 @@ class LWSTrial:
         return self.__stimulus
 
     @property
-    def behavioral_data(self) -> pd.DataFrame:
+    def behavioral_data(self) -> LWSBehavioralData:
         return self.__behavioral_data
 
     def __repr__(self) -> str:
