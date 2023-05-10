@@ -8,7 +8,7 @@ from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSTrial import LWSTrial
-from DataParser.scripts.parse_and_merge import parse_tobii_gaze_and_triggers
+from DataParser.scripts.parse_tobii_gaze_and_triggers import parse_tobii_gaze_and_triggers
 
 
 def read_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR) -> Tuple[float, List[LWSTrial]]:
