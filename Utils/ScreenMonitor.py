@@ -44,5 +44,40 @@ class ScreenMonitor:
     def pixel_size(self) -> float:
         # Returns the approximate size of one pixel in centimeters
         diagonal_length = np.sqrt(np.power(self.width, 2) + np.power(self.height, 2))  # size of diagonal in centimeters
-        diagonal_pixels = np.sqrt(np.power(self.resolution[0], 2) + np.power(self.resolution[1], 2))  # size of diagonal in pixels
+        diagonal_pixels = np.sqrt(
+            np.power(self.resolution[0], 2) + np.power(self.resolution[1], 2))  # size of diagonal in pixels
         return diagonal_length / diagonal_pixels
+
+    def calc_angle_between_pixels(self, d: float, p1: Tuple[float, float], p2: Tuple[float, float],
+                                  use_radian: False) -> float:
+        """
+        Calculates the visual angle between two pixels on the screen, given that the viewer is at a distance d (in cm)
+            from the screen.
+        Returns the angle in degrees (or radians if use_radian is True).
+        """
+        x1, y1 = p1
+        x2, y2 = p2
+        euclidean_distance = np.sqrt(np.power(x1 - x2, 2) + np.power(y1 - y2, 2))  # distance in pixels
+        theta = np.arctan(euclidean_distance * self.pixel_size / d)  # angle in radians
+        if use_radian:
+            return theta
+        return np.rad2deg(theta)
+
+    def calc_visual_angle_radius(self, d: float, angle: float) -> float:
+        """
+        Calculates the radius of a circle in pixels, given that the viewer is at a distance d (in cm) from the screen
+            and the visual angle of the circle is angle (in degrees).
+        Returns the radius in pixels.
+        """
+        angle_size_cm = 2 * d * np.tan(np.deg2rad(angle / 2))  # size of the angle, in cm
+        angle_size_pixels = angle_size_cm / self.pixel_size  # size of the angle, in pixels
+        radius = angle_size_pixels / 2  # radius of the circle, in pixels
+        return radius
+
+    @staticmethod
+    def __rad2deg(rad):
+        return rad * 180 / np.pi
+
+    @staticmethod
+    def __deg2rad(deg):
+        return deg * np.pi / 180
