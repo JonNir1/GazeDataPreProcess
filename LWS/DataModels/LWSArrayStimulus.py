@@ -1,8 +1,10 @@
 import os
 import numpy as np
 import pandas as pd
+import cv2
 import matplotlib.pyplot as plt
 from scipy.io import loadmat
+from typing import Tuple
 
 import experiment_config as cnfg
 from LWS.DataModels.LWSEnums import LWSStimulusTypeEnum
@@ -24,7 +26,7 @@ class LWSArrayStimulus:
                  icon_categories: np.ndarray, is_target_icon: np.ndarray):
         self.__stim_id = stim_id
         self.__stim_type = self.__identify_stimulus_type(stim_type)
-        self.__image = image
+        self.__image = image  # color image in BGR format
         self.__icon_paths = icon_paths
         self.__icon_centers = icon_centers
         self.__icon_categories = icon_categories
@@ -43,7 +45,11 @@ class LWSArrayStimulus:
         stim_id = int(os.path.basename(image_path).split('_')[1].split('.')[0])
         stim_type_str = os.path.basename(os.path.dirname(image_path))
         stim_type = LWSArrayStimulus.__identify_stimulus_type(stim_type_str)
-        image = plt.imread(image_path)
+        if stim_type == LWSStimulusTypeEnum.BW:
+            image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+            image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+        else:
+            image = cv2.imread(image_path, cv2.IMREAD_COLOR)
 
         f = loadmat(metadata_path)
         mat = f["imageInfo"]
@@ -75,6 +81,21 @@ class LWSArrayStimulus:
     @property
     def num_targets(self) -> int:
         return int(np.sum(self.__is_target_icon))
+
+    def get_image(self, color_format: str = 'bgr') -> np.ndarray:
+        """
+        Returns the stimulus image in the specified color format, default is BGR.
+        :param color_format: 'bgr', 'rgb', or 'gray'
+        :raises ValueError: if the color format is invalid
+        """
+        color_format = color_format.lower()
+        if color_format == 'bgr':
+            return self.__image
+        if color_format == 'rgb':
+            return cv2.cvtColor(self.__image, cv2.COLOR_BGR2RGB)
+        if color_format == 'gray':
+            return cv2.cvtColor(self.__image, cv2.COLOR_BGR2GRAY)
+        raise ValueError(f"Invalid color format: {color_format}")
 
     def show(self):
         # TODO: add circles around target icons
