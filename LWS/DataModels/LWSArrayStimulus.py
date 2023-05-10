@@ -85,24 +85,20 @@ class LWSArrayStimulus:
     def get_image(self, color_format: str = 'bgr') -> np.ndarray:
         """
         Returns the stimulus image in the specified color format, default is BGR.
+        The returned image is a copy of the original image so that the original image is not modified.
         :param color_format: 'bgr', 'rgb', or 'gray'
         :raises ValueError: if the color format is invalid
         """
         color_format = color_format.lower()
         if color_format == 'bgr':
-            return self.__image
-        if color_format == 'rgb':
-            return cv2.cvtColor(self.__image, cv2.COLOR_BGR2RGB)
-        if color_format == 'gray':
-            return cv2.cvtColor(self.__image, cv2.COLOR_BGR2GRAY)
-        raise ValueError(f"Invalid color format: {color_format}")
-
-    def show(self):
-        # TODO: add circles around target icons
-        color_map = 'gray' if self.stim_type == LWSStimulusTypeEnum.BW else None
-        plt.imshow(self.__image, cmap=color_map)
-        plt.tight_layout()
-        plt.show()
+            img = self.__image
+        elif color_format == 'rgb':
+            img = cv2.cvtColor(self.__image, cv2.COLOR_BGR2RGB)
+        elif color_format == 'gray':
+            img = cv2.cvtColor(self.__image, cv2.COLOR_BGR2GRAY)
+        else:
+            raise ValueError(f"Invalid color format: {color_format}")
+        return img.copy()
 
     def get_target_data(self) -> pd.DataFrame:
         """
@@ -120,6 +116,22 @@ class LWSArrayStimulus:
             "center_y": self.__icon_centers[target_indices][:, 1]
         })
         return target_data
+
+    def show(self, show_targets: bool = False):
+        """
+        Displays the stimulus image. Includes red circles around the target icons if show_targets is True.
+        """
+        im = self.get_image(color_format='bgr')
+        if show_targets:
+            target_data = self.get_target_data()
+            for i, row in target_data.iterrows():
+                x, y = int(row['center_x']), int(row['center_y'])
+                cv2.circle(im, (y, x), 40, (0, 0, 255), 5)
+        im_rgb = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+        plt.imshow(im_rgb)
+        plt.axis('off')
+        plt.tight_layout()
+        plt.show()
 
     @staticmethod
     def __identify_stimulus_type(stim_type) -> LWSStimulusTypeEnum:
