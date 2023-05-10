@@ -4,11 +4,13 @@ from typing import List, Optional
 
 import constants as cnst
 from DataParser.BaseParser import BaseParser
+from Utils.ScreenMonitor import ScreenMonitor
 
 
 class BaseGazeDataParser(BaseParser, ABC):
 
-    def __init__(self, input_path: str, output_path: Optional[str] = None):
+    def __init__(self, input_path: str, output_path: Optional[str] = None,
+                 screen_monitor: Optional[ScreenMonitor] = None):
         if not os.path.exists(input_path):
             raise FileNotFoundError(f'File not found: {input_path}')
         self.input_path = input_path
@@ -16,6 +18,7 @@ class BaseGazeDataParser(BaseParser, ABC):
         num_samples, sampling_rate = self._compute_sample_size_and_sr()
         self.__num_samples = num_samples
         self.__sampling_rate = sampling_rate
+        self.__screen_monitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
 
     @abstractmethod
     def _compute_sample_size_and_sr(self) -> (int, float):
@@ -30,6 +33,11 @@ class BaseGazeDataParser(BaseParser, ABC):
     def sampling_rate(self) -> float:
         # sampling rate of the data
         return self.__sampling_rate
+
+    @property
+    def screen_monitor(self) -> ScreenMonitor:
+        # screen monitor object
+        return self.__screen_monitor
 
     @classmethod
     @abstractmethod

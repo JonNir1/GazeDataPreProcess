@@ -16,10 +16,11 @@ class TobiiGazeDataParser(BaseGazeDataParser):
         df.replace(to_replace=self.MISSING_VALUE(), value=np.nan, inplace=True)
 
         # correct for screen resolution
-        df[self.LEFT_X_COLUMN()] = df[self.LEFT_X_COLUMN()] * conf.SCREEN_RESOLUTION[0]
-        df[self.LEFT_Y_COLUMN()] = df[self.LEFT_Y_COLUMN()] * conf.SCREEN_RESOLUTION[1]
-        df[self.RIGHT_X_COLUMN()] = df[self.RIGHT_X_COLUMN()] * conf.SCREEN_RESOLUTION[0]
-        df[self.RIGHT_Y_COLUMN()] = df[self.RIGHT_Y_COLUMN()] * conf.SCREEN_RESOLUTION[1]
+        screen_w, screen_h = self.screen_monitor.resolution
+        df[self.LEFT_X_COLUMN()] = df[self.LEFT_X_COLUMN()] * screen_w
+        df[self.LEFT_Y_COLUMN()] = df[self.LEFT_Y_COLUMN()] * screen_h
+        df[self.RIGHT_X_COLUMN()] = df[self.RIGHT_X_COLUMN()] * screen_w
+        df[self.RIGHT_Y_COLUMN()] = df[self.RIGHT_Y_COLUMN()] * screen_h
 
         # reorder + rename columns to match the standard
         df = df[self.get_columns()]
