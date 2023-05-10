@@ -49,7 +49,7 @@ class SaccadeEvent(BaseEvent):
     def mean_velocity(self) -> float:
         # returns the mean velocity of the saccade in degrees per second
         edge_points = np.array([self.start_point, self.end_point]).reshape((2, 2))
-        total_degrees = vau.pixels2deg(edge_points)
+        total_degrees = vau.pixels2deg(edge_points)  # TODO: replace this with ScreenMonitor implementation
         return 1000 * total_degrees / self.duration
 
     @property

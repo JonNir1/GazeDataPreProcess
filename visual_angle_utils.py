@@ -25,6 +25,7 @@ def pixels2deg(pixels: np.ndarray,
 
     :return: visual_angle: float - the visual angle between the two points in degrees.
     """
+    # TODO: replace this with ScreenMonitor implementation
     x1, y1, x2, y2 = pixels.flatten()
     pixel_width_centimeters = __pixel_size_centimeters(screen_size[0], screen_resolution[0])
     horizontal_distance_centimeters = abs(x1 - x2) * pixel_width_centimeters
