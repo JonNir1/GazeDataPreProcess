@@ -73,11 +73,3 @@ class ScreenMonitor:
         angle_size_pixels = angle_size_cm / self.pixel_size  # size of the angle, in pixels
         radius = angle_size_pixels / 2  # radius of the circle, in pixels
         return radius
-
-    @staticmethod
-    def __rad2deg(rad):
-        return rad * 180 / np.pi
-
-    @staticmethod
-    def __deg2rad(deg):
-        return deg * np.pi / 180
