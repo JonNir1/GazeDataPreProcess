@@ -1,9 +1,10 @@
 import os
 import re
 import pandas as pd
-from typing import Tuple, List
+from typing import Optional, Tuple, List
 
 import experiment_config as cnfg
+from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
@@ -11,21 +12,24 @@ from LWS.DataModels.LWSTrial import LWSTrial
 from DataParser.scripts.parse_tobii_gaze_and_triggers import parse_tobii_gaze_and_triggers
 
 
-def read_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR) -> Tuple[float, List[LWSTrial]]:
+def read_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR,
+                 screen_monitor: Optional[ScreenMonitor] = None) -> Tuple[float, List[LWSTrial]]:
     if not os.path.isdir(subject_dir):
         raise NotADirectoryError(f"Directory {subject_dir} does not exist.")
     if not os.path.isdir(stimuli_dir):
         raise NotADirectoryError(f"Directory {stimuli_dir} does not exist.")
+    screen_monitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
 
     trials = []
     subject_info = _read_subject_info(subject_dir)
-    sr, trial_dataframes = _read_behavioral_data(subject_dir)
+    sr, trial_dataframes = _read_behavioral_data(subject_dir, screen_monitor)
     for i, trial_df in enumerate(trial_dataframes):
         behavioral_data = LWSBehavioralData(trial_df)
         stimulus = LWSArrayStimulus.from_stimulus_name(stim_id=behavioral_data.image_num,
                                                        stim_type=behavioral_data.stim_type,
                                                        stim_directory=stimuli_dir)
-        lws_trial = LWSTrial(trial_num=i+1, subject_info=subject_info, behavioral_data=behavioral_data, stimulus=stimulus)
+        lws_trial = LWSTrial(trial_num=i + 1, subject_info=subject_info, behavioral_data=behavioral_data,
+                             stimulus=stimulus)
         trials.append(lws_trial)
     return sr, trials
 
@@ -39,7 +43,7 @@ def _read_subject_info(subject_dir: str) -> LWSSubjectInfo:
     return LWSSubjectInfo.from_eprime_file(subject_info_paths[0])
 
 
-def _read_behavioral_data(subject_dir: str) -> Tuple[float, List[pd.DataFrame]]:
+def _read_behavioral_data(subject_dir: str, screen_monitor: ScreenMonitor) -> Tuple[float, List[pd.DataFrame]]:
     gaze_files = __find_files_by_suffix(subject_dir, "GazeData")
     trigger_files = __find_files_by_suffix(subject_dir, "TriggerLog")
 
@@ -55,7 +59,9 @@ def _read_behavioral_data(subject_dir: str) -> Tuple[float, List[pd.DataFrame]]:
     if len(gaze_files) != 1:
         # TODO: support multiple sessions
         raise NotImplementedError("Multiple sessions for a single subject are not supported yet.")
-    sr, tobii_trials = parse_tobii_gaze_and_triggers(gaze_files[0], trigger_files[0])
+    sr, tobii_trials = parse_tobii_gaze_and_triggers(gaze_path=gaze_files[0],
+                                                     trigger_path=trigger_files[0],
+                                                     screen_monitor=screen_monitor)
     return sr, tobii_trials
 
 
