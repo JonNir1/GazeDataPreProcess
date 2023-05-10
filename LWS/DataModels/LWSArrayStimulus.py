@@ -82,6 +82,11 @@ class LWSArrayStimulus:
     def num_targets(self) -> int:
         return int(np.sum(self.__is_target_icon))
 
+    @property
+    def icons_shape(self) -> Tuple[int, int]:
+        # returns the number of rows & columns of icons in the stimulus
+        return self.__is_target_icon.shape
+
     def get_image(self, color_format: str = 'bgr') -> np.ndarray:
         """
         Returns the stimulus image in the specified color format, default is BGR.
