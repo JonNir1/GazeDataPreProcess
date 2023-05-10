@@ -10,9 +10,6 @@ from DataParser.BaseGazeDataParser import BaseGazeDataParser
 class TobiiGazeDataParser(BaseGazeDataParser):
     # TODO: implement save_data
 
-    def __init__(self, input_path: str, output_path: Optional[str] = None):
-        super().__init__(input_path, output_path)
-
     def parse(self) -> pd.DataFrame:
         df = pd.read_csv(self.input_path, sep='\t')
         df.drop(columns=[col for col in df.columns if col not in self.get_columns()], inplace=True)
