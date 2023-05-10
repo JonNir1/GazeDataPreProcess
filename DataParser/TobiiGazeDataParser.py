@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from typing import List
+from typing import List, Optional
 
 import experiment_config as conf
 import constants as cnst
@@ -10,7 +10,7 @@ from DataParser.BaseGazeDataParser import BaseGazeDataParser
 class TobiiGazeDataParser(BaseGazeDataParser):
     # TODO: implement save_data
 
-    def __init__(self, input_path: str, output_path=None):
+    def __init__(self, input_path: str, output_path: Optional[str] = None):
         super().__init__(input_path, output_path)
 
     def parse(self) -> pd.DataFrame:
