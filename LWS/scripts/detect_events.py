@@ -2,7 +2,6 @@ import numpy as np
 import warnings as w
 from typing import Optional, Tuple
 
-import constants as cnst
 from LWS.DataModels.LWSTrial import LWSTrial
 from EventDetectors.BaseDetector import BaseDetector
 
@@ -40,7 +39,7 @@ def detect_all_events(trial: LWSTrial, sampling_rate: float, **kwargs) -> Tuple[
 
     """
     stuff_with = __extract_argument_stuff_with(kwargs.get('stuff_with', None))
-    x, y = __extract_gaze_datapoints(trial)
+    _ts, x, y = trial.get_raw_gaze_coordinates()
 
     blink_detector_type = kwargs.pop("blink_detector_type", None)
     blink_iet = kwargs.pop("blink_inter_event_time", 5)
@@ -243,16 +242,3 @@ def __extract_argument_stuff_with(stuff_with: Optional[str]) -> Optional[str]:
     if stuff_with not in ['fixation', 'saccade']:
         raise ValueError('stuff_with must be either None, "fixation" or "saccade".')
     return stuff_with
-
-
-def __extract_gaze_datapoints(trial: LWSTrial) -> Tuple[np.ndarray, np.ndarray]:
-    eye = trial.subject_info.dominant_eye.lower()
-    if eye == 'left':
-        x = trial.behavioral_data.get(cnst.LEFT_X).values
-        y = trial.behavioral_data.get(cnst.LEFT_Y).values
-    elif eye == 'right':
-        x = trial.behavioral_data.get(cnst.RIGHT_X).values
-        y = trial.behavioral_data.get(cnst.RIGHT_Y).values
-    else:
-        raise ValueError(f'Invalid dominant eye: {eye}')
-    return x, y

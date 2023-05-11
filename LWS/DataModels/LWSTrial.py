@@ -1,5 +1,7 @@
-import pandas as pd
+import numpy as np
+from typing import Tuple
 
+import constants as cnst
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
@@ -52,6 +54,20 @@ class LWSTrial:
         if self.is_processed:
             raise RuntimeError("Cannot set behavioral data after trial has been processed.")
         self.__behavioral_data = behavioral_data
+
+    def get_raw_gaze_coordinates(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        # Returns the timestamp, x and y coordinates of the gaze data for the dominant eye.
+        ts = self.behavioral_data.get(cnst.MICROSECONDS).values / 1000
+        eye = self.subject_info.dominant_eye.lower()
+        if eye == 'left':
+            x = self.behavioral_data.get(cnst.LEFT_X).values
+            y = self.behavioral_data.get(cnst.LEFT_Y).values
+        elif eye == 'right':
+            x = self.behavioral_data.get(cnst.RIGHT_X).values
+            y = self.behavioral_data.get(cnst.RIGHT_Y).values
+        else:
+            raise ValueError(f'Invalid dominant eye: {eye}')
+        return ts, x, y
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}_S{self.__subject_info.subject_id}_T{self.__trial_num}"
