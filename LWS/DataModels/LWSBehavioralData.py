@@ -8,8 +8,8 @@ class LWSBehavioralData:
     """
     # TODO: decode+encode as pkl file
 
-    def __init__(self, behavioral_data: pd.DataFrame):
-        self.__behavioral_data = behavioral_data
+    def __init__(self, data: pd.DataFrame):
+        self.__data = data
 
     @property
     def trial_num(self) -> int:
@@ -26,7 +26,7 @@ class LWSBehavioralData:
 
     @property
     def columns(self) -> list:
-        return self.__behavioral_data.columns.to_list()
+        return self.__data.columns.to_list()
 
     def get(self, column: str) -> pd.Series:
-        return self.__behavioral_data[column]
+        return self.__data[column]
