@@ -4,6 +4,7 @@ import pandas as pd
 import visual_angle_utils as vau
 import velocity_utils as vu
 from GazeEvents.BaseEvent import BaseEvent
+from Utils.ScreenMonitor import ScreenMonitor
 
 
 class SaccadeEvent(BaseEvent):
@@ -24,16 +25,11 @@ class SaccadeEvent(BaseEvent):
             - duration: saccade's duration in milliseconds
             - start_point: saccade's start point (2D pixel coordinates)
             - end_point: saccade's end point (2D pixel coordinates)
-            - mean_velocity: event's mean velocity in degrees per second
-            - peak_velocity: event's peak velocity in degrees per second
         """
         series = super().to_series()
         series["start_point"] = self.start_point
         series["end_point"] = self.end_point
-        series["mean_velocity"] = self.mean_velocity
-        series["peak_velocity"] = self.peak_velocity
         return series
-
 
     @property
     def start_point(self) -> np.ndarray:
@@ -45,17 +41,28 @@ class SaccadeEvent(BaseEvent):
         # returns a 2D array of the X,Y coordinates of the saccade's end point
         return np.array([self.__x[-1], self.__y[-1]])
 
-    @property
-    def mean_velocity(self) -> float:
+    def calculate_mean_velocity(self, d: float, screen_monitor: ScreenMonitor) -> float:
+        """
+        Calculates the mean velocity of the saccade in degrees per second.
+        :param d: the distance between the screen and the participant's eyes in centimeters
+        :param screen_monitor: the ScreenMonitor object that holds information about the screen used in the experiment
+        """
         # returns the mean velocity of the saccade in degrees per second
-        edge_points = np.array([self.start_point, self.end_point]).reshape((2, 2))
-        total_degrees = vau.pixels2deg(edge_points)  # TODO: replace this with ScreenMonitor implementation
-        return 1000 * total_degrees / self.duration
+        x_s, y_s = self.start_point
+        x_e, y_e = self.end_point
+        angle = screen_monitor.calc_angle_between_pixels(d=d, p1=(x_s, y_s), p2=(x_e, y_e), use_radians=False)
+        return 1000 * angle / self.duration
 
-    @property
-    def peak_velocity(self) -> float:
-        # returns the peak velocity between two adjacent samples of the saccade, in degrees per second
-        velocities = vu.calculate_angular_velocity(self.__x, self.__y, self.__sampling_rate)
+    def calculate_peak_velocity(self, d: float, screen_monitor: ScreenMonitor) -> float:
+        """
+        Calculates the maximum velocity of the saccade in degrees per second.
+        :param d: the distance between the screen and the participant's eyes in centimeters
+        :param screen_monitor: the ScreenMonitor object that holds information about the screen used in the experiment
+        """
+        velocities = vu.calculate_angular_velocity(x=self.__x, y=self.__y,
+                                                   sr=self.__sampling_rate, d=d,
+                                                   screen_monitor=screen_monitor,
+                                                   use_radians=False)
         return np.nanmax(velocities)
 
     @classmethod

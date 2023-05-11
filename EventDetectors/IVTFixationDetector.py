@@ -50,8 +50,8 @@ class IVTFixationDetector(BaseFixationDetector):
         :param y: y-coordinates of the gaze data.
         :return: A boolean array of the same length as the input data, where True indicates a fixation.
         """
-        velocities = vu.calculate_angular_velocity(x, y, self.sampling_rate)
-        is_fixation_candidate = velocities <= self.velocity_threshold
+        # velocities = vu.calculate_angular_velocity(x, y, self.sampling_rate)
+        # is_fixation_candidate = velocities <= self.velocity_threshold
         # TODO: merge close candidates and filter out short ones
         raise NotImplementedError
 
