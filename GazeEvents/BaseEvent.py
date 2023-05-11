@@ -24,9 +24,10 @@ class BaseEvent(ABC):
             - start_time: event's start time in milliseconds
             - end_time: event's end time in milliseconds
             - duration: event's duration in milliseconds
+            - sampling_rate: the sampling rate used to record the event
         """
-        return pd.Series(data=[self.start_time, self.end_time, self.duration],
-                         index=["start_time", "end_time", "duration"])
+        return pd.Series(data=[self.start_time, self.end_time, self.duration, self.__sampling_rate],
+                         index=["start_time", "end_time", "duration", "sampling_rate"])
 
     @property
     def start_time(self) -> float:
