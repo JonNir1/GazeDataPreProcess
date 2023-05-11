@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Tuple
+from typing import Tuple, Optional
 
 import experiment_config as cnfg
 
@@ -48,15 +48,25 @@ class ScreenMonitor:
             np.power(self.resolution[0], 2) + np.power(self.resolution[1], 2))  # size of diagonal in pixels
         return diagonal_length / diagonal_pixels
 
-    def calc_angle_between_pixels(self, d: float, p1: Tuple[float, float], p2: Tuple[float, float],
+    def calc_angle_between_pixels(self, d: float,
+                                  p1: Optional[Tuple[Optional[float], Optional[float]]],
+                                  p2: Optional[Tuple[Optional[float], Optional[float]]],
                                   use_radian: False) -> float:
         """
         Calculates the visual angle between two pixels on the screen, given that the viewer is at a distance d (in cm)
             from the screen.
-        Returns the angle in degrees (or radians if use_radian is True).
+        Returns the angle in degrees (or radians if `use_radian` is True).
+        Returns np.nan if any of the given points is None or if any of the coordinates is None or np.nan.
         """
+        if p1 is None or p2 is None:
+            return np.nan
         x1, y1 = p1
         x2, y2 = p2
+        if x1 is None or y1 is None or x2 is None or y2 is None:
+            return np.nan
+        if np.isnan(x1) or np.isnan(y1) or np.isnan(x2) or np.isnan(y2):
+            return np.nan
+
         euclidean_distance = np.sqrt(np.power(x1 - x2, 2) + np.power(y1 - y2, 2))  # distance in pixels
         theta = np.arctan(euclidean_distance * self.pixel_size / d)  # angle in radians
         if use_radian:
