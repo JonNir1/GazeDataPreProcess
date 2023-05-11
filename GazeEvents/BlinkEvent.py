@@ -1,8 +1,8 @@
 import experiment_config as cnfg
-from GazeEvents.BaseEvent import BaseEvent
+from GazeEvents.BaseGazeEvent import BaseGazeEvent
 
 
-class BlinkEvent(BaseEvent):
+class BlinkEvent(BaseGazeEvent):
 
     @property
     def is_outlier(self) -> bool:

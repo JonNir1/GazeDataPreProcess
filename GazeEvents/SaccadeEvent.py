@@ -3,11 +3,11 @@ import pandas as pd
 
 import experiment_config as cnfg
 from Utils import velocity_utils as vu
-from GazeEvents.BaseEvent import BaseEvent
+from GazeEvents.BaseGazeEvent import BaseGazeEvent
 from Utils.ScreenMonitor import ScreenMonitor
 
 
-class SaccadeEvent(BaseEvent):
+class SaccadeEvent(BaseGazeEvent):
 
     def __init__(self, timestamps: np.ndarray, sampling_rate: float, x: np.ndarray, y: np.ndarray):
         super().__init__(timestamps=timestamps, sampling_rate=sampling_rate)

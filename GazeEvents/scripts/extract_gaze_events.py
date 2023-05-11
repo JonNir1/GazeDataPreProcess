@@ -2,12 +2,12 @@ import numpy as np
 import pandas as pd
 from typing import Optional, List
 
-from GazeEvents.BaseEvent import BaseEvent
+from GazeEvents.BaseGazeEvent import BaseGazeEvent
 
 
 def extract_events_to_list(event_type: str,
                            timestamps: np.ndarray, is_event: np.ndarray, sampling_rate: float,
-                           x: Optional[np.ndarray] = None, y: Optional[np.ndarray] = None) -> List[BaseEvent]:
+                           x: Optional[np.ndarray] = None, y: Optional[np.ndarray] = None) -> List[BaseGazeEvent]:
     """
     Extracts events of the given type from the given data and returns a list of Event objects.
     :param event_type: type of event to extract. Must be one of 'blink', 'saccade' or 'fixation'

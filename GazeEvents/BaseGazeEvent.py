@@ -3,7 +3,7 @@ import pandas as pd
 from abc import ABC, abstractmethod
 
 
-class BaseEvent(ABC):
+class BaseGazeEvent(ABC):
 
     def __init__(self, timestamps: np.ndarray, sampling_rate: float):
         if np.isnan(timestamps).any() or np.isinf(timestamps).any():

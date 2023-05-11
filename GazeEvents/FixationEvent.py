@@ -2,10 +2,10 @@ import numpy as np
 import pandas as pd
 
 import experiment_config as cnfg
-from GazeEvents.BaseEvent import BaseEvent
+from GazeEvents.BaseGazeEvent import BaseGazeEvent
 
 
-class FixationEvent(BaseEvent):
+class FixationEvent(BaseGazeEvent):
 
     def __init__(self, timestamps: np.ndarray, sampling_rate: float, x: np.ndarray, y: np.ndarray):
         super().__init__(timestamps=timestamps, sampling_rate=sampling_rate)
