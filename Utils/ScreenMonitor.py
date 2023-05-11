@@ -10,7 +10,7 @@ class ScreenMonitor:
     Default values are taken from the experiment_config.py file.
     """
 
-    def __init__(self, width: int, height: int, refresh_rate: float, resolution: Tuple[float, float]):
+    def __init__(self, width: float, height: float, refresh_rate: float, resolution: Tuple[int, int]):
         self.__width = width
         self.__height = height
         self.__refresh_rate = refresh_rate
@@ -21,12 +21,12 @@ class ScreenMonitor:
         return cls(cnfg.SCREEN_WIDTH, cnfg.SCREEN_HEIGHT, cnfg.SCREEN_REFRESH_RATE, cnfg.SCREEN_RESOLUTION)
 
     @property
-    def width(self) -> int:
+    def width(self) -> float:
         # width of the screen in centimeters
         return self.__width
 
     @property
-    def height(self) -> int:
+    def height(self) -> float:
         # height of the screen in centimeters
         return self.__height
 
@@ -36,7 +36,7 @@ class ScreenMonitor:
         return self.__refresh_rate
 
     @property
-    def resolution(self) -> Tuple[float, float]:
+    def resolution(self) -> Tuple[int, int]:
         # resolution of the screen, i.e. number of pixels in width and height
         return self.__resolution
 
