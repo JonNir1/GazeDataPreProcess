@@ -1,5 +1,5 @@
 import pandas as pd
-from typing import Tuple
+from typing import Tuple, List, Union
 from LWS.DataModels.LWSEnums import LWSStimulusTypeEnum
 
 
@@ -33,8 +33,9 @@ class LWSBehavioralData:
     def columns(self) -> list:
         return self.__data.columns.to_list()
 
-    def get(self, column: str) -> pd.Series:
-        return self.__data[column]
+    def get(self, columns: Union[str, List[str]]) -> Union[pd.Series, pd.DataFrame]:
+        # Returns the requested column(s) from the data
+        return self.__data[columns]
 
     def __len__(self) -> int:
         return len(self.__data)
