@@ -6,29 +6,23 @@ import constants as cnst
 import experiment_config as cnfg
 
 from LWS.scripts.read_subject import read_subject
+from LWS.scripts.detect_events import detect_all_events
 from Utils.ScreenMonitor import ScreenMonitor
 
 monitor = ScreenMonitor.from_config()
 sr, trials = read_subject(subject_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo",
                           screen_monitor=monitor)
 trial1 = trials[0]
-
-
-
-from LWS.scripts.parse_tobii_gaze_and_triggers import parse_tobii_gaze_and_triggers
-from EventDetectors.scripts.detect_events import detect_all_events
-from GazeEvents.scripts.extract_gaze_events import extract_events_to_dataframe
-
-sr, trial_dfs = parse_tobii_gaze_and_triggers(r"C:\Users\jonathanni\Desktop\GazeData.txt",
-                                              r"C:\Users\jonathanni\Desktop\TriggerLog.txt", start_trigger=254,
-                                              end_trigger=255)
-t2 = trial_dfs[2]
-
-is_blink, is_saccade, is_fixation = detect_all_events(x=t2[cnst.LEFT_X].values, y=t2[cnst.LEFT_Y].values,
-                                                      sampling_rate=sr,
+is_blink, is_saccade, is_fixation = detect_all_events(trial=trial1, sampling_rate=sr,
                                                       stuff_with='fixation',
                                                       blink_detector_type='missing data',
                                                       saccade_detector_type='engbert')
+
+
+
+from GazeEvents.scripts.extract_gaze_events import extract_events_to_dataframe
+
+
 t2_with_events = pd.concat([t2, pd.DataFrame({'is_blink': is_blink, 'is_saccade': is_saccade,
                                               'is_fixation': is_fixation})], axis=1)
 

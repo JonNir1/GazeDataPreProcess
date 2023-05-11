@@ -1,52 +1,58 @@
-import warnings as w
 import numpy as np
-from typing import Optional
+import warnings as w
+from typing import Optional, Tuple
 
+import constants as cnst
+from LWS.DataModels.LWSTrial import LWSTrial
 from EventDetectors.BaseDetector import BaseDetector
 
 
-def detect_all_events(x: np.ndarray, y: np.ndarray,
-                      sampling_rate: float, stuff_with: Optional[str] = None,
-                      **kwargs) -> (np.ndarray, np.ndarray, np.ndarray):
+def detect_all_events(trial: LWSTrial, sampling_rate: float, **kwargs) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
-    Detects blinks, saccades and fixations in the given gaze data (in that order).
-    :param x: x-coordinates of gaze data
-    :param y: y-coordinates of gaze data
-    :param sampling_rate: sampling rate of the data in Hz
-    :param stuff_with: str; either "saccade", "fixation" or None. Controls how to fill unidentified samples.
-        - If None: returns the events as identified by the respective detectors
-        - If "saccade":
-            -- if a saccade detector was specified, returns the events as identified by the saccade detector and warns
-                for unexpected usage
-            --  if no saccade detector was specified, returns True for samples that were not identified as blinks or
-                fixations.
-        - If "fixation":
-            -- same behavior as "saccade", but for fixations.
+    Detects all types of events in the given trial: fixations, saccades, and blinks.
+    Returns a tuple of three boolean arrays, one for each type of event.
 
-    :keyword
-        - blink_detector_type: str; type of blink detector to use, None for no blink detection
-        - saccade_detector_type: str; type of saccade detector to use, None for no saccade detection
-        - fixation_detector_type: str; type of fixation detector to use, None for no fixation detection
-        - See additional keyword arguments in the respective detection functions.
+    :params:
+        - trial: The trial to detect events in.
+        - sampling_rate: The sampling rate of the eye tracker.
 
-    :return: is_blink, is_saccade, is_fixation: arrays of booleans, where True indicates an event
+    :kwargs:
+        - stuff_with: either "saccade", "fixation" or None. Controls how to fill unidentified samples.
+        - blink_detector_type: The type of blink detector to use. If None, no blink detection is performed.
+        - saccade_detector_type: The type of saccade detector to use. If None, no saccade detection is performed.
+        - fixation_detector_type: The type of fixation detector to use. If None, no fixation detection is performed.
+
+    blink kwargs:
+        - blink_inter_event_time: minimal time between two events in ms;                                default: 5 ms
+        - blink_min_duration: minimal duration of a blink in ms;                                        default: 50 ms
+        - missing_value: default value indicating missing data, used by MissingDataBlinkDetector;       default: np.nan
+
+    saccade kwargs:
+        - saccade_inter_event_time: minimal time between two events in ms;                              default: 5 ms
+        - saccade_min_duration: minimal duration of a blink in ms;                                      default: 5 ms
+        - derivation_window_size: window size for derivation in ms;                                     default: 3 ms
+        - lambda_noise_threshold: threshold for lambda noise, used by EngbertSaccadeDetector;           default: 5
+
+    fixation kwargs:
+        - fixation_inter_event_time: minimal time between two events in ms;                             default: 5 ms
+        - fixation_min_duration: minimal duration of a blink in ms;                                     default: 55 ms
+        - velocity_threshold: maximal velocity allowed within a fixation, used by IVTFixationDetector;  default: 30 deg/s
+
     """
+    stuff_with = __extract_argument_stuff_with(kwargs.get('stuff_with', None))
+    x, y = __extract_gaze_datapoints(trial)
+
     blink_detector_type = kwargs.pop("blink_detector_type", None)
-    is_blink = detect_blinks(blink_detector_type, x, y, sampling_rate, **kwargs)
+    blink_iet = kwargs.pop("blink_inter_event_time", 5)
+    is_blink = detect_blinks(blink_detector_type, x, y, sampling_rate, inter_event_time=blink_iet, **kwargs)
 
     saccade_detector_type = kwargs.pop("saccade_detector_type", None)
-    is_saccade = detect_saccades(saccade_detector_type, x, y, sampling_rate, **kwargs)
+    saccade_iet = kwargs.pop("saccade_inter_event_time", 5)
+    is_saccade = detect_saccades(saccade_detector_type, x, y, sampling_rate, inter_event_time=saccade_iet, **kwargs)
 
     fixation_detector_type = kwargs.pop("fixation_detector_type", None)
-    is_fixation = detect_fixations(fixation_detector_type, x, y, sampling_rate, **kwargs)
-
-    # classify unidentified samples with value specified in stuff_with:
-    if not stuff_with:
-        return is_blink, is_saccade, is_fixation
-    if type(stuff_with) != str:
-        raise TypeError("stuff_with must be a string or None")
-    if stuff_with.lower() not in ["saccade", "fixation"]:
-        raise ValueError("stuff_with must be either 'saccade' or 'fixation'")
+    fixation_iet = kwargs.pop("fixation_inter_event_time", 5)
+    is_fixation = detect_fixations(fixation_detector_type, x, y, sampling_rate, inter_event_time=fixation_iet, **kwargs)
 
     if stuff_with.lower() == "saccade":
         if saccade_detector_type:
@@ -228,3 +234,25 @@ def _get_event_detector(detector_type: str, min_duration: float, sampling_rate: 
 
     # reached here if the detector type is unknown
     raise ValueError("Unknown event detector type: {}".format(detector_type))
+
+
+def __extract_argument_stuff_with(stuff_with: Optional[str]) -> Optional[str]:
+    if stuff_with is None:
+        return stuff_with
+    stuff_with = stuff_with.lower()
+    if stuff_with not in ['fixation', 'saccade']:
+        raise ValueError('stuff_with must be either None, "fixation" or "saccade".')
+    return stuff_with
+
+
+def __extract_gaze_datapoints(trial: LWSTrial) -> Tuple[np.ndarray, np.ndarray]:
+    eye = trial.subject_info.dominant_eye.lower()
+    if eye == 'left':
+        x = trial.behavioral_data.get(cnst.LEFT_X).values
+        y = trial.behavioral_data.get(cnst.LEFT_Y).values
+    elif eye == 'right':
+        x = trial.behavioral_data.get(cnst.RIGHT_X).values
+        y = trial.behavioral_data.get(cnst.RIGHT_Y).values
+    else:
+        raise ValueError(f'Invalid dominant eye: {eye}')
+    return x, y
