@@ -51,11 +51,11 @@ class ScreenMonitor:
     def calc_angle_between_pixels(self, d: float,
                                   p1: Optional[Tuple[Optional[float], Optional[float]]],
                                   p2: Optional[Tuple[Optional[float], Optional[float]]],
-                                  use_radian: False) -> float:
+                                  use_radians: False) -> float:
         """
         Calculates the visual angle between two pixels on the screen, given that the viewer is at a distance d (in cm)
             from the screen.
-        Returns the angle in degrees (or radians if `use_radian` is True).
+        Returns the angle in degrees (or radians if `use_radians` is True).
         Returns np.nan if any of the given points is None or if any of the coordinates is None or np.nan.
         """
         if p1 is None or p2 is None:
@@ -69,7 +69,7 @@ class ScreenMonitor:
 
         euclidean_distance = np.sqrt(np.power(x1 - x2, 2) + np.power(y1 - y2, 2))  # distance in pixels
         theta = np.arctan(euclidean_distance * self.pixel_size / d)  # angle in radians
-        if use_radian:
+        if use_radians:
             return theta
         return np.rad2deg(theta)
 
