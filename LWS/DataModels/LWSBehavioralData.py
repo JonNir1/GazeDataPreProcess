@@ -1,5 +1,5 @@
 import pandas as pd
-from typing import Tuple, List, Union
+from typing import Tuple, List, Union, Optional
 from LWS.DataModels.LWSEnums import LWSStimulusTypeEnum
 
 
@@ -7,6 +7,7 @@ class LWSBehavioralData:
     """
     Represents the behavioral data for a single trial in the LWS Demo experiment.
     """
+
     # TODO: decode+encode as pkl file
 
     def __init__(self, data: pd.DataFrame):
@@ -36,6 +37,18 @@ class LWSBehavioralData:
     def get(self, columns: Union[str, List[str]]) -> Union[pd.Series, pd.DataFrame]:
         # Returns the requested column(s) from the data
         return self.__data[columns]
+
+    def concat(self, extra_data: Union[pd.DataFrame, pd.Series],
+               deep_copy: bool = False) -> Optional["LWSBehavioralData"]:
+        """
+        Concatenates the extra data to the end of the current data.
+        If `deep_copy` is True, returns a new LWSBehavioralData object with the concatenated data. Otherwise, the data
+            is concatenated in-place and returns None.
+        """
+        new_df = pd.concat([self.__data, extra_data], axis=1)
+        if deep_copy:
+            return LWSBehavioralData(new_df)
+        self.__data = new_df
 
     def __len__(self) -> int:
         return len(self.__data)
