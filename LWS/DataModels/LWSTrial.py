@@ -51,6 +51,7 @@ class LWSTrial:
         return self.__behavioral_data
 
     def set_behavioral_data(self, behavioral_data: LWSBehavioralData):
+        # TODO: delete this if not needed
         if self.is_processed:
             raise RuntimeError("Cannot set behavioral data after trial has been processed.")
         self.__behavioral_data = behavioral_data
