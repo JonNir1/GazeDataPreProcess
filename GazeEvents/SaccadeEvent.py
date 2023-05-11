@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+import experiment_config as cnfg
 from Utils import velocity_utils as vu
 from GazeEvents.BaseEvent import BaseEvent
 from Utils.ScreenMonitor import ScreenMonitor
@@ -29,6 +30,13 @@ class SaccadeEvent(BaseEvent):
         series["start_point"] = self.start_point
         series["end_point"] = self.end_point
         return series
+
+    @property
+    def is_outlier(self) -> bool:
+        if self.duration < cnfg.DEFAULT_SACCADE_MINIMUM_DURATION:
+            return True
+        # TODO: check min, max velocity
+        return False
 
     @property
     def start_point(self) -> np.ndarray:

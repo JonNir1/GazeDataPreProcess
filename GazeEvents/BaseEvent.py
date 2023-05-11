@@ -25,9 +25,10 @@ class BaseEvent(ABC):
             - end_time: event's end time in milliseconds
             - duration: event's duration in milliseconds
             - sampling_rate: the sampling rate used to record the event
+            - is_outlier: boolean indicating whether the event is an outlier or not
         """
-        return pd.Series(data=[self.start_time, self.end_time, self.duration, self.__sampling_rate],
-                         index=["start_time", "end_time", "duration", "sampling_rate"])
+        return pd.Series(data=[self.start_time, self.end_time, self.duration, self.__sampling_rate, self.is_outlier],
+                         index=["start_time", "end_time", "duration", "sampling_rate", "is_outlier"])
 
     @property
     def start_time(self) -> float:
@@ -43,6 +44,11 @@ class BaseEvent(ABC):
     def duration(self) -> float:
         # Event's duration in milliseconds
         return self.end_time - self.start_time
+
+    @property
+    @abstractmethod
+    def is_outlier(self) -> bool:
+        raise NotImplementedError
 
     @classmethod
     @abstractmethod

@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+import experiment_config as cnfg
 from GazeEvents.BaseEvent import BaseEvent
 
 
@@ -27,6 +28,13 @@ class FixationEvent(BaseEvent):
         series["center_of_mass"] = self.center_of_mass
         series["std"] = self.std
         return series
+
+    @property
+    def is_outlier(self) -> bool:
+        if self.duration < cnfg.DEFAULT_FIXATION_MINIMUM_DURATION:
+            return True
+        # TODO: check max velocity
+        return False
 
     @property
     def center_of_mass(self) -> np.ndarray:
