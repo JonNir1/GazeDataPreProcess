@@ -9,9 +9,9 @@ from LWS.scripts.read_subject import read_subject
 from LWS.scripts.detect_events import detect_all_events
 from Utils.ScreenMonitor import ScreenMonitor
 
-monitor = ScreenMonitor.from_config()
+sm = ScreenMonitor.from_config()
 sr, trials = read_subject(subject_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo",
-                          screen_monitor=monitor)
+                          screen_monitor=sm)
 trial1 = trials[0]
 is_blink, is_saccade, is_fixation = detect_all_events(trial=trial1, sampling_rate=sr,
                                                       stuff_with='fixation',
