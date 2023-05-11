@@ -1,8 +1,6 @@
-import os
 import numpy as np
 import pandas as pd
 import cv2
-import matplotlib.pyplot as plt
 
 import constants as cnst
 import experiment_config as cnfg
@@ -17,7 +15,7 @@ trial1 = trials[0]
 
 
 
-from DataParser.scripts.parse_tobii_gaze_and_triggers import parse_tobii_gaze_and_triggers
+from LWS.scripts.parse_tobii_gaze_and_triggers import parse_tobii_gaze_and_triggers
 from EventDetectors.scripts.detect_events import detect_all_events
 from GazeEvents.scripts.extract_gaze_events import extract_events_to_dataframe
 
