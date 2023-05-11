@@ -1,8 +1,7 @@
 import numpy as np
-import pandas as pd
 from typing import List, Tuple
 
-import velocity_utils as vu
+from Utils import velocity_utils as vu
 from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector, DEFAULT_SACCADE_MINIMUM_DURATION
 
 DEFAULT_DERIVATION_WINDOW_SIZE = 3

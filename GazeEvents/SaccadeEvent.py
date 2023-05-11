@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-import velocity_utils as vu
+from Utils import velocity_utils as vu
 from GazeEvents.BaseEvent import BaseEvent
 from Utils.ScreenMonitor import ScreenMonitor
 

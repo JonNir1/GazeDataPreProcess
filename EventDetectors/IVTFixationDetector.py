@@ -1,6 +1,6 @@
 import numpy as np
 
-import velocity_utils as vu
+from Utils import velocity_utils as vu
 from EventDetectors.BaseFixationDetector import BaseFixationDetector, DEFAULT_FIXATION_MINIMUM_DURATION
 
 DEFAULT_VELOCITY_THRESHOLD = 20  # degrees per second

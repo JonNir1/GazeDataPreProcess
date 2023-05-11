@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-import velocity_utils as vu
+from Utils import velocity_utils as vu
 
 
 class TestUtils(unittest.TestCase):
