@@ -56,7 +56,7 @@ class BaseEvent(ABC):
         return self.__repr__()
 
     def __eq__(self, other):
-        if not isinstance(other, BaseEvent):
+        if not isinstance(other, type(self)):
             return False
         if self.__sampling_rate != other.__sampling_rate:
             return False

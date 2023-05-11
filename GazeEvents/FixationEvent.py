@@ -43,8 +43,6 @@ class FixationEvent(BaseEvent):
         return "fixation"
 
     def __eq__(self, other):
-        if not isinstance(other, FixationEvent):
-            return False
         if not super().__eq__(other):
             return False
         if not np.array_equal(self.__x, other.__x):
