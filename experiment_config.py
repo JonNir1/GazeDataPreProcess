@@ -14,3 +14,4 @@ SCREEN_REFRESH_RATE = 60  # refresh rate of the screen in Hz
 # LWS SPECIFIC CONFIGURATION
 ADDITIONAL_COLUMNS = ["ConditionName", "BlockNum", "TrialNum", "ImageNum"]
 STIMULI_DIR = r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1"
+THRESHOLD_VISUAL_ANGLE = 1.5  # threshold for the visual angle between a target and a gaze datapoint, in degrees
