@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from math import ceil, floor
 
 import constants as c
-import experiment_config as conf
+import experiment_config as cnfg
 
 
 class BaseDetector(ABC):
@@ -15,9 +15,7 @@ class BaseDetector(ABC):
     - iet: minimal time between two (same) events in ms  (default: 5)
     """
 
-    DEFAULT_INTER_EVENT_TIME = 5  # minimal time between two (same) events in milliseconds (two saccades, two fixations, etc.)
-
-    def __init__(self, sr: float, min_duration: float, iet: float = DEFAULT_INTER_EVENT_TIME):
+    def __init__(self, sr: float, min_duration: float, iet: float = cnfg.DEFAULT_INTER_EVENT_TIME):
         self.__sampling_rate = sr
         self.__min_duration = min_duration
         self.__inter_event_time = iet

@@ -1,9 +1,7 @@
 from abc import ABC
 
-import experiment_config as conf
+import experiment_config as cnfg
 from EventDetectors.BaseDetector import BaseDetector
-
-DEFAULT_SACCADE_MINIMUM_DURATION = 5  # minimum duration of a saccade in milliseconds
 
 
 class BaseSaccadeDetector(BaseDetector, ABC):
@@ -17,6 +15,6 @@ class BaseSaccadeDetector(BaseDetector, ABC):
 
     def __init__(self,
                  sr: float,
-                 min_duration: float = DEFAULT_SACCADE_MINIMUM_DURATION,
-                 iet: float = BaseDetector.DEFAULT_INTER_EVENT_TIME):
+                 min_duration: float = cnfg.DEFAULT_SACCADE_MINIMUM_DURATION,
+                 iet: float = cnfg.DEFAULT_INTER_EVENT_TIME):
         super().__init__(sr=sr, min_duration=min_duration, iet=iet)

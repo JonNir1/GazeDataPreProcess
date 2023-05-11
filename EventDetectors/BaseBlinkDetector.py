@@ -1,9 +1,6 @@
 from abc import ABC
 
-import experiment_config as conf
 from EventDetectors.BaseDetector import BaseDetector
-
-DEFAULT_BLINK_MINIMUM_DURATION = 50  # minimum duration of a blink in milliseconds
 
 
 class BaseBlinkDetector(BaseDetector, ABC):

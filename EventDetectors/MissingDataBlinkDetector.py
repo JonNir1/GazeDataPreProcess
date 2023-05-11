@@ -1,9 +1,8 @@
 import numpy as np
 from typing import List
 
-from EventDetectors.BaseBlinkDetector import BaseBlinkDetector, DEFAULT_BLINK_MINIMUM_DURATION
-
-DEFAULT_MISSING_VALUE = np.nan  # default value indicating missing data in the gaze data (x, y)
+import experiment_config as cnfg
+from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
 
 
 class MissingDataBlinkDetector(BaseBlinkDetector):
@@ -18,9 +17,9 @@ class MissingDataBlinkDetector(BaseBlinkDetector):
 
     def __init__(self,
                  sr: float,
-                 missing_value: float = DEFAULT_MISSING_VALUE,
-                 min_duration: float = DEFAULT_BLINK_MINIMUM_DURATION,
-                 iet: float = BaseBlinkDetector.DEFAULT_INTER_EVENT_TIME):
+                 missing_value: float = cnfg.DEFAULT_MISSING_VALUE,
+                 min_duration: float = cnfg.DEFAULT_BLINK_MINIMUM_DURATION,
+                 iet: float = cnfg.DEFAULT_INTER_EVENT_TIME):
         super().__init__(sr=sr, min_duration=min_duration, iet=iet)
         self.__missing_value = missing_value
 

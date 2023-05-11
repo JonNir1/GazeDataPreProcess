@@ -1,8 +1,9 @@
 import numpy as np
 from typing import List, Tuple
 
+import experiment_config as cnfg
 from Utils import velocity_utils as vu
-from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector, DEFAULT_SACCADE_MINIMUM_DURATION
+from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector
 
 DEFAULT_DERIVATION_WINDOW_SIZE = 3
 DEFAULT_LAMBDA_NOISE_THRESHOLD = 5
@@ -26,8 +27,8 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
 
     def __init__(self,
                  sr: float,
-                 min_duration: float = DEFAULT_SACCADE_MINIMUM_DURATION,
-                 iet: float = BaseSaccadeDetector.DEFAULT_INTER_EVENT_TIME,
+                 min_duration: float = cnfg.DEFAULT_SACCADE_MINIMUM_DURATION,
+                 iet: float = cnfg.DEFAULT_INTER_EVENT_TIME,
                  derivation_window_size: int = DEFAULT_DERIVATION_WINDOW_SIZE,
                  lambda_noise_threshold: int = DEFAULT_LAMBDA_NOISE_THRESHOLD):
         super().__init__(sr=sr, min_duration=min_duration, iet=iet)
