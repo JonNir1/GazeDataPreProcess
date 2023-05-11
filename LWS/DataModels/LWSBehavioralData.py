@@ -1,4 +1,5 @@
 import pandas as pd
+from typing import Tuple
 from LWS.DataModels.LWSEnums import LWSStimulusTypeEnum
 
 
@@ -10,6 +11,10 @@ class LWSBehavioralData:
 
     def __init__(self, data: pd.DataFrame):
         self.__data = data
+
+    @property
+    def shape(self) -> Tuple[int, int]:
+        return self.__data.shape
 
     @property
     def trial_num(self) -> int:
@@ -30,3 +35,11 @@ class LWSBehavioralData:
 
     def get(self, column: str) -> pd.Series:
         return self.__data[column]
+
+    def __len__(self) -> int:
+        return len(self.__data)
+
+    def __eq__(self, other):
+        if not isinstance(other, LWSBehavioralData):
+            return False
+        return self.__data.equals(other.__data)
