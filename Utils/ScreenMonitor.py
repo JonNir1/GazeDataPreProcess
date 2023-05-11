@@ -77,9 +77,10 @@ class ScreenMonitor:
         """
         Calculates the radius of a circle in pixels, given that the viewer is at a distance d (in cm) from the screen
             and the visual angle of the circle is angle (in degrees).
+        See details on calculations in Kaiser, Peter K. "Calculation of Visual Angle". The Joy of Visual Perception: A Web Book.:
+            http://www.yorku.ca/eye/visangle.htm
         Returns the radius in pixels.
         """
-        angle_size_cm = 2 * d * np.tan(np.deg2rad(angle / 2))  # size of the angle, in cm
-        angle_size_pixels = angle_size_cm / self.pixel_size  # size of the angle, in pixels
-        radius = angle_size_pixels / 2  # radius of the circle, in pixels
-        return radius
+        radius_cm = d * np.tan(np.deg2rad(angle / 2))  # radius of the circle, in cm
+        radius_pixels = radius_cm / self.pixel_size  # radius of the circle, in pixels
+        return radius_pixels
