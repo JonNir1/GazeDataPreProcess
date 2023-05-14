@@ -40,9 +40,9 @@ def extract_events_to_list(event_type: str,
     if event_type.lower() == "fixation" or event_type.lower() == "fixations":
         if x is None or y is None:
             raise ValueError("x and y must be provided when extracting fixations")
-        from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
-        events_list = [LWSFixationEvent(timestamps=timestamps[idxs], sampling_rate=sampling_rate,
-                                        x=x[idxs], y=y[idxs]) for idxs in different_event_idxs]
+        from GazeEvents.FixationEvent import FixationEvent
+        events_list = [FixationEvent(timestamps=timestamps[idxs], sampling_rate=sampling_rate,
+                                     x=x[idxs], y=y[idxs]) for idxs in different_event_idxs]
         return events_list
 
     raise ValueError(
