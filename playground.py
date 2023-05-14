@@ -34,15 +34,6 @@ print(f"Total time: {end - start}")
 
 ##########################################
 
-from GazeEvents.scripts.extract_gaze_events import extract_events_to_list
-
-ts, x, y = trial1.get_raw_gaze_coordinates()
-fe_list = extract_events_to_list(event_type='fixation', timestamps=ts,
-                                 is_event=is_fixation, sampling_rate=sr,
-                                 x=x, y=y)
-
-##########################################
-
 # create a video of eye movements
 screen_w, screen_h = cnfg.SCREEN_RESOLUTION
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
