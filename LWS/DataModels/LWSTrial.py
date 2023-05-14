@@ -1,10 +1,12 @@
 import numpy as np
-from typing import Tuple
+from warnings import warn as Warn
+from typing import Tuple, List
 
 import constants as cnst
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
+from GazeEvents.BaseGazeEvent import BaseGazeEvent
 
 
 class LWSTrial:
@@ -18,12 +20,15 @@ class LWSTrial:
                  trial_num: int,
                  subject_info: LWSSubjectInfo,
                  stimulus: LWSArrayStimulus,
-                 behavioral_data: LWSBehavioralData):
+                 behavioral_data: LWSBehavioralData,
+                 gaze_events: List[BaseGazeEvent] = None):
         self.__is_processed: bool = False
         self.__trial_num: int = trial_num
         self.__subject_info: LWSSubjectInfo = subject_info
         self.__stimulus: LWSArrayStimulus = stimulus
         self.__behavioral_data: LWSBehavioralData = behavioral_data
+        self.__gaze_events: List[BaseGazeEvent] = sorted(self.__gaze_events,
+                                                         key=lambda e: e.start_time) if gaze_events is not None else []
 
     @property
     def trial_num(self) -> int:
@@ -55,6 +60,21 @@ class LWSTrial:
         if self.is_processed:
             raise RuntimeError("Cannot set behavioral data after trial has been processed.")
         self.__behavioral_data = behavioral_data
+
+    @property
+    def gaze_events(self) -> List[BaseGazeEvent]:
+        if self.__gaze_events is None:
+            return []
+        if len(self.__gaze_events) == 0:
+            return []
+        return self.__gaze_events
+
+    def set_gaze_events(self, gaze_events: List[BaseGazeEvent]):
+        if self.is_processed:
+            raise RuntimeError("Cannot set gaze events after trial has been processed.")
+        if self.gaze_events is not None or len(self.gaze_events) > 0:
+            Warn("Overwriting existing gaze events.")
+        self.__gaze_events = sorted(gaze_events, key=lambda e: e.start_time)
 
     def get_raw_gaze_coordinates(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         # Returns the timestamp, x and y coordinates of the gaze data for the dominant eye.
