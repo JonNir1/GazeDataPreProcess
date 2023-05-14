@@ -19,11 +19,11 @@ class LWSTrial:
                  subject_info: LWSSubjectInfo,
                  stimulus: LWSArrayStimulus,
                  behavioral_data: LWSBehavioralData):
-        self.__is_processed = False
-        self.__trial_num = trial_num
-        self.__subject_info = subject_info
-        self.__stimulus = stimulus
-        self.__behavioral_data = behavioral_data
+        self.__is_processed: bool = False
+        self.__trial_num: int = trial_num
+        self.__subject_info: LWSSubjectInfo = subject_info
+        self.__stimulus: LWSArrayStimulus = stimulus
+        self.__behavioral_data: LWSBehavioralData = behavioral_data
 
     @property
     def trial_num(self) -> int:
