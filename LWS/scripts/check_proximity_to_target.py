@@ -5,8 +5,8 @@ from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
 
 
-def check_proximity_for_gaze_data(trial: LWSTrial, sm: ScreenMonitor,
-                                  angle: float = cnfg.THRESHOLD_VISUAL_ANGLE) -> np.ndarray:
+def check_target_proximity_for_gaze_data(trial: LWSTrial, sm: ScreenMonitor,
+                                         angle: float = cnfg.THRESHOLD_VISUAL_ANGLE) -> np.ndarray:
     """
     For all gaze points in the trial, check if they are within a certain visual angle from any of the trial's targets.
     Returns a boolean array of the same length as the number of gaze points, where True means that the gaze point is
