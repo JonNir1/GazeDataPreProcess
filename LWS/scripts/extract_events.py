@@ -2,17 +2,20 @@ import numpy as np
 from typing import List
 
 import constants as cnst
+from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
+from LWS.scripts.distance_to_targets import calculate_angular_target_distance_for_fixation
 
 
-def extract_all_events(trial: LWSTrial, sampling_rate: float, drop_outliers: bool = False) -> List[BaseGazeEvent]:
+def extract_all_events(trial: LWSTrial, screen_monitor: ScreenMonitor,
+                       sampling_rate: float, drop_outliers: bool = False) -> List[BaseGazeEvent]:
     """
     Extracts all events from the given data and returns a list of GazeEvent objects.
     """
-    blink_events = extract_event(trial, cnst.BLINK, sampling_rate)
-    saccade_events = extract_event(trial, cnst.SACCADE, sampling_rate)
-    fixation_events = extract_event(trial, cnst.FIXATION, sampling_rate)
+    blink_events = extract_event(trial, screen_monitor, sampling_rate, cnst.BLINK)
+    saccade_events = extract_event(trial, screen_monitor, sampling_rate, cnst.SACCADE)
+    fixation_events = extract_event(trial, screen_monitor, sampling_rate, cnst.FIXATION)
     all_events = blink_events + saccade_events + fixation_events
     if drop_outliers:
         all_events = [event for event in all_events if not event.is_outlier]
@@ -20,7 +23,8 @@ def extract_all_events(trial: LWSTrial, sampling_rate: float, drop_outliers: boo
     return all_events
 
 
-def extract_event(trial: LWSTrial, event_type: str, sampling_rate: float,
+def extract_event(trial: LWSTrial, screen_monitor: ScreenMonitor,
+                  sampling_rate: float, event_type: str,
                   drop_outliers: bool = False) -> List[BaseGazeEvent]:
     """
     Extracts events of the given type from the given data and returns a list of BaseGazeEvent objects.
@@ -52,9 +56,14 @@ def extract_event(trial: LWSTrial, event_type: str, sampling_rate: float,
                                     x=x[idxs], y=y[idxs]) for idxs in separate_event_idxs]
 
     if event_type == cnst.FIXATION:
-        from GazeEvents.FixationEvent import FixationEvent
-        events_list = [FixationEvent(timestamps=timestamps[idxs], sampling_rate=sampling_rate,
-                                     x=x[idxs], y=y[idxs]) for idxs in separate_event_idxs]
+        from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
+        events_list = []
+        for idxs in separate_event_idxs:
+            fix = LWSFixationEvent(timestamps=timestamps[idxs],
+                                   sampling_rate=sampling_rate,
+                                   x=x[idxs], y=y[idxs])
+            fix.set_distance_to_target(calculate_angular_target_distance_for_fixation(fix, trial, screen_monitor))
+            events_list.append(fix)
 
     if drop_outliers:
         events_list = [event for event in events_list if not event.is_outlier]
