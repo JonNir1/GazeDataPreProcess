@@ -1,6 +1,27 @@
 import numpy as np
 
+import experiment_config as cnfg
 from Utils.ScreenMonitor import ScreenMonitor
+from LWS.DataModels.LWSTrial import LWSTrial
+
+
+def check_proximity_for_gaze_data(trial: LWSTrial, sm: ScreenMonitor,
+                                  angle: float = cnfg.THRESHOLD_VISUAL_ANGLE) -> np.ndarray:
+    """
+    For all gaze points in the trial, check if they are within a certain visual angle from any of the trial's targets.
+    Returns a boolean array of the same length as the number of gaze points, where True means that the gaze point is
+        within the visual angle threshold from at least one target.
+    """
+    _, xs, ys = trial.get_raw_gaze_coordinates()
+    target_data = trial.stimulus.get_target_data()
+    d = trial.subject_info.distance_to_screen
+
+    is_close_to_any_target = np.zeros_like(xs, dtype=bool)
+    for i, row in enumerate(target_data):
+        tx, ty = row['center_x'], row['center_y']
+        is_close_to_target = check_proximity_to_target(tx, ty, xs, ys, d, angle, sm)
+        is_close_to_any_target = np.logical_or(is_close_to_any_target, is_close_to_target)
+    return is_close_to_any_target
 
 
 def check_proximity_to_target(tx: float, ty: float,
