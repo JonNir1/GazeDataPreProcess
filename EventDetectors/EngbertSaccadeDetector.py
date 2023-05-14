@@ -2,7 +2,6 @@ import numpy as np
 from typing import List, Tuple
 
 import experiment_config as cnfg
-from Utils import velocity_utils as vu
 from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector
 
 DEFAULT_DERIVATION_WINDOW_SIZE = 3
@@ -64,10 +63,10 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
             raise ValueError(
                 f"x and y must be of length at least 2 * derivation_window_size (={2 * self.__derivation_window_size})")
 
-        vel_x = vu.numerical_derivative(x, n=self.__derivation_window_size)
-        sd_x = vu.median_standard_deviation(vel_x)
-        vel_y = vu.numerical_derivative(y, n=self.__derivation_window_size)
-        sd_y = vu.median_standard_deviation(vel_y)
+        vel_x = self.__numerical_derivative(x, n=self.__derivation_window_size)
+        sd_x = self.__median_standard_deviation(vel_x)
+        vel_y = self.__numerical_derivative(y, n=self.__derivation_window_size)
+        sd_y = self.__median_standard_deviation(vel_y)
 
         ellipse_thresholds = np.power(vel_x / (sd_x * self.__lambda_noise_threshold), 2) + np.power(
             vel_y / (sd_y * self.__lambda_noise_threshold), 2)
@@ -91,3 +90,42 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         saccades_start_end = list(
             filter(lambda sac: sac[1] - sac[0] >= self._min_samples_within_event, saccades_start_end))
         return saccades_start_end
+
+    @staticmethod
+    def __numerical_derivative(x, n: int) -> np.ndarray:
+        """
+        Calculates the numerical derivative of the given values, as described by Engbert & Kliegl(2003):
+            dX/dt = [(X[t+(N-1)] + X[t+(N-2)] + ... + X[t+1]) - (X[t-(N-1)] + X[t-(N-2)] + ... + X[t-1])] / 2N
+
+        :param x: series of length N to calculate the derivative for
+        :param n: number of samples to use for the calculation
+        :return: numerical derivative of the given values
+                Note: the first and last (n-1) samples will be NaN
+        """
+        N = len(x)
+        if n <= 0:
+            raise ValueError("n must be greater than 0")
+        if n >= int(0.5 * N):
+            raise ValueError("n must be less than half the length of the given values")
+        if not isinstance(x, pd.Series):
+            # convert to pd series to use rolling window function
+            x = pd.Series(x)
+        x[x < 0] = np.nan
+        prev_elements_sum = x.rolling(n - 1).sum().shift(1)
+        next_elements_sum = x.rolling(n - 1).sum().shift(1 - n)
+        deriv = (next_elements_sum - prev_elements_sum) / (2 * n)
+        return deriv
+
+    @staticmethod
+    def __median_standard_deviation(x: np.ndarray, min_sd: float = 1e-6) -> float:
+        """
+        Calculates the median-based standard deviation of the given values.
+        :param x: values to calculate the median standard deviation for
+        :param min_sd: minimum standard deviation to return
+        :return: median standard deviation
+        """
+        assert min_sd > 0, "min_sd must be greater than 0"
+        squared_median = np.power(np.nanmedian(x), 2)
+        median_of_squared = np.nanmedian(np.power(x, 2))
+        sd = np.sqrt(median_of_squared - squared_median)
+        return max(sd, min_sd)
