@@ -23,6 +23,10 @@ DEFAULT_SACCADE_MINIMUM_DURATION = 5  # minimum duration of a saccade in millise
 DEFAULT_FIXATION_MINIMUM_DURATION = 55  # minimum duration of a fixation in milliseconds
 DEFAULT_FIXATION_MAX_VELOCITY = 20  # degrees per second
 
+# TRIGGERS CONFIGURATION
+START_TRIGGER = 254  # trigger indicating the start of a trial
+END_TRIGGER = 255  # trigger indicating the end of a trial
+
 
 # STIMULUS SPECIFIC CONFIGURATION
 STIMULI_DIR = r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1"

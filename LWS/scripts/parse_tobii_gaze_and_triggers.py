@@ -3,13 +3,16 @@ import pandas as pd
 from typing import Optional, Tuple, List
 
 import constants as cnst
+import experiment_config as cnfg
 from Utils.ScreenMonitor import ScreenMonitor
 from DataParser.TobiiGazeDataParser import TobiiGazeDataParser
 from DataParser.TriggerLogParser import TriggerLogParser
 
 
-def parse_tobii_gaze_and_triggers(gaze_path, trigger_path, screen_monitor: Optional[ScreenMonitor] = None,
-                                  start_trigger: int = 254, end_trigger: int = 255) -> Tuple[float, List[pd.DataFrame]]:
+def parse_tobii_gaze_and_triggers(gaze_path, trigger_path,
+                                  screen_monitor: Optional[ScreenMonitor] = None,
+                                  start_trigger: int = cnfg.START_TRIGGER,
+                                  end_trigger: int = cnfg.END_TRIGGER) -> Tuple[float, List[pd.DataFrame]]:
     """
     Parse tobii gaze data and trigger log and merge them into a single dataframe for each trial.
     :param gaze_path: path to the tobii gaze data file
