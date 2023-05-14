@@ -48,7 +48,7 @@ class SaccadeEvent(BaseGazeEvent):
         # returns a 2D array of the X,Y coordinates of the saccade's end point
         return np.array([self.__x[-1], self.__y[-1]])
 
-    def calculate_mean_velocity(self, d: float, screen_monitor: ScreenMonitor) -> float:
+    def calculate_mean_angular_velocity(self, d: float, screen_monitor: ScreenMonitor) -> float:
         """
         Calculates the mean velocity of the saccade in degrees per second.
         :param d: the distance between the screen and the participant's eyes in centimeters
@@ -60,9 +60,9 @@ class SaccadeEvent(BaseGazeEvent):
         angle = screen_monitor.calc_angle_between_pixels(d=d, p1=(x_s, y_s), p2=(x_e, y_e), use_radians=False)
         return 1000 * angle / self.duration
 
-    def calculate_peak_velocity(self, d: float, screen_monitor: ScreenMonitor) -> float:
+    def calculate_peak_angular_velocity(self, d: float, screen_monitor: ScreenMonitor) -> float:
         """
-        Calculates the maximum velocity of the saccade in degrees per second.
+        Calculates the maximum angular velocity of the saccade in degrees per second.
         :param d: the distance between the screen and the participant's eyes in centimeters
         :param screen_monitor: the ScreenMonitor object that holds information about the screen used in the experiment
         """
