@@ -11,14 +11,14 @@ class LWSFixationEvent(FixationEvent):
 
     def __init__(self, timestamps: np.ndarray, sampling_rate: float, x: np.ndarray, y: np.ndarray):
         super().__init__(timestamps=timestamps, sampling_rate=sampling_rate, x=x, y=y)
-        self.__is_close_to_target: bool = False
+        self.__is_close_to_targets: bool = False
 
     @property
-    def is_close_to_target(self) -> bool:
-        return self.__is_close_to_target
+    def is_close_to_targets(self) -> bool:
+        return self.__is_close_to_targets
 
-    def set_is_close_to_target(self, is_close_to_target: bool):
-        self.__is_close_to_target = is_close_to_target
+    def set_is_close_to_targets(self, is_close_to_target: bool):
+        self.__is_close_to_targets = is_close_to_target
 
     def to_series(self) -> pd.Series:
         """
@@ -29,8 +29,8 @@ class LWSFixationEvent(FixationEvent):
             - duration: fixation's duration in milliseconds
             - center_of_mass: fixation's center of mass (2D pixel coordinates)
             - std: fixation's standard deviation (in pixels units)
-            - is_close_to_target: True if the fixation is close to any of the targets of the current trial
+            - is_close_to_targets: True if the fixation is close to any of the targets of the current trial
         """
         series = super().to_series()
-        series["is_close_to_target"] = self.is_close_to_target
+        series["is_close_to_targets"] = self.is_close_to_targets
         return series
