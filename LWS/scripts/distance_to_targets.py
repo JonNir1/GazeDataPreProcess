@@ -34,10 +34,10 @@ def calculate_angular_target_distance_for_fixation(fix: LWSFixationEvent,
     d = trial.subject_info.distance_to_screen
 
     angular_distance = np.inf
-    for i, row in enumerate(target_data):
+    for i, row in target_data.iterrows():
         tx, ty = row['center_x'], row['center_y']
-        dist = calculate_angular_distance_to_target(tx, ty, np.ndarray([x]), np.ndarray([y]), d, sm)
-        angular_distance = np.nanmin([angular_distance, dist])
+        dist = calculate_angular_distance_to_target(tx, ty, np.array([x]), np.array([y]), d, sm)
+        angular_distance = np.nanmin([angular_distance, dist[0]])
     return angular_distance
 
 

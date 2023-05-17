@@ -25,8 +25,8 @@ is_blink, is_saccade, is_fixation = detect_all_events(trial=trial1, sampling_rat
 trial1.behavioral_data.concat(pd.DataFrame({'is_blink': is_blink, 'is_saccade': is_saccade, 'is_fixation': is_fixation}))
 # t_df = trial1.behavioral_data._LWSBehavioralData__data
 
-fix_events_list = extract_event(trial=trial1, event_type='fixation', sampling_rate=sr)
-all_events_list = extract_all_events(trial=trial1, sampling_rate=sr)
+fix_events_list = extract_event(trial=trial1, event_type='fixation', sampling_rate=sr, screen_monitor=sm)
+all_events_list = extract_all_events(trial=trial1, sampling_rate=sr, screen_monitor=sm, drop_outliers=False)
 
 
 end = time.time()
