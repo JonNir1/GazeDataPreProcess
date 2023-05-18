@@ -3,8 +3,8 @@ import pandas as pd
 
 import experiment_config as cnfg
 from Utils import velocity_utils as vu
-from GazeEvents.BaseGazeEvent import BaseGazeEvent
 from Utils.ScreenMonitor import ScreenMonitor
+from GazeEvents.BaseGazeEvent import BaseGazeEvent
 
 
 class SaccadeEvent(BaseGazeEvent):
