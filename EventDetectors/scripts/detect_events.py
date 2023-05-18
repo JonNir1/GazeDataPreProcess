@@ -2,15 +2,8 @@ import warnings as w
 import numpy as np
 from typing import Optional
 
+import experiment_config as cnfg
 from EventDetectors.BaseDetector import BaseDetector
-
-
-DEFAULT_INTER_EVENT_TIME = 5  # minimal time between two (same) events in milliseconds (two saccades, two fixations, etc.)
-DEFAULT_MISSING_VALUE = np.nan  # default value indicating missing data in the gaze data (x, y)
-DEFAULT_BLINK_MINIMUM_DURATION = 50  # minimum duration of a blink in milliseconds
-DEFAULT_SACCADE_MINIMUM_DURATION = 5  # minimum duration of a saccade in milliseconds
-DEFAULT_FIXATION_MINIMUM_DURATION = 55  # minimum duration of a fixation in milliseconds
-DEFAULT_FIXATION_MAX_VELOCITY = 20  # degrees per second
 
 
 def detect_all_events(x: np.ndarray, y: np.ndarray,
@@ -88,10 +81,10 @@ def detect_blinks(blink_detector_type: Optional[str],
     if not blink_detector_type:
         return np.zeros_like(x, dtype=bool)
 
-    iet = kwargs.get("inter_event_time", DEFAULT_INTER_EVENT_TIME)
-    min_duration = kwargs.get("blink_min_duration", DEFAULT_BLINK_MINIMUM_DURATION)
+    iet = kwargs.get("inter_event_time", cnfg.DEFAULT_INTER_EVENT_TIME)
+    min_duration = kwargs.get("blink_min_duration", cnfg.DEFAULT_BLINK_MINIMUM_DURATION)
     blink_kwargs = {
-        "missing_value": kwargs.get("missing_value", DEFAULT_MISSING_VALUE)
+        "missing_value": kwargs.get("missing_value", cnfg.DEFAULT_MISSING_VALUE)
     }
 
     blink_detector = _get_event_detector(blink_detector_type,
@@ -123,8 +116,8 @@ def detect_saccades(saccade_detector_type: Optional[str],
         return np.zeros_like(x, dtype=bool)
 
     from EventDetectors.EngbertSaccadeDetector import DEFAULT_DERIVATION_WINDOW_SIZE, DEFAULT_LAMBDA_NOISE_THRESHOLD
-    iet = kwargs.get("inter_event_time", DEFAULT_INTER_EVENT_TIME)
-    min_duration = kwargs.get("saccade_min_duration", DEFAULT_SACCADE_MINIMUM_DURATION)
+    iet = kwargs.get("inter_event_time", cnfg.DEFAULT_INTER_EVENT_TIME)
+    min_duration = kwargs.get("saccade_min_duration", cnfg.DEFAULT_SACCADE_MINIMUM_DURATION)
     saccade_kwargs = {
         "derivation_window_size": kwargs.get("derivation_window_size", DEFAULT_DERIVATION_WINDOW_SIZE),
         "lambda_noise_threshold": kwargs.get("lambda_noise_threshold", DEFAULT_LAMBDA_NOISE_THRESHOLD)
@@ -155,10 +148,10 @@ def detect_fixations(fixation_detector_type: Optional[str],
     if not fixation_detector_type:
         return np.zeros_like(x, dtype=bool)
 
-    iet = kwargs.get("inter_event_time", DEFAULT_INTER_EVENT_TIME)
-    min_duration = kwargs.get("fixation_min_duration", DEFAULT_FIXATION_MINIMUM_DURATION)
+    iet = kwargs.get("inter_event_time", cnfg.DEFAULT_INTER_EVENT_TIME)
+    min_duration = kwargs.get("fixation_min_duration", cnfg.DEFAULT_FIXATION_MINIMUM_DURATION)
     fixation_kwargs = {
-        "velocity_threshold": kwargs.get("velocity_threshold", DEFAULT_FIXATION_MAX_VELOCITY)
+        "velocity_threshold": kwargs.get("velocity_threshold", cnfg.DEFAULT_FIXATION_MAX_VELOCITY)
     }
 
     fixation_detector = _get_event_detector(fixation_detector_type, min_duration=min_duration,
