@@ -14,8 +14,8 @@ def extract_events_to_list(event_type: str,
     :param timestamps: array of timestamps
     :param is_event: array of booleans indicating whether a sample is part of the event or not
     :param sampling_rate: float indicating the sampling rate of the data
-    :param x: array of x coordinates
-    :param y: array of y coordinates
+    :param x: array of x coordinates, used when extracting saccades or fixations
+    :param y: array of y coordinates, used when extracting saccades or fixations
 
     :return: list of GazeEvent objects
     """
@@ -58,8 +58,8 @@ def extract_events_to_dataframe(event_type: str,
     :param timestamps: array of timestamps
     :param is_event: array of booleans indicating whether a sample is part of the event or not
     :param sampling_rate: float indicating the sampling rate of the data
-    :param x: array of x coordinates
-    :param y: array of y coordinates
+    :param x: array of x coordinates, used when extracting saccades or fixations
+    :param y: array of y coordinates, used when extracting saccades or fixations
 
     :return: pandas DataFrame with the events' summary information
     """
