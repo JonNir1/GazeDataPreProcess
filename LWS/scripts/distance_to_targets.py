@@ -15,7 +15,7 @@ def calculate_angular_distance_for_gaze_data(trial: LWSTrial, sm: ScreenMonitor)
     d = trial.get_subject_info().distance_to_screen
 
     angular_distances = np.ones_like(xs) * np.inf
-    for i, row in enumerate(target_data):
+    for i, row in target_data.iterrows():
         tx, ty = row['center_x'], row['center_y']
         dist = calculate_angular_distance_to_target(tx, ty, xs, ys, d, sm)
         angular_distances = np.nanmin([angular_distances, dist], axis=0)
