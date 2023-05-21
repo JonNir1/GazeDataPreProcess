@@ -6,15 +6,12 @@ from typing import List, Optional
 class BaseParser(ABC):
 
     @abstractmethod
-    def parse(self, input_path: str, additional_columns: Optional[List[str]] = None,
-              output_path: Optional[str] = None) -> pd.DataFrame:
+    def parse(self, input_path: str, output_path: Optional[str] = None) -> pd.DataFrame:
         """
-        Reads the input file and parses it into a pandas DataFrame with a standardized set of columns, while including
-        any additional columns specified in the additional_columns parameter. If the output_path parameter is specified,
-        the parsed DataFrame is also saved to the specified path.
+        Reads the input file and parses it into a pandas DataFrame with a standardized set of columns.
+        If the output_path parameter is specified, the parsed DataFrame is also saved to the specified path.
 
         :param input_path: the path to the input file
-        :param additional_columns: list of additional columns to include in the output DataFrame (optional)
         :param output_path: the path to the output file (optional)
 
         :raises FileNotFoundError: if the input file does not exist
@@ -23,15 +20,12 @@ class BaseParser(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def parse_and_split(self, input_path: str, additional_columns: Optional[List[str]] = None,
-                        output_path: Optional[str] = None) -> List[pd.DataFrame]:
+    def parse_and_split(self, input_path: str, output_path: Optional[str] = None) -> List[pd.DataFrame]:
         """
         Reads the input file and parses it into a list of pandas DataFrames, one for each trial, with a standardized
-        set of columns, while including any additional columns specified in the additional_columns parameter.
-        If the output_path parameter is specified, the parsed DataFrame is also saved to the specified path.
+        set of columns. If the output_path parameter is specified, the parsed DataFrame is also saved to the specified path.
 
         :param input_path: the path to the input file
-        :param additional_columns: list of additional columns to include in the output DataFrames (optional)
         :param output_path: the path to the output file (optional)
 
         :raises FileNotFoundError: if the input file does not exist

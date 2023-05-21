@@ -15,16 +15,15 @@ class BaseEyeTrackingParser(BaseParser, ABC):
     using the method `parse` for parsing the data and `parse_and_split` for splitting the data into trials.
     """
 
-    def __init__(self, screen_monitor: Optional[ScreenMonitor] = None):
+    def __init__(self, additional_columns: Optional[List[str]] = None, screen_monitor: Optional[ScreenMonitor] = None):
+        self.__additional_columns: List[str] = additional_columns if additional_columns is not None else []
         self.__screen_monitor: ScreenMonitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
 
-    def parse(self, input_path: str, additional_columns: Optional[List[str]] = None,
-              output_path: Optional[str] = None) -> pd.DataFrame:
+    def parse(self, input_path: str, output_path: Optional[str] = None) -> pd.DataFrame:
         if not os.path.exists(input_path):
             raise FileNotFoundError(f'File not found: {input_path}')
         df = pd.read_csv(input_path, sep='\t')
-        additional_columns = additional_columns if additional_columns is not None else []
-        columns_to_keep = self.get_common_columns() + additional_columns
+        columns_to_keep = self.get_common_columns() + self.__additional_columns
         df.drop(columns=[col for col in df.columns if col not in columns_to_keep], inplace=True)
         df.replace(to_replace=self.MISSING_VALUE(), value=np.nan, inplace=True)
 
@@ -40,9 +39,8 @@ class BaseEyeTrackingParser(BaseParser, ABC):
         df.rename(columns=lambda col: self._column_name_mapper(col), inplace=True)
         return df
 
-    def parse_and_split(self, input_path: str, additional_columns: Optional[List[str]] = None,
-                        output_path: Optional[str] = None) -> List[pd.DataFrame]:
-        df = self.parse(input_path, additional_columns, output_path)
+    def parse_and_split(self, input_path: str, output_path: Optional[str] = None) -> List[pd.DataFrame]:
+        df = self.parse(input_path, output_path)
         trial_indices = df[cnst.TRIAL].unique()
         return [df[df[cnst.TRIAL] == trial_idx] for trial_idx in trial_indices]
 
