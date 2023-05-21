@@ -28,6 +28,23 @@ print(f"Total time: {end - start}")
 
 ##########################################
 
+for i, tr in enumerate(trials):
+    ge = tr.get_gaze_events()
+    fixs = list(filter(lambda e: e.event_type() == cnst.FIXATION, ge))
+    centers = [f.center_of_mass for f in fixs]
+    has_nans = any([np.isnan(c).any() for c in centers])
+    if has_nans:
+        print(f"Trial {i} has nans")
+        break
+
+tr22_data = tr._LWSTrial__behavioral_data._LWSBehavioralData__data
+tr22_data[tr22_data["is_fixation"]]['right_y'].isna().sum()
+
+# TODO: check why there are nans in the data
+# TODO: use binocular data instead of monocular?
+
+##########################################
+
 # create a video of eye movements
 screen_w, screen_h = cnfg.SCREEN_RESOLUTION
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
