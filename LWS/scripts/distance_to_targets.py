@@ -11,8 +11,8 @@ def calculate_angular_distance_for_gaze_data(trial: LWSTrial, sm: ScreenMonitor)
         Returns np.inf for gaze-points with missing or invalid data.
     """
     _, xs, ys = trial.get_raw_gaze_coordinates()
-    target_data = trial.stimulus.get_target_data()
-    d = trial.subject_info.distance_to_screen
+    target_data = trial.get_stimulus().get_target_data()
+    d = trial.get_subject_info().distance_to_screen
 
     angular_distances = np.ones_like(xs) * np.inf
     for i, row in enumerate(target_data):
@@ -30,8 +30,8 @@ def calculate_angular_target_distance_for_fixation(fix: LWSFixationEvent,
         Returns np.inf if the fixation event's center-of-mass is missing or invalid.
     """
     x, y = fix.center_of_mass
-    target_data = trial.stimulus.get_target_data()
-    d = trial.subject_info.distance_to_screen
+    target_data = trial.get_stimulus().get_target_data()
+    d = trial.get_subject_info().distance_to_screen
 
     angular_distance = np.inf
     for i, row in target_data.iterrows():

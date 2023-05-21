@@ -35,14 +35,6 @@ class LWSTrial:
         return self.__trial_num
 
     @property
-    def subject_info(self) -> LWSSubjectInfo:
-        return self.__subject_info
-
-    @property
-    def stimulus(self) -> LWSArrayStimulus:
-        return self.__stimulus
-
-    @property
     def is_processed(self) -> bool:
         return self.__is_processed
 
@@ -51,8 +43,13 @@ class LWSTrial:
             raise RuntimeError("Cannot set is_processed to False after it has been set to True.")
         self.__is_processed = is_processed
 
-    @property
-    def behavioral_data(self) -> LWSBehavioralData:
+    def get_subject_info(self) -> LWSSubjectInfo:
+        return self.__subject_info
+
+    def get_stimulus(self) -> LWSArrayStimulus:
+        return self.__stimulus
+
+    def get_behavioral_data(self) -> LWSBehavioralData:
         return self.__behavioral_data
 
     def set_behavioral_data(self, behavioral_data: LWSBehavioralData):
@@ -78,14 +75,15 @@ class LWSTrial:
 
     def get_raw_gaze_coordinates(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         # Returns the timestamp, x and y coordinates of the gaze data for the dominant eye.
-        ts = self.behavioral_data.get(cnst.MICROSECONDS).values / 1000
-        eye = self.subject_info.dominant_eye.lower()
+        bd = self.get_behavioral_data()
+        ts = bd.get(cnst.MICROSECONDS).values / 1000
+        eye = self.get_subject_info().dominant_eye.lower()
         if eye == 'left':
-            x = self.behavioral_data.get(cnst.LEFT_X).values
-            y = self.behavioral_data.get(cnst.LEFT_Y).values
+            x = bd.get(cnst.LEFT_X).values
+            y = bd.get(cnst.LEFT_Y).values
         elif eye == 'right':
-            x = self.behavioral_data.get(cnst.RIGHT_X).values
-            y = self.behavioral_data.get(cnst.RIGHT_Y).values
+            x = bd.get(cnst.RIGHT_X).values
+            y = bd.get(cnst.RIGHT_Y).values
         else:
             raise ValueError(f'Invalid dominant eye: {eye}')
         return ts, x, y

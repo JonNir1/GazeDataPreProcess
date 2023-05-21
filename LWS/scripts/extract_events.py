@@ -32,16 +32,17 @@ def extract_event(trial: LWSTrial, screen_monitor: ScreenMonitor,
     event_type = event_type.lower()
     is_event_colname = f"is_{event_type}"
     allowed_event_types = [cnst.BLINK, cnst.SACCADE, cnst.FIXATION]
+    behavioral_data = trial.get_behavioral_data()
     if event_type not in allowed_event_types:
         raise NotImplementedError(f"event_type must be one of {str(allowed_event_types)}, got {event_type}")
-    if is_event_colname not in trial.behavioral_data.columns:
+    if is_event_colname not in behavioral_data.columns:
         raise ValueError(f"Behavioral Data does not contain column {is_event_colname}")
 
-    timestamps = trial.behavioral_data.get(cnst.MICROSECONDS).values / 1000  # convert to milliseconds
-    is_event = trial.behavioral_data.get(is_event_colname).values
+    timestamps = behavioral_data.get(cnst.MICROSECONDS).values / 1000  # convert to milliseconds
+    is_event = behavioral_data.get(is_event_colname).values
     if len(timestamps) != len(is_event):
         raise ValueError(f"Arrays of \'timestamps\' and \'{is_event_colname}\' must have the same length")
-    separate_event_idxs = _split_samples_between_events(trial.behavioral_data.get(is_event_colname).values)
+    separate_event_idxs = _split_samples_between_events(behavioral_data.get(is_event_colname).values)
     events_list = []
 
     if event_type == cnst.BLINK:
