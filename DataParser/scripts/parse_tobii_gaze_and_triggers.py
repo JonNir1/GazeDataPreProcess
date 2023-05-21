@@ -6,7 +6,7 @@ import constants as cnst
 import experiment_config as cnfg
 from Utils.ScreenMonitor import ScreenMonitor
 from DataParser.TobiiGazeDataParser import TobiiGazeDataParser
-from DataParser.TriggerLogParser import TriggerLogParser
+from DataParser.EPrimeTriggerLogParser import EPrimeTriggerLogParser
 
 
 def parse_tobii_gaze_and_triggers(gaze_path, trigger_path,
@@ -27,7 +27,7 @@ def parse_tobii_gaze_and_triggers(gaze_path, trigger_path,
     """
     screen_monitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
     tobii_parser = TobiiGazeDataParser(input_path=gaze_path, screen_monitor=screen_monitor)
-    trigger_parser = TriggerLogParser(trigger_path, start_trigger=start_trigger, end_trigger=end_trigger)
+    trigger_parser = EPrimeTriggerLogParser(trigger_path, start_trigger=start_trigger, end_trigger=end_trigger)
 
     gaze_dfs = tobii_parser.parse_and_split()
     trigger_dfs = trigger_parser.parse_and_split()
