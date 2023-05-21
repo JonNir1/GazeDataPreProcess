@@ -2,6 +2,7 @@ import pandas as pd
 from typing import Tuple, List, Union, Optional
 
 import constants as cnst
+from Utils.calculate_sampling_rate import calculate_sampling_rate_from_microseconds
 from LWS.DataModels.LWSEnums import LWSStimulusTypeEnum
 
 
@@ -22,7 +23,7 @@ class LWSBehavioralData:
     @property
     def sampling_rate(self) -> float:
         microseconds = self.get(cnst.MICROSECONDS)
-        return cnst.MICROSECONDS_PER_SECOND / microseconds.diff().mode()[0]
+        return calculate_sampling_rate_from_microseconds(microseconds)
 
     @property
     def trial_num(self) -> int:
