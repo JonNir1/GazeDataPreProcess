@@ -29,16 +29,10 @@ def read_subject_trials(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, *
     if not os.path.isdir(stimuli_dir):
         raise NotADirectoryError(f"Directory {stimuli_dir} does not exist.")
 
-    # extract keyword arguments:
-    sm = kwargs.get("screen_monitor", None) or ScreenMonitor.from_config()
-    experiment_columns = kwargs.get("experiment_columns", None) or kwargs.get("additional_columns",
-                                                                              None) or cnfg.ADDITIONAL_COLUMNS
-    start_trigger = kwargs.get("start_trigger", None) or cnfg.START_TRIGGER
-    end_trigger = kwargs.get("end_trigger", None) or cnfg.END_TRIGGER
-
+    # read the behavioral data:
     trials = []
     subject_info = read_subject_info(subject_dir)
-    behavioral_trials = read_behavioral_data(subject_dir, screen_monitor=sm)
+    behavioral_trials = read_behavioral_data(subject_dir, **kwargs)
     for i, bt in enumerate(behavioral_trials):
         stimulus = LWSArrayStimulus.from_stimulus_name(stim_id=bt.image_num,
                                                        stim_type=bt.stim_type,
