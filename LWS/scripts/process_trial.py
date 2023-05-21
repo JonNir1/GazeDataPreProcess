@@ -36,7 +36,6 @@ def process_trial(trial: LWSTrial, **kwargs):
         - fixation_inter_event_time: minimal time between two events in ms;                             default: 5 ms
         - fixation_min_duration: minimal duration of a blink in ms;                                     default: 55 ms
         - velocity_threshold: maximal velocity allowed within a fixation, used by IVTFixationDetector;  default: 30 deg/s
-
     """
     trial.is_processed = False
     sm = kwargs.pop('screen_monitor', None) or ScreenMonitor.from_config()

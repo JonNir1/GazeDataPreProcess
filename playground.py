@@ -8,8 +8,7 @@ import experiment_config as cnfg
 
 from Utils.ScreenMonitor import ScreenMonitor
 from LWS.scripts.read_subject import read_subject_trials
-from LWS.scripts.detect_events import detect_all_events
-from LWS.scripts.extract_events import extract_all_events, extract_event
+from LWS.scripts.process_trial import process_trial
 
 
 start = time.time()
@@ -19,16 +18,11 @@ trials = read_subject_trials(subject_dir=r"S:\Lab-Shared\Experiments\LWS Free Vi
                                  stimuli_dir=cnfg.STIMULI_DIR,
                                  screen_monitor=sm)
 trial1 = trials[0]
-is_blink, is_saccade, is_fixation = detect_all_events(trial=trial1,
-                                                      stuff_with='fixation',
-                                                      blink_detector_type='missing data',
-                                                      saccade_detector_type='engbert')
-trial1.get_behavioral_data().concat(pd.DataFrame({'is_blink': is_blink, 'is_saccade': is_saccade, 'is_fixation': is_fixation}))
-# t_df = trial1.get_behavioral_data._LWSBehavioralData__data
 
-fix_events_list = extract_event(trial=trial1, event_type='fixation', screen_monitor=sm)
-all_events_list = extract_all_events(trial=trial1, screen_monitor=sm, drop_outliers=False)
-
+process_trial(trial1, screen_monitor=sm, stuff_with='fixation',
+              blink_detector_type='missing data',
+              saccade_detector_type='engbert',
+              drop_outlier_events=False)
 
 end = time.time()
 print(f"Total time: {end - start}")
