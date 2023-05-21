@@ -1,88 +1,69 @@
 import os
 import re
 import pandas as pd
-from typing import Optional, Tuple, List
+from typing import Optional, List
 
 import experiment_config as cnfg
 from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
-from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSTrial import LWSTrial
 from DataParser.scripts.parse_tobii_gaze_and_triggers import parse_tobii_gaze_and_triggers
+from LWS.scripts.read_behavioral_data import read_behavioral_data
 
 
-def read_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR,
-                 screen_monitor: Optional[ScreenMonitor] = None) -> Tuple[float, List[LWSTrial]]:
+def read_subject_trials(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwargs) -> List[LWSTrial]:
+    """
+
+    :param subject_dir:
+    :param stimuli_dir:
+
+    :keyword screen_monitor:
+    :keyword experiment_columns or additional_columns:
+    :keyword start_trigger, end_trigger:
+
+    :return:
+    """
+    # verify inputs:
     if not os.path.isdir(subject_dir):
         raise NotADirectoryError(f"Directory {subject_dir} does not exist.")
     if not os.path.isdir(stimuli_dir):
         raise NotADirectoryError(f"Directory {stimuli_dir} does not exist.")
-    screen_monitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
+
+    # extract keyword arguments:
+    sm = kwargs.get("screen_monitor", None) or ScreenMonitor.from_config()
+    experiment_columns = kwargs.get("experiment_columns", None) or kwargs.get("additional_columns",
+                                                                              None) or cnfg.ADDITIONAL_COLUMNS
+    start_trigger = kwargs.get("start_trigger", None) or cnfg.START_TRIGGER
+    end_trigger = kwargs.get("end_trigger", None) or cnfg.END_TRIGGER
 
     trials = []
-    subject_info = _read_subject_info(subject_dir)
-    sr, trial_dataframes = _read_behavioral_data(subject_dir, screen_monitor)
-    for i, trial_df in enumerate(trial_dataframes):
-        behavioral_data = LWSBehavioralData(trial_df)
-        stimulus = LWSArrayStimulus.from_stimulus_name(stim_id=behavioral_data.image_num,
-                                                       stim_type=behavioral_data.stim_type,
+    subject_info = read_subject_info(subject_dir)
+    behavioral_trials = read_behavioral_data(subject_dir, screen_monitor=sm)
+    for i, bt in enumerate(behavioral_trials):
+        stimulus = LWSArrayStimulus.from_stimulus_name(stim_id=bt.image_num,
+                                                       stim_type=bt.stim_type,
                                                        stim_directory=stimuli_dir)
-        lws_trial = LWSTrial(trial_num=i + 1, subject_info=subject_info, behavioral_data=behavioral_data,
-                             stimulus=stimulus)
+        lws_trial = LWSTrial(trial_num=i + 1, subject_info=subject_info, behavioral_data=bt, stimulus=stimulus)
         trials.append(lws_trial)
-    return sr, trials
+    return trials
 
 
-def _read_subject_info(subject_dir: str) -> LWSSubjectInfo:
-    subject_info_paths = __find_files_by_suffix(subject_dir, "")
+def read_subject_info(subject_dir: str) -> LWSSubjectInfo:
+    """
+    Finds all files in the provided directory that match the subject-info pattern ("ExpName-21-33.txt"), reads the only
+    file (or raises an error if there are multiple files or no files at all), and extracts a SubjectInfo object from it.
+
+    :raise FileNotFoundError: if no subject info file was found in the provided directory.
+    :raise ValueError: if multiple subject info files were found in the provided directory.
+    """
+    # find all filenames that match the subject-info pattern:
+    pattern = re.compile("[a-zA-z0-9]*-[0-9]*-[0-9]*.txt")
+    subject_info_paths = [os.path.join(subject_dir, file) for file in os.listdir(subject_dir) if pattern.match(file)]
+    subject_info_paths.sort(key=lambda p: int(p.split(".")[0].split("-")[2]))  # sort by session number
+
     if len(subject_info_paths) == 0:
         raise FileNotFoundError(f"No subject info file was found in {subject_dir}.")
     if len(subject_info_paths) > 1:
         raise ValueError(f"Multiple subject info files were found in {subject_dir}.")
     return LWSSubjectInfo.from_eprime_file(subject_info_paths[0])
-
-
-def _read_behavioral_data(subject_dir: str, screen_monitor: ScreenMonitor) -> Tuple[float, List[pd.DataFrame]]:
-    gaze_files = __find_files_by_suffix(subject_dir, "GazeData")
-    trigger_files = __find_files_by_suffix(subject_dir, "TriggerLog")
-
-    # verify that the number of gaze files and trigger files match:
-    if len(gaze_files) == 0:
-        raise FileNotFoundError(f"No gaze files were found in {subject_dir}.")
-    if len(trigger_files) == 0:
-        raise FileNotFoundError(f"No trigger files were found in {subject_dir}.")
-    if len(gaze_files) != len(trigger_files):
-        raise ValueError(f"Number of gaze files ({len(gaze_files)}) and trigger files ({len(trigger_files)}) "
-                         f"does not match.")
-
-    if len(gaze_files) != 1:
-        # TODO: support multiple sessions
-        raise NotImplementedError("Multiple sessions for a single subject are not supported yet.")
-    sr, tobii_trials = parse_tobii_gaze_and_triggers(gaze_path=gaze_files[0],
-                                                     trigger_path=trigger_files[0],
-                                                     screen_monitor=screen_monitor)
-    return sr, tobii_trials
-
-
-def __find_files_by_suffix(directory: str, end_with: str) -> List[str]:
-    """
-    Find all files in a directory that end with a specific string and match the e-prime naming convention:
-        "<ExpName>-<SubjectID>-<Session>-<DataType>.txt"
-    examples:
-        - Subject Info from E-Prime: "ExpName-21-33.txt"
-        - GazeData from Tobii: "ExpName-21-33-GazeData.txt"
-        - TriggerLog from E-Prime: "ExpName-21-33-Trigger-Log.txt"
-    """
-    if end_with:
-        end_with = f"-{end_with}.txt"
-    else:
-        end_with = ".txt"
-
-    # find all filenames that match the pattern:
-    pattern = re.compile("[a-zA-z0-9]*-[0-9]*-[0-9]*" + end_with)
-    paths = [os.path.join(directory, file) for file in os.listdir(directory) if pattern.match(file)]
-
-    # sort by session number:
-    paths.sort(key=lambda p: int(p.split(".")[0].split("-")[2]))
-    return paths
