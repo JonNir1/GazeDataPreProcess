@@ -1,12 +1,36 @@
-# LWS PreProcessing Pipeline
-
+import os
 import pandas as pd
+from typing import List
 
+import experiment_config as cnfg
 from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
+
+from LWS.scripts.read_subject import read_subject_trials
 from LWS.scripts.distance_to_targets import calculate_angular_distance_for_gaze_data
 from LWS.scripts.detect_events import detect_all_events
 from LWS.scripts.extract_events import extract_all_events
+
+
+def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwargs) -> List[LWSTrial]:
+    """
+    TODO: add docstring
+
+    :param subject_dir:
+    :param stimuli_dir:
+    :param kwargs:
+    :return:
+    """
+    if not os.path.isdir(subject_dir):
+        raise NotADirectoryError(f"Directory {subject_dir} does not exist.")
+    if not os.path.isdir(stimuli_dir):
+        raise NotADirectoryError(f"Directory {stimuli_dir} does not exist.")
+
+    kwargs["screen_monitor"] = kwargs.get("screen_monitor", None) or ScreenMonitor.from_config()
+    trials = read_subject_trials(subject_dir, stimuli_dir, **kwargs)
+    for _i, trial in enumerate(trials):
+        process_trial(trial, **kwargs)
+    return trials
 
 
 def process_trial(trial: LWSTrial, **kwargs):

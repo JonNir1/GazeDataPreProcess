@@ -14,14 +14,22 @@ from LWS.scripts.read_subject import read_subject_trials
 start = time.time()
 
 sm = ScreenMonitor.from_config()
-trials = read_subject_trials(subject_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo",
-                                 stimuli_dir=cnfg.STIMULI_DIR,
-                                 screen_monitor=sm)
+trials = pp.process_subject(subject_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo",
+                            stimuli_dir=cnfg.STIMULI_DIR,
+                            screen_monitor=sm,
+                            stuff_with='fixation',
+                            blink_detector_type='missing data',
+                            saccade_detector_type='engbert',
+                            drop_outlier_events=False)
+
+# trials = read_subject_trials(subject_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo",
+#                                  stimuli_dir=cnfg.STIMULI_DIR,
+#                                  screen_monitor=sm)
 trial1 = trials[0]
-pp.process_trial(trial1, screen_monitor=sm, stuff_with='fixation',
-                 blink_detector_type='missing data',
-                 saccade_detector_type='engbert',
-                 drop_outlier_events=False)
+# pp.process_trial(trial1, screen_monitor=sm, stuff_with='fixation',
+#                  blink_detector_type='missing data',
+#                  saccade_detector_type='engbert',
+#                  drop_outlier_events=False)
 
 end = time.time()
 print(f"Total time: {end - start}")
