@@ -26,7 +26,7 @@ class LWSBehavioralData:
 
     @property
     def trial_num(self) -> int:
-        return self.get("trial")[0]
+        return self.get(cnst.TRIAL)[0]
 
     @property
     def stim_type(self) -> LWSStimulusTypeEnum:
