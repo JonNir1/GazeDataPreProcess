@@ -7,8 +7,8 @@ import constants as cnst
 import experiment_config as cnfg
 
 from Utils.ScreenMonitor import ScreenMonitor
+import LWS.PreProcessing as pp
 from LWS.scripts.read_subject import read_subject_trials
-from LWS.scripts.process_trial import process_trial
 
 
 start = time.time()
@@ -18,11 +18,10 @@ trials = read_subject_trials(subject_dir=r"S:\Lab-Shared\Experiments\LWS Free Vi
                                  stimuli_dir=cnfg.STIMULI_DIR,
                                  screen_monitor=sm)
 trial1 = trials[0]
-
-process_trial(trial1, screen_monitor=sm, stuff_with='fixation',
-              blink_detector_type='missing data',
-              saccade_detector_type='engbert',
-              drop_outlier_events=False)
+pp.process_trial(trial1, screen_monitor=sm, stuff_with='fixation',
+                 blink_detector_type='missing data',
+                 saccade_detector_type='engbert',
+                 drop_outlier_events=False)
 
 end = time.time()
 print(f"Total time: {end - start}")
