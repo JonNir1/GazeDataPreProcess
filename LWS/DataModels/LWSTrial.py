@@ -35,6 +35,10 @@ class LWSTrial:
         return self.__trial_num
 
     @property
+    def sampling_rate(self) -> float:
+        return self.__behavioral_data.sampling_rate
+
+    @property
     def is_processed(self) -> bool:
         return self.__is_processed
 
