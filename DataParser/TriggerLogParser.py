@@ -4,10 +4,10 @@ import pandas as pd
 from typing import List
 
 import constants as cnst
-from DataParser.BaseParser import BaseParser
+from DataParser.BaseParserOld import BaseParserOld
 
 
-class TriggerLogParser(BaseParser):
+class TriggerLogParser(BaseParserOld):
     TIME_COLUMN = 'ClockTime'
     TRIGGER_COLUMN = 'BioSemiCode'
 

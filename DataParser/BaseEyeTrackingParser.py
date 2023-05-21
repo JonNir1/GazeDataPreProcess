@@ -1,43 +1,56 @@
 import os
+import pandas as pd
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
 import constants as cnst
-from DataParser.BaseParserOld import BaseParserOld
+from DataParser.BaseParser import BaseParser
 from Utils.ScreenMonitor import ScreenMonitor
 
 
-class BaseGazeDataParser(BaseParserOld, ABC):
+class BaseEyeTrackingParser(BaseParser, ABC):
+    """
+    Base class for all parsers handling eye tracking data.
+    These parsers take inputs from different eye trackers and map the data to a common format,
+    using the method `parse` for parsing the data and `parse_and_split` for splitting the data into trials.
+    """
 
-    def __init__(self, input_path: str, output_path: Optional[str] = None,
-                 screen_monitor: Optional[ScreenMonitor] = None):
+    def __init__(self, screen_monitor: Optional[ScreenMonitor] = None):
+        self.__screen_monitor: ScreenMonitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
+
+    def parse(self, input_path: str, additional_columns: Optional[List[str]] = None,
+              output_path: Optional[str] = None) -> pd.DataFrame:
         if not os.path.exists(input_path):
             raise FileNotFoundError(f'File not found: {input_path}')
-        self.input_path = input_path
-        self.output_path = output_path
-        num_samples, sampling_rate = self._compute_sample_size_and_sr()
-        self.__num_samples = num_samples
-        self.__sampling_rate = sampling_rate
-        self.__screen_monitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
+        df = pd.read_csv(input_path, sep='\t')
+        additional_columns = additional_columns if additional_columns is not None else []
+        columns_to_keep = self.get_common_columns() + additional_columns
+        df.drop(columns=[col for col in df.columns if col not in columns_to_keep], inplace=True)
+        df.replace(to_replace=self.MISSING_VALUE(), value=np.nan, inplace=True)
 
-    @abstractmethod
-    def _compute_sample_size_and_sr(self) -> (int, float):
-        raise NotImplementedError
+        # correct for screen resolution
+        screen_w, screen_h = self.__screen_monitor.resolution
+        df[self.LEFT_X_COLUMN()] = df[self.LEFT_X_COLUMN()] * screen_w
+        df[self.LEFT_Y_COLUMN()] = df[self.LEFT_Y_COLUMN()] * screen_h
+        df[self.RIGHT_X_COLUMN()] = df[self.RIGHT_X_COLUMN()] * screen_w
+        df[self.RIGHT_Y_COLUMN()] = df[self.RIGHT_Y_COLUMN()] * screen_h
 
-    @property
-    def num_samples(self) -> float:
-        # number of samples in the data
-        return self.__num_samples
+        # reorder + rename columns to match the standard (except for the additional columns)
+        df = df[columns_to_keep]
+        df.rename(columns=lambda col: self._column_name_mapper(col), inplace=True)
+        return df
 
-    @property
-    def sampling_rate(self) -> float:
-        # sampling rate of the data
-        return self.__sampling_rate
+    def parse_and_split(self, input_path: str, additional_columns: Optional[List[str]] = None,
+                        output_path: Optional[str] = None) -> List[pd.DataFrame]:
+        df = self.parse(input_path, additional_columns, output_path)
+        trial_indices = df[cnst.TRIAL].unique()
+        return [df[df[cnst.TRIAL] == trial_idx] for trial_idx in trial_indices]
 
-    @property
-    def screen_monitor(self) -> ScreenMonitor:
-        # screen monitor object
-        return self.__screen_monitor
+    @classmethod
+    def get_common_columns(cls):
+        return [cls.TRIAL_COLUMN(), cls.MILLISECONDS_COLUMN(), cls.MICROSECONDS_COLUMN(),
+                cls.LEFT_X_COLUMN(), cls.LEFT_Y_COLUMN(), cls.LEFT_PUPIL_COLUMN(),
+                cls.RIGHT_X_COLUMN(), cls.RIGHT_Y_COLUMN(), cls.RIGHT_PUPIL_COLUMN()]
 
     @classmethod
     @abstractmethod
@@ -46,13 +59,15 @@ class BaseGazeDataParser(BaseParserOld, ABC):
         raise NotImplementedError
 
     @classmethod
-    def get_columns(cls) -> List[str]:
-        return cls._get_common_columns() + cls.ADDITIONAL_COLUMNS()
-
-    @classmethod
     @abstractmethod
     def TRIAL_COLUMN(cls) -> str:
         # column name for trial number
+        raise NotImplementedError
+
+    @classmethod
+    @abstractmethod
+    def MILLISECONDS_COLUMN(cls) -> str:
+        # column name for time in milliseconds
         raise NotImplementedError
 
     @classmethod
@@ -124,9 +139,3 @@ class BaseGazeDataParser(BaseParserOld, ABC):
         if column_name == cls.RIGHT_PUPIL_COLUMN():
             return cnst.RIGHT_PUPIL
         return column_name
-
-    @classmethod
-    def _get_common_columns(cls):
-        return [cls.TRIAL_COLUMN(), cls.MILLISECONDS_COLUMN(), cls.MICROSECONDS_COLUMN(),
-                cls.LEFT_X_COLUMN(), cls.LEFT_Y_COLUMN(), cls.LEFT_PUPIL_COLUMN(),
-                cls.RIGHT_X_COLUMN(), cls.RIGHT_Y_COLUMN(), cls.RIGHT_PUPIL_COLUMN()]
