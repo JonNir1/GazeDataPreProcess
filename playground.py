@@ -7,16 +7,17 @@ import constants as cnst
 import experiment_config as cnfg
 
 from Utils.ScreenMonitor import ScreenMonitor
-from LWS.scripts.read_subject import read_subject
+from LWS.scripts.read_subject import read_subject_trials
 from LWS.scripts.detect_events import detect_all_events
 from LWS.scripts.extract_events import extract_all_events, extract_event
 
 
-start = time.time()
+# start = time.time()
 
 sm = ScreenMonitor.from_config()
-sr, trials = read_subject(subject_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo",
-                          screen_monitor=sm)
+trials = read_subject_trials(subject_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo",
+                                 stimuli_dir=cnfg.STIMULI_DIR,
+                                 screen_monitor=sm)
 trial1 = trials[0]
 is_blink, is_saccade, is_fixation = detect_all_events(trial=trial1, sampling_rate=sr,
                                                       stuff_with='fixation',
