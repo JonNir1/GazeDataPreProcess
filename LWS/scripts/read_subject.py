@@ -8,7 +8,6 @@ from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSTrial import LWSTrial
-from DataParser.scripts.parse_tobii_gaze_and_triggers import parse_tobii_gaze_and_triggers
 from LWS.scripts.read_behavioral_data import read_behavioral_data
 
 
