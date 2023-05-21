@@ -1,5 +1,6 @@
+# LWS PreProcessing Pipeline
+
 import os
-from typing import Optional
 
 import experiment_config as cnfg
 from Utils.ScreenMonitor import ScreenMonitor

@@ -1,3 +1,5 @@
+# LWS PreProcessing Pipeline
+
 import numpy as np
 import warnings as w
 from typing import Optional, Tuple
