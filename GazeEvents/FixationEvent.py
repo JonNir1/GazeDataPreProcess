@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+import constants as cnst
 import experiment_config as cnfg
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
 
@@ -47,8 +48,8 @@ class FixationEvent(BaseGazeEvent):
         return np.array([np.nanstd(self.__x), np.nanstd(self.__y)])
 
     @classmethod
-    def _event_type(cls) -> str:
-        return "fixation"
+    def event_type(cls) -> str:
+        return cnst.FIXATION
 
     def __eq__(self, other):
         if not super().__eq__(other):

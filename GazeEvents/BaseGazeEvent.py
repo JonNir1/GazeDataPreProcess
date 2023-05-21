@@ -31,7 +31,7 @@ class BaseGazeEvent(ABC):
             - sampling_rate: the sampling rate used to record the event
             - is_outlier: boolean indicating whether the event is an outlier or not
         """
-        return pd.Series(data=[self._event_type(), self.start_time, self.end_time,
+        return pd.Series(data=[self.event_type(), self.start_time, self.end_time,
                                self.duration, self.__sampling_rate, self.is_outlier],
                          index=["event_type", "start_time", "end_time",
                                 "duration", "sampling_rate", "is_outlier"])
@@ -58,11 +58,11 @@ class BaseGazeEvent(ABC):
 
     @classmethod
     @abstractmethod
-    def _event_type(cls) -> str:
+    def event_type(cls) -> str:
         raise NotImplementedError
 
     def __repr__(self):
-        return f"{self._event_type().capitalize()} ({self.duration:.1f} ms)"
+        return f"{self.event_type().capitalize()} ({self.duration:.1f} ms)"
 
     def __str__(self):
         return self.__repr__()

@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+import constants as cnst
 import experiment_config as cnfg
 from Utils import velocity_utils as vu
 from Utils.ScreenMonitor import ScreenMonitor
@@ -73,8 +74,8 @@ class SaccadeEvent(BaseGazeEvent):
         return np.nanmax(velocities)
 
     @classmethod
-    def _event_type(cls):
-        return "saccade"
+    def event_type(cls):
+        return cnst.SACCADE
 
     def __eq__(self, other):
         if not super().__eq__(other):

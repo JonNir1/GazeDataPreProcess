@@ -1,3 +1,4 @@
+import constants as cnst
 import experiment_config as cnfg
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
 
@@ -9,5 +10,5 @@ class BlinkEvent(BaseGazeEvent):
         return self.duration < cnfg.DEFAULT_BLINK_MINIMUM_DURATION
 
     @classmethod
-    def _event_type(cls):
-        return "blink"
+    def event_type(cls):
+        return cnst.BLINK
