@@ -38,7 +38,8 @@ class LWSTrial:
     def is_processed(self) -> bool:
         return self.__is_processed
 
-    def set_is_processed(self, is_processed: bool):
+    @is_processed.setter
+    def is_processed(self, is_processed: bool):
         if self.__is_processed and not is_processed:
             raise RuntimeError("Cannot set is_processed to False after it has been set to True.")
         self.__is_processed = is_processed

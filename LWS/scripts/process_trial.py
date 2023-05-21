@@ -22,7 +22,7 @@ def process_trial(trial: LWSTrial, sr: float, screen_monitor: ScreenMonitor = No
     """
     screen_monitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
 
-    trial.set_is_processed(False)
+    trial.is_processed = False
 
     # process raw eye-tracking data
     is_blink, is_saccade, is_fixation = detect_all_events(trial, sr, **kwargs)
@@ -36,4 +36,4 @@ def process_trial(trial: LWSTrial, sr: float, screen_monitor: ScreenMonitor = No
     events = extract_all_events(trial, screen_monitor, sr, drop_outliers=drop_outlier_events)
     trial.set_gaze_events(events)
 
-    trial.set_is_processed(True)
+    trial.is_processed = True
