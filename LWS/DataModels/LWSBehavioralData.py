@@ -1,5 +1,7 @@
 import pandas as pd
 from typing import Tuple, List, Union, Optional
+
+import constants as cnst
 from LWS.DataModels.LWSEnums import LWSStimulusTypeEnum
 
 
@@ -16,6 +18,11 @@ class LWSBehavioralData:
     @property
     def shape(self) -> Tuple[int, int]:
         return self.__data.shape
+
+    @property
+    def sampling_rate(self) -> float:
+        microseconds = self.get(cnst.MICROSECONDS)
+        return cnst.MICROSECONDS_PER_SECOND / microseconds.diff().mode()[0]
 
     @property
     def trial_num(self) -> int:
