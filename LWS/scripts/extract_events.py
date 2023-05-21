@@ -8,14 +8,13 @@ from GazeEvents.BaseGazeEvent import BaseGazeEvent
 from LWS.scripts.distance_to_targets import calculate_angular_target_distance_for_fixation
 
 
-def extract_all_events(trial: LWSTrial, screen_monitor: ScreenMonitor,
-                       sampling_rate: float, drop_outliers: bool = False) -> List[BaseGazeEvent]:
+def extract_all_events(trial: LWSTrial, screen_monitor: ScreenMonitor, drop_outliers: bool = False) -> List[BaseGazeEvent]:
     """
     Extracts all events from the given data and returns a list of GazeEvent objects.
     """
-    blink_events = extract_event(trial, screen_monitor, sampling_rate, cnst.BLINK)
-    saccade_events = extract_event(trial, screen_monitor, sampling_rate, cnst.SACCADE)
-    fixation_events = extract_event(trial, screen_monitor, sampling_rate, cnst.FIXATION)
+    blink_events = extract_event(trial, screen_monitor, cnst.BLINK)
+    saccade_events = extract_event(trial, screen_monitor, cnst.SACCADE)
+    fixation_events = extract_event(trial, screen_monitor, cnst.FIXATION)
     all_events = blink_events + saccade_events + fixation_events
     if drop_outliers:
         all_events = [event for event in all_events if not event.is_outlier]
@@ -24,8 +23,7 @@ def extract_all_events(trial: LWSTrial, screen_monitor: ScreenMonitor,
 
 
 def extract_event(trial: LWSTrial, screen_monitor: ScreenMonitor,
-                  sampling_rate: float, event_type: str,
-                  drop_outliers: bool = False) -> List[BaseGazeEvent]:
+                  event_type: str, drop_outliers: bool = False) -> List[BaseGazeEvent]:
     """
     Extracts events of the given type from the given data and returns a list of BaseGazeEvent objects.
     """
@@ -47,13 +45,13 @@ def extract_event(trial: LWSTrial, screen_monitor: ScreenMonitor,
 
     if event_type == cnst.BLINK:
         from GazeEvents.BlinkEvent import BlinkEvent
-        events_list = [BlinkEvent(timestamps=timestamps[idxs], sampling_rate=sampling_rate)
+        events_list = [BlinkEvent(timestamps=timestamps[idxs], sampling_rate=trial.sampling_rate)
                        for idxs in separate_event_idxs]
 
     _, x, y = trial.get_raw_gaze_coordinates()
     if event_type == cnst.SACCADE:
         from GazeEvents.SaccadeEvent import SaccadeEvent
-        events_list = [SaccadeEvent(timestamps=timestamps[idxs], sampling_rate=sampling_rate,
+        events_list = [SaccadeEvent(timestamps=timestamps[idxs], sampling_rate=trial.sampling_rate,
                                     x=x[idxs], y=y[idxs]) for idxs in separate_event_idxs]
 
     if event_type == cnst.FIXATION:
@@ -61,7 +59,7 @@ def extract_event(trial: LWSTrial, screen_monitor: ScreenMonitor,
         events_list = []
         for idxs in separate_event_idxs:
             fix = LWSFixationEvent(timestamps=timestamps[idxs],
-                                   sampling_rate=sampling_rate,
+                                   sampling_rate=trial.sampling_rate,
                                    x=x[idxs], y=y[idxs])
             fix.set_distance_to_target(calculate_angular_target_distance_for_fixation(fix, trial, screen_monitor))
             events_list.append(fix)

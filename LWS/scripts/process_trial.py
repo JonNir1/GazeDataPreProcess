@@ -33,7 +33,7 @@ def process_trial(trial: LWSTrial, sr: float, screen_monitor: ScreenMonitor = No
 
     # process gaze events
     drop_outlier_events = kwargs.pop('drop_outlier_events', False)
-    events = extract_all_events(trial, screen_monitor, sr, drop_outliers=drop_outlier_events)
+    events = extract_all_events(trial, screen_monitor, drop_outliers=drop_outlier_events)
     trial.set_gaze_events(events)
 
     trial.is_processed = True

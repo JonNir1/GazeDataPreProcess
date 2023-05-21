@@ -7,14 +7,13 @@ from LWS.DataModels.LWSTrial import LWSTrial
 from EventDetectors.BaseDetector import BaseDetector
 
 
-def detect_all_events(trial: LWSTrial, sampling_rate: float, **kwargs) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def detect_all_events(trial: LWSTrial, **kwargs) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Detects all types of events in the given trial: fixations, saccades, and blinks.
     Returns a tuple of three boolean arrays, one for each type of event.
 
     :params:
         - trial: The trial to detect events in.
-        - sampling_rate: The sampling rate of the eye tracker.
 
     :kwargs:
         - stuff_with: either "saccade", "fixation" or None. Controls how to fill unidentified samples.
@@ -39,6 +38,7 @@ def detect_all_events(trial: LWSTrial, sampling_rate: float, **kwargs) -> Tuple[
         - velocity_threshold: maximal velocity allowed within a fixation, used by IVTFixationDetector;  default: 30 deg/s
 
     """
+    sampling_rate = trial.sampling_rate
     stuff_with = __extract_argument_stuff_with(kwargs.get('stuff_with', None))
     _ts, x, y = trial.get_raw_gaze_coordinates()
 
