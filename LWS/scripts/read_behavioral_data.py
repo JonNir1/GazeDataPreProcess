@@ -26,6 +26,9 @@ def read_behavioral_data(subject_dir: str, **kwargs) -> List[LWSBehavioralData]:
     :keyword end_trigger: trigger indicating end of a trial; if None, will be taken from the config file
 
     :return: A list of LWSBehavioralData objects, one for each trial.
+
+    :raise FileNotFoundError: if no gaze files or no trigger files were found in the provided directory.
+    :raise ValueError: if the number of gaze files and trigger files does not match.
     """
     gaze_files = __find_files_by_suffix(subject_dir, "GazeData")
     trigger_files = __find_files_by_suffix(subject_dir, "TriggerLog")

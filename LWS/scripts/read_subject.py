@@ -1,10 +1,8 @@
 import os
 import re
-import pandas as pd
-from typing import Optional, List
+from typing import List
 
 import experiment_config as cnfg
-from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSTrial import LWSTrial
@@ -13,15 +11,22 @@ from LWS.scripts.read_behavioral_data import read_behavioral_data
 
 def read_subject_trials(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwargs) -> List[LWSTrial]:
     """
+    Reads the subject's behavioral data and creates a list of trials, each containing the subject's behavioral data,
+    the stimulus that was presented in that trial, and the subject's info.
 
-    :param subject_dir:
-    :param stimuli_dir:
+    :param subject_dir: the directory in which the subject's data is stored.
+    :param stimuli_dir: the directory in which the stimuli are stored.
 
-    :keyword screen_monitor:
-    :keyword experiment_columns or additional_columns:
-    :keyword start_trigger, end_trigger:
+    :keyword screen_monitor: a ScreenMonitor object that contains the screen's parameters.
+    :keyword experiment_columns or additional_columns: a list of columns that should be read from the behavioral data.
+    :keyword start_trigger, end_trigger: the triggers that mark the beginning and end of each trial.
 
-    :return:
+    :return: a list of (unprocessed) LWSTrial objects.
+
+    :raise NotADirectoryError: if the provided subject or stimuli directory does not exist.
+    :raise FileNotFoundError: if no subject info files, gaze data files or trigger-log files were found in the provided subject directory.
+    :raise ValueError: if multiple subject info files were found in the provided subject directory.
+    :raise ValueError: if the number of gaze files and trigger files does not match.
     """
     # verify inputs:
     if not os.path.isdir(subject_dir):
