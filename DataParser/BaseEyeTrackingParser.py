@@ -37,11 +37,18 @@ class BaseEyeTrackingParser(BaseParser, ABC):
         # reorder + rename columns to match the standard (except for the additional columns)
         df = df[columns_to_keep]
         df.rename(columns=lambda col: self._column_name_mapper(col), inplace=True)
+
+        if output_path is not None:
+            # TODO: implement save_data
+            pass
         return df
 
     def parse_and_split(self, input_path: str, output_path: Optional[str] = None) -> List[pd.DataFrame]:
         df = self.parse(input_path, output_path)
         trial_indices = df[cnst.TRIAL].unique()
+        if output_path is not None:
+            # TODO: implement save_data
+            pass
         return [df[df[cnst.TRIAL] == trial_idx] for trial_idx in trial_indices]
 
     @classmethod

@@ -28,6 +28,10 @@ class EPrimeTriggerLogParser(BaseParser):
         df = pd.read_csv(input_path, sep='\t')
         df = df[self.get_common_columns()]
         df.rename(columns=lambda col: self._column_name_mapper(col), inplace=True)
+
+        if output_path is not None:
+            # TODO: implement save_data
+            pass
         return df
 
     def parse_and_split(self, input_path: str, output_path: Optional[str] = None) -> List[pd.DataFrame]:
@@ -40,6 +44,10 @@ class EPrimeTriggerLogParser(BaseParser):
         df_list = [full_df.iloc[start:end + 1].copy(deep=True) for start, end in start_end_idxs]
         for i, sub_df in enumerate(df_list):
             sub_df[cnst.TRIAL] = i+1
+
+        if output_path is not None:
+            # TODO: implement save_data
+            pass
         return df_list
 
     @classmethod
