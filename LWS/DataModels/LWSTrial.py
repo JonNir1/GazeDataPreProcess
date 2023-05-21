@@ -58,8 +58,7 @@ class LWSTrial:
             raise RuntimeError("Cannot set behavioral data after trial has been processed.")
         self.__behavioral_data = behavioral_data
 
-    @property
-    def gaze_events(self) -> List[BaseGazeEvent]:
+    def get_gaze_events(self) -> List[BaseGazeEvent]:
         if self.__gaze_events is None:
             return []
         if len(self.__gaze_events) == 0:
@@ -69,7 +68,8 @@ class LWSTrial:
     def set_gaze_events(self, gaze_events: List[BaseGazeEvent]):
         if self.is_processed:
             raise RuntimeError("Cannot set gaze events after trial has been processed.")
-        if self.gaze_events is not None or len(self.gaze_events) > 0:
+        ge = self.get_gaze_events()
+        if len(ge) > 0:
             Warn("Overwriting existing gaze events.")
         self.__gaze_events = sorted(gaze_events, key=lambda e: e.start_time)
 
