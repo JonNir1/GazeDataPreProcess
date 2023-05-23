@@ -19,7 +19,7 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
 
     Defines these properties:
     - sampling_rate: sampling rate of the data in Hz
-    - min_duration: minimum duration of a blink in milliseconds                     (default: 5)
+    - min_duration: minimum duration of a saccade in milliseconds                     (default: 5)
     - inter_event_time: minimal time between two (same) events in ms                (default: 5)
     - derivation_window_size: size of the window used to calculate the derivative   (default: 3)
     - lambda_noise_threshold: threshold for the lambda noise value                  (default: 5)
