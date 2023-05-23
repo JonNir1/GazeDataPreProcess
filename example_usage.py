@@ -17,7 +17,9 @@ from GazeEvents.scripts.extract_gaze_events import extract_events_to_dataframe
 sm = ScreenMonitor.from_config()
 
 # parse eye tracking data
-et_data = parse_eye_tracker(et_type="tobii", et_path=r"Path/To/Your/Data", screen_monitor=sm, split_trials=False)
+et_data = parse_eye_tracker(et_type="tobii", et_path=r"Path/To/Your/Data",
+                            screen_monitor=sm, split_trials=False,
+                            additional_columns=cnfg.ADDITIONAL_COLUMNS)
 
 # classify samples as blinks, saccades or fixations
 tr = et_data[0]
