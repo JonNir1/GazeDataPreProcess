@@ -179,7 +179,7 @@ def _get_event_detector(detector_type: str, min_duration: float, sampling_rate: 
     """
     if detector_type.lower() == "missing data" or detector_type.lower() == "missing_data":
         from EventDetectors.MissingDataBlinkDetector import MissingDataBlinkDetector
-        missing_value = kwargs.get("missing_value", None)
+        missing_value = kwargs.get("missing_value", cnfg.DEFAULT_MISSING_VALUE)
         return MissingDataBlinkDetector(sr=sampling_rate, iet=inter_event_time, min_duration=min_duration,
                                         missing_value=missing_value)
 

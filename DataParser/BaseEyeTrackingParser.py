@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 
 import constants as cnst
+import experiment_config as cnfg
 from DataParser.BaseParser import BaseParser
 from Utils.ScreenMonitor import ScreenMonitor
 
@@ -26,7 +27,7 @@ class BaseEyeTrackingParser(BaseParser, ABC):
         df = pd.read_csv(input_path, sep='\t')
         columns_to_keep = self.get_common_columns() + self.__additional_columns
         df.drop(columns=[col for col in df.columns if col not in columns_to_keep], inplace=True)
-        df.replace(to_replace=self.MISSING_VALUE(), value=np.nan, inplace=True)
+        df.replace(to_replace=self.MISSING_VALUE(), value=cnfg.DEFAULT_MISSING_VALUE, inplace=True)
 
         # correct for screen resolution
         # note that coordinates may fall outside the screen, so we don't clip them (see https://shorturl.at/hvBCY)
