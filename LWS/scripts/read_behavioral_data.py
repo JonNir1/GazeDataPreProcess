@@ -4,7 +4,7 @@ import os
 import re
 import numpy as np
 import pandas as pd
-from typing import List
+from typing import List, Union
 
 import constants as cnst
 import experiment_config as cnfg
@@ -52,13 +52,15 @@ def read_behavioral_data(subject_dir: str, **kwargs) -> List[LWSBehavioralData]:
     return behavioral_data
 
 
-def parse_gaze_and_triggers(et_path, trigger_path, **kwargs) -> List[pd.DataFrame]:
+def parse_gaze_and_triggers(et_path, trigger_path,
+                            split_trials: bool = True, **kwargs) -> Union[List[pd.DataFrame], pd.DataFrame]:
     """
     Reads the eye-tracking data (Tobii+EPrime CSV format) and trigger data (EPrime tsv format) from the specified paths,
     parses them to a predefined format and merges them into a single dataframe for each trial.
 
     :param et_path: path to the eye-tracking data file
     :param trigger_path: path to the trigger-log file
+    :param split_trials: if True, will split the data into trials according to the start and end triggers
 
     :keyword screen_monitor: screen monitor object; if None, will be created from the config file
     :keyword additional_columns: additional columns to parse from the eye-tracking data file; if None, will be taken from the config file
@@ -86,8 +88,9 @@ def parse_gaze_and_triggers(et_path, trigger_path, **kwargs) -> List[pd.DataFram
         same_trigger = merged_df[cnst.TRIGGER].diff() == 0
         merged_df.loc[same_trigger, cnst.TRIGGER] = np.nan  # keep only the first instance of a trigger
         joint_dfs.append(merged_df)
-
-    return joint_dfs
+    if split_trials:
+        return joint_dfs
+    return pd.concat(joint_dfs)
 
 
 def __find_files_by_suffix(directory: str, end_with: str) -> List[str]:
