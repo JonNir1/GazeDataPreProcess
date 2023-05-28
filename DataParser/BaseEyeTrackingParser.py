@@ -29,6 +29,7 @@ class BaseEyeTrackingParser(BaseParser, ABC):
         df.replace(to_replace=self.MISSING_VALUE(), value=np.nan, inplace=True)
 
         # correct for screen resolution
+        # note that coordinates may fall outside the screen, so we don't clip them (see https://shorturl.at/hvBCY)
         screen_w, screen_h = self.__screen_monitor.resolution
         df[self.LEFT_X_COLUMN()] = df[self.LEFT_X_COLUMN()] * screen_w
         df[self.LEFT_Y_COLUMN()] = df[self.LEFT_Y_COLUMN()] * screen_h
