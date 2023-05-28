@@ -4,7 +4,7 @@ import os
 import re
 import numpy as np
 import pandas as pd
-from typing import List, Union
+from typing import List
 
 import constants as cnst
 import experiment_config as cnfg
@@ -47,20 +47,18 @@ def read_behavioral_data(subject_dir: str, **kwargs) -> List[LWSBehavioralData]:
     if len(gaze_files) != 1:
         # TODO: support multiple sessions
         raise NotImplementedError("Multiple sessions for a single subject are not supported yet.")
-    trials = parse_gaze_and_triggers(et_path=gaze_files[0], trigger_path=trigger_files[0], split_trials=True, **kwargs)
+    trials = parse_gaze_and_triggers(et_path=gaze_files[0], trigger_path=trigger_files[0], **kwargs)
     behavioral_data = [LWSBehavioralData(trial_df) for trial_df in trials]
     return behavioral_data
 
 
-def parse_gaze_and_triggers(et_path, trigger_path,
-                            split_trials: bool = True, **kwargs) -> Union[List[pd.DataFrame], pd.DataFrame]:
+def parse_gaze_and_triggers(et_path, trigger_path, **kwargs) -> List[pd.DataFrame]:
     """
     Reads the eye-tracking data (Tobii+EPrime CSV format) and trigger data (EPrime tsv format) from the specified paths,
     parses them to a predefined format and merges them into a single dataframe for each trial.
 
     :param et_path: path to the eye-tracking data file
     :param trigger_path: path to the trigger-log file
-    :param split_trials: whether to split the data into trials or not
 
     :keyword screen_monitor: screen monitor object; if None, will be created from the config file
     :keyword additional_columns: additional columns to parse from the eye-tracking data file; if None, will be taken from the config file
@@ -77,18 +75,19 @@ def parse_gaze_and_triggers(et_path, trigger_path,
     end_trigger = kwargs.get('end_trigger', cnfg.END_TRIGGER)
     trigger_parser = EPrimeTriggerLogParser(start_trigger=start_trigger, end_trigger=end_trigger)
 
-    # parse the data
-    et_df = et_parser.parse(et_path)
-    trigger_df = trigger_parser.parse(trigger_path)
-    merged_df = pd.merge_asof(et_df, trigger_df, on=cnst.MILLISECONDS, direction='backward')
-    same_trigger = merged_df[cnst.TRIGGER].diff() == 0
-    merged_df.loc[same_trigger, cnst.TRIGGER] = np.nan  # keep only the first instance of a trigger
+    # parse the data and split it into trials:
+    et_dfs = et_parser.parse_and_split(et_path)
+    trigger_dfs = trigger_parser.parse_and_split(trigger_path)
 
-    # return the data, either as a single DF or as a list of DFs
-    if not split_trials:
-        return merged_df
-    trial_indices = merged_df[cnst.TRIAL].unique()
-    return [merged_df[merged_df[cnst.TRIAL] == trial_idx] for trial_idx in trial_indices]
+    joint_dfs = []
+    for et_df, trigger_df in zip(et_dfs, trigger_dfs):
+        merged_df = pd.merge_asof(et_df, trigger_df.drop(columns=cnst.TRIAL),
+                                  on=cnst.MILLISECONDS, direction='backward')
+        same_trigger = merged_df[cnst.TRIGGER].diff() == 0
+        merged_df.loc[same_trigger, cnst.TRIGGER] = np.nan  # keep only the first instance of a trigger
+        joint_dfs.append(merged_df)
+
+    return joint_dfs
 
 
 def __find_files_by_suffix(directory: str, end_with: str) -> List[str]:
