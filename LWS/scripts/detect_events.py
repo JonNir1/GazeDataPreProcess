@@ -56,6 +56,14 @@ def detect_all_events(trial: LWSTrial, **kwargs) -> Tuple[np.ndarray, np.ndarray
     fixation_iet = kwargs.pop("fixation_inter_event_time", 5)
     is_fixation = detect_fixations(fixation_detector_type, x, y, sampling_rate, inter_event_time=fixation_iet, **kwargs)
 
+    # classify unidentified samples with value specified in stuff_with:
+    if not stuff_with:
+        return is_blink, is_saccade, is_fixation
+    if type(stuff_with) != str:
+        raise TypeError("stuff_with must be a string or None")
+    if stuff_with.lower() not in ["saccade", "fixation"]:
+        raise ValueError("stuff_with must be either 'saccade' or 'fixation'")
+
     if stuff_with.lower() == "saccade":
         if saccade_detector_type:
             w.warn("WARNING: ignoring stuff_with='saccade' when a saccade detector is specified")
