@@ -27,16 +27,16 @@ class LWSBehavioralData:
 
     @property
     def trial_num(self) -> int:
-        return self.get(cnst.TRIAL)[0]
+        return self.get(cnst.TRIAL).iloc[0]
 
     @property
     def stim_type(self) -> LWSStimulusTypeEnum:
-        stim_type_str = self.get("ConditionName")[0]
+        stim_type_str = self.get("ConditionName").iloc[0]
         return LWSStimulusTypeEnum(stim_type_str)
 
     @property
     def image_num(self) -> int:
-        return self.get("ImageNum")[0]
+        return self.get("ImageNum").iloc[0]
 
     @property
     def columns(self) -> list:
