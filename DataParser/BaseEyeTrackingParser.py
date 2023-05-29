@@ -24,7 +24,7 @@ class BaseEyeTrackingParser(BaseParser, ABC):
     def parse(self, input_path: str, output_path: Optional[str] = None) -> pd.DataFrame:
         if not os.path.exists(input_path):
             raise FileNotFoundError(f'File not found: {input_path}')
-        df = pd.read_csv(input_path, sep='\t')
+        df = pd.read_csv(input_path, sep='\t', low_memory=False)
         columns_to_keep = self.get_common_columns() + self.__additional_columns
         df.drop(columns=[col for col in df.columns if col not in columns_to_keep], inplace=True)
         df.replace(to_replace=self.MISSING_VALUE(), value=cnfg.DEFAULT_MISSING_VALUE, inplace=True)
