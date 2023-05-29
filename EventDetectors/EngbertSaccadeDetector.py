@@ -111,7 +111,6 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         if not isinstance(x_copy, pd.Series):
             # convert to pd series to use rolling window function
             x_copy = pd.Series(x_copy)
-        x_copy[x_copy < 0] = np.nan
         prev_elements_sum = x_copy.rolling(n - 1).sum().shift(1)
         next_elements_sum = x_copy.rolling(n - 1).sum().shift(1 - n)
         deriv = (next_elements_sum - prev_elements_sum) / (2 * n)
