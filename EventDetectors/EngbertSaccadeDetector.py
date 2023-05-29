@@ -103,17 +103,17 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         :return: numerical derivative of the given values
                 Note: the first and last (n-1) samples will be NaN
         """
-        N = len(x)
+        x_copy = x.copy()  # use a copy of x to avoid changing the original values
         if n <= 0:
             raise ValueError("n must be greater than 0")
-        if n >= int(0.5 * N):
+        if n >= int(0.5 * len(x_copy)):
             raise ValueError("n must be less than half the length of the given values")
-        if not isinstance(x, pd.Series):
+        if not isinstance(x_copy, pd.Series):
             # convert to pd series to use rolling window function
-            x = pd.Series(x)
-        x[x < 0] = np.nan
-        prev_elements_sum = x.rolling(n - 1).sum().shift(1)
-        next_elements_sum = x.rolling(n - 1).sum().shift(1 - n)
+            x_copy = pd.Series(x_copy)
+        x_copy[x_copy < 0] = np.nan
+        prev_elements_sum = x_copy.rolling(n - 1).sum().shift(1)
+        next_elements_sum = x_copy.rolling(n - 1).sum().shift(1 - n)
         deriv = (next_elements_sum - prev_elements_sum) / (2 * n)
         return deriv
 
