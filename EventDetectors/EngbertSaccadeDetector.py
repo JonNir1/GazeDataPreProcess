@@ -96,7 +96,7 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
     def __numerical_derivative(x, n: int) -> np.ndarray:
         """
         Calculates the numerical derivative of the given values, as described by Engbert & Kliegl(2003):
-            dX/dt = [(X[t+(N-1)] + X[t+(N-2)] + ... + X[t+1]) - (X[t-(N-1)] + X[t-(N-2)] + ... + X[t-1])] / 2N
+            dx/dt = [(x[t+(n-1)] + x[t+(n-2)] + ... + x[t+1]) - (x[t-(n-1)] + x[t-(n-2)] + ... + X[t-1])] / 2n
 
         :param x: series of length N to calculate the derivative for
         :param n: number of samples to use for the calculation
