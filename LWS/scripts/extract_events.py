@@ -56,6 +56,7 @@ def extract_event(trial: LWSTrial, screen_monitor: ScreenMonitor,
                                     x=x[idxs], y=y[idxs]) for idxs in separate_event_idxs]
 
     if event_type == cnst.FIXATION:
+        triggers = behavioral_data.get(cnst.TRIGGER).values
         from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
         events_list = []
         for idxs in separate_event_idxs:
