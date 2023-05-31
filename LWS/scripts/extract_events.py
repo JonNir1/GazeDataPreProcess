@@ -7,7 +7,7 @@ import constants as cnst
 from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
-from LWS.PreProcessing.distance_to_targets import calculate_angular_target_distance_for_fixation
+from LWS.scripts.distance_to_targets import calculate_angular_target_distance_for_fixation
 
 
 def extract_all_events(trial: LWSTrial, screen_monitor: ScreenMonitor, drop_outliers: bool = False) -> List[BaseGazeEvent]:
