@@ -1,6 +1,6 @@
 import numpy as np
 from warnings import warn as Warn
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 
 import constants as cnst
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
@@ -63,17 +63,23 @@ class LWSTrial:
             raise RuntimeError("Cannot set behavioral data after trial has been processed.")
         self.__behavioral_data = behavioral_data
 
-    def get_gaze_events(self) -> List[BaseGazeEvent]:
+    def get_gaze_events(self, event_type: Optional[str]) -> List[BaseGazeEvent]:
         if self.__gaze_events is None:
             return []
         if len(self.__gaze_events) == 0:
             return []
-        return self.__gaze_events
+        if event_type is None:
+            return self.__gaze_events
+
+        event_type = event_type.lower()
+        if event_type == cnst.ALL:
+            return self.__gaze_events
+        return list(filter(lambda e: e.event_type == event_type, self.__gaze_events))
 
     def set_gaze_events(self, gaze_events: List[BaseGazeEvent]):
         if self.is_processed:
             raise RuntimeError("Cannot set gaze events after trial has been processed.")
-        ge = self.get_gaze_events()
+        ge = self.get_gaze_events(event_type=cnst.ALL)
         if len(ge) > 0:
             Warn("Overwriting existing gaze events.")
         self.__gaze_events = sorted(gaze_events, key=lambda e: e.start_time)

@@ -19,6 +19,7 @@ RIGHT_PUPIL = "right_pupil"
 MILLISECONDS_PER_SECOND = 1000
 MICROSECONDS_PER_SECOND = 1000000
 
+ALL = "all"
 BLINK = "blink"
 SACCADE = "saccade"
 FIXATION = "fixation"
