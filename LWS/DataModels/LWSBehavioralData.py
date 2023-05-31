@@ -1,5 +1,5 @@
 import pandas as pd
-from typing import Tuple, List, Union, Optional
+from typing import Tuple, List, Union
 
 import constants as cnst
 from Utils.calculate_sampling_rate import calculate_sampling_rate_from_microseconds
@@ -46,17 +46,12 @@ class LWSBehavioralData:
         # Returns the requested column(s) from the data
         return self.__data[columns]
 
-    def concat(self, extra_data: Union[pd.DataFrame, pd.Series],
-               deep_copy: bool = False) -> Optional["LWSBehavioralData"]:
+    def concat(self, extra_data: Union[pd.DataFrame, pd.Series]) -> "LWSBehavioralData":
         """
-        Concatenates the extra data to the end of the current data.
-        If `deep_copy` is True, returns a new LWSBehavioralData object with the concatenated data. Otherwise, the data
-            is concatenated in-place and returns None.
+        Concatenates the extra data to the end of the current data, and returns a new LWSBehavioralData object.
         """
         new_df = pd.concat([self.__data, extra_data], axis=1)
-        if deep_copy:
-            return LWSBehavioralData(new_df)
-        self.__data = new_df
+        return LWSBehavioralData(new_df)
 
     def __len__(self) -> int:
         return len(self.__data)

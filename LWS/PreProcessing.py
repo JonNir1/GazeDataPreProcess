@@ -99,7 +99,10 @@ def process_trial(trial: LWSTrial, **kwargs):
     target_distance = calculate_angular_distance_for_gaze_data(trial, sm=sm)
     is_event_df = pd.DataFrame({'is_blink': is_blink, 'is_saccade': is_saccade,
                                 'is_fixation': is_fixation, 'target_distance': target_distance})
-    trial.get_behavioral_data().concat(is_event_df, deep_copy=False)  # add the new columns to the behavioral data
+
+    # add the new columns to the behavioral data:
+    new_behavioral_data = trial.get_behavioral_data().concat(is_event_df)
+    trial.set_behavioral_data(new_behavioral_data)
 
     # process gaze events
     drop_outlier_events = kwargs.pop('drop_outlier_events', False)
