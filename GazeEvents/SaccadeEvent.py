@@ -21,9 +21,11 @@ class SaccadeEvent(BaseGazeEvent):
         """
         creates a pandas Series with summary of saccade information.
         :return: a pd.Series with the following index:
-            - start_time: saccade's start time in milliseconds
-            - end_time: saccade's end time in milliseconds
-            - duration: saccade's duration in milliseconds
+            - start_time: event's start time in milliseconds
+            - end_time: event's end time in milliseconds
+            - duration: event's duration in milliseconds
+            - sampling_rate: the sampling rate used to record the event
+            - is_outlier: boolean indicating whether the event is an outlier or not
             - start_point: saccade's start point (2D pixel coordinates)
             - end_point: saccade's end point (2D pixel coordinates)
         """

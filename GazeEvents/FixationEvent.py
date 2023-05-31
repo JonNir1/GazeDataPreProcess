@@ -19,9 +19,11 @@ class FixationEvent(BaseGazeEvent):
         """
         creates a pandas Series with summary of fixation information.
         :return: a pd.Series with the following index:
-            - start_time: fixation's start time in milliseconds
-            - end_time: fixation's end time in milliseconds
-            - duration: fixation's duration in milliseconds
+            - start_time: event's start time in milliseconds
+            - end_time: event's end time in milliseconds
+            - duration: event's duration in milliseconds
+            - sampling_rate: the sampling rate used to record the event
+            - is_outlier: boolean indicating whether the event is an outlier or not
             - center_of_mass: fixation's center of mass (2D pixel coordinates)
             - std: fixation's standard deviation (in pixels units)
         """

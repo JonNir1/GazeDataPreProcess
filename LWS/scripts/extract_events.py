@@ -62,7 +62,7 @@ def extract_event(trial: LWSTrial, screen_monitor: ScreenMonitor,
         for idxs in separate_event_idxs:
             fix = LWSFixationEvent(timestamps=timestamps[idxs],
                                    sampling_rate=trial.sampling_rate,
-                                   x=x[idxs], y=y[idxs])
+                                   x=x[idxs], y=y[idxs], triggers=triggers[idxs])
             fix.distance_to_target = calculate_angular_target_distance_for_fixation(fix, trial, screen_monitor)
             events_list.append(fix)
 
