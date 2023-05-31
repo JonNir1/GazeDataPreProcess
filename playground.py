@@ -11,28 +11,49 @@ import LWS.PreProcessing as pp
 
 start = time.time()
 
-subject_dir = r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo"
-sm = ScreenMonitor.from_config()
-
-trials = pp.process_subject(subject_dir=subject_dir,
+trials = pp.process_subject(subject_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo",
                             stimuli_dir=cnfg.STIMULI_DIR,
-                            screen_monitor=sm,
+                            screen_monitor=ScreenMonitor.from_config(),
                             stuff_with='fixation',
                             blink_detector_type='missing data',
                             saccade_detector_type='engbert',
                             drop_outlier_events=False)
 
+trial11 = trials[10]
+trial11_raw_data = trial11._LWSTrial__behavioral_data._LWSBehavioralData__data
+trial11_fixations = trial11.get_gaze_events(event_type=cnst.FIXATION)
+trial11_fix1 = trial11_fixations[0]
+
 end = time.time()
 print(f"Finished preprocessing in: {end - start} seconds")
+del start
+del end
 
 ##########################################
 
-trial11 = trials[10]
-trial11_raw_data = trial11._LWSTrial__behavioral_data._LWSBehavioralData__data
-trial11_triggers = trial11_raw_data[cnst.TRIGGER]
+from typing import List
 
-trial11_events = trial11.get_gaze_events(event_type=cnst.ALL)
-trial11_fixations = trial11.get_gaze_events(event_type=cnst.FIXATION)
+
+def split_samples_between_events(is_event: np.ndarray) -> List[np.ndarray]:
+    # returns a list of arrays, each array contains the indices of the samples that belong to the same event
+    event_idxs = np.nonzero(is_event)[0]
+    if len(event_idxs) == 0:
+        return []
+    event_end_idxs = np.nonzero(np.diff(event_idxs) != 1)[0]
+    different_event_idxs = np.split(event_idxs, event_end_idxs + 1)  # +1 because we want to include the last index
+    return different_event_idxs
+
+timestamps, x, y = trial11.get_raw_gaze_coordinates()
+trial11_triggers = trial11.get_behavioral_data().get(cnst.TRIGGER).values
+is_fixation = trial11.get_behavioral_data().get("is_fixation").values
+separate_event_idxs = split_samples_between_events(is_fixation)
+
+trigs = []
+for i, idxs in enumerate(separate_event_idxs):
+    ts = timestamps[idxs]
+    trgs = trial11_triggers[idxs]
+    trigs.append({ts[i]: int(trgs[i]) for i in range(len(idxs)) if not np.isnan(trgs[i])})
+
 
 ##########################################
 
