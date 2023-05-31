@@ -14,12 +14,40 @@ from LWS.scripts.extract_events import extract_all_events
 
 def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwargs) -> List[LWSTrial]:
     """
-    TODO: add docstring
+    For a given subject directory, extracts the subject-info, gaze-data and trigger-log files, and uses those to create
+    the LWSTrial objects of that subject. Then, each trial is processed so that we detect blinks, saccades and fixations
+    and add the processed data to the trial object.
 
-    :param subject_dir:
-    :param stimuli_dir:
-    :param kwargs:
-    :return:
+    :param subject_dir: directory containing the subject's data files.
+    :param stimuli_dir: directory containing the stimuli files.
+
+    keyword arguments:
+        - screen_monitor: The screen monitor used to display the stimuli.
+
+    gaze detection keyword arguments:
+        - stuff_with: either "saccade", "fixation" or None. Controls how to fill unidentified samples.
+        - blink_detector_type: The type of blink detector to use. If None, no blink detection is performed.
+        - saccade_detector_type: The type of saccade detector to use. If None, no saccade detection is performed.
+        - fixation_detector_type: The type of fixation detector to use. If None, no fixation detection is performed.
+        - drop_outlier_events: If True, drops events that are considered outliers. If False, keeps all events.
+
+    blink keyword arguments:
+        - blink_inter_event_time: minimal time between two events in ms;                                default: 5 ms
+        - blink_min_duration: minimal duration of a blink in ms;                                        default: 50 ms
+        - missing_value: default value indicating missing data, used by MissingDataBlinkDetector;       default: np.nan
+
+    saccade keyword arguments:
+        - saccade_inter_event_time: minimal time between two events in ms;                              default: 5 ms
+        - saccade_min_duration: minimal duration of a blink in ms;                                      default: 5 ms
+        - derivation_window_size: window size for derivation in ms;                                     default: 3 ms
+        - lambda_noise_threshold: threshold for lambda noise, used by EngbertSaccadeDetector;           default: 5
+
+    fixation keyword arguments:
+        - fixation_inter_event_time: minimal time between two events in ms;                             default: 5 ms
+        - fixation_min_duration: minimal duration of a blink in ms;                                     default: 55 ms
+        - velocity_threshold: maximal velocity allowed within a fixation, used by IVTFixationDetector;  default: 30 deg/s
+
+    :return: A list of LWSTrial objects, one for each trial of the subject, processed and ready to be analyzed.
     """
     if not os.path.isdir(subject_dir):
         raise NotADirectoryError(f"Directory {subject_dir} does not exist.")
@@ -40,25 +68,25 @@ def process_trial(trial: LWSTrial, **kwargs):
     keyword arguments:
         - screen_monitor: The screen monitor used to display the stimuli.
 
-    gaze detection kwargs:
+    gaze detection keyword arguments:
         - stuff_with: either "saccade", "fixation" or None. Controls how to fill unidentified samples.
         - blink_detector_type: The type of blink detector to use. If None, no blink detection is performed.
         - saccade_detector_type: The type of saccade detector to use. If None, no saccade detection is performed.
         - fixation_detector_type: The type of fixation detector to use. If None, no fixation detection is performed.
         - drop_outlier_events: If True, drops events that are considered outliers. If False, keeps all events.
 
-    blink kwargs:
+    blink keyword arguments:
         - blink_inter_event_time: minimal time between two events in ms;                                default: 5 ms
         - blink_min_duration: minimal duration of a blink in ms;                                        default: 50 ms
         - missing_value: default value indicating missing data, used by MissingDataBlinkDetector;       default: np.nan
 
-    saccade kwargs:
+    saccade keyword arguments:
         - saccade_inter_event_time: minimal time between two events in ms;                              default: 5 ms
         - saccade_min_duration: minimal duration of a blink in ms;                                      default: 5 ms
         - derivation_window_size: window size for derivation in ms;                                     default: 3 ms
         - lambda_noise_threshold: threshold for lambda noise, used by EngbertSaccadeDetector;           default: 5
 
-    fixation kwargs:
+    fixation keyword arguments:
         - fixation_inter_event_time: minimal time between two events in ms;                             default: 5 ms
         - fixation_min_duration: minimal duration of a blink in ms;                                     default: 55 ms
         - velocity_threshold: maximal velocity allowed within a fixation, used by IVTFixationDetector;  default: 30 deg/s
