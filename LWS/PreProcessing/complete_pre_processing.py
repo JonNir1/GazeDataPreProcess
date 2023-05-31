@@ -6,10 +6,10 @@ import experiment_config as cnfg
 from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
 
-from LWS.scripts.read_subject import read_subject_trials
-from LWS.scripts.distance_to_targets import calculate_angular_distance_for_gaze_data
-from LWS.scripts.detect_events import detect_all_events
-from LWS.scripts.extract_events import extract_all_events
+from LWS.PreProcessing.read_subject import read_subject_trials
+from LWS.PreProcessing.distance_to_targets import calculate_angular_distance_for_gaze_data
+from LWS.PreProcessing.detect_events import detect_all_events
+from LWS.PreProcessing.extract_events import extract_all_events
 
 
 def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwargs) -> List[LWSTrial]:
