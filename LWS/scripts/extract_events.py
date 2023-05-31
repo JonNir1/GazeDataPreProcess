@@ -38,11 +38,11 @@ def extract_event(trial: LWSTrial, screen_monitor: ScreenMonitor,
     if is_event_colname not in behavioral_data.columns:
         raise ValueError(f"Behavioral Data does not contain column {is_event_colname}")
 
-    timestamps = behavioral_data.get(cnst.MICROSECONDS).values / 1000  # convert to milliseconds
+    timestamps, x, y = trial.get_raw_gaze_coordinates()  # timestamps in milliseconds (floating-point, not integer)
     is_event = behavioral_data.get(is_event_colname).values
     if len(timestamps) != len(is_event):
         raise ValueError(f"Arrays of \'timestamps\' and \'{is_event_colname}\' must have the same length")
-    separate_event_idxs = _split_samples_between_events(behavioral_data.get(is_event_colname).values)
+    separate_event_idxs = _split_samples_between_events(is_event)
     events_list = []
 
     if event_type == cnst.BLINK:
@@ -50,7 +50,6 @@ def extract_event(trial: LWSTrial, screen_monitor: ScreenMonitor,
         events_list = [BlinkEvent(timestamps=timestamps[idxs], sampling_rate=trial.sampling_rate)
                        for idxs in separate_event_idxs]
 
-    _, x, y = trial.get_raw_gaze_coordinates()
     if event_type == cnst.SACCADE:
         from GazeEvents.SaccadeEvent import SaccadeEvent
         events_list = [SaccadeEvent(timestamps=timestamps[idxs], sampling_rate=trial.sampling_rate,
