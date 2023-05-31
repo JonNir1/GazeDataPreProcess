@@ -6,18 +6,23 @@ from GazeEvents.FixationEvent import FixationEvent
 
 class LWSFixationEvent(FixationEvent):
     """
-    A fixation event with additional information about whether it is close to any of the targets of the current LWS trial.
+    A regular FixationEvent with additional information required specifically for the LWS experiments:
+        - distance_to_target: angular distance from the fixation's center of mass to the closest target's center of mass
     """
 
-    def __init__(self, timestamps: np.ndarray, sampling_rate: float, x: np.ndarray, y: np.ndarray):
+    def __init__(self,
+                 timestamps: np.ndarray, sampling_rate: float,
+                 x: np.ndarray, y: np.ndarray,
+                 distance_to_target: float = np.inf):
         super().__init__(timestamps=timestamps, sampling_rate=sampling_rate, x=x, y=y)
-        self.__distance_to_target = np.inf
+        self.__distance_to_target = distance_to_target
 
     @property
     def distance_to_target(self) -> float:
         return self.__distance_to_target
 
-    def set_distance_to_target(self, distance: float):
+    @distance_to_target.setter
+    def distance_to_target(self, distance: float):
         self.__distance_to_target = distance
 
     def to_series(self) -> pd.Series:
