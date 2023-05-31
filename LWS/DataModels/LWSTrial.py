@@ -74,7 +74,7 @@ class LWSTrial:
         event_type = event_type.lower()
         if event_type == cnst.ALL:
             return self.__gaze_events
-        return list(filter(lambda e: e.event_type == event_type, self.__gaze_events))
+        return list(filter(lambda e: e.event_type() == event_type, self.__gaze_events))
 
     def set_gaze_events(self, gaze_events: List[BaseGazeEvent]):
         if self.is_processed:

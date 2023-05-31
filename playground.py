@@ -22,13 +22,17 @@ trials = pp.process_subject(subject_dir=subject_dir,
                             saccade_detector_type='engbert',
                             drop_outlier_events=False)
 
+end = time.time()
+print(f"Finished preprocessing in: {end - start} seconds")
+
+##########################################
+
 trial11 = trials[10]
 trial11_raw_data = trial11._LWSTrial__behavioral_data._LWSBehavioralData__data
+trial11_triggers = trial11_raw_data[cnst.TRIGGER]
+
 trial11_events = trial11.get_gaze_events(event_type=cnst.ALL)
 trial11_fixations = trial11.get_gaze_events(event_type=cnst.FIXATION)
-
-end = time.time()
-print(f"Total time: {end - start}")
 
 ##########################################
 
