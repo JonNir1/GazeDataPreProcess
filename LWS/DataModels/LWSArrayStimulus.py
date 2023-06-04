@@ -47,7 +47,7 @@ class LWSArrayStimulus:
         stim_type = LWSArrayStimulus.__identify_stimulus_type(stim_type_str)
         if stim_type == LWSStimulusTypeEnum.BW:
             image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-            image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+            image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
         else:
             image = cv2.imread(image_path, cv2.IMREAD_COLOR)
 
