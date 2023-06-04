@@ -11,7 +11,7 @@ import LWS.PreProcessing as pp
 
 start = time.time()
 
-trials = pp.process_subject(subject_dir=r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\RawData\Rotem Demo",
+trials = pp.process_subject(subject_dir=os.path.join(cnfg.RAW_DATA_DIR, 'Rotem Demo'),
                             stimuli_dir=cnfg.STIMULI_DIR,
                             screen_monitor=ScreenMonitor.from_config(),
                             stuff_with='fixation',

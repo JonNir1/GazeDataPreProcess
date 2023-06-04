@@ -1,7 +1,14 @@
 """
 This file contains the configuration for each specific experiment.
 """
+import os
 import numpy as np
+
+# DIRECTORIES
+BASE_DIR = r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo"
+STIMULI_DIR = os.path.join(BASE_DIR, "Stimuli", "generated_stim1")
+RAW_DATA_DIR = os.path.join(BASE_DIR, "RawData")
+OUTPUT_DIR = os.path.join(BASE_DIR, "Results")
 
 # GENERAL CONFIGURATION
 SCREEN_DISTANCE = 65  # distance between the screen and the participant in cm
@@ -28,6 +35,5 @@ START_TRIGGER = 254  # trigger indicating the start of a trial
 END_TRIGGER = 255  # trigger indicating the end of a trial
 
 
-# STIMULUS SPECIFIC CONFIGURATION
-STIMULI_DIR = r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Stimuli\generated_stim1"
+# ANALYSIS CONFIGURATION
 THRESHOLD_VISUAL_ANGLE = 1.5  # threshold for the visual angle between a target and a gaze datapoint, in degrees
