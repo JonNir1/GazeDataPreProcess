@@ -99,7 +99,7 @@ class LWSArrayStimulus:
             img = self.__image
         elif color_format == 'rgb':
             img = cv2.cvtColor(self.__image, cv2.COLOR_BGR2RGB)
-        elif color_format == 'gray':
+        elif color_format == 'gray' or color_format == 'grey':
             img = cv2.cvtColor(self.__image, cv2.COLOR_BGR2GRAY)
         else:
             raise ValueError(f"Invalid color format: {color_format}")
