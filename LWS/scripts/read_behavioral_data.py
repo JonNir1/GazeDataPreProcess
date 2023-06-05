@@ -73,8 +73,8 @@ def parse_gaze_and_triggers(et_path, trigger_path,
     et_parser = TobiiCSVEyeTrackingParser(screen_monitor=sm, additional_columns=additional_columns)
 
     # get trigger parser:
-    start_trigger = kwargs.get('start_trigger', cnfg.START_TRIGGER)
-    end_trigger = kwargs.get('end_trigger', cnfg.END_TRIGGER)
+    start_trigger = kwargs.get('start_trigger', cnfg.START_RECORDING_TRIGGER)
+    end_trigger = kwargs.get('end_trigger', cnfg.END_RECORDING_TRIGGER)
     trigger_parser = EPrimeTriggerLogParser(start_trigger=start_trigger, end_trigger=end_trigger)
 
     # parse the data and split it into trials:

@@ -7,8 +7,8 @@ from DataParser.EPrimeTriggerLogParser import EPrimeTriggerLogParser
 
 
 def parse_trigger_log(path: str,
-                      start_trigger: int = cnfg.START_TRIGGER,
-                      end_trigger: int = cnfg.END_TRIGGER,
+                      start_trigger: int = cnfg.START_RECORDING_TRIGGER,
+                      end_trigger: int = cnfg.END_RECORDING_TRIGGER,
                       split_trials: bool = True) -> Union[pd.DataFrame, List[pd.DataFrame]]:
     """
     Parse trigger log file and return a dataframe with the parsed data, or a list of dataframes if split_trials is True.
