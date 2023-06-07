@@ -60,3 +60,9 @@ class LWSBehavioralData:
         if not isinstance(other, LWSBehavioralData):
             return False
         return self.__data.equals(other.__data)
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}:{str(self.shape)}"
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}_T{self.trial_num}({self.stim_type.value}-{self.image_num})"
