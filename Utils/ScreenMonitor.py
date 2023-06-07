@@ -84,3 +84,9 @@ class ScreenMonitor:
         radius_cm = d * np.tan(np.deg2rad(angle / 2))  # radius of the circle, in cm
         radius_pixels = radius_cm / self.pixel_size  # radius of the circle, in pixels
         return radius_pixels
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__} ({self.resolution[0]}×{self.resolution[1]}@{self.refresh_rate}Hz)"
+
+    def __str__(self) -> str:
+        return self.__repr__()
