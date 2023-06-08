@@ -42,6 +42,10 @@ class LWSBehavioralData:
     def columns(self) -> list:
         return self.__data.columns.to_list()
 
+    @property
+    def index(self) -> list:
+        return self.__data.index.to_list()
+
     def get(self, columns: Union[str, List[str]]) -> Union[pd.Series, pd.DataFrame]:
         # Returns the requested column(s) from the data
         return self.__data[columns]

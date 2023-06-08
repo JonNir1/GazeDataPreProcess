@@ -93,15 +93,16 @@ def process_trial(trial: LWSTrial, **kwargs):
     """
     trial.is_processed = False
     sm = kwargs.pop('screen_monitor', None) or ScreenMonitor.from_config()
+    bd = trial.get_behavioral_data()
 
     # process raw eye-tracking data
     is_blink, is_saccade, is_fixation = detect_all_events(trial, **kwargs)
     target_distance = calculate_angular_distance_for_gaze_data(trial, sm=sm)
     is_event_df = pd.DataFrame({'is_blink': is_blink, 'is_saccade': is_saccade,
-                                'is_fixation': is_fixation, 'target_distance': target_distance})
+                                'is_fixation': is_fixation, 'target_distance': target_distance}, index=bd.index)
 
     # add the new columns to the behavioral data:
-    new_behavioral_data = trial.get_behavioral_data().concat(is_event_df)
+    new_behavioral_data = bd.concat(is_event_df)
     trial.set_behavioral_data(new_behavioral_data)
 
     # process gaze events
