@@ -134,3 +134,8 @@ class LWSVisualizer:
         output_filename = f'T{trial_num:03d}.{LWSVisualizer.FILE_SUFFIX}'
         return os.path.join(subject_video_dir, output_filename)
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}"
+
+    def __str__(self) -> str:
+        return self.__repr__()
