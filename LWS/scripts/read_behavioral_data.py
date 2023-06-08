@@ -83,11 +83,22 @@ def parse_gaze_and_triggers(et_path, trigger_path,
 
     joint_dfs = []
     for et_df, trigger_df in zip(et_dfs, trigger_dfs):
-        merged_df = pd.merge_asof(et_df, trigger_df.drop(columns=cnst.TRIAL),
-                                  on=cnst.MILLISECONDS, direction='backward')
+        merged_df = pd.merge_asof(et_df, trigger_df, on=cnst.MILLISECONDS, direction='backward')  # merge DFs on time
+
+        # remove samples from before the start trigger or after the end trigger:
+        triggers_trial_column = cnst.TRIAL + '_y'  # column name in the merged DF for the trial number based on triggers
+        merged_df = merged_df[merged_df[triggers_trial_column].notnull()]
+        merged_df = merged_df.drop(columns=[triggers_trial_column])  # no use for two columns specifying the trial num
+
+        # clean the merged DF:
+        gaze_trial_column = cnst.TRIAL + '_x'  # column name in the merged DF for the trial number based on ET data
+        merged_df = merged_df.rename(columns={gaze_trial_column: cnst.TRIAL})  # rename the trial column
         same_trigger = merged_df[cnst.TRIGGER].diff() == 0
         merged_df.loc[same_trigger, cnst.TRIGGER] = np.nan  # keep only the first instance of a trigger
+
+        # add the new DF to the list:
         joint_dfs.append(merged_df)
+
     if split_trials:
         return joint_dfs
     return pd.concat(joint_dfs)
