@@ -49,6 +49,8 @@ print(f"Finished visualization in: {(end - start):.2f} seconds")
 
 del start
 del end
+del start_trial
+del end_trial
 del i
 del tr
 
