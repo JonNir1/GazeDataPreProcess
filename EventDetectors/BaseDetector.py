@@ -41,9 +41,9 @@ class BaseDetector(ABC):
         :param detect_by: defines how to detect events based on the data from both eyes:
             - 'both'/'and': events are detected if both eyes detect an event
             - 'either'/'or': events are detected if either eye detects an event
-            - 'left': events are detected if the left eye detects an event
-            - 'right': events are detected if the right eye detects an event
-            - 'most': events are detected from the eye with the most samples identified as an event
+            - 'left': detect events using left eye data only
+            - 'right': detect events using right eye data only
+            - 'most': detect events using the eye with the most events
 
         :return: array of booleans, where True indicates an event
         """
