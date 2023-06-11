@@ -60,9 +60,17 @@ def backfill_unidentified_samples(is_blink: np.ndarray, is_saccade: np.ndarray, 
     new_is_saccade = is_saccade.copy()
     new_is_fixation = is_fixation.copy()
     if fill_with == "saccade":
-        new_is_saccade = np.logical_not(np.logical_or(new_is_blink, new_is_fixation))
+        if np.any(is_saccade):
+            w.warn("fill_with='saccade' was specified, but saccade detection was used. "
+                   "Returning original saccade detection results.")
+        else:
+            new_is_saccade = np.logical_not(np.logical_or(new_is_blink, new_is_fixation))
     if fill_with == "fixation":
-        new_is_fixation = np.logical_not(np.logical_or(new_is_blink, is_saccade))
+        if np.any(is_fixation):
+            w.warn("fill_with='fixation' was specified, but fixation detection was used. "
+                   "Returning original fixation detection results.")
+        else:
+            new_is_fixation = np.logical_not(np.logical_or(new_is_blink, is_saccade))
     return new_is_blink, new_is_saccade, new_is_fixation
 
 
