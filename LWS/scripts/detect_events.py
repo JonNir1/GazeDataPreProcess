@@ -56,14 +56,14 @@ def detect_all_events(trial: LWSTrial, **kwargs) -> Tuple[np.ndarray, np.ndarray
     _ts, x, y = trial.get_raw_gaze_coordinates(eye=kwargs.pop("eye", "both"))
 
     is_blink = detect_event(x=x, y=y, sampling_rate=sampling_rate,
-                            detector_type=kwargs.pop("blink_detector_type", 'missing data'),
+                            detector_type=kwargs.pop("blink_detector_type", 'missing data'),  # change if we want to use blink detection
                             detect_by=kwargs.pop("blink_detect_by", 'most'),
                             inter_event_time=kwargs.pop("blink_inter_event_time", cnfg.DEFAULT_INTER_EVENT_TIME),
                             min_duration=kwargs.pop("blink_min_duration", cnfg.DEFAULT_BLINK_MINIMUM_DURATION),
                             missing_value=kwargs.pop("missing_value", cnfg.DEFAULT_MISSING_VALUE))
 
     is_saccade = detect_event(x=x, y=y, sampling_rate=sampling_rate,
-                              detector_type=kwargs.pop("saccade_detector_type", 'engbert'),
+                              detector_type=kwargs.pop("saccade_detector_type", 'engbert'),  # change if we want to use saccade detection
                               detect_by=kwargs.pop("saccade_detect_by", 'both'),
                               inter_event_time=kwargs.pop("saccade_inter_event_time", cnfg.DEFAULT_INTER_EVENT_TIME),
                               min_duration=kwargs.pop("saccade_min_duration", cnfg.DEFAULT_SACCADE_MINIMUM_DURATION),
@@ -73,7 +73,7 @@ def detect_all_events(trial: LWSTrial, **kwargs) -> Tuple[np.ndarray, np.ndarray
                                                                 DEFAULT_LAMBDA_NOISE_THRESHOLD))
 
     is_fixation = detect_event(x=x, y=y, sampling_rate=sampling_rate,
-                               detector_type=kwargs.pop("fixation_detector_type", None),
+                               detector_type=kwargs.pop("fixation_detector_type", None),  # change if we want to use fixation detection
                                detect_by=kwargs.pop("fixation_detect_by", 'most'),
                                inter_event_time=kwargs.pop("fixation_inter_event_time",
                                                            cnfg.DEFAULT_INTER_EVENT_TIME),
