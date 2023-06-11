@@ -2,7 +2,6 @@ import warnings as w
 import numpy as np
 from typing import Optional
 
-import experiment_config as cnfg
 from EventDetectors.BaseDetector import BaseDetector
 from EventDetectors.scripts.gen_event_detector import gen_event_detector
 
