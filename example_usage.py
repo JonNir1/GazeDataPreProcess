@@ -24,11 +24,15 @@ et_data = parse_eye_tracker(et_type="tobii", et_path=r"Path/To/Your/Data",
 # extract data from the first trial
 tr = et_data[0]
 microseconds = tr[cnst.MICROSECONDS].values
-x, y = tr[cnst.LEFT_X].values, tr[cnst.LEFT_Y].values
+x_l, y_l = tr[cnst.LEFT_X].values, tr[cnst.LEFT_Y].values
+x_r, y_r = tr[cnst.RIGHT_X].values, tr[cnst.RIGHT_Y].values
 sr = calculate_sampling_rate_from_microseconds(microseconds)
 
 # classify samples as blinks, saccades or fixations
-is_blink, is_saccade, is_fixation = detect_all_events(x, y, sampling_rate=sr,
+is_blink, is_saccade, is_fixation = detect_all_events(x=np.vstack((x_l, x_r)),
+                                                      y=np.vstack((y_l, y_r)),
+                                                      detect_by='both',
+                                                      sampling_rate=sr,
                                                       blink_detector_type="missing_data",
                                                       saccade_detector_type="engbert",
                                                       stuff_with="fixation")
@@ -37,8 +41,8 @@ is_blink, is_saccade, is_fixation = detect_all_events(x, y, sampling_rate=sr,
 blinks_summary = extract_events_to_dataframe(event_type="blink", timestamps=microseconds, is_event=is_blink,
                                              sampling_rate=sr)
 saccades_summary = extract_events_to_dataframe(event_type="saccade", timestamps=microseconds, is_event=is_saccade,
-                                               sampling_rate=sr, x=x, y=y)
+                                               sampling_rate=sr, x=x_l, y=y_l)
 fixations_summary = extract_events_to_dataframe(event_type="fixation", timestamps=microseconds, is_event=is_fixation,
-                                                sampling_rate=sr, x=x, y=y)
+                                                sampling_rate=sr, x=x_l, y=y_l)
 
 # profit!
