@@ -16,6 +16,7 @@ def detect_all_events(trial: LWSTrial, **kwargs) -> Tuple[np.ndarray, np.ndarray
     :param trial: The trial to detect events in.
 
     keyword arguments:
+    - eye: str; Controls which eye to use for detection. Either "left", "right", "dominant" or "both" (default "both")
     - fill_with: Controls how to fill unidentified samples. Either "saccade", "fixation" or None (default "fixation").
 
     :blink keyword arguments:
@@ -52,7 +53,7 @@ def detect_all_events(trial: LWSTrial, **kwargs) -> Tuple[np.ndarray, np.ndarray
     :return:
     """
     sampling_rate = trial.sampling_rate
-    _ts, x, y = trial.get_raw_gaze_coordinates()
+    _ts, x, y = trial.get_raw_gaze_coordinates(eye=kwargs.pop("eye", "both"))
 
     is_blink = detect_event(x=x, y=y, sampling_rate=sampling_rate,
                             detector_type=kwargs.pop("blink_detector_type", 'missing data'),
