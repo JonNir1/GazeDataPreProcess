@@ -72,7 +72,8 @@ def detect_blinks(blink_detector_type: Optional[str],
     :param x: x-coordinates of gaze data
     :param y: y-coordinates of gaze data
     :param sampling_rate: sampling rate of the data in Hz
-    :keyword
+
+    :keyword arguments:
         - inter_event_time: minimal time between two events in ms; default: 5 ms
         - blink_min_duration: minimal duration of a blink in ms; default: 50 ms
         - missing_value: default value indicating missing data, used by MissingDataBlinkDetector; default: np.nan
@@ -105,7 +106,8 @@ def detect_saccades(saccade_detector_type: Optional[str],
     :param x: x-coordinates of gaze data
     :param y: y-coordinates of gaze data
     :param sampling_rate: sampling rate of the data in Hz
-    :keyword
+
+    :keyword arguments:
         - inter_event_time: minimal time between two events in ms; default: 5 ms
         - saccade_min_duration: minimal duration of a blink in ms;  default: 5 ms
         - derivation_window_size: window size for derivation in ms; default: 3 ms
@@ -139,7 +141,8 @@ def detect_fixations(fixation_detector_type: Optional[str],
     :param x: x-coordinates of gaze data
     :param y: y-coordinates of gaze data
     :param sampling_rate: sampling rate of the data in Hz
-    :keyword
+
+    :keyword arguments:
         - inter_event_time: minimal time between two events in ms; default: 5 ms
         - fixation_min_duration: minimal duration of a blink in ms;         default: 55 ms
         - velocity_threshold: maximal velocity allowed within a fixation;   default: 30 deg/s
@@ -169,7 +172,8 @@ def _get_event_detector(detector_type: str, min_duration: float, sampling_rate: 
     :param min_duration: minimal duration of an event in ms
     :param sampling_rate: sampling rate of the data in Hz
     :param inter_event_time: minimal time between two events in ms
-    :keyword:
+
+    :keyword arguments:
         - missing_value: default value indicating missing data              used by MissingDataBlinkDetector
         - derivation_window_size: window size for derivation                used by EngbertSaccadeDetector
         - lambda_noise_threshold: threshold for noise                       used by EngbertSaccadeDetector
