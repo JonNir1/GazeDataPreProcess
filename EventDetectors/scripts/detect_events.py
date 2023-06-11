@@ -65,7 +65,7 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
         raise TypeError("stuff_with must be a string or None")
 
     stuff_with = stuff_with.lower()
-    if stuff_with not in ["saccade", "fixation"]:
+    if stuff_with not in ["saccade", "fixation", "fixations", "saccades"]:
         raise ValueError("stuff_with must be either 'saccade' or 'fixation'")
 
     if stuff_with == "saccade":
