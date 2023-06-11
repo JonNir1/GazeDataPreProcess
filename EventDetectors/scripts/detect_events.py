@@ -7,10 +7,70 @@ from EventDetectors.BaseDetector import BaseDetector
 from EventDetectors.scripts.gen_event_detector import gen_event_detector
 
 
+def detect_event(x: np.ndarray, y: np.ndarray, sampling_rate: float,
+                 detector_type: Optional[str] = None, detect_by: Optional[str] = None,
+                 **detector_kwargs) -> np.ndarray:
+    """
+    Detects events using the specified detector type on the given gaze data.
+
+    :param x: 1D or 2D array of x-coordinates of gaze data
+    :param y: 1D or 2D array of y-coordinates of gaze data
+    :param sampling_rate: sampling rate of the data in Hz
+    :param detect_by: defines how to detect events based on the data from both eyes:
+            - 'both'/'and': events are detected if both eyes detect an event
+            - 'either'/'or': events are detected if either eye detects an event
+            - 'left': detect events using left eye data only
+            - 'right': detect events using right eye data only
+            - 'most': detect events using the eye with the most events
+    :param detector_type: name of the detector type to use. See gen_event_detector for details.
+    :param detector_kwargs: keyword arguments for the specified detector type. see gen_event_detector for details.
+
+    :return: is_event: array of booleans, where True indicates an event
+    """
+    detector = gen_event_detector(detector_type, sampling_rate, **detector_kwargs)
+    is_event = _detect_event_generic(detector, x, y, detect_by)
+    return is_event
+
+
+def backfill_unidentified_samples(is_blink: np.ndarray, is_saccade: np.ndarray, is_fixation: np.ndarray,
+                                  fill_with: Optional[str] = None) -> (np.ndarray, np.ndarray, np.ndarray):
+    """
+    Fills samples that were not identified as blinks, saccades or fixations with the specified value.
+    :param is_blink, is_saccade, is_fixation: arrays of booleans, where True indicates an event
+    :param fill_with: str; either "saccade", "fixation" or None. Controls how to fill unidentified samples.
+            - If None: returns the events as identified by the respective detectors
+            - If "saccade":
+                -- if a saccade detector was specified, returns the events as identified by the saccade detector and
+                    warns for unexpected usage
+                --  if no saccade detector was specified, returns True for samples that were not identified as blinks or
+                    fixations.
+            - If "fixation":
+                -- same behavior as "saccade", but for fixations.
+
+    :return: new_is_blink, new_is_saccade, new_is_fixation: new arrays of booleans, where True indicates an event
+    """
+    if not fill_with:
+        return is_blink, is_saccade, is_fixation
+    if type(fill_with) != str:
+        raise TypeError("stuff_with must be a string or None")
+    fill_with = fill_with.lower()
+    if fill_with not in ["saccade", "fixation", "fixations", "saccades"]:
+        raise ValueError("stuff_with must be either 'saccade' or 'fixation'")
+
+    new_is_blink = is_blink.copy()
+    new_is_saccade = is_saccade.copy()
+    new_is_fixation = is_fixation.copy()
+    if fill_with == "saccade":
+        new_is_saccade = np.logical_not(np.logical_or(new_is_blink, new_is_fixation))
+    if fill_with == "fixation":
+        new_is_fixation = np.logical_not(np.logical_or(new_is_blink, is_saccade))
+    return new_is_blink, new_is_saccade, new_is_fixation
+
+
 def detect_all_events(x: np.ndarray, y: np.ndarray,
                       sampling_rate: float,
                       detect_by: Optional[str] = None,
-                      stuff_with: Optional[str] = None,
+                      fill_with: Optional[str] = None,
                       **kwargs) -> (np.ndarray, np.ndarray, np.ndarray):
     """
     Detects blinks, saccades and fixations in the given gaze data (in that order).
@@ -24,7 +84,7 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
             - 'left': detect events using left eye data only
             - 'right': detect events using right eye data only
             - 'most': detect events using the eye with the most events
-    :param stuff_with: str; either "saccade", "fixation" or None. Controls how to fill unidentified samples.
+    :param fill_with: str; either "saccade", "fixation" or None. Controls how to fill unidentified samples.
             - If None: returns the events as identified by the respective detectors
             - If "saccade":
                 -- if a saccade detector was specified, returns the events as identified by the saccade detector and
@@ -58,53 +118,8 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
                                detect_by=detect_by,
                                **kwargs)
 
-    # classify unidentified samples with value specified in stuff_with:
-    if not stuff_with:
-        return is_blink, is_saccade, is_fixation
-    if type(stuff_with) != str:
-        raise TypeError("stuff_with must be a string or None")
-
-    stuff_with = stuff_with.lower()
-    if stuff_with not in ["saccade", "fixation", "fixations", "saccades"]:
-        raise ValueError("stuff_with must be either 'saccade' or 'fixation'")
-
-    if stuff_with == "saccade":
-        if saccade_detector_type:
-            w.warn("WARNING: ignoring stuff_with='saccade' when a saccade detector is specified")
-            return is_blink, is_saccade, is_fixation
-        is_saccade = np.logical_not(np.logical_or(is_blink, is_fixation))
-
-    if stuff_with == "fixation":
-        if fixation_detector_type:
-            w.warn("WARNING: ignoring stuff_with='fixation' when a fixation detector is specified")
-            return is_blink, is_saccade, is_fixation
-        is_fixation = np.logical_not(np.logical_or(is_blink, is_saccade))
+    is_blink, is_saccade, is_fixation = backfill_unidentified_samples(is_blink, is_saccade, is_fixation, fill_with)
     return is_blink, is_saccade, is_fixation
-
-
-def detect_event(x: np.ndarray, y: np.ndarray, sampling_rate: float,
-                 detector_type: Optional[str] = None, detect_by: Optional[str] = None,
-                 **detector_kwargs) -> np.ndarray:
-    """
-    Detects events using the specified detector type on the given gaze data.
-
-    :param x: 1D or 2D array of x-coordinates of gaze data
-    :param y: 1D or 2D array of y-coordinates of gaze data
-    :param sampling_rate: sampling rate of the data in Hz
-    :param detect_by: defines how to detect events based on the data from both eyes:
-            - 'both'/'and': events are detected if both eyes detect an event
-            - 'either'/'or': events are detected if either eye detects an event
-            - 'left': detect events using left eye data only
-            - 'right': detect events using right eye data only
-            - 'most': detect events using the eye with the most events
-    :param detector_type: name of the detector type to use. See gen_event_detector for details.
-    :param detector_kwargs: keyword arguments for the specified detector type. see gen_event_detector for details.
-
-    :return: is_event: array of booleans, where True indicates an event
-    """
-    detector = gen_event_detector(detector_type, sampling_rate, **detector_kwargs)
-    is_event = _detect_event_generic(detector, x, y, detect_by)
-    return is_event
 
 
 def _detect_event_generic(detector: Optional[BaseDetector],
