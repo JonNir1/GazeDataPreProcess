@@ -21,11 +21,11 @@ class BaseDetector(ABC):
         self.__inter_event_time = iet
 
     @abstractmethod
-    def detect(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    def detect_monocular(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
-        Detects events in the given gaze data.
-        :param x: x-coordinates of gaze data
-        :param y: y-coordinates of gaze data
+        Detects events in the given gaze data from a single eye
+        :param x: x-coordinates of gaze data from a single eye
+        :param y: y-coordinates of gaze data from a single eye
         :return: array of booleans, where True indicates an event
         """
         raise NotImplementedError

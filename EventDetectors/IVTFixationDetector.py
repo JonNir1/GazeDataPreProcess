@@ -40,7 +40,7 @@ class IVTFixationDetector(BaseFixationDetector):
     def set_velocity_threshold(self, velocity_threshold: float):
         self.__velocity_threshold = velocity_threshold
 
-    def detect(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    def detect_monocular(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
         Detects fixations in the given data.
 

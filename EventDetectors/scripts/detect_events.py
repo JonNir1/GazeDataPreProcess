@@ -92,7 +92,7 @@ def detect_blinks(blink_detector_type: Optional[str],
                                          sampling_rate=sampling_rate,
                                          inter_event_time=iet,
                                          **blink_kwargs)
-    is_blink = blink_detector.detect(x, y)
+    is_blink = blink_detector.detect_monocular(x, y)
     return is_blink
 
 
@@ -126,7 +126,7 @@ def detect_saccades(saccade_detector_type: Optional[str],
     saccade_detector = _get_event_detector(saccade_detector_type, min_duration=min_duration,
                                            sampling_rate=sampling_rate, inter_event_time=iet,
                                            **saccade_kwargs)
-    is_saccade = saccade_detector.detect(x, y)
+    is_saccade = saccade_detector.detect_monocular(x, y)
     return is_saccade
 
 
@@ -157,7 +157,7 @@ def detect_fixations(fixation_detector_type: Optional[str],
     fixation_detector = _get_event_detector(fixation_detector_type, min_duration=min_duration,
                                             sampling_rate=sampling_rate, inter_event_time=iet,
                                             **fixation_kwargs)
-    is_fixation = fixation_detector.detect(x, y)
+    is_fixation = fixation_detector.detect_monocular(x, y)
     return is_fixation
 
 

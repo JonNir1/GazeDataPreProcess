@@ -30,7 +30,7 @@ class MissingDataBlinkDetector(BaseBlinkDetector):
     def set_missing_value(self, missing_value: float):
         self.__missing_value = missing_value
 
-    def detect(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    def detect_monocular(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
         Detects blinks in a single eye, defined as periods of missing data that last longer than min_duration.
         Based on implementation in https://github.com/esdalmaijer/PyGazeAnalyser/blob/master/pygazeanalyser/detectors.py#L43

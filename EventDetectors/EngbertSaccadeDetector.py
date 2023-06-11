@@ -35,7 +35,7 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         self.__derivation_window_size = derivation_window_size
         self.__lambda_noise_threshold = lambda_noise_threshold
 
-    def detect(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    def detect_monocular(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         is_saccade_candidate = self._find_candidates(x, y)
         saccades_start_end_idxs = self._find_start_end_indices(is_saccade_candidate)
 
