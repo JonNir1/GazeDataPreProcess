@@ -30,6 +30,48 @@ class BaseDetector(ABC):
         """
         raise NotImplementedError
 
+    def detect_binocular(self,
+                         x_l: np.ndarray, y_l: np.ndarray,
+                         x_r: np.ndarray, y_r: np.ndarray,
+                         detect_by: str = 'both') -> np.ndarray:
+        """
+        Detects events in the given gaze data from both eyes
+        :param x_l, y_l: x- and y-coordinates of gaze data from the left eye
+        :param x_r, y_r: x- and y-coordinates of gaze data from the right eye
+        :param detect_by: defines how to detect events based on the data from both eyes:
+            - 'both'/'and': events are detected if both eyes detect an event
+            - 'either'/'or': events are detected if either eye detects an event
+            - 'left': events are detected if the left eye detects an event
+            - 'right': events are detected if the right eye detects an event
+            - 'most': events are detected from the eye with the most samples identified as an event
+
+        :return: array of booleans, where True indicates an event
+        """
+        is_event_left = self.detect_monocular(x=x_l, y=y_l)
+        is_event_right = self.detect_monocular(x=x_r, y=y_r)
+
+        detect_by = detect_by.lower()
+        if detect_by in ['both', 'and']:
+            return np.logical_and(is_event_left, is_event_right)
+
+        if detect_by in ['either', 'or']:
+            return np.logical_or(is_event_left, is_event_right)
+
+        if detect_by == 'left':
+            return is_event_left
+
+        if detect_by == 'right':
+            return is_event_right
+
+        if detect_by == 'most':
+            n_left = np.sum(is_event_left)
+            n_right = np.sum(is_event_right)
+            if n_left > n_right:
+                return is_event_left
+            return is_event_right
+
+        raise ValueError("Unknown detect_by value: {}".format(detect_by))
+
     @classmethod
     def event_type(cls):
         class_name = cls.__name__.lower()
