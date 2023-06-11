@@ -29,13 +29,10 @@ x_r, y_r = tr[cnst.RIGHT_X].values, tr[cnst.RIGHT_Y].values
 sr = calculate_sampling_rate_from_microseconds(microseconds)
 
 # classify samples as blinks, saccades or fixations
-is_blink, is_saccade, is_fixation = detect_all_events(x=np.vstack((x_l, x_r)),
-                                                      y=np.vstack((y_l, y_r)),
-                                                      detect_by='both',
-                                                      sampling_rate=sr,
+is_blink, is_saccade, is_fixation = detect_all_events(x=np.vstack((x_l, x_r)), y=np.vstack((y_l, y_r)),
+                                                      sampling_rate=sr, detect_by='both', fill_with="fixation",
                                                       blink_detector_type="missing_data",
-                                                      saccade_detector_type="engbert",
-                                                      stuff_with="fixation")
+                                                      saccade_detector_type="engbert")
 
 # extract events to a pandas DataFrame
 blinks_summary = extract_events_to_dataframe(event_type="blink", timestamps=microseconds, is_event=is_blink,
