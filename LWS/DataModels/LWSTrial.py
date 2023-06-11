@@ -98,17 +98,19 @@ class LWSTrial:
         # Returns the timestamp, x and y coordinates of the gaze data for the dominant eye.
         bd = self.get_behavioral_data()
         ts = bd.get(cnst.MICROSECONDS).values / 1000
-        x_l, y_l = bd.get(cnst.LEFT_X).values, bd.get(cnst.LEFT_Y).values
-        x_r, y_r = bd.get(cnst.RIGHT_X).values, bd.get(cnst.RIGHT_Y).values
 
         eye = eye.lower()
         if eye == "dominant":
             eye = self.get_subject_info().dominant_eye.lower()
         if eye == 'left':
+            x_l, y_l = bd.get(cnst.LEFT_X).values, bd.get(cnst.LEFT_Y).values
             return ts, x_l, y_l
         if eye == 'right':
+            x_r, y_r = bd.get(cnst.RIGHT_X).values, bd.get(cnst.RIGHT_Y).values
             return ts, x_r, y_r
         if eye == 'both':
+            x_l, y_l = bd.get(cnst.LEFT_X).values, bd.get(cnst.LEFT_Y).values
+            x_r, y_r = bd.get(cnst.RIGHT_X).values, bd.get(cnst.RIGHT_Y).values
             return ts, np.vstack((x_l, x_r)), np.vstack((y_l, y_r))
         raise ValueError(f'Invalid eye: {eye}')
 
