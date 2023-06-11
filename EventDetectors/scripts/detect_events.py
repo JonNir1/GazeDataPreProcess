@@ -214,3 +214,40 @@ def _get_event_detector(detector_type: str, min_duration: float, sampling_rate: 
 
     # reached here if the detector type is unknown
     raise ValueError("Unknown event detector type: {}".format(detector_type))
+
+
+def __detect_event_generic(detector: BaseDetector,
+                           x: np.ndarray, y: np.ndarray,
+                           detect_by: Optional[str] = None) -> np.ndarray:
+    """
+    Use the provided event detector to detect events in the given gaze data, either monocular or binocular.
+    - If x and y are 1D arrays, the data is assumed to be monocular.
+    - If x and y are 2D arrays, the data is assumed to be binocular and x[0], y[0] are assumed to be the left eye and
+        x[1], y[1] are assumed to be the right eye. In this case, `detect_by` must be specified.
+
+    :param detector:
+    :param x: 1D or 2D array of x-coordinates of gaze data
+    :param y: 1D or 2D array of y-coordinates of gaze data
+    :param detect_by: defines how to detect events based on the data from both eyes:
+            - 'both'/'and': events are detected if both eyes detect an event
+            - 'either'/'or': events are detected if either eye detects an event
+            - 'left': detect events using left eye data only
+            - 'right': detect events using right eye data only
+            - 'most': detect events using the eye with the most events
+
+    :return: array of booleans, where True indicates an event
+    """
+    if x.shape != y.shape:
+        raise ValueError(f"x (shape: {x.shape}) and y (shape: {y.shape}) must have the same shape")
+    if x.ndim == 1:
+        # x.shape = (n,)
+        return detector.detect_monocular(x, y)
+    if x.ndim == 2 and x.shape[0] == 1:
+        # x.shape = (1, n)
+        return detector.detect_monocular(x[0], y[0])
+    if x.ndim == 2 and x.shape[0] == 2:
+        # x.shape = (2, n)
+        if detect_by is None:
+            raise ValueError("Binocular data provided, but detect_by not specified.")
+        return detector.detect_binocular(x_l=x[0], y_l=y[0], x_r=x[1], y_r=y[1], detect_by=detect_by)
+    raise ValueError(f"Invalid shape of x and y: {x.shape}")
