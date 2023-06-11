@@ -4,6 +4,7 @@ from typing import Optional
 
 import experiment_config as cnfg
 from EventDetectors.BaseDetector import BaseDetector
+from EventDetectors.scripts.gen_event_detector import gen_event_detector
 
 
 def detect_all_events(x: np.ndarray, y: np.ndarray,
@@ -42,29 +43,38 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
     :return: is_blink, is_saccade, is_fixation: arrays of booleans, where True indicates an event
     """
     blink_detector_type = kwargs.pop("blink_detector_type", None)
-    is_blink = detect_blinks(blink_detector_type, x, y, sampling_rate, detect_by, **kwargs)
-
+    is_blink = detect_event(x=x, y=y, sampling_rate=sampling_rate,
+                            detector_type=blink_detector_type,
+                            detect_by=detect_by,
+                            **kwargs)
     saccade_detector_type = kwargs.pop("saccade_detector_type", None)
-    is_saccade = detect_saccades(saccade_detector_type, x, y, sampling_rate, detect_by, **kwargs)
-
+    is_saccade = detect_event(x=x, y=y, sampling_rate=sampling_rate,
+                              detector_type=saccade_detector_type,
+                              detect_by=detect_by,
+                              **kwargs)
     fixation_detector_type = kwargs.pop("fixation_detector_type", None)
-    is_fixation = detect_fixations(fixation_detector_type, x, y, sampling_rate, detect_by, **kwargs)
+    is_fixation = detect_event(x=x, y=y, sampling_rate=sampling_rate,
+                               detector_type=fixation_detector_type,
+                               detect_by=detect_by,
+                               **kwargs)
 
     # classify unidentified samples with value specified in stuff_with:
     if not stuff_with:
         return is_blink, is_saccade, is_fixation
     if type(stuff_with) != str:
         raise TypeError("stuff_with must be a string or None")
-    if stuff_with.lower() not in ["saccade", "fixation"]:
+
+    stuff_with = stuff_with.lower()
+    if stuff_with not in ["saccade", "fixation"]:
         raise ValueError("stuff_with must be either 'saccade' or 'fixation'")
 
-    if stuff_with.lower() == "saccade":
+    if stuff_with == "saccade":
         if saccade_detector_type:
             w.warn("WARNING: ignoring stuff_with='saccade' when a saccade detector is specified")
             return is_blink, is_saccade, is_fixation
         is_saccade = np.logical_not(np.logical_or(is_blink, is_fixation))
 
-    if stuff_with.lower() == "fixation":
+    if stuff_with == "fixation":
         if fixation_detector_type:
             w.warn("WARNING: ignoring stuff_with='fixation' when a fixation detector is specified")
             return is_blink, is_saccade, is_fixation
@@ -72,14 +82,12 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
     return is_blink, is_saccade, is_fixation
 
 
-def detect_blinks(blink_detector_type: Optional[str],
-                  x: np.ndarray, y: np.ndarray,
-                  sampling_rate: float, detect_by: Optional[str] = None,
-                  **kwargs) -> np.ndarray:
+def detect_event(x: np.ndarray, y: np.ndarray, sampling_rate: float,
+                 detector_type: Optional[str] = None, detect_by: Optional[str] = None,
+                 **detector_kwargs) -> np.ndarray:
     """
-    Detects blinks in the given gaze data, based on the specified blink detector type.
+    Detects events using the specified detector type on the given gaze data.
 
-    :param blink_detector_type: type of blink detector to use, None for no blink detection
     :param x: 1D or 2D array of x-coordinates of gaze data
     :param y: 1D or 2D array of y-coordinates of gaze data
     :param sampling_rate: sampling rate of the data in Hz
@@ -89,171 +97,19 @@ def detect_blinks(blink_detector_type: Optional[str],
             - 'left': detect events using left eye data only
             - 'right': detect events using right eye data only
             - 'most': detect events using the eye with the most events
+    :param detector_type: name of the detector type to use. See gen_event_detector for details.
+    :param detector_kwargs: keyword arguments for the specified detector type. see gen_event_detector for details.
 
-    :keyword arguments:
-        - inter_event_time: minimal time between two events in ms; default: 5 ms
-        - blink_min_duration: minimal duration of a blink in ms; default: 50 ms
-        - missing_value: default value indicating missing data, used by MissingDataBlinkDetector; default: np.nan
-
-    :return: array of booleans, where True indicates a blink
-    """
-    if not blink_detector_type:
-        return np.zeros_like(x, dtype=bool)
-    iet = kwargs.get("inter_event_time", cnfg.DEFAULT_INTER_EVENT_TIME)
-    min_duration = kwargs.get("blink_min_duration", cnfg.DEFAULT_BLINK_MINIMUM_DURATION)
-    blink_kwargs = {
-        "missing_value": kwargs.get("missing_value", cnfg.DEFAULT_MISSING_VALUE)
-    }
-    blink_detector = _get_event_detector(blink_detector_type,
-                                         min_duration=min_duration,
-                                         sampling_rate=sampling_rate,
-                                         inter_event_time=iet,
-                                         **blink_kwargs)
-    is_blink = __detect_event_generic(detector=blink_detector, x=x, y=y, detect_by=detect_by)
-    return is_blink
-
-
-def detect_saccades(saccade_detector_type: Optional[str],
-                    x: np.ndarray, y: np.ndarray,
-                    sampling_rate: float, detect_by: Optional[str] = None,
-                    **kwargs) -> np.ndarray:
-    """
-    Detects saccades in the given gaze data, based on the specified saccades detector type.
-
-    :param saccade_detector_type: type of saccade detector to use, None for no saccade detection
-    :param x: 1D or 2D array of x-coordinates of gaze data
-    :param y: 1D or 2D array of y-coordinates of gaze data
-    :param sampling_rate: sampling rate of the data in Hz
-    :param detect_by: defines how to detect events based on the data from both eyes:
-            - 'both'/'and': events are detected if both eyes detect an event
-            - 'either'/'or': events are detected if either eye detects an event
-            - 'left': detect events using left eye data only
-            - 'right': detect events using right eye data only
-            - 'most': detect events using the eye with the most events
-
-    :keyword arguments:
-        - inter_event_time: minimal time between two events in ms; default: 5 ms
-        - saccade_min_duration: minimal duration of a blink in ms;  default: 5 ms
-        - derivation_window_size: window size for derivation in ms; default: 3 ms
-        - lambda_noise_threshold: threshold for lambda noise;       default: 5
-
-    :return: array of booleans, where True indicates a saccade
-    """
-    if not saccade_detector_type:
-        return np.zeros_like(x, dtype=bool)
-    from EventDetectors.EngbertSaccadeDetector import DEFAULT_DERIVATION_WINDOW_SIZE, DEFAULT_LAMBDA_NOISE_THRESHOLD
-    iet = kwargs.get("inter_event_time", cnfg.DEFAULT_INTER_EVENT_TIME)
-    min_duration = kwargs.get("saccade_min_duration", cnfg.DEFAULT_SACCADE_MINIMUM_DURATION)
-    saccade_kwargs = {
-        "derivation_window_size": kwargs.get("derivation_window_size", DEFAULT_DERIVATION_WINDOW_SIZE),
-        "lambda_noise_threshold": kwargs.get("lambda_noise_threshold", DEFAULT_LAMBDA_NOISE_THRESHOLD)
-    }
-    saccade_detector = _get_event_detector(saccade_detector_type, min_duration=min_duration,
-                                           sampling_rate=sampling_rate, inter_event_time=iet,
-                                           **saccade_kwargs)
-    is_saccade = __detect_event_generic(detector=saccade_detector, x=x, y=y, detect_by=detect_by)
-    return is_saccade
-
-
-def detect_fixations(fixation_detector_type: Optional[str],
-                     x: np.ndarray, y: np.ndarray,
-                     sampling_rate: float,
-                     detect_by: Optional[str] = None,
-                     **kwargs) -> np.ndarray:
-    """
-    Detects fixations in the given gaze data, based on the specified fixation detector type.
-
-    :param fixation_detector_type: type of fixation detector to use, None for no fixation detection
-    :param x: 1D or 2D array of x-coordinates of gaze data
-    :param y: 1D or 2D array of y-coordinates of gaze data
-    :param sampling_rate: sampling rate of the data in Hz
-    :param detect_by: defines how to detect events based on the data from both eyes:
-            - 'both'/'and': events are detected if both eyes detect an event
-            - 'either'/'or': events are detected if either eye detects an event
-            - 'left': detect events using left eye data only
-            - 'right': detect events using right eye data only
-            - 'most': detect events using the eye with the most events
-
-    :keyword arguments:
-        - inter_event_time: minimal time between two events in ms; default: 5 ms
-        - fixation_min_duration: minimal duration of a blink in ms;         default: 55 ms
-        - velocity_threshold: maximal velocity allowed within a fixation;   default: 30 deg/s
-
-    :return: array of booleans, where True indicates a saccade
-    """
-    if not fixation_detector_type:
-        return np.zeros_like(x, dtype=bool)
-    iet = kwargs.get("inter_event_time", cnfg.DEFAULT_INTER_EVENT_TIME)
-    min_duration = kwargs.get("fixation_min_duration", cnfg.DEFAULT_FIXATION_MINIMUM_DURATION)
-    fixation_kwargs = {
-        "velocity_threshold": kwargs.get("velocity_threshold", cnfg.DEFAULT_FIXATION_MAX_VELOCITY)
-    }
-    fixation_detector = _get_event_detector(fixation_detector_type, min_duration=min_duration,
-                                            sampling_rate=sampling_rate, inter_event_time=iet,
-                                            **fixation_kwargs)
-    is_fixation = __detect_event_generic(detector=fixation_detector, x=x, y=y, detect_by=detect_by)
-    return is_fixation
-
-
-def _get_event_detector(detector_type: str, min_duration: float, sampling_rate: float,
-                        inter_event_time: float, **kwargs) -> BaseDetector:
-    """
-    Creates an event detector of the given type.
-    :param detector_type: type of the event detector
-    :param min_duration: minimal duration of an event in ms
-    :param sampling_rate: sampling rate of the data in Hz
-    :param inter_event_time: minimal time between two events in ms
-
-    :keyword arguments:
-        - missing_value: default value indicating missing data              used by MissingDataBlinkDetector
-        - derivation_window_size: window size for derivation                used by EngbertSaccadeDetector
-        - lambda_noise_threshold: threshold for noise                       used by EngbertSaccadeDetector
-        - velocity_threshold: threshold for velocity                        used by IVTFixationDetector
     :return: is_event: array of booleans, where True indicates an event
-    :raises ValueError: if a required keyword argument is not specified
     """
-    if detector_type.lower() == "missing data" or detector_type.lower() == "missing_data":
-        from EventDetectors.MissingDataBlinkDetector import MissingDataBlinkDetector
-        missing_value = kwargs.get("missing_value", cnfg.DEFAULT_MISSING_VALUE)
-        return MissingDataBlinkDetector(sr=sampling_rate, iet=inter_event_time, min_duration=min_duration,
-                                        missing_value=missing_value)
-
-    if detector_type.lower() == "pupil size" or detector_type.lower() == "pupil_size":
-        from EventDetectors.PupilSizeBlinkDetector import PupilSizeBlinkDetector
-        return PupilSizeBlinkDetector(sr=sampling_rate, iet=inter_event_time, min_duration=min_duration)
-
-    if detector_type.lower() == "engbert":
-        from EventDetectors.EngbertSaccadeDetector import EngbertSaccadeDetector
-        derivation_window_size = kwargs.get("derivation_window_size", None)
-        if derivation_window_size is None:
-            raise ValueError("Derivation window size for EngbertSaccadeDetector not specified.")
-        lambda_noise_threshold = kwargs.get("lambda_noise_threshold", None)
-        if lambda_noise_threshold is None:
-            raise ValueError("Lambda noise threshold for EngbertSaccadeDetector not specified.")
-        return EngbertSaccadeDetector(sr=sampling_rate, iet=inter_event_time, min_duration=min_duration,
-                                      derivation_window_size=derivation_window_size,
-                                      lambda_noise_threshold=lambda_noise_threshold)
-
-    if detector_type.lower() == "ivt":
-        from EventDetectors.IVTFixationDetector import IVTFixationDetector
-        velocity_threshold = kwargs.get("velocity_threshold", None)
-        if velocity_threshold is None:
-            raise ValueError("Velocity threshold for IVTFixationDetector not specified.")
-        return IVTFixationDetector(sr=sampling_rate, min_duration=min_duration,
-                                   iet=inter_event_time, velocity_threshold=velocity_threshold)
-
-    if detector_type.lower() == "idt":
-        from EventDetectors.IDTFixationDetector import IDTFixationDetector
-        return IDTFixationDetector(sr=sampling_rate, min_duration=min_duration,
-                                   iet=inter_event_time)
-
-    # reached here if the detector type is unknown
-    raise ValueError("Unknown event detector type: {}".format(detector_type))
+    detector = gen_event_detector(detector_type, sampling_rate, **detector_kwargs)
+    is_event = _detect_event_generic(detector, x, y, detect_by)
+    return is_event
 
 
-def __detect_event_generic(detector: BaseDetector,
-                           x: np.ndarray, y: np.ndarray,
-                           detect_by: Optional[str] = None) -> np.ndarray:
+def _detect_event_generic(detector: Optional[BaseDetector],
+                          x: np.ndarray, y: np.ndarray,
+                          detect_by: Optional[str] = None) -> np.ndarray:
     """
     Use the provided event detector to detect events in the given gaze data, either monocular or binocular.
     - If x and y are 1D arrays, the data is assumed to be monocular.
@@ -274,15 +130,25 @@ def __detect_event_generic(detector: BaseDetector,
     """
     if x.shape != y.shape:
         raise ValueError(f"x (shape: {x.shape}) and y (shape: {y.shape}) must have the same shape")
+
     if x.ndim == 1:
         # x.shape = (n,)
+        if detector is None:
+            return np.zeros_like(x, dtype=bool)
         return detector.detect_monocular(x, y)
+
     if x.ndim == 2 and x.shape[0] == 1:
         # x.shape = (1, n)
+        if detector is None:
+            return np.zeros_like(x[0], dtype=bool)
         return detector.detect_monocular(x[0], y[0])
+
     if x.ndim == 2 and x.shape[0] == 2:
         # x.shape = (2, n)
+        if detector is None:
+            return np.zeros_like(x[0], dtype=bool)
         if detect_by is None:
             raise ValueError("Binocular data provided, but detect_by not specified.")
         return detector.detect_binocular(x_l=x[0], y_l=y[0], x_r=x[1], y_r=y[1], detect_by=detect_by)
+
     raise ValueError(f"Invalid shape of x and y: {x.shape}")
