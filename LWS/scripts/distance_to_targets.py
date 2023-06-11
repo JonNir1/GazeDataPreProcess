@@ -12,7 +12,7 @@ def calculate_angular_distance_for_gaze_data(trial: LWSTrial, sm: ScreenMonitor)
     Calculates the angular distance between each gaze-point in the trial, and the nearest trial's target.
         Returns np.inf for gaze-points with missing or invalid data.
     """
-    _, xs, ys = trial.get_raw_gaze_coordinates()
+    _, xs, ys = trial.get_raw_gaze_coordinates(eye='dominant')
     target_data = trial.get_stimulus().get_target_data()
     d = trial.get_subject_info().distance_to_screen
 

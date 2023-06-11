@@ -38,7 +38,7 @@ def extract_event(trial: LWSTrial, screen_monitor: ScreenMonitor,
     if is_event_colname not in behavioral_data.columns:
         raise ValueError(f"Behavioral Data does not contain column {is_event_colname}")
 
-    timestamps, x, y = trial.get_raw_gaze_coordinates()  # timestamps in milliseconds (floating-point, not integer)
+    timestamps, x, y = trial.get_raw_gaze_coordinates(eye='dominant')  # timestamps in milliseconds (floating-point, not integer)
     is_event = behavioral_data.get(is_event_colname).values
     if len(timestamps) != len(is_event):
         raise ValueError(f"Arrays of \'timestamps\' and \'{is_event_colname}\' must have the same length")

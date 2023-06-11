@@ -42,7 +42,7 @@ class LWSVisualizer:
         save_path = self.__get_video_full_path(output_directory, trial.get_subject_info().subject_id, trial.trial_num)
 
         # get raw behavioral data
-        timestamps, x, y = trial.get_raw_gaze_coordinates()
+        timestamps, x, y = trial.get_raw_gaze_coordinates(eye='dominant')
         trial_start_time = timestamps[0]
         timestamps = timestamps - trial_start_time  # make sure the first timestamp is 0
         triggers = trial.get_behavioral_data().get('trigger').values
