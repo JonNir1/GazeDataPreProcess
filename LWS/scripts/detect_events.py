@@ -16,7 +16,7 @@ def detect_all_events(trial: LWSTrial, **kwargs) -> Tuple[np.ndarray, np.ndarray
     :param trial: The trial to detect events in.
 
     keyword arguments:
-    - fill_with: either "saccade", "fixation" or None. Controls how to fill unidentified samples.
+    - fill_with: Controls how to fill unidentified samples. Either "saccade", "fixation" or None (default "fixation").
 
     :blink keyword arguments:
         - blink_detector_type: str; type of blink detector to use:
