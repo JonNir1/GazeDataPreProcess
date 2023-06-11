@@ -83,20 +83,34 @@ class LWSTrial:
             Warn("Overwriting existing gaze events.")
         self.__gaze_events = sorted(gaze_events, key=lambda e: e.start_time)
 
-    def get_raw_gaze_coordinates(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def get_raw_gaze_coordinates(self, eye: str = 'dominant') -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Returns the raw gaze coordinates for the given eye or both eyes, along with the timestamps.
+        :param eye: controls which eye's gaze coordinates are returned:
+            - if 'dominant', return the dominant eye's gaze coordinates (as defined in the subject info)
+            - if 'left', return left eye's gaze coordinates
+            - if 'right', return right eye's gaze coordinates
+            - if 'both', return gaze coordinates from both eyes (as a 2xN array)
+            - otherwise, raise a ValueError
+
+        :return: a tuple of (timestamps, x coordinates, y coordinates)
+        """
         # Returns the timestamp, x and y coordinates of the gaze data for the dominant eye.
         bd = self.get_behavioral_data()
         ts = bd.get(cnst.MICROSECONDS).values / 1000
-        dominant_eye = self.get_subject_info().dominant_eye.lower()
-        if dominant_eye == 'left':
-            x = bd.get(cnst.LEFT_X).values
-            y = bd.get(cnst.LEFT_Y).values
-        elif dominant_eye == 'right':
-            x = bd.get(cnst.RIGHT_X).values
-            y = bd.get(cnst.RIGHT_Y).values
-        else:
-            raise ValueError(f'Invalid dominant eye: {dominant_eye}')
-        return ts, x, y
+        x_l, y_l = bd.get(cnst.LEFT_X).values, bd.get(cnst.LEFT_Y).values
+        x_r, y_r = bd.get(cnst.RIGHT_X).values, bd.get(cnst.RIGHT_Y).values
+
+        eye = eye.lower()
+        if eye == "dominant":
+            eye = self.get_subject_info().dominant_eye.lower()
+        if eye == 'left':
+            return ts, x_l, y_l
+        if eye == 'right':
+            return ts, x_r, y_r
+        if eye == 'both':
+            return ts, np.vstack((x_l, x_r)), np.vstack((y_l, y_r))
+        raise ValueError(f'Invalid eye: {eye}')
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}_S{self.__subject_info.subject_id}_T{self.__trial_num}"
