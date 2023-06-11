@@ -87,15 +87,15 @@ class LWSTrial:
         # Returns the timestamp, x and y coordinates of the gaze data for the dominant eye.
         bd = self.get_behavioral_data()
         ts = bd.get(cnst.MICROSECONDS).values / 1000
-        eye = self.get_subject_info().dominant_eye.lower()
-        if eye == 'left':
+        dominant_eye = self.get_subject_info().dominant_eye.lower()
+        if dominant_eye == 'left':
             x = bd.get(cnst.LEFT_X).values
             y = bd.get(cnst.LEFT_Y).values
-        elif eye == 'right':
+        elif dominant_eye == 'right':
             x = bd.get(cnst.RIGHT_X).values
             y = bd.get(cnst.RIGHT_Y).values
         else:
-            raise ValueError(f'Invalid dominant eye: {eye}')
+            raise ValueError(f'Invalid dominant eye: {dominant_eye}')
         return ts, x, y
 
     def __repr__(self) -> str:
