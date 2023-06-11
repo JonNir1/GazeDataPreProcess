@@ -7,22 +7,31 @@ from EventDetectors.BaseDetector import BaseDetector
 
 
 def detect_all_events(x: np.ndarray, y: np.ndarray,
-                      sampling_rate: float, stuff_with: Optional[str] = None,
+                      sampling_rate: float,
+                      detect_by: Optional[str] = None,
+                      stuff_with: Optional[str] = None,
                       **kwargs) -> (np.ndarray, np.ndarray, np.ndarray):
     """
     Detects blinks, saccades and fixations in the given gaze data (in that order).
+
     :param x: x-coordinates of gaze data
     :param y: y-coordinates of gaze data
     :param sampling_rate: sampling rate of the data in Hz
+    :param detect_by: defines how to detect events based on the data from both eyes:
+            - 'both'/'and': events are detected if both eyes detect an event
+            - 'either'/'or': events are detected if either eye detects an event
+            - 'left': detect events using left eye data only
+            - 'right': detect events using right eye data only
+            - 'most': detect events using the eye with the most events
     :param stuff_with: str; either "saccade", "fixation" or None. Controls how to fill unidentified samples.
-        - If None: returns the events as identified by the respective detectors
-        - If "saccade":
-            -- if a saccade detector was specified, returns the events as identified by the saccade detector and warns
-                for unexpected usage
-            --  if no saccade detector was specified, returns True for samples that were not identified as blinks or
-                fixations.
-        - If "fixation":
-            -- same behavior as "saccade", but for fixations.
+            - If None: returns the events as identified by the respective detectors
+            - If "saccade":
+                -- if a saccade detector was specified, returns the events as identified by the saccade detector and
+                    warns for unexpected usage
+                --  if no saccade detector was specified, returns True for samples that were not identified as blinks or
+                    fixations.
+            - If "fixation":
+                -- same behavior as "saccade", but for fixations.
 
     :keyword arguments:
         - blink_detector_type: str; type of blink detector to use, None for no blink detection
@@ -33,13 +42,13 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
     :return: is_blink, is_saccade, is_fixation: arrays of booleans, where True indicates an event
     """
     blink_detector_type = kwargs.pop("blink_detector_type", None)
-    is_blink = detect_blinks(blink_detector_type, x, y, sampling_rate, **kwargs)
+    is_blink = detect_blinks(blink_detector_type, x, y, sampling_rate, detect_by, **kwargs)
 
     saccade_detector_type = kwargs.pop("saccade_detector_type", None)
-    is_saccade = detect_saccades(saccade_detector_type, x, y, sampling_rate, **kwargs)
+    is_saccade = detect_saccades(saccade_detector_type, x, y, sampling_rate, detect_by, **kwargs)
 
     fixation_detector_type = kwargs.pop("fixation_detector_type", None)
-    is_fixation = detect_fixations(fixation_detector_type, x, y, sampling_rate, **kwargs)
+    is_fixation = detect_fixations(fixation_detector_type, x, y, sampling_rate, detect_by, **kwargs)
 
     # classify unidentified samples with value specified in stuff_with:
     if not stuff_with:
@@ -65,58 +74,73 @@ def detect_all_events(x: np.ndarray, y: np.ndarray,
 
 def detect_blinks(blink_detector_type: Optional[str],
                   x: np.ndarray, y: np.ndarray,
-                  sampling_rate: float, **kwargs) -> np.ndarray:
+                  sampling_rate: float, detect_by: Optional[str] = None,
+                  **kwargs) -> np.ndarray:
     """
     Detects blinks in the given gaze data, based on the specified blink detector type.
+
     :param blink_detector_type: type of blink detector to use, None for no blink detection
-    :param x: x-coordinates of gaze data
-    :param y: y-coordinates of gaze data
+    :param x: 1D or 2D array of x-coordinates of gaze data
+    :param y: 1D or 2D array of y-coordinates of gaze data
     :param sampling_rate: sampling rate of the data in Hz
+    :param detect_by: defines how to detect events based on the data from both eyes:
+            - 'both'/'and': events are detected if both eyes detect an event
+            - 'either'/'or': events are detected if either eye detects an event
+            - 'left': detect events using left eye data only
+            - 'right': detect events using right eye data only
+            - 'most': detect events using the eye with the most events
 
     :keyword arguments:
         - inter_event_time: minimal time between two events in ms; default: 5 ms
         - blink_min_duration: minimal duration of a blink in ms; default: 50 ms
         - missing_value: default value indicating missing data, used by MissingDataBlinkDetector; default: np.nan
+
     :return: array of booleans, where True indicates a blink
     """
     if not blink_detector_type:
         return np.zeros_like(x, dtype=bool)
-
     iet = kwargs.get("inter_event_time", cnfg.DEFAULT_INTER_EVENT_TIME)
     min_duration = kwargs.get("blink_min_duration", cnfg.DEFAULT_BLINK_MINIMUM_DURATION)
     blink_kwargs = {
         "missing_value": kwargs.get("missing_value", cnfg.DEFAULT_MISSING_VALUE)
     }
-
     blink_detector = _get_event_detector(blink_detector_type,
                                          min_duration=min_duration,
                                          sampling_rate=sampling_rate,
                                          inter_event_time=iet,
                                          **blink_kwargs)
-    is_blink = blink_detector.detect_monocular(x, y)
+    is_blink = __detect_event_generic(detector=blink_detector, x=x, y=y, detect_by=detect_by)
     return is_blink
 
 
 def detect_saccades(saccade_detector_type: Optional[str],
                     x: np.ndarray, y: np.ndarray,
-                    sampling_rate: float, **kwargs) -> np.ndarray:
+                    sampling_rate: float, detect_by: Optional[str] = None,
+                    **kwargs) -> np.ndarray:
     """
     Detects saccades in the given gaze data, based on the specified saccades detector type.
+
     :param saccade_detector_type: type of saccade detector to use, None for no saccade detection
-    :param x: x-coordinates of gaze data
-    :param y: y-coordinates of gaze data
+    :param x: 1D or 2D array of x-coordinates of gaze data
+    :param y: 1D or 2D array of y-coordinates of gaze data
     :param sampling_rate: sampling rate of the data in Hz
+    :param detect_by: defines how to detect events based on the data from both eyes:
+            - 'both'/'and': events are detected if both eyes detect an event
+            - 'either'/'or': events are detected if either eye detects an event
+            - 'left': detect events using left eye data only
+            - 'right': detect events using right eye data only
+            - 'most': detect events using the eye with the most events
 
     :keyword arguments:
         - inter_event_time: minimal time between two events in ms; default: 5 ms
         - saccade_min_duration: minimal duration of a blink in ms;  default: 5 ms
         - derivation_window_size: window size for derivation in ms; default: 3 ms
         - lambda_noise_threshold: threshold for lambda noise;       default: 5
+
     :return: array of booleans, where True indicates a saccade
     """
     if not saccade_detector_type:
         return np.zeros_like(x, dtype=bool)
-
     from EventDetectors.EngbertSaccadeDetector import DEFAULT_DERIVATION_WINDOW_SIZE, DEFAULT_LAMBDA_NOISE_THRESHOLD
     iet = kwargs.get("inter_event_time", cnfg.DEFAULT_INTER_EVENT_TIME)
     min_duration = kwargs.get("saccade_min_duration", cnfg.DEFAULT_SACCADE_MINIMUM_DURATION)
@@ -124,43 +148,50 @@ def detect_saccades(saccade_detector_type: Optional[str],
         "derivation_window_size": kwargs.get("derivation_window_size", DEFAULT_DERIVATION_WINDOW_SIZE),
         "lambda_noise_threshold": kwargs.get("lambda_noise_threshold", DEFAULT_LAMBDA_NOISE_THRESHOLD)
     }
-
     saccade_detector = _get_event_detector(saccade_detector_type, min_duration=min_duration,
                                            sampling_rate=sampling_rate, inter_event_time=iet,
                                            **saccade_kwargs)
-    is_saccade = saccade_detector.detect_monocular(x, y)
+    is_saccade = __detect_event_generic(detector=saccade_detector, x=x, y=y, detect_by=detect_by)
     return is_saccade
 
 
 def detect_fixations(fixation_detector_type: Optional[str],
                      x: np.ndarray, y: np.ndarray,
-                     sampling_rate: float, **kwargs) -> np.ndarray:
+                     sampling_rate: float,
+                     detect_by: Optional[str] = None,
+                     **kwargs) -> np.ndarray:
     """
     Detects fixations in the given gaze data, based on the specified fixation detector type.
+
     :param fixation_detector_type: type of fixation detector to use, None for no fixation detection
-    :param x: x-coordinates of gaze data
-    :param y: y-coordinates of gaze data
+    :param x: 1D or 2D array of x-coordinates of gaze data
+    :param y: 1D or 2D array of y-coordinates of gaze data
     :param sampling_rate: sampling rate of the data in Hz
+    :param detect_by: defines how to detect events based on the data from both eyes:
+            - 'both'/'and': events are detected if both eyes detect an event
+            - 'either'/'or': events are detected if either eye detects an event
+            - 'left': detect events using left eye data only
+            - 'right': detect events using right eye data only
+            - 'most': detect events using the eye with the most events
 
     :keyword arguments:
         - inter_event_time: minimal time between two events in ms; default: 5 ms
         - fixation_min_duration: minimal duration of a blink in ms;         default: 55 ms
         - velocity_threshold: maximal velocity allowed within a fixation;   default: 30 deg/s
+
     :return: array of booleans, where True indicates a saccade
     """
     if not fixation_detector_type:
         return np.zeros_like(x, dtype=bool)
-
     iet = kwargs.get("inter_event_time", cnfg.DEFAULT_INTER_EVENT_TIME)
     min_duration = kwargs.get("fixation_min_duration", cnfg.DEFAULT_FIXATION_MINIMUM_DURATION)
     fixation_kwargs = {
         "velocity_threshold": kwargs.get("velocity_threshold", cnfg.DEFAULT_FIXATION_MAX_VELOCITY)
     }
-
     fixation_detector = _get_event_detector(fixation_detector_type, min_duration=min_duration,
                                             sampling_rate=sampling_rate, inter_event_time=iet,
                                             **fixation_kwargs)
-    is_fixation = fixation_detector.detect_monocular(x, y)
+    is_fixation = __detect_event_generic(detector=fixation_detector, x=x, y=y, detect_by=detect_by)
     return is_fixation
 
 
@@ -229,7 +260,7 @@ def __detect_event_generic(detector: BaseDetector,
     - If x and y are 2D arrays, the data is assumed to be binocular and x[0], y[0] are assumed to be the left eye and
         x[1], y[1] are assumed to be the right eye. In this case, `detect_by` must be specified.
 
-    :param detector:
+    :param detector: event detector to use
     :param x: 1D or 2D array of x-coordinates of gaze data
     :param y: 1D or 2D array of y-coordinates of gaze data
     :param detect_by: defines how to detect events based on the data from both eyes:
