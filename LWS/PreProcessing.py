@@ -23,29 +23,7 @@ def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwa
 
     keyword arguments:
         - screen_monitor: The screen monitor used to display the stimuli.
-
-    gaze detection keyword arguments:
-        - stuff_with: either "saccade", "fixation" or None. Controls how to fill unidentified samples.
-        - blink_detector_type: The type of blink detector to use. If None, no blink detection is performed.
-        - saccade_detector_type: The type of saccade detector to use. If None, no saccade detection is performed.
-        - fixation_detector_type: The type of fixation detector to use. If None, no fixation detection is performed.
-        - drop_outlier_events: If True, drops events that are considered outliers. If False, keeps all events.
-
-    blink keyword arguments:
-        - blink_inter_event_time: minimal time between two events in ms;                                default: 5 ms
-        - blink_min_duration: minimal duration of a blink in ms;                                        default: 50 ms
-        - missing_value: default value indicating missing data, used by MissingDataBlinkDetector;       default: np.nan
-
-    saccade keyword arguments:
-        - saccade_inter_event_time: minimal time between two events in ms;                              default: 5 ms
-        - saccade_min_duration: minimal duration of a blink in ms;                                      default: 5 ms
-        - derivation_window_size: window size for derivation in ms;                                     default: 3 ms
-        - lambda_noise_threshold: threshold for lambda noise, used by EngbertSaccadeDetector;           default: 5
-
-    fixation keyword arguments:
-        - fixation_inter_event_time: minimal time between two events in ms;                             default: 5 ms
-        - fixation_min_duration: minimal duration of a blink in ms;                                     default: 55 ms
-        - velocity_threshold: maximal velocity allowed within a fixation, used by IVTFixationDetector;  default: 30 deg/s
+        - see gaze detection keyword arguments in `LWS.scripts.detect_events.detect_all_events()`
 
     :return: A list of LWSTrial objects, one for each trial of the subject, processed and ready to be analyzed.
     """
@@ -67,29 +45,7 @@ def process_trial(trial: LWSTrial, **kwargs):
 
     keyword arguments:
         - screen_monitor: The screen monitor used to display the stimuli.
-
-    gaze detection keyword arguments:
-        - stuff_with: either "saccade", "fixation" or None. Controls how to fill unidentified samples.
-        - blink_detector_type: The type of blink detector to use. If None, no blink detection is performed.
-        - saccade_detector_type: The type of saccade detector to use. If None, no saccade detection is performed.
-        - fixation_detector_type: The type of fixation detector to use. If None, no fixation detection is performed.
-        - drop_outlier_events: If True, drops events that are considered outliers. If False, keeps all events.
-
-    blink keyword arguments:
-        - blink_inter_event_time: minimal time between two events in ms;                                default: 5 ms
-        - blink_min_duration: minimal duration of a blink in ms;                                        default: 50 ms
-        - missing_value: default value indicating missing data, used by MissingDataBlinkDetector;       default: np.nan
-
-    saccade keyword arguments:
-        - saccade_inter_event_time: minimal time between two events in ms;                              default: 5 ms
-        - saccade_min_duration: minimal duration of a blink in ms;                                      default: 5 ms
-        - derivation_window_size: window size for derivation in ms;                                     default: 3 ms
-        - lambda_noise_threshold: threshold for lambda noise, used by EngbertSaccadeDetector;           default: 5
-
-    fixation keyword arguments:
-        - fixation_inter_event_time: minimal time between two events in ms;                             default: 5 ms
-        - fixation_min_duration: minimal duration of a blink in ms;                                     default: 55 ms
-        - velocity_threshold: maximal velocity allowed within a fixation, used by IVTFixationDetector;  default: 30 deg/s
+        - see gaze detection keyword arguments in `LWS.scripts.detect_events.detect_all_events()`
     """
     trial.is_processed = False
     sm = kwargs.pop('screen_monitor', None) or ScreenMonitor.from_config()
