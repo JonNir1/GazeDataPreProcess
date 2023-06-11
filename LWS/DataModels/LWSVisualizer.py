@@ -17,7 +17,7 @@ class LWSVisualizer:
     def __init__(self, screen_monitor: ScreenMonitor = None):
         self.screen_monitor = ScreenMonitor.from_config() if screen_monitor is None else screen_monitor
 
-    def visualize(self, trial: LWSTrial, output_directory: str = cnfg.OUTPUT_DIR, show = False, **kwargs):
+    def visualize(self, trial: LWSTrial, output_directory: str = cnfg.OUTPUT_DIR, show=False, **kwargs):
         """
         Generates a video visualization of the eye-tracking data and behavioral events for the given LWSTrial.
         This video is saved to the path `output_directory/subject_id/trial_id.mp4`.
