@@ -157,12 +157,16 @@ def _detect_event_generic(detector: Optional[BaseDetector],
         # x.shape = (n,)
         if detector is None:
             return np.zeros_like(x, dtype=bool)
+        if detect_by is not None:
+            w.warn("data is monocular, but `detect_by` specified, so ignoring `detect_by`")
         return detector.detect_monocular(x, y)
 
     if x.ndim == 2 and x.shape[0] == 1:
         # x.shape = (1, n)
         if detector is None:
             return np.zeros_like(x[0], dtype=bool)
+        if detect_by is not None:
+            w.warn("data is monocular, but `detect_by` specified, so ignoring `detect_by`")
         return detector.detect_monocular(x[0], y[0])
 
     if x.ndim == 2 and x.shape[0] == 2:
