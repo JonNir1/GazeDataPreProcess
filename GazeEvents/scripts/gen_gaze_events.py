@@ -11,8 +11,7 @@ def gen_gaze_events(event_type: str,
                     x: Optional[np.ndarray] = None, y: Optional[np.ndarray] = None) -> List[BaseGazeEvent]:
     """
     Splits `timestamps` to chunks of timestamps that are part of the same event, based on `is_event`. Then, for each
-    chunk, creates a GazeEvent object of the given type and returns a list of all the events (in the same order as
-    they appear in the data).
+    chunk, creates a GazeEvent object of the given type and returns a list of all the events (ordered by start time).
 
     :param event_type: type of event to extract. Must be one of 'blink', 'saccade' or 'fixation'
     :param timestamps: array of timestamps
@@ -40,27 +39,24 @@ def gen_gaze_events(event_type: str,
         raise ValueError(f"Attempting to extract {event_type} without providing x and y coordinates")
 
     different_event_idxs = _split_samples_between_events(is_event)
+    events_list = []
     if event_type == cnst.BLINK:
         from GazeEvents.BlinkEvent import BlinkEvent
         events_list = [BlinkEvent(timestamps=timestamps[idxs], sampling_rate=sampling_rate)
                        for idxs in different_event_idxs]
-        return events_list
 
     if event_type == cnst.SACCADE:
         from GazeEvents.SaccadeEvent import SaccadeEvent
         events_list = [SaccadeEvent(timestamps=timestamps[idxs], sampling_rate=sampling_rate,
                                     x=x[idxs], y=y[idxs]) for idxs in different_event_idxs]
-        return events_list
 
     if event_type == cnst.FIXATION:
         from GazeEvents.FixationEvent import FixationEvent
         events_list = [FixationEvent(timestamps=timestamps[idxs], sampling_rate=sampling_rate,
                                      x=x[idxs], y=y[idxs]) for idxs in different_event_idxs]
-        return events_list
 
-    # should never get here
-    raise ValueError(f"Attempting to extract unknown event type {event_type}. "
-                     f"Argument event_type must be one of {str(allowed_event_types)}")
+    events_list.sort(key=lambda event: event.start_time)
+    return events_list
 
 
 def gen_gaze_events_summary(event_type: str,
