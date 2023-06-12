@@ -51,7 +51,7 @@ class LWSVisualizer:
 
         # get raw behavioral data
         timestamps, x, y = trial.get_raw_gaze_coordinates(eye='dominant')
-        triggers = trial.get_behavioral_data().get('trigger').values
+        triggers = trial.get_behavioral_data().get(cnst.TRIGGER).values
         num_samples = len(timestamps)
 
         # prepare visual inputs
