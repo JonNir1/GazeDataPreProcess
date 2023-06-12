@@ -36,7 +36,6 @@ def gen_gaze_events(event_type: str,
     if event_type not in allowed_event_types:
         raise ValueError(f"Attempting to extract unknown event type {event_type}. "
                          f"Argument event_type must be one of {str(allowed_event_types)}")
-
     if event_type in [cnst.SACCADE, cnst.FIXATION] and (x is None or y is None):
         raise ValueError(f"Attempting to extract {event_type} without providing x and y coordinates")
 
