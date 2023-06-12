@@ -59,9 +59,9 @@ class LWSVisualizer:
         # extract keyword arguments
         target_radius = kwargs.get('target_radius', 35)
         target_edge_size = kwargs.get('target_edge_size', 4)
-        gaze_radius = kwargs.get('gaze_radius', 10)
         marked_target_color: Tuple[int, int, int] = kwargs.get('marked_target_color', (0, 0, 0))  # default: black
         confirmed_target_color: Tuple[int, int, int] = kwargs.get('confirmed_target_color', (50, 150, 50))  # default: dark green
+        gaze_radius = kwargs.get('gaze_radius', 10)
         gaze_color: Tuple[int, int, int] = kwargs.get('gaze_color', (255, 200, 100))                      # default: light-blue
 
         video_writer = cv2.VideoWriter(save_path, self.FOURCC, fps, resolution)
