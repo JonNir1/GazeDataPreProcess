@@ -19,11 +19,12 @@ def shift_array(array: np.ndarray, shift: int) -> np.ndarray:
     return shifted_array
 
 
-def get_different_event_indices(is_event: np.ndarray) -> List[np.ndarray]:
+def get_different_event_indices(is_event: np.ndarray, min_length: int = 0) -> List[np.ndarray]:
     """
     Returns a list of arrays, where each array contains the indices of a different event.
-
     :param is_event: np.ndarray - a boolean array, where True indicates that the sample is part of an event.
+    :param min_length: int - the minimum length of an event. Events shorter than this will be ignored.
+
     :return: a list of arrays, where each array contains the indices of a different event.
     """
     event_idxs = np.nonzero(is_event)[0]
@@ -31,4 +32,5 @@ def get_different_event_indices(is_event: np.ndarray) -> List[np.ndarray]:
         return []
     event_end_idxs = np.nonzero(np.diff(event_idxs) != 1)[0]
     different_event_idxs = np.split(event_idxs, event_end_idxs + 1)  # +1 because we want to include the last index
+    different_event_idxs = list(filter(lambda e: len(e) >= min_length, different_event_idxs))
     return different_event_idxs
