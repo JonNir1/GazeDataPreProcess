@@ -39,8 +39,7 @@ class LWSVisualizer:
             - gaze_radius (int): The radius of the gaze circle in pixels. Defaults to 10.
             - gaze_color (Tuple[int, int, int]): The color of the gaze circle in BGR format. Defaults to (255, 200, 100) (light-blue).
             Fixation Visualization:
-            - fixation_radius (int/None): The radius of the fixation circle in pixels. If None, the fixation will be
-                    displayed as an ellipse with axes lengths of 2*std_x and 2*std_y. Defaults to None.
+            - fixation_radius (int): The radius of the fixation circle in pixels. Defaults to 45.
             - fixation_color (Tuple[int, int, int]): The color of the fixation circle in BGR format. Defaults to (40, 140, 255) (orange).
             - fixation_alpha (float): The opacity of the fixation circle. Defaults to 0.5.
 
@@ -68,7 +67,7 @@ class LWSVisualizer:
         confirmed_target_color: Tuple[int, int, int] = kwargs.get('confirmed_target_color', (50, 150, 50))  # default: dark green
         gaze_radius = kwargs.get('gaze_radius', 10)
         gaze_color: Tuple[int, int, int] = kwargs.get('gaze_color', (255, 200, 100))                        # default: light-blue
-        fixation_radius = kwargs.get('fixation_radius', None)  # default: use fixation event's radius
+        fixation_radius = kwargs.get('fixation_radius', 45)
         fixation_color: Tuple[int, int, int] = kwargs.get('fixation_color', (40, 140, 255))                  # default: orange
         fixation_alpha = kwargs.get('fixation_alpha', 0.5)
 
@@ -109,11 +108,7 @@ class LWSVisualizer:
                 if len(current_fixations) > 0:
                     curr_fix = current_fixations[0]  # LWSFixationEvent
                     fix_x, fix_y = curr_fix.center_of_mass
-                    if fixation_radius is None:
-                        fix_w, fix_h = curr_fix.std
-                    else:
-                        fix_w, fix_h = fixation_radius / 2, fixation_radius / 2
-                    cv2.ellipse(fix_img, (int(fix_x), int(fix_y)), (int(fix_w), int(fix_h)), 0, 0, 360, fixation_color, -1)
+                    cv2.circle(fix_img, (int(fix_x), int(fix_y)), fixation_radius, fixation_color, -1)
 
             # create a combined image of the gaze and fixation images and write it to the video
             final_img = cv2.addWeighted(fix_img, fixation_alpha, gaze_img, 1 - fixation_alpha, 0)
