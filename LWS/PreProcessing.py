@@ -9,7 +9,7 @@ from LWS.DataModels.LWSTrial import LWSTrial
 from LWS.scripts.read_subject import read_subject_trials
 from LWS.scripts.distance_to_targets import calculate_angular_distance_for_gaze_data
 from LWS.scripts.detect_events import detect_all_events
-from LWS.scripts.extract_events import extract_all_events
+from LWS.scripts.gen_lws_gaze_events import gen_all_lws_events
 
 
 def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwargs) -> List[LWSTrial]:
@@ -63,7 +63,7 @@ def process_trial(trial: LWSTrial, **kwargs):
 
     # process gaze events
     drop_outlier_events = kwargs.pop('drop_outlier_events', False)
-    events = extract_all_events(trial, sm, drop_outliers=drop_outlier_events)
+    events = gen_all_lws_events(trial, sm, drop_outliers=drop_outlier_events)
     trial.set_gaze_events(events)
 
     trial.is_processed = True
