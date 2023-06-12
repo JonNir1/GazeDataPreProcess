@@ -4,6 +4,7 @@ from typing import Optional, List
 
 import constants as cnst
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
+import Utils.array_utils as au
 
 
 def gen_gaze_events(event_type: str,
@@ -38,7 +39,7 @@ def gen_gaze_events(event_type: str,
     if event_type in [cnst.SACCADE, cnst.FIXATION] and (x is None or y is None):
         raise ValueError(f"Attempting to extract {event_type} without providing x and y coordinates")
 
-    different_event_idxs = _split_samples_between_events(is_event)
+    different_event_idxs = au.get_different_event_indices(is_event)
     events_list = []
     if event_type == cnst.BLINK:
         from GazeEvents.BlinkEvent import BlinkEvent
@@ -73,13 +74,3 @@ def gen_gaze_events_summary(event_type: str,
     events_list = gen_gaze_events(event_type=event_type, timestamps=timestamps, is_event=is_event,
                                   sampling_rate=sampling_rate, x=x, y=y)
     return pd.concat([event.to_series() for event in events_list], axis=1).T
-
-
-def _split_samples_between_events(is_event: np.ndarray) -> List[np.ndarray]:
-    # returns a list of arrays, each array contains the indices of the samples that belong to the same event
-    event_idxs = np.nonzero(is_event)[0]
-    if len(event_idxs) == 0:
-        return []
-    event_end_idxs = np.nonzero(np.diff(event_idxs) != 1)[0]
-    different_event_idxs = np.split(event_idxs, event_end_idxs + 1)  # +1 because we want to include the last index
-    return different_event_idxs

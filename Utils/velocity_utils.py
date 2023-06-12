@@ -2,24 +2,8 @@ import numpy as np
 import pandas as pd
 from typing import Optional
 
+import Utils.array_utils as au
 from Utils.ScreenMonitor import ScreenMonitor
-
-
-def shift_array(array: np.ndarray, shift: int) -> np.ndarray:
-    """
-    Shifts an array by a given amount.
-        If the shift is positive, the array is shifted to the right.
-        If the shift is negative, the array is shifted to the left.
-    :param array: np.ndarray - the array to be shifted.
-    :param shift: int - the amount to shift the array by.
-    :return: shifted_array: np.ndarray - the shifted array.
-    """
-    shifted_array = np.roll(array, shift)
-    if shift > 0:
-        shifted_array[:shift] = np.nan
-    elif shift < 0:
-        shifted_array[shift:] = np.nan
-    return shifted_array
 
 
 def calculate_angular_velocity(x: np.ndarray, y: np.ndarray,
@@ -38,8 +22,8 @@ def calculate_angular_velocity(x: np.ndarray, y: np.ndarray,
     :return: 1D array of angular velocities.
     """
     screen_monitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
-    x_shifted = shift_array(x, 1)
-    y_shifted = shift_array(y, 1)
+    x_shifted = au.shift_array(x, 1)
+    y_shifted = au.shift_array(y, 1)
     pixels = np.transpose(np.vstack([x, y, x_shifted, y_shifted]))  # shape (N, 4)
 
     angles = []
