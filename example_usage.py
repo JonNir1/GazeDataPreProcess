@@ -11,7 +11,7 @@ from Utils.ScreenMonitor import ScreenMonitor
 from Utils.calculate_sampling_rate import calculate_sampling_rate_from_microseconds
 from DataParser.scripts.parse_eye_tracker import parse_eye_tracker
 from EventDetectors.scripts.detect_events import detect_all_events
-from GazeEvents.scripts.extract_gaze_events import extract_events_to_dataframe
+from GazeEvents.scripts.gen_gaze_events import gen_gaze_events_summary
 
 # create a screen monitor object
 sm = ScreenMonitor.from_config()
@@ -35,11 +35,11 @@ is_blink, is_saccade, is_fixation = detect_all_events(x=np.vstack((x_l, x_r)), y
                                                       saccade_detector_type="engbert")
 
 # extract events to a pandas DataFrame
-blinks_summary = extract_events_to_dataframe(event_type="blink", timestamps=microseconds, is_event=is_blink,
-                                             sampling_rate=sr)
-saccades_summary = extract_events_to_dataframe(event_type="saccade", timestamps=microseconds, is_event=is_saccade,
-                                               sampling_rate=sr, x=x_l, y=y_l)
-fixations_summary = extract_events_to_dataframe(event_type="fixation", timestamps=microseconds, is_event=is_fixation,
-                                                sampling_rate=sr, x=x_l, y=y_l)
+blinks_summary = gen_gaze_events_summary(event_type="blink", timestamps=microseconds, is_event=is_blink,
+                                         sampling_rate=sr)
+saccades_summary = gen_gaze_events_summary(event_type="saccade", timestamps=microseconds, is_event=is_saccade,
+                                           sampling_rate=sr, x=x_l, y=y_l)
+fixations_summary = gen_gaze_events_summary(event_type="fixation", timestamps=microseconds, is_event=is_fixation,
+                                            sampling_rate=sr, x=x_l, y=y_l)
 
 # profit!
