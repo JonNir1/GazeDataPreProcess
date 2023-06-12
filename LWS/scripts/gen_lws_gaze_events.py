@@ -63,7 +63,8 @@ def _gen_lws_fixation_events(trial: LWSTrial, screen_monitor: ScreenMonitor) -> 
     from LWS.scripts.distance_to_targets import calculate_angular_target_distance_for_fixation
 
     timestamps, x, y, is_fixation, triggers = __extract_raw_event_arrays(trial=trial, event_type=cnst.FIXATION)
-    separate_event_idxs = get_different_event_indices(is_fixation)
+    separate_event_idxs = get_different_event_indices(is_fixation,
+                                                      min_length=LWSFixationEvent.MINIMUM_TIMESTAMPS_FOR_EVENT)
 
     events_list = []
     for idxs in separate_event_idxs:
