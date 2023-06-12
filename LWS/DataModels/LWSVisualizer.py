@@ -1,13 +1,13 @@
 import os
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 import cv2
 from typing import Tuple
 
+import constants as cnst
 import experiment_config as cnfg
 from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
+from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 
 class LWSVisualizer:
@@ -17,13 +17,16 @@ class LWSVisualizer:
     def __init__(self, screen_monitor: ScreenMonitor = None):
         self.screen_monitor = ScreenMonitor.from_config() if screen_monitor is None else screen_monitor
 
-    def visualize(self, trial: LWSTrial, output_directory: str = cnfg.OUTPUT_DIR, show=False, **kwargs):
+    def visualize(self, trial: LWSTrial, output_directory: str = cnfg.OUTPUT_DIR,
+                  display_gaze: bool = True, display_fixations: bool = True, show=False, **kwargs):
         """
         Generates a video visualization of the eye-tracking data and behavioral events for the given LWSTrial.
         This video is saved to the path `output_directory/subject_id/trial_id.mp4`.
 
         :param trial: The LWSTrial object containing the raw eye-tracking data, the gaze events and behavioral data (triggers).
         :param output_directory: The directory where the generated video will be saved. If not specified, the default directory is used.
+        :param display_gaze: Whether to display the gaze circles. Defaults to True.
+        :param display_fixations: Whether to display the fixations. Defaults to True.
         :param show: Whether to show the video after generating it. Defaults to False.
         :param kwargs: Additional keyword arguments for customizing the visualization parameters.
 
@@ -36,6 +39,11 @@ class LWSVisualizer:
             Gaze Visualization:
             - gaze_radius (int): The radius of the gaze circle in pixels. Defaults to 10.
             - gaze_color (Tuple[int, int, int]): The color of the gaze circle in BGR format. Defaults to (255, 200, 100) (light-blue).
+            Fixation Visualization:
+            - fixation_radius (int/None): The radius of the fixation circle in pixels. If None, the fixation will be
+                    displayed as an ellipse with axes lengths of 2*std_x and 2*std_y. Defaults to None.
+            - fixation_color (Tuple[int, int, int]): The color of the fixation circle in BGR format. Defaults to (40, 140, 255) (orange).
+            - fixation_alpha (float): The opacity of the fixation circle. Defaults to 0.5.
 
         No return value
         """
@@ -43,8 +51,6 @@ class LWSVisualizer:
 
         # get raw behavioral data
         timestamps, x, y = trial.get_raw_gaze_coordinates(eye='dominant')
-        trial_start_time = timestamps[0]
-        timestamps = timestamps - trial_start_time  # make sure the first timestamp is 0
         triggers = trial.get_behavioral_data().get('trigger').values
         num_samples = len(timestamps)
 
@@ -59,10 +65,13 @@ class LWSVisualizer:
         # extract keyword arguments
         target_radius = kwargs.get('target_radius', 35)
         target_edge_size = kwargs.get('target_edge_size', 4)
-        marked_target_color: Tuple[int, int, int] = kwargs.get('marked_target_color', (0, 0, 0))  # default: black
+        marked_target_color: Tuple[int, int, int] = kwargs.get('marked_target_color', (0, 0, 0))            # default: black
         confirmed_target_color: Tuple[int, int, int] = kwargs.get('confirmed_target_color', (50, 150, 50))  # default: dark green
         gaze_radius = kwargs.get('gaze_radius', 10)
-        gaze_color: Tuple[int, int, int] = kwargs.get('gaze_color', (255, 200, 100))                      # default: light-blue
+        gaze_color: Tuple[int, int, int] = kwargs.get('gaze_color', (255, 200, 100))                        # default: light-blue
+        fixation_radius = kwargs.get('fixation_radius', None)  # default: use fixation event's radius
+        fixation_color: Tuple[int, int, int] = kwargs.get('fixation_color', (40, 140, 255))                  # default: orange
+        fixation_alpha = kwargs.get('fixation_alpha', 0.5)
 
         video_writer = cv2.VideoWriter(save_path, self.FOURCC, fps, resolution)
         for i in range(num_samples):
@@ -88,13 +97,25 @@ class LWSVisualizer:
                     bg_img = prev_bg_img.copy()
 
             # draw current gaze data on the frame
-            curr_img = bg_img.copy()
-            if curr_x is not None and curr_y is not None:
-                cv2.circle(curr_img, (curr_x, curr_y), gaze_radius, gaze_color, -1)
+            gaze_img = bg_img.copy()
+            if display_gaze and (curr_x is not None) and (curr_y is not None):
+                cv2.circle(gaze_img, (curr_x, curr_y), gaze_radius, gaze_color, -1)
 
-            # TODO: draw fixations
+            # draw the current fixation on the frame if it exists
+            fix_img = gaze_img.copy()
+            if display_fixations:
+                curr_t = timestamps[i]
+                fixations = trial.get_gaze_events(cnst.FIXATION)
+                current_fixations = list(filter(lambda f: f.start_time <= curr_t <= f.end_time, fixations))
+                if len(current_fixations) > 0:
+                    curr_fix = current_fixations[0].__class__ = LWSFixationEvent
+                    x, y = curr_fix.center_of_mass
+                    fix_w, fix_h = curr_fix.std if fixation_radius is None else fixation_radius / 2, fixation_radius / 2
+                    cv2.ellipse(fix_img, (int(x), int(y)), (int(fix_w), int(fix_h)), 0, 0, 360, fixation_color, -1)
 
-            video_writer.write(curr_img)
+            # create a combined image of the gaze and fixation images and write it to the video
+            final_img = cv2.addWeighted(fix_img, fixation_alpha, gaze_img, 1 - fixation_alpha, 0)
+            video_writer.write(final_img)
         video_writer.release()
 
         if show:
