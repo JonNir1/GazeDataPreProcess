@@ -7,7 +7,6 @@ import constants as cnst
 import experiment_config as cnfg
 from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
-from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 
 class LWSVisualizer:
@@ -108,10 +107,13 @@ class LWSVisualizer:
                 fixations = trial.get_gaze_events(cnst.FIXATION)
                 current_fixations = list(filter(lambda f: f.start_time <= curr_t <= f.end_time, fixations))
                 if len(current_fixations) > 0:
-                    curr_fix = current_fixations[0].__class__ = LWSFixationEvent
-                    x, y = curr_fix.center_of_mass
-                    fix_w, fix_h = curr_fix.std if fixation_radius is None else fixation_radius / 2, fixation_radius / 2
-                    cv2.ellipse(fix_img, (int(x), int(y)), (int(fix_w), int(fix_h)), 0, 0, 360, fixation_color, -1)
+                    curr_fix = current_fixations[0]  # LWSFixationEvent
+                    fix_x, fix_y = curr_fix.center_of_mass
+                    if fixation_radius is None:
+                        fix_w, fix_h = curr_fix.std
+                    else:
+                        fix_w, fix_h = fixation_radius / 2, fixation_radius / 2
+                    cv2.ellipse(fix_img, (int(fix_x), int(fix_y)), (int(fix_w), int(fix_h)), 0, 0, 360, fixation_color, -1)
 
             # create a combined image of the gaze and fixation images and write it to the video
             final_img = cv2.addWeighted(fix_img, fixation_alpha, gaze_img, 1 - fixation_alpha, 0)
