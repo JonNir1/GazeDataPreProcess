@@ -57,7 +57,7 @@ class LWSVisualizer:
         circle_center = np.array([np.nan, np.nan])  # to draw a circle around the target
 
         # extract keyword arguments
-        target_radius = kwargs.get('target_radius', 25)
+        target_radius = kwargs.get('target_radius', 35)
         target_edge_size = kwargs.get('target_edge_size', 4)
         gaze_radius = kwargs.get('gaze_radius', 10)
         marked_target_color: Tuple[int, int, int] = kwargs.get('marked_target_color', (0, 0, 0))  # default: black
