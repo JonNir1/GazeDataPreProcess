@@ -5,11 +5,11 @@ from abc import ABC, abstractmethod
 
 class BaseGazeEvent(ABC):
 
-    __MINIMUM_TIMESTAMPS_FOR_EVENT = 2
+    MINIMUM_TIMESTAMPS_FOR_EVENT = 2
 
     def __init__(self, timestamps: np.ndarray, sampling_rate: float):
-        if len(timestamps) < self.__MINIMUM_TIMESTAMPS_FOR_EVENT:
-            raise ValueError("event must be at least {} samples long".format(self.__MINIMUM_TIMESTAMPS_FOR_EVENT))
+        if len(timestamps) < self.MINIMUM_TIMESTAMPS_FOR_EVENT:
+            raise ValueError("event must be at least {} samples long".format(self.MINIMUM_TIMESTAMPS_FOR_EVENT))
         if np.isnan(timestamps).any() or np.isinf(timestamps).any():
             raise ValueError("array timestamps must not contain NaN values")
         if (timestamps < 0).any():
