@@ -1,5 +1,5 @@
 import numpy as np
-from warnings import warn as Warn
+import warnings as w
 from typing import Tuple, List, Optional
 
 import constants as cnst
@@ -80,7 +80,7 @@ class LWSTrial:
             raise RuntimeError("Cannot set gaze events after trial has been processed.")
         ge = self.get_gaze_events(event_type=cnst.ALL)
         if len(ge) > 0:
-            Warn("Overwriting existing gaze events.")
+            w.warn("Overwriting existing gaze events.")
         self.__gaze_events = sorted(gaze_events, key=lambda e: e.start_time)
 
     def get_raw_gaze_coordinates(self, eye: str = 'dominant') -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
