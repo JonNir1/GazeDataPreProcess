@@ -29,7 +29,7 @@ def gen_gaze_events(event_type: str,
         - ValueError: if `x` and `y` are not provided when extracting saccades or fixations
     """
     if len(timestamps) != len(is_event):
-        raise ValueError("Arrays of timestamps and is_event must have the same length")
+        raise ValueError("Arrays of `timestamps` and `is_event` must have the same length")
 
     event_type = event_type.lower()
     allowed_event_types = [cnst.BLINK, cnst.SACCADE, cnst.FIXATION]
