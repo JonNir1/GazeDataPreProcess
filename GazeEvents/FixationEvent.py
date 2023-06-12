@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from typing import Tuple
 
 import constants as cnst
 import experiment_config as cnfg
@@ -40,14 +41,14 @@ class FixationEvent(BaseGazeEvent):
         return False
 
     @property
-    def center_of_mass(self) -> np.ndarray:
-        # returns a 2D array of the mean X,Y coordinates of the fixation
-        return np.array([np.nanmean(self.__x), np.nanmean(self.__y)])
+    def center_of_mass(self) -> Tuple[float, float]:
+        # returns the mean coordinates of the fixation on the X,Y axes
+        return np.nanmean(self.__x), np.nanmean(self.__y)
 
     @property
-    def std(self) -> np.ndarray:
-        # returns a 2D array of the standard deviation of the X,Y coordinates of the fixation
-        return np.array([np.nanstd(self.__x), np.nanstd(self.__y)])
+    def std(self) -> Tuple[float, float]:
+        # returns the standard deviation of the fixation on the X,Y axes
+        return np.nanstd(self.__x), np.nanstd(self.__y)
 
     @classmethod
     def event_type(cls) -> str:
