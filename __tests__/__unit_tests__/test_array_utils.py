@@ -22,6 +22,10 @@ class TestUtils(unittest.TestCase):
         for i in range(len(arr) - n, len(arr)):
             self.assertTrue(np.isnan(shifted_minus[i]))
 
+    def test_numerical_derivative(self):
+        # TODO
+        pass
+
     def test_get_different_event_indices(self):
         # TODO
         pass
