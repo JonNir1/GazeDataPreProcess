@@ -40,10 +40,9 @@ for i, tr in enumerate(trials):
         start_trial = time.time()
         visualizer.visualize(trial=tr, output_directory=cnfg.OUTPUT_DIR, show=False)
         end_trial = time.time()
-        print(f"\tTrial {i}:\t{(end_trial - start_trial):.2f} s")
+        print(f"\t{str(tr)}:\t{(end_trial - start_trial):.2f} s")
     except Exception as e:
-        print(f"\nFailed to visualize trial {i}")
-        print(e)
+        print(f"\nFailed to visualize {str(tr)}: {{e}}")
         print("\n")
 
 end = time.time()
