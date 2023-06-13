@@ -17,15 +17,13 @@ def calculate_visual_angle(
     Returns the angle in degrees (or radians if `use_radians` is True).
     Returns np.nan if any of the given points is None or if any of the coordinates is None or np.nan.
     """
-    if p1 is None or p2 is None:
+    if not __is_valid_pixel(p1):
         return np.nan
-    x1, y1 = p1
-    x2, y2 = p2
-    if x1 is None or y1 is None or x2 is None or y2 is None:
-        return np.nan
-    if np.isnan(x1) or np.isnan(y1) or np.isnan(x2) or np.isnan(y2):
+    if not __is_valid_pixel(p2):
         return np.nan
 
+    x1, y1 = p1
+    x2, y2 = p2
     screen_monitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
     euclidean_distance = np.sqrt(np.power(x1 - x2, 2) + np.power(y1 - y2, 2))  # distance in pixels
     theta = np.arctan(euclidean_distance * screen_monitor.pixel_size / d)  # angle in radians
@@ -79,3 +77,15 @@ def calculate_pixels_from_visual_angle(d: float, angle: float, screen_monitor: O
     edge_cm = d * np.tan(np.deg2rad(angle / 2))  # edge size in cm
     edge_pixels = edge_cm / screen_monitor.pixel_size  # edge size in pixels
     return edge_pixels
+
+
+def __is_valid_pixel(p: Optional[Tuple[Optional[float], Optional[float]]]) -> bool:
+    # Returns True if the given pixel is valid (i.e. not None and not np.nan).
+    if p is None:
+        return False
+    x, y = p
+    if x is None or y is None:
+        return False
+    if np.isnan(x) or np.isnan(y):
+        return False
+    return True
