@@ -1,8 +1,38 @@
 import numpy as np
-from typing import Optional
+import pandas as pd
+from typing import Optional, Tuple
 
 import Utils.array_utils as au
 from Utils.ScreenMonitor import ScreenMonitor
+
+
+def calculate_visual_angle(
+        p1: Optional[Tuple[Optional[float], Optional[float]]],
+        p2: Optional[Tuple[Optional[float], Optional[float]]],
+        d: float,
+        screen_monitor: Optional[ScreenMonitor] = None,
+        use_radians=False) -> float:
+    """
+    Calculates the visual angle between two pixels on the screen, given that the viewer is at a distance d (in cm)
+        from the screen.
+    Returns the angle in degrees (or radians if `use_radians` is True).
+    Returns np.nan if any of the given points is None or if any of the coordinates is None or np.nan.
+    """
+    if p1 is None or p2 is None:
+        return np.nan
+    x1, y1 = p1
+    x2, y2 = p2
+    if x1 is None or y1 is None or x2 is None or y2 is None:
+        return np.nan
+    if np.isnan(x1) or np.isnan(y1) or np.isnan(x2) or np.isnan(y2):
+        return np.nan
+
+    screen_monitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
+    euclidean_distance = np.sqrt(np.power(x1 - x2, 2) + np.power(y1 - y2, 2))  # distance in pixels
+    theta = np.arctan(euclidean_distance * screen_monitor.pixel_size / d)  # angle in radians
+    if use_radians:
+        return theta
+    return np.rad2deg(theta)
 
 
 def calculate_visual_angle_velocities(x: np.ndarray, y: np.ndarray,
@@ -28,7 +58,9 @@ def calculate_visual_angle_velocities(x: np.ndarray, y: np.ndarray,
     angles = []
     for i in range(pixels.shape[0]):
         x1, y1, x2, y2 = pixels[i]
-        ang = screen_monitor.calc_angle_between_pixels(d=d, p1=(x1, x2), p2=(y1, y2), use_radians=use_radians)
+        ang = calculate_visual_angle(p1=(x1, y1), p2=(x2, y2), d=d,
+                                     screen_monitor=screen_monitor,
+                                     use_radians=use_radians)
         angles.append(ang)
     angles = np.array(angles)
     return angles * sr

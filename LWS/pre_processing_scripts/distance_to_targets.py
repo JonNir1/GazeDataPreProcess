@@ -2,6 +2,7 @@
 
 import numpy as np
 
+import Utils.angle_utils as au
 from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
@@ -61,7 +62,8 @@ def calculate_angular_distance_to_target(tx: float, ty: float, xs: np.ndarray, y
 
     distances = np.zeros_like(xs)
     for i in range(len(xs)):
-        distances[i] = sm.calc_angle_between_pixels(d, p1=(tx, ty), p2=(xs[i], ys[i]), use_radians=False)
+        distances[i] = au.calculate_visual_angle(d=d, p1=(tx, ty), p2=(xs[i], ys[i]),
+                                                 screen_monitor=sm, use_radians=False)
     return distances
 
 

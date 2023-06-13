@@ -60,8 +60,10 @@ class SaccadeEvent(BaseGazeEvent):
         # returns the mean velocity of the saccade in degrees per second
         x_s, y_s = self.start_point
         x_e, y_e = self.end_point
-        angle = screen_monitor.calc_angle_between_pixels(d=d, p1=(x_s, y_s), p2=(x_e, y_e), use_radians=False)
-        return 1000 * angle / self.duration
+        angle = au.calculate_visual_angle(p1=(x_s, y_s), p2=(x_e, y_e), d=d,
+                                          screen_monitor=screen_monitor,
+                                          use_radians=False)
+        return 1000 * angle / self.duration  # duration is in milliseconds
 
     def calculate_peak_angular_velocity(self, d: float, screen_monitor: ScreenMonitor) -> float:
         """
