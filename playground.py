@@ -25,6 +25,11 @@ trials = pp.process_subject(subject_dir=os.path.join(cnfg.RAW_DATA_DIR, 'Rotem D
 end = time.time()
 print(f"Finished preprocessing in: {(end - start):.2f} seconds")
 
+# delete irrelevant variables:
+del start
+del end
+
+##########################################
 
 start = time.time()
 
@@ -44,9 +49,7 @@ for i, tr in enumerate(trials):
 end = time.time()
 print(f"Finished visualization in: {(end - start):.2f} seconds")
 
-##########################################
-# keep only relevant variables:
-
+# delete irrelevant variables:
 del start
 del end
 del start_trial
@@ -54,8 +57,12 @@ del end_trial
 del i
 del tr
 
-# trial11 = trials[10]
-# trial11_raw_data = trial11._LWSTrial__behavioral_data._LWSBehavioralData__data
-# trial11_fixations = trial11.get_gaze_events(event_type=cnst.FIXATION)
-# trial11_fix1 = trial11_fixations[0]
+##########################################
+
+# take example trial for further analysis:
+
+trial11 = trials[10]
+trial11_raw_data = trial11._LWSTrial__behavioral_data._LWSBehavioralData__data
+trial11_fixations = trial11.get_gaze_events(event_type=cnst.FIXATION)
+trial11_fix1 = trial11_fixations[0]
 
