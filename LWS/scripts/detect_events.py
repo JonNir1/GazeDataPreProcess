@@ -72,9 +72,10 @@ def detect_all_events(trial: LWSTrial, **kwargs) -> Tuple[np.ndarray, np.ndarray
                               lambda_noise_threshold=kwargs.pop("saccade_lambda_noise_threshold",
                                                                 DEFAULT_LAMBDA_NOISE_THRESHOLD))
 
+    dominant_eye = trial.get_subject_info().dominant_eye
     is_fixation = detect_event(x=x, y=y, sampling_rate=sampling_rate,
                                detector_type=kwargs.pop("fixation_detector_type", None),  # change if we want to use fixation detection
-                               detect_by=kwargs.pop("fixation_detect_by", 'most'),
+                               detect_by=kwargs.pop("fixation_detect_by", dominant_eye),
                                inter_event_time=kwargs.pop("fixation_inter_event_time",
                                                            cnfg.DEFAULT_INTER_EVENT_TIME),
                                min_duration=kwargs.pop("fixation_min_duration",
