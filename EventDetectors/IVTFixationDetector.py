@@ -1,7 +1,7 @@
 import numpy as np
 
 import experiment_config as cnfg
-from Utils import angle_utils as au
+from Utils import angle_utils as angle_utils
 from EventDetectors.BaseFixationDetector import BaseFixationDetector
 
 

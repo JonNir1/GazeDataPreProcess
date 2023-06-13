@@ -3,7 +3,7 @@ import pandas as pd
 
 import constants as cnst
 import experiment_config as cnfg
-from Utils import angle_utils as au
+from Utils import angle_utils as angle_utils
 from Utils.ScreenMonitor import ScreenMonitor
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
 
@@ -60,9 +60,9 @@ class SaccadeEvent(BaseGazeEvent):
         # returns the mean velocity of the saccade in degrees per second
         x_s, y_s = self.start_point
         x_e, y_e = self.end_point
-        angle = au.calculate_visual_angle(p1=(x_s, y_s), p2=(x_e, y_e), d=d,
-                                          screen_monitor=screen_monitor,
-                                          use_radians=False)
+        angle = angle_utils.calculate_visual_angle(p1=(x_s, y_s), p2=(x_e, y_e), d=d,
+                                                   screen_monitor=screen_monitor,
+                                                   use_radians=False)
         return 1000 * angle / self.duration  # duration is in milliseconds
 
     def calculate_peak_angular_velocity(self, d: float, screen_monitor: ScreenMonitor) -> float:
@@ -71,8 +71,8 @@ class SaccadeEvent(BaseGazeEvent):
         :param d: the distance between the screen and the participant's eyes in centimeters
         :param screen_monitor: the ScreenMonitor object that holds information about the screen used in the experiment
         """
-        velocities = au.calculate_visual_angle_velocities(x=self.__x, y=self.__y, sr=self.__sampling_rate, d=d,
-                                                          screen_monitor=screen_monitor, use_radians=False)
+        velocities = angle_utils.calculate_visual_angle_velocities(x=self.__x, y=self.__y, sr=self.__sampling_rate, d=d,
+                                                                   screen_monitor=screen_monitor, use_radians=False)
         return np.nanmax(velocities)
 
     @classmethod
