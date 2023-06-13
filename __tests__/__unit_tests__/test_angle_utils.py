@@ -6,6 +6,6 @@ from Utils import angle_utils as vu
 
 class TestUtils(unittest.TestCase):
 
-    def test_calculate_angular_velocity(self):
+    def test_calculate_visual_angle_velocities(self):
         # TODO
         pass

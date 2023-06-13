@@ -6,12 +6,12 @@ import Utils.array_utils as au
 from Utils.ScreenMonitor import ScreenMonitor
 
 
-def calculate_angular_velocity(x: np.ndarray, y: np.ndarray,
-                               sr: float, d: float,
-                               screen_monitor: Optional[ScreenMonitor] = None,
-                               use_radians: bool = False) -> np.ndarray:
+def calculate_visual_angle_velocities(x: np.ndarray, y: np.ndarray,
+                                      sr: float, d: float,
+                                      screen_monitor: Optional[ScreenMonitor] = None,
+                                      use_radians: bool = False) -> np.ndarray:
     """
-    Calculates the angular velocity of the gaze data between two adjacent samples.
+    Calculates the visual-angle velocities of the gaze data between two adjacent samples.
     :param x: 1D array of x-coordinates.
     :param y: 1D array of y-coordinates.
     :param sr: sampling rate of the data.

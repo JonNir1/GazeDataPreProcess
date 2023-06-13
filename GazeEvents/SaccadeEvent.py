@@ -69,10 +69,8 @@ class SaccadeEvent(BaseGazeEvent):
         :param d: the distance between the screen and the participant's eyes in centimeters
         :param screen_monitor: the ScreenMonitor object that holds information about the screen used in the experiment
         """
-        velocities = au.calculate_angular_velocity(x=self.__x, y=self.__y,
-                                                   sr=self.__sampling_rate, d=d,
-                                                   screen_monitor=screen_monitor,
-                                                   use_radians=False)
+        velocities = au.calculate_visual_angle_velocities(x=self.__x, y=self.__y, sr=self.__sampling_rate, d=d,
+                                                          screen_monitor=screen_monitor, use_radians=False)
         return np.nanmax(velocities)
 
     @classmethod
