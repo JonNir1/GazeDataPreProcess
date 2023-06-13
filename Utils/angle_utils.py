@@ -5,6 +5,25 @@ import Utils.array_utils as au
 from Utils.ScreenMonitor import ScreenMonitor
 
 
+def calculate_azimuth(p1: Optional[Tuple[Optional[float], Optional[float]]],
+                      p2: Optional[Tuple[Optional[float], Optional[float]]],
+                      use_radians=False) -> float:
+    """
+    # TODO: add documentation + testing
+    """
+    if not __is_valid_pixel(p1):
+        return np.nan
+    if not __is_valid_pixel(p2):
+        return np.nan
+    x1, y1 = p1
+    x2, y2 = p2
+    rad1 = np.arctan2(y1, x1)
+    rad2 = np.arctan2(y2, x2)
+    if use_radians:
+        return rad2 - rad1
+    return np.rad2deg(rad2 - rad1)
+
+
 def calculate_visual_angle(
         p1: Optional[Tuple[Optional[float], Optional[float]]],
         p2: Optional[Tuple[Optional[float], Optional[float]]],

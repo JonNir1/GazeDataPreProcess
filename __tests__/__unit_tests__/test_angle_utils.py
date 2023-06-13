@@ -7,6 +7,10 @@ from Utils.ScreenMonitor import ScreenMonitor
 
 class TestUtils(unittest.TestCase):
 
+    def test_calculate_azimuth(self):
+        # TODO
+        pass
+
     def test_calculate_visual_angle(self):
         # implausible values
         d = 1
