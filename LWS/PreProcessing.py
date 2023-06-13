@@ -6,10 +6,10 @@ import experiment_config as cnfg
 from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
 
-from LWS.scripts.read_subject import read_subject_trials
-from LWS.scripts.distance_to_targets import calculate_angular_distance_for_gaze_data
-from LWS.scripts.detect_events import detect_all_events
-from LWS.scripts.gen_lws_gaze_events import gen_all_lws_events
+from LWS.pre_processing_scripts.read_subject import read_subject_trials
+from LWS.pre_processing_scripts.distance_to_targets import calculate_angular_distance_for_gaze_data
+from LWS.pre_processing_scripts.detect_events import detect_all_events
+from LWS.pre_processing_scripts.gen_lws_gaze_events import gen_all_lws_events
 
 
 def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwargs) -> List[LWSTrial]:
@@ -23,7 +23,7 @@ def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwa
 
     keyword arguments:
         - screen_monitor: The screen monitor used to display the stimuli.
-        - see gaze detection keyword arguments in `LWS.scripts.detect_events.detect_all_events()`
+        - see gaze detection keyword arguments in `LWS.pre_processing_scripts.detect_events.detect_all_events()`
 
     :return: A list of LWSTrial objects, one for each trial of the subject, processed and ready to be analyzed.
     """
@@ -45,7 +45,7 @@ def process_trial(trial: LWSTrial, **kwargs):
 
     keyword arguments:
         - screen_monitor: The screen monitor used to display the stimuli.
-        - see gaze detection keyword arguments in `LWS.scripts.detect_events.detect_all_events()`
+        - see gaze detection keyword arguments in `LWS.pre_processing_scripts.detect_events.detect_all_events()`
     """
     trial.is_processed = False
     sm = kwargs.pop('screen_monitor', None) or ScreenMonitor.from_config()

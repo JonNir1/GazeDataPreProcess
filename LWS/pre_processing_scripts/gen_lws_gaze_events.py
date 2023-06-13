@@ -30,7 +30,7 @@ def gen_lws_gaze_events(trial: LWSTrial, screen_monitor: ScreenMonitor,
     Identifies chunks of data that belong to the same event and creates a GazeEvent object for each chunk. Then, it
     sorts the events by their start time and returns the list of events.
 
-    For more information see the generic implementation in GazeEvents.scripts.gen_gaze_events.py
+    For more information see the generic implementation in GazeEvents.pre_processing_scripts.gen_gaze_events.py
     """
     event_type = event_type.lower()
 
@@ -57,10 +57,10 @@ def _gen_lws_fixation_events(trial: LWSTrial, screen_monitor: ScreenMonitor) -> 
     Specific implementation for generating LWSFixation events, that are a subclass of the generic FixationEvent that
     contains extra data fields that are unique to the LWS experiment.
 
-    For the generic implementation see GazeEvents.scripts.gen_gaze_events.py
+    For the generic implementation see GazeEvents.pre_processing_scripts.gen_gaze_events.py
     """
     from Utils.array_utils import get_different_event_indices
-    from LWS.scripts.distance_to_targets import calculate_angular_target_distance_for_fixation
+    from LWS.pre_processing_scripts.distance_to_targets import calculate_angular_target_distance_for_fixation
 
     timestamps, x, y, is_fixation, triggers = __extract_raw_event_arrays(trial=trial, event_type=cnst.FIXATION)
     separate_event_idxs = get_different_event_indices(is_fixation,
