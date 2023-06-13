@@ -57,7 +57,7 @@ def detect_all_events(trial: LWSTrial, **kwargs) -> Tuple[np.ndarray, np.ndarray
 
     is_blink = detect_event(x=x, y=y, sampling_rate=sampling_rate,
                             detector_type=kwargs.pop("blink_detector_type", 'missing data'),  # change if we want to use blink detection
-                            detect_by=kwargs.pop("blink_detect_by", 'most'),
+                            detect_by=kwargs.pop("blink_detect_by", 'either'),
                             inter_event_time=kwargs.pop("blink_inter_event_time", cnfg.DEFAULT_INTER_EVENT_TIME),
                             min_duration=kwargs.pop("blink_min_duration", cnfg.DEFAULT_BLINK_MINIMUM_DURATION),
                             missing_value=kwargs.pop("missing_value", cnfg.DEFAULT_MISSING_VALUE))
