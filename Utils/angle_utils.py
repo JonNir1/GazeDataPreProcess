@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 from typing import Optional
 
 import Utils.array_utils as au
@@ -19,7 +18,7 @@ def calculate_visual_angle_velocities(x: np.ndarray, y: np.ndarray,
     :param screen_monitor: ScreenMonitor object.
     :param use_radians: if True, the angular velocity will be returned in radians per second.
 
-    :return: 1D array of angular velocities.
+    :return: 1D array of angular velocities (rad/s or deg/s)
     """
     screen_monitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
     x_shifted = au.shift_array(x, 1)
