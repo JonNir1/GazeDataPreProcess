@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Tuple, Optional
+from typing import Tuple
 
 import experiment_config as cnfg
 
@@ -47,18 +47,6 @@ class ScreenMonitor:
         diagonal_pixels = np.sqrt(
             np.power(self.resolution[0], 2) + np.power(self.resolution[1], 2))  # size of diagonal in pixels
         return diagonal_length / diagonal_pixels
-
-    def calc_visual_angle_radius(self, d: float, angle: float) -> float:
-        """
-        Calculates the radius of a circle in pixels, given that the viewer is at a distance d (in cm) from the screen
-            and the visual angle of the circle is angle (in degrees).
-        See details on calculations in Kaiser, Peter K. "Calculation of Visual Angle". The Joy of Visual Perception: A Web Book.:
-            http://www.yorku.ca/eye/visangle.htm
-        Returns the radius in pixels.
-        """
-        radius_cm = d * np.tan(np.deg2rad(angle / 2))  # radius of the circle, in cm
-        radius_pixels = radius_cm / self.pixel_size  # radius of the circle, in pixels
-        return radius_pixels
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__} ({self.resolution[0]}×{self.resolution[1]}@{self.refresh_rate}Hz)"

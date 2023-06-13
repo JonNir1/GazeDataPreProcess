@@ -64,3 +64,19 @@ def calculate_visual_angle_velocities(x: np.ndarray, y: np.ndarray,
         angles.append(ang)
     angles = np.array(angles)
     return angles * sr
+
+
+def calculate_pixels_from_visual_angle(d: float, angle: float, screen_monitor: Optional[ScreenMonitor] = None) -> float:
+    """
+    Calculates the number of pixels that correspond to a visual angle of `angle` degrees, given that the viewer is at a
+        distance `d` (in cm) from the screen.
+
+    See details on calculations in Kaiser, Peter K. "Calculation of Visual Angle". The Joy of Visual Perception: A Web Book.:
+        http://www.yorku.ca/eye/visangle.htm
+
+    :returns: the number of pixels that correspond to a visual angle of `angle` degrees.
+    """
+    screen_monitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
+    edge_cm = d * np.tan(np.deg2rad(angle / 2))  # edge size in cm
+    edge_pixels = edge_cm / screen_monitor.pixel_size  # edge size in pixels
+    return edge_pixels
