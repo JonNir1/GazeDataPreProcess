@@ -34,7 +34,6 @@ def gen_lws_gaze_events(trial: LWSTrial, screen_monitor: ScreenMonitor,
     """
     event_type = event_type.lower()
 
-    events_list = []
     if event_type == cnst.FIXATION:
         # use LWS specific fixation events
         events_list = _gen_lws_fixation_events(trial=trial, screen_monitor=screen_monitor)
