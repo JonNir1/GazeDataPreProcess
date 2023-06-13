@@ -3,7 +3,7 @@ import pandas as pd
 
 import constants as cnst
 import experiment_config as cnfg
-from Utils import velocity_utils as vu
+from Utils import angle_utils as au
 from Utils.ScreenMonitor import ScreenMonitor
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
 
@@ -69,7 +69,7 @@ class SaccadeEvent(BaseGazeEvent):
         :param d: the distance between the screen and the participant's eyes in centimeters
         :param screen_monitor: the ScreenMonitor object that holds information about the screen used in the experiment
         """
-        velocities = vu.calculate_angular_velocity(x=self.__x, y=self.__y,
+        velocities = au.calculate_angular_velocity(x=self.__x, y=self.__y,
                                                    sr=self.__sampling_rate, d=d,
                                                    screen_monitor=screen_monitor,
                                                    use_radians=False)

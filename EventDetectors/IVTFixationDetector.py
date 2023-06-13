@@ -1,7 +1,7 @@
 import numpy as np
 
 import experiment_config as cnfg
-from Utils import velocity_utils as vu
+from Utils import angle_utils as au
 from EventDetectors.BaseFixationDetector import BaseFixationDetector
 
 

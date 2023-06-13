@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from Utils import velocity_utils as vu
+from Utils import angle_utils as vu
 
 
 class TestUtils(unittest.TestCase):
