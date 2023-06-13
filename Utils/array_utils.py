@@ -44,6 +44,20 @@ def numerical_derivative(x, n: int) -> np.ndarray:
     return deriv
 
 
+def median_standard_deviation(x: np.ndarray, min_sd: float = 1e-6) -> float:
+    """
+    Calculates the median-based standard deviation of the given values.
+    :param x: values to calculate the median standard deviation for
+    :param min_sd: minimum standard deviation to return
+    :return: median standard deviation
+    """
+    assert min_sd > 0, "min_sd must be greater than 0"
+    squared_median = np.power(np.nanmedian(x), 2)
+    median_of_squared = np.nanmedian(np.power(x, 2))
+    sd = np.sqrt(median_of_squared - squared_median)
+    return max(sd, min_sd)
+
+
 def get_different_event_indices(is_event: np.ndarray, min_length: int = 0) -> List[np.ndarray]:
     """
     Returns a list of arrays, where each array contains the indices of a different event.

@@ -26,6 +26,10 @@ class TestUtils(unittest.TestCase):
         # TODO
         pass
 
+    def test_median_standard_deviation(self):
+        # TODO
+        pass
+
     def test_get_different_event_indices(self):
         # TODO
         pass

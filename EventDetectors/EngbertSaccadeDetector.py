@@ -4,7 +4,6 @@ from typing import List, Tuple
 
 import experiment_config as cnfg
 import Utils.array_utils as au
-import Utils.velocity_utils as vu
 from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector
 
 DEFAULT_DERIVATION_WINDOW_SIZE = 3
@@ -67,9 +66,9 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
                 f"x and y must be of length at least 2 * derivation_window_size (={2 * self.__derivation_window_size})")
 
         vel_x = au.numerical_derivative(x, n=self.__derivation_window_size)
-        sd_x = vu.median_standard_deviation(vel_x)
+        sd_x = au.median_standard_deviation(vel_x)
         vel_y = au.numerical_derivative(y, n=self.__derivation_window_size)
-        sd_y = vu.median_standard_deviation(vel_y)
+        sd_y = au.median_standard_deviation(vel_y)
         ellipse_thresholds = np.power(vel_x / (sd_x * self.__lambda_noise_threshold), 2) + np.power(
             vel_y / (sd_y * self.__lambda_noise_threshold), 2)
         is_saccade_candidate = ellipse_thresholds > 1
