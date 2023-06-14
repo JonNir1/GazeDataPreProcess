@@ -59,7 +59,7 @@ def _gen_lws_fixation_events(trial: LWSTrial, screen_monitor: ScreenMonitor) -> 
     For the generic implementation see GazeEvents.pre_processing_scripts.gen_gaze_events.py
     """
     from Utils.array_utils import get_different_event_indices
-    from LWS.pre_processing_scripts.distance_to_targets import calculate_angular_target_distance_for_fixation
+    from LWS.pre_processing_scripts.distance_to_targets import calculate_visual_angle_between_fixation_and_targets
 
     timestamps, x, y, is_fixation, triggers = __extract_raw_event_arrays(trial=trial, event_type=cnst.FIXATION)
     separate_event_idxs = get_different_event_indices(is_fixation,
@@ -70,7 +70,7 @@ def _gen_lws_fixation_events(trial: LWSTrial, screen_monitor: ScreenMonitor) -> 
         fix = LWSFixationEvent(timestamps=timestamps[idxs],
                                sampling_rate=trial.sampling_rate,
                                x=x[idxs], y=y[idxs], triggers=triggers[idxs])
-        fix.distance_to_target = calculate_angular_target_distance_for_fixation(fix, trial, screen_monitor)
+        fix.distance_to_target = calculate_visual_angle_between_fixation_and_targets(fix, trial, screen_monitor)
         events_list.append(fix)
     events_list.sort(key=lambda event: event.start_time)
     return events_list
