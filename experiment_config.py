@@ -4,6 +4,8 @@ This file contains the configuration for each specific experiment.
 import os
 import numpy as np
 
+import constants as cnst
+
 # DIRECTORIES
 BASE_DIR = r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo"
 STIMULI_DIR = os.path.join(BASE_DIR, "Stimuli", "generated_stim1")
@@ -20,6 +22,9 @@ SCREEN_REFRESH_RATE = 60  # refresh rate of the screen in Hz
 
 # GAZE DATA & GAZE EVENTS CONFIGURATION
 ADDITIONAL_COLUMNS = ["ConditionName", "BlockNum", "TrialNum", "ImageNum"]  # additional columns to be added to the gaze data
+
+EVENT_TYPES = [cnst.BLINK, cnst.SACCADE, cnst.FIXATION]
+
 DEFAULT_MINIMUM_SAMPLES_PER_EVENT = 2  # minimum number of samples in an event (saccade, fixation, etc.)
 DEFAULT_INTER_EVENT_TIME = 5  # minimal time between two (same) events in milliseconds (two saccades, two fixations, etc.)
 DEFAULT_MISSING_VALUE = np.nan  # default value indicating missing data in the gaze data (x, y)

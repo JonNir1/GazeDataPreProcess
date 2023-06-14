@@ -31,7 +31,7 @@ def gen_gaze_events(event_type: str, timestamps: np.ndarray, is_event: np.ndarra
         raise ValueError("Arrays of `timestamps` and `is_event` must have the same length")
 
     event_type = event_type.lower()
-    allowed_event_types = [cnst.BLINK, cnst.SACCADE, cnst.FIXATION]
+    allowed_event_types = cnfg.EVENT_TYPES
     if event_type not in allowed_event_types:
         raise ValueError(f"Attempting to extract unknown event type {event_type}. "
                          f"Argument event_type must be one of {str(allowed_event_types)}")
