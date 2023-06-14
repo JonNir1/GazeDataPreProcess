@@ -9,6 +9,7 @@ from GazeEvents.FixationEvent import FixationEvent
 class LWSFixationEvent(FixationEvent):
     """
     A regular FixationEvent with additional information required specifically for the LWS experiments:
+        - triggers: list of tuples (timestamp, trigger) for each trigger that occurred during the fixation
         - distance_to_target: angular distance from the fixation's center of mass to the closest target's center of mass
     """
 
