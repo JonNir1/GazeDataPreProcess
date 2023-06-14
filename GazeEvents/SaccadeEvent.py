@@ -52,6 +52,12 @@ class SaccadeEvent(BaseGazeEvent):
         # returns the saccade's end point as a tuple of the X,Y coordinates
         return self.__x[-1], self.__y[-1]
 
+    @property
+    def azimuth(self) -> float:
+        # returns the azimuth of the saccade in degrees
+        # see Utils.angle_utils.calculate_azimuth for more information
+        return angle_utils.calculate_azimuth(p1=self.start_point, p2=self.end_point, use_radians=False)
+
     def calculate_mean_angular_velocity(self, d: float, screen_monitor: ScreenMonitor) -> float:
         """
         Calculates the mean velocity of the saccade in degrees per second.
