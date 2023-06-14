@@ -38,6 +38,9 @@ def calculate_visual_angle(
         d: float,
         screen_monitor: Optional[ScreenMonitor] = None,
         use_radians=False) -> float:
+    # TODO: fix implementation so that:
+    #  1. it assumes y-axis is pointing **down** (and not up) and that x-axis is pointing **right**
+    #  2. is assumes the distance d is from the **center** of the screen to the participant's eyes
     """
     Calculates the visual angle between two pixels on the screen, given that the viewer is at a distance d (in cm)
         from the screen.
