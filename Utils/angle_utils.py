@@ -15,7 +15,8 @@ def calculate_azimuth(p1: Optional[Tuple[Optional[float], Optional[float]]],
         the positive x-axis pointing right, and the positive y-axis pointing down.
     Angles are in range [0, 2*pi) or [0, 360).
 
-    Returns the angle in radians (if `use_radians` is True) or degrees, and np.nan if any of the given points is invalid.
+    Returns the angle in degrees (or radians if `use_radians` is True).
+    Returns np.nan if any of the given points is None or if any of the coordinates is None or np.nan.
     """
     if not __is_valid_pixel(p1):
         return np.nan
