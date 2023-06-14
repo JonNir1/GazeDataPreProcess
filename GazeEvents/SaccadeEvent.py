@@ -60,28 +60,6 @@ class SaccadeEvent(BaseGazeEvent):
         # see Utils.angle_utils.calculate_azimuth for more information
         return angle_utils.calculate_azimuth(p1=self.start_point, p2=self.end_point, use_radians=False)
 
-    def calculate_mean_angular_velocity(self, d: float, screen_monitor: ScreenMonitor) -> float:
-        """
-        Calculates the mean velocity of the saccade in degrees per second.
-        :param d: the distance between the screen and the participant's eyes in centimeters
-        :param screen_monitor: the ScreenMonitor object that holds information about the screen used in the experiment
-        """
-        # returns the mean velocity of the saccade in degrees per second
-        angle = angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point, d=d,
-                                                   screen_monitor=screen_monitor,
-                                                   use_radians=False)
-        return 1000 * angle / self.duration  # duration is in milliseconds
-
-    def calculate_peak_angular_velocity(self, d: float, screen_monitor: ScreenMonitor) -> float:
-        """
-        Calculates the maximum angular velocity of the saccade in degrees per second.
-        :param d: the distance between the screen and the participant's eyes in centimeters
-        :param screen_monitor: the ScreenMonitor object that holds information about the screen used in the experiment
-        """
-        velocities = angle_utils.calculate_visual_angle_velocities(x=self.__x, y=self.__y, sr=self.__sampling_rate, d=d,
-                                                                   screen_monitor=screen_monitor, use_radians=False)
-        return np.nanmax(velocities)
-
     @classmethod
     def event_type(cls):
         return cnst.SACCADE
