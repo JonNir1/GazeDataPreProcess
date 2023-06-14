@@ -9,7 +9,13 @@ def calculate_azimuth(p1: Optional[Tuple[Optional[float], Optional[float]]],
                       p2: Optional[Tuple[Optional[float], Optional[float]]],
                       use_radians=False) -> float:
     """
-    # TODO: add documentation + testing
+    Calculates the counter-clockwise angle between the line starting from (0,0) and ending at p1, and the line starting
+    from (0,0) and ending at p2.
+    The axes are defined by pixel coordinates, with the origin (0,0) in the top-left corner of the screen,
+        the positive x-axis pointing right, and the positive y-axis pointing down.
+    Angles are in range [0, 2*pi) or [0, 360).
+
+    Returns the angle in radians (if `use_radians` is True) or degrees, and np.nan if any of the given points is invalid.
     """
     if not __is_valid_pixel(p1):
         return np.nan
@@ -17,11 +23,13 @@ def calculate_azimuth(p1: Optional[Tuple[Optional[float], Optional[float]]],
         return np.nan
     x1, y1 = p1
     x2, y2 = p2
-    rad1 = np.arctan2(y1, x1)
-    rad2 = np.arctan2(y2, x2)
+    rad1 = np.arctan2(y1, x1)  # clockwise angle from the positive x-axis
+    rad2 = np.arctan2(y2, x2)  # clockwise angle from the positive x-axis
+    diff = rad1 - rad2         # counter-clockwise angle from p1 to p2
+    diff = diff % (2 * np.pi)  # make sure the angle is in range [0, 2*pi)
     if use_radians:
-        return rad2 - rad1
-    return np.rad2deg(rad2 - rad1)
+        return diff
+    return np.rad2deg(diff)
 
 
 def calculate_visual_angle(
