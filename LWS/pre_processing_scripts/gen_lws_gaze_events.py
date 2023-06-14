@@ -64,10 +64,13 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial, screen_monitor: Screen
     if event_type == cnst.FIXATION:
         # create LWSFixationEvents
         from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
+        from LWS.pre_processing_scripts.distance_to_targets import \
+            calculate_visual_angle_between_fixation_and_targets as calc_fixation_distance
         triggers = trial.get_behavioral_data().get(cnst.TRIGGER).values
         fixations_list = []
         for idxs in separate_event_idxs:
             fix = LWSFixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], triggers=triggers[idxs])
+            fix.distance_to_target = calc_fixation_distance(fix=fix, trial=trial, sm=screen_monitor)
             fixations_list.append(fix)
         return fixations_list
 
