@@ -4,6 +4,7 @@ import numpy as np
 from typing import List, Tuple
 
 import constants as cnst
+import experiment_config as cnfg
 from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
@@ -63,7 +64,7 @@ def _gen_lws_fixation_events(trial: LWSTrial, screen_monitor: ScreenMonitor) -> 
 
     timestamps, x, y, is_fixation, triggers = __extract_raw_event_arrays(trial=trial, event_type=cnst.FIXATION)
     separate_event_idxs = get_different_event_indices(is_fixation,
-                                                      min_length=LWSFixationEvent.MINIMUM_TIMESTAMPS_FOR_EVENT)
+                                                      min_length=cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT)
 
     events_list = []
     for idxs in separate_event_idxs:

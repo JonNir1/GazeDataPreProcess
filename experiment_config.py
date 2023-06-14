@@ -20,6 +20,7 @@ SCREEN_REFRESH_RATE = 60  # refresh rate of the screen in Hz
 
 # GAZE DATA & GAZE EVENTS CONFIGURATION
 ADDITIONAL_COLUMNS = ["ConditionName", "BlockNum", "TrialNum", "ImageNum"]  # additional columns to be added to the gaze data
+DEFAULT_MINIMUM_SAMPLES_PER_EVENT = 2  # minimum number of samples in an event (saccade, fixation, etc.)
 DEFAULT_INTER_EVENT_TIME = 5  # minimal time between two (same) events in milliseconds (two saccades, two fixations, etc.)
 DEFAULT_MISSING_VALUE = np.nan  # default value indicating missing data in the gaze data (x, y)
 

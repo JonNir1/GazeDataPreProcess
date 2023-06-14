@@ -2,14 +2,14 @@ import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
 
+import experiment_config as cnfg
+
 
 class BaseGazeEvent(ABC):
 
-    MINIMUM_TIMESTAMPS_FOR_EVENT = 2
-
     def __init__(self, timestamps: np.ndarray, sampling_rate: float):
-        if len(timestamps) < self.MINIMUM_TIMESTAMPS_FOR_EVENT:
-            raise ValueError("event must be at least {} samples long".format(self.MINIMUM_TIMESTAMPS_FOR_EVENT))
+        if len(timestamps) < cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT:
+            raise ValueError("event must be at least {} samples long".format(cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT))
         if np.isnan(timestamps).any() or np.isinf(timestamps).any():
             raise ValueError("array timestamps must not contain NaN values")
         if (timestamps < 0).any():

@@ -3,6 +3,7 @@ import pandas as pd
 from typing import Optional, List
 
 import constants as cnst
+import experiment_config as cnfg
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
 import Utils.array_utils as au
 
@@ -39,8 +40,7 @@ def gen_gaze_events(event_type: str,
     if event_type in [cnst.SACCADE, cnst.FIXATION] and (x is None or y is None):
         raise ValueError(f"Attempting to extract {event_type} without providing x and y coordinates")
 
-    different_event_idxs = au.get_different_event_indices(is_event,
-                                                          min_length=BaseGazeEvent.MINIMUM_TIMESTAMPS_FOR_EVENT)
+    different_event_idxs = au.get_different_event_indices(is_event, min_length=cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT)
     events_list = []
     if event_type == cnst.BLINK:
         from GazeEvents.BlinkEvent import BlinkEvent
