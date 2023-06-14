@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from typing import Tuple
 
 import constants as cnst
 import experiment_config as cnfg
@@ -42,14 +43,14 @@ class SaccadeEvent(BaseGazeEvent):
         return False
 
     @property
-    def start_point(self) -> np.ndarray:
-        # returns a 2D array of the X,Y coordinates of the saccade's start point
-        return np.array([self.__x[0], self.__y[0]])
+    def start_point(self) -> Tuple[float, float]:
+        # returns the saccade's start point as a tuple of the X,Y coordinates
+        return self.__x[0], self.__y[0]
 
     @property
-    def end_point(self) -> np.ndarray:
-        # returns a 2D array of the X,Y coordinates of the saccade's end point
-        return np.array([self.__x[-1], self.__y[-1]])
+    def end_point(self) -> Tuple[float, float]:
+        # returns the saccade's end point as a tuple of the X,Y coordinates
+        return self.__x[-1], self.__y[-1]
 
     def calculate_mean_angular_velocity(self, d: float, screen_monitor: ScreenMonitor) -> float:
         """
@@ -58,9 +59,7 @@ class SaccadeEvent(BaseGazeEvent):
         :param screen_monitor: the ScreenMonitor object that holds information about the screen used in the experiment
         """
         # returns the mean velocity of the saccade in degrees per second
-        x_s, y_s = self.start_point
-        x_e, y_e = self.end_point
-        angle = angle_utils.calculate_visual_angle(p1=(x_s, y_s), p2=(x_e, y_e), d=d,
+        angle = angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point, d=d,
                                                    screen_monitor=screen_monitor,
                                                    use_radians=False)
         return 1000 * angle / self.duration  # duration is in milliseconds
