@@ -29,10 +29,12 @@ class SaccadeEvent(BaseGazeEvent):
             - is_outlier: boolean indicating whether the event is an outlier or not
             - start_point: saccade's start point (2D pixel coordinates)
             - end_point: saccade's end point (2D pixel coordinates)
+            - azimuth: saccade's azimuth in degrees
         """
         series = super().to_series()
         series["start_point"] = self.start_point
         series["end_point"] = self.end_point
+        series["azimuth"] = self.azimuth
         return series
 
     @property
