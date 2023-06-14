@@ -8,6 +8,7 @@ from Utils.ScreenMonitor import ScreenMonitor
 def calculate_azimuth(p1: Optional[Tuple[Optional[float], Optional[float]]],
                       p2: Optional[Tuple[Optional[float], Optional[float]]],
                       use_radians=False) -> float:
+    # TODO: fix implementation so that it takes into account the different sizes of the pixels in the x and y axes
     """
     Calculates the counter-clockwise angle between the line starting from (0,0) and ending at p1, and the line starting
     from (0,0) and ending at p2.
@@ -41,7 +42,8 @@ def calculate_visual_angle(
         use_radians=False) -> float:
     # TODO: fix implementation so that:
     #  1. it assumes y-axis is pointing **down** (and not up) and that x-axis is pointing **right**
-    #  2. is assumes the distance d is from the **center** of the screen to the participant's eyes
+    #  2. ii assumes the distance d is from the **center** of the screen to the participant's eyes
+    #  3. it takes into account the different sizes of the pixels in the x and y axes
     """
     Calculates the visual angle between two pixels on the screen, given that the viewer is at a distance d (in cm)
         from the screen.
