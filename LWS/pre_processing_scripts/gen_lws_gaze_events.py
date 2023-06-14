@@ -9,7 +9,6 @@ import Utils.array_utils as au
 from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
-from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 
 def gen_all_lws_events(trial: LWSTrial, screen_monitor: ScreenMonitor, drop_outliers: bool = False) -> List[BaseGazeEvent]:
@@ -46,8 +45,7 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial, screen_monitor: Screen
     if event_type == cnst.BLINK:
         # use generic gaze events
         from GazeEvents.scripts.gen_gaze_events import gen_gaze_events
-        blinks_list = gen_gaze_events(timestamps=timestamps, is_event=is_event,
-                                      sampling_rate=trial.sampling_rate, event_type=cnst.BLINK)
+        blinks_list = gen_gaze_events(timestamps=timestamps, is_event=is_event, event_type=cnst.BLINK)
         return blinks_list
 
     separate_event_idxs = au.get_different_event_indices(is_event, min_length=cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT)
@@ -59,7 +57,7 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial, screen_monitor: Screen
         saccades_list = []
         for idxs in separate_event_idxs:
             sacc = LWSSaccadeEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs],
-                                   sampling_rate=trial.sampling_rate, screen_monitor=screen_monitor, distance=distance)
+                                   screen_monitor=screen_monitor, distance=distance)
             saccades_list.append(sacc)
         return saccades_list
 
@@ -69,8 +67,7 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial, screen_monitor: Screen
         triggers = trial.get_behavioral_data().get(cnst.TRIGGER).values
         fixations_list = []
         for idxs in separate_event_idxs:
-            fix = LWSFixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs],
-                                   triggers=triggers[idxs], sampling_rate=trial.sampling_rate)
+            fix = LWSFixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], triggers=triggers[idxs])
             fixations_list.append(fix)
         return fixations_list
 

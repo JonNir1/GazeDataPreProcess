@@ -9,8 +9,8 @@ from GazeEvents.SaccadeEvent import SaccadeEvent
 class LWSSaccadeEvent(SaccadeEvent):
 
     def __init__(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray,
-                 sampling_rate: float, distance: float, screen_monitor: ScreenMonitor):
-        super().__init__(timestamps=timestamps, sampling_rate=sampling_rate, x=x, y=y)
+                 distance: float, screen_monitor: ScreenMonitor):
+        super().__init__(timestamps=timestamps, x=x, y=y)
         self.__distance = distance
         self.__screen_monitor = screen_monitor
 
@@ -26,7 +26,6 @@ class LWSSaccadeEvent(SaccadeEvent):
             - start_time: event's start time in milliseconds
             - end_time: event's end time in milliseconds
             - duration: event's duration in milliseconds
-            - sampling_rate: the sampling rate used to record the event
             - is_outlier: boolean indicating whether the event is an outlier or not
             - start_point: saccade's start point (2D pixel coordinates)
             - end_point: saccade's end point (2D pixel coordinates)

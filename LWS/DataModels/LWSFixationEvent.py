@@ -14,10 +14,9 @@ class LWSFixationEvent(FixationEvent):
     """
 
     def __init__(self,
-                 timestamps: np.ndarray, sampling_rate: float,
-                 x: np.ndarray, y: np.ndarray, triggers: np.ndarray,
-                 distance_to_target: float = np.inf):
-        super().__init__(timestamps=timestamps, sampling_rate=sampling_rate, x=x, y=y)
+                 timestamps: np.ndarray, x: np.ndarray, y: np.ndarray,
+                 triggers: np.ndarray, distance_to_target: float = np.inf):
+        super().__init__(timestamps=timestamps, x=x, y=y)
         triggers_with_timestamps = [(timestamps[i], triggers[i]) for i in range(len(timestamps)) if
                                     not np.isnan(triggers[i])]
         self.__triggers: List[Tuple[float, int]] = sorted(triggers_with_timestamps, key=lambda tup: tup[0])
@@ -42,7 +41,6 @@ class LWSFixationEvent(FixationEvent):
             - start_time: event's start time in milliseconds
             - end_time: event's end time in milliseconds
             - duration: event's duration in milliseconds
-            - sampling_rate: the sampling rate used to record the event
             - is_outlier: boolean indicating whether the event is an outlier or not
             - center_of_mass: fixation's center of mass (2D pixel coordinates)
             - std: fixation's standard deviation (in pixels units)

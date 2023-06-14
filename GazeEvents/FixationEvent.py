@@ -9,8 +9,8 @@ from GazeEvents.BaseGazeEvent import BaseGazeEvent
 
 class FixationEvent(BaseGazeEvent):
 
-    def __init__(self, timestamps: np.ndarray, sampling_rate: float, x: np.ndarray, y: np.ndarray):
-        super().__init__(timestamps=timestamps, sampling_rate=sampling_rate)
+    def __init__(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray):
+        super().__init__(timestamps=timestamps)
         if len(timestamps) != len(x) or len(timestamps) != len(y):
             raise ValueError("Arrays of timestamps, x and y must have the same length")
         self.__x = x
@@ -23,7 +23,6 @@ class FixationEvent(BaseGazeEvent):
             - start_time: event's start time in milliseconds
             - end_time: event's end time in milliseconds
             - duration: event's duration in milliseconds
-            - sampling_rate: the sampling rate used to record the event
             - is_outlier: boolean indicating whether the event is an outlier or not
             - center_of_mass: fixation's center of mass (2D pixel coordinates)
             - std: fixation's standard deviation (in pixels units)

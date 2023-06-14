@@ -8,8 +8,7 @@ from GazeEvents.BaseGazeEvent import BaseGazeEvent
 import Utils.array_utils as au
 
 
-def gen_gaze_events(event_type: str,
-                    timestamps: np.ndarray, is_event: np.ndarray, sampling_rate: float,
+def gen_gaze_events(event_type: str, timestamps: np.ndarray, is_event: np.ndarray,
                     x: Optional[np.ndarray] = None, y: Optional[np.ndarray] = None) -> List[BaseGazeEvent]:
     """
     Splits `timestamps` to chunks of timestamps that are part of the same event, based on `is_event`. Then, for each
@@ -18,7 +17,6 @@ def gen_gaze_events(event_type: str,
     :param event_type: type of event to extract. Must be one of 'blink', 'saccade' or 'fixation'
     :param timestamps: array of timestamps
     :param is_event: array of booleans indicating whether a sample is part of the event or not
-    :param sampling_rate: float indicating the sampling rate of the data
     :param x: array of x coordinates, used when extracting saccades or fixations
     :param y: array of y coordinates, used when extracting saccades or fixations
 
@@ -44,25 +42,23 @@ def gen_gaze_events(event_type: str,
     events_list = []
     if event_type == cnst.BLINK:
         from GazeEvents.BlinkEvent import BlinkEvent
-        events_list = [BlinkEvent(timestamps=timestamps[idxs], sampling_rate=sampling_rate)
+        events_list = [BlinkEvent(timestamps=timestamps[idxs])
                        for idxs in different_event_idxs]
 
     if event_type == cnst.SACCADE:
         from GazeEvents.SaccadeEvent import SaccadeEvent
-        events_list = [SaccadeEvent(timestamps=timestamps[idxs], sampling_rate=sampling_rate,
-                                    x=x[idxs], y=y[idxs]) for idxs in different_event_idxs]
+        events_list = [SaccadeEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs]) for idxs in different_event_idxs]
 
     if event_type == cnst.FIXATION:
         from GazeEvents.FixationEvent import FixationEvent
-        events_list = [FixationEvent(timestamps=timestamps[idxs], sampling_rate=sampling_rate,
-                                     x=x[idxs], y=y[idxs]) for idxs in different_event_idxs]
+        events_list = [FixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs]) for idxs in different_event_idxs]
 
     events_list.sort(key=lambda event: event.start_time)
     return events_list
 
 
 def gen_gaze_events_summary(event_type: str,
-                            timestamps: np.ndarray, is_event: np.ndarray, sampling_rate: float,
+                            timestamps: np.ndarray, is_event: np.ndarray,
                             x: Optional[np.ndarray] = None, y: Optional[np.ndarray] = None) -> pd.DataFrame:
     """
     Splits `timestamps` to chunks of timestamps that are part of the same event, based on `is_event`. Then, for each
@@ -72,6 +68,5 @@ def gen_gaze_events_summary(event_type: str,
 
     :return: pandas DataFrame with the events' summary information
     """
-    events_list = gen_gaze_events(event_type=event_type, timestamps=timestamps, is_event=is_event,
-                                  sampling_rate=sampling_rate, x=x, y=y)
+    events_list = gen_gaze_events(event_type=event_type, timestamps=timestamps, is_event=is_event, x=x, y=y)
     return pd.concat([event.to_series() for event in events_list], axis=1).T
