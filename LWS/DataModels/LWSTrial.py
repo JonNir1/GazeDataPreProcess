@@ -41,7 +41,7 @@ class LWSTrial:
     @property
     def duration(self) -> float:
         # duration in milliseconds
-        timestamps = self.__behavioral_data.get(cnst.MICROSECONDS)
+        timestamps = self.__behavioral_data.get(cnst.MICROSECONDS).values
         return (timestamps[-1] - timestamps[0]) / cnst.MICROSECONDS_PER_MILLISECOND
 
     @property
