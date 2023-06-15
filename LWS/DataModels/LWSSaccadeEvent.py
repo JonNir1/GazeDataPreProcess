@@ -9,15 +9,15 @@ from GazeEvents.SaccadeEvent import SaccadeEvent
 class LWSSaccadeEvent(SaccadeEvent):
 
     def __init__(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray,
-                 distance: float, screen_monitor: ScreenMonitor):
+                 distance: float, pixel_size: float):
         super().__init__(timestamps=timestamps, x=x, y=y)
         self.__distance = distance
-        self.__screen_monitor = screen_monitor
+        self.__pixel_size = pixel_size
 
     @property
     def visual_angle(self) -> float:
         return angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point,
-                                                  d=self.__distance, pixel_size=self.__screen_monitor.pixel_size)
+                                                  d=self.__distance, pixel_size=self.__pixel_size)
 
     def to_series(self) -> pd.Series:
         """
@@ -41,6 +41,6 @@ class LWSSaccadeEvent(SaccadeEvent):
             return False
         if not self.__distance == other.__distance:
             return False
-        if not self.__screen_monitor == other.__screen_monitor:
+        if not self.__pixel_size == other.__pixel_size:
             return False
         return True
