@@ -5,7 +5,6 @@ from typing import Tuple
 import constants as cnst
 import experiment_config as cnfg
 from Utils import angle_utils as angle_utils
-from Utils.ScreenMonitor import ScreenMonitor
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
 
 
