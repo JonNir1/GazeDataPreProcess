@@ -28,6 +28,9 @@ class LWSVisualizer:
         :param kwargs: Additional keyword arguments for customizing the visualization parameters.
 
         keyword arguments:
+            Stimulus Visualization:
+            - show_stimulus: Whether to show the stimulus image. Defaults to True.
+            # TODO: add circles around the targets
 
             Trigger Visualization:
             - target_radius (int): The radius of the target circle in pixels. Defaults to 25.
@@ -56,6 +59,9 @@ class LWSVisualizer:
         num_samples = len(timestamps)
 
         # extract keyword arguments
+        show_stimulus = kwargs.get('show_stimulus', True)
+        # TODO: add circles around the targets
+
         target_radius = kwargs.get('target_radius', 35)
         target_edge_size = kwargs.get('target_edge_size', 4)
         marked_target_color: Tuple[int, int, int] = kwargs.get('marked_target_color', (0, 0, 0))            # default: black
@@ -70,11 +76,16 @@ class LWSVisualizer:
         fixation_color: Tuple[int, int, int] = kwargs.get('fixation_color', (40, 140, 255))                  # default: orange
         fixation_alpha = kwargs.get('fixation_alpha', 0.5)
 
-        # prepare visual inputs
+        # prepare video writer
         fps = round(trial.sampling_rate)
         resolution = self.screen_monitor.resolution
         video_writer = cv2.VideoWriter(save_path, self.FOURCC, fps, resolution)
-        bg_img = trial.get_stimulus().get_image(color_format='BGR')
+
+        # prepare background image
+        if show_stimulus:
+            bg_img = trial.get_stimulus().get_image(color_format='BGR')
+        else:
+            bg_img = np.zeros((*resolution, 3), dtype=np.uint8)
         bg_img = cv2.resize(bg_img, resolution)
         prev_bg_img = bg_img.copy()  # used to enable reverting to previous bg image if subject's action is undone
         circle_center = np.array([np.nan, np.nan])  # to draw a circle around the target
