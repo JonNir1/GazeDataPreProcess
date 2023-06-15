@@ -72,8 +72,8 @@ def visual_angle_to_pixels(d: float, angle: float, pixel_size: float) -> float:
 
     :returns: the number of pixels that correspond to a visual angle of `angle` degrees.
     """
-    edge_cm = d * np.tan(np.deg2rad(angle / 2))  # edge size in cm
-    edge_pixels = edge_cm / pixel_size  # edge size in pixels
+    half_edge = d * np.tan(np.deg2rad(angle / 2))  # in cm
+    edge_pixels = 2 * half_edge / pixel_size  # edge size in pixels
     return edge_pixels
 
 

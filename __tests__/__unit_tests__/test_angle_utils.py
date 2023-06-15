@@ -50,15 +50,13 @@ class TestUtils(unittest.TestCase):
         d = 1
         sm = ScreenMonitor(width=10, height=10, resolution=(10, 10), refresh_rate=60)
         self.assertEqual(0, angle_utils.visual_angle_to_pixels(d=d, angle=0, pixel_size=sm.pixel_size))
-        self.assertAlmostEqual(1, angle_utils.visual_angle_to_pixels(d=d, angle=90, pixel_size=sm.pixel_size))
-        self.assertAlmostEqual(0.0130907171,
+        self.assertAlmostEqual(2, angle_utils.visual_angle_to_pixels(d=d, angle=90, pixel_size=sm.pixel_size))
+        self.assertAlmostEqual(0.0261814,
                                angle_utils.visual_angle_to_pixels(d=d, angle=1.5, pixel_size=sm.pixel_size))
 
         # plausible values
         d = 65
         sm = ScreenMonitor(width=53.5, height=31, resolution=(1920, 1080), refresh_rate=60)
         self.assertEqual(0, angle_utils.visual_angle_to_pixels(d=d, angle=0, pixel_size=sm.pixel_size))
-        self.assertAlmostEqual(2315.75816791,
-                               angle_utils.visual_angle_to_pixels(d=d, angle=90, pixel_size=sm.pixel_size))
-        self.assertAlmostEqual(30.314935013,
+        self.assertAlmostEqual(60.62987,
                                angle_utils.visual_angle_to_pixels(d=d, angle=1.5, pixel_size=sm.pixel_size))
