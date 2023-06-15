@@ -11,6 +11,7 @@ import experiment_config as cnfg
 from Utils.ScreenMonitor import ScreenMonitor
 import LWS.PreProcessing as pp
 from LWS.DataModels.LWSVisualizer import LWSVisualizer
+from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 start = time.time()
 
@@ -25,7 +26,12 @@ trials = pp.process_subject(subject_dir=os.path.join(cnfg.RAW_DATA_DIR, 'Rotem D
                             blink_detector_type='missing data',
                             saccade_detector_type='engbert',
                             drop_outlier_events=False)
-trial11 = trials[10]
+
+for i, tr in enumerate(trials):
+    fixations: List[LWSFixationEvent] = tr.get_gaze_events(cnst.FIXATION)
+    fixations_target_distances = np.array([f.visual_angle_to_target for f in fixations])
+    if any(fixations_target_distances <= 1.5):
+        break
 
 end = time.time()
 print(f"Finished preprocessing in: {(end - start):.2f} seconds")
@@ -33,22 +39,6 @@ print(f"Finished preprocessing in: {(end - start):.2f} seconds")
 # delete irrelevant variables:
 del start
 del end
-
-##########################################
-
-with open(os.path.join(r'S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Results', 'tr11.pkl'), "wb") as f:
-    pkl.dump(trial11, f)
-
-with open(os.path.join(r'S:\Lab-Shared\Experiments\LWS Free Viewing Demo\Results', 'tr11.pkl'), 'rb') as f:
-    trial11_2 = pkl.load(f)
-
-##########################################
-
-# take example trial for further analysis:
-
-trial11_raw_data = trial11._LWSTrial__behavioral_data._LWSBehavioralData__data
-trial11_fixations = trial11.get_gaze_events(event_type=cnst.FIXATION)
-trial11_fix1 = trial11_fixations[0]
 
 ##########################################
 
