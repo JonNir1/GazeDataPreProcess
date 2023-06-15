@@ -12,7 +12,8 @@ from LWS.pre_processing_scripts.detect_events import detect_all_events
 from LWS.pre_processing_scripts.gen_lws_gaze_events import gen_all_lws_events
 
 
-def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwargs) -> List[LWSTrial]:
+def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR,
+                    save_pickle: bool = False, **kwargs) -> List[LWSTrial]:
     """
     For a given subject directory, extracts the subject-info, gaze-data and trigger-log files, and uses those to create
     the LWSTrial objects of that subject. Then, each trial is processed so that we detect blinks, saccades and fixations
@@ -20,9 +21,11 @@ def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwa
 
     :param subject_dir: directory containing the subject's data files.
     :param stimuli_dir: directory containing the stimuli files.
+    :param save_pickle: If True, saves the trials' pickle files to the output directory.
 
     keyword arguments:
         - screen_monitor: The screen monitor used to display the stimuli.
+        - output_directory: The experiment's output directory, for saving the trials' pickle files if `save_pickle` is True.
         - see gaze detection keyword arguments in `LWS.pre_processing_scripts.detect_events.detect_all_events()`
 
     :return: A list of LWSTrial objects, one for each trial of the subject, processed and ready to be analyzed.
@@ -35,16 +38,17 @@ def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwa
     kwargs["screen_monitor"] = kwargs.get("screen_monitor", None) or ScreenMonitor.from_config()
     trials = read_subject_trials(subject_dir, stimuli_dir, **kwargs)
     for _i, trial in enumerate(trials):
-        process_trial(trial, **kwargs)
+        process_trial(trial, save_pickle, **kwargs)
     return trials
 
 
-def process_trial(trial: LWSTrial, **kwargs):
+def process_trial(trial: LWSTrial, save_pickle: bool = False, **kwargs):
     """
     Processes the given trial and adds the processed data to the trial object.
 
     keyword arguments:
         - screen_monitor: The screen monitor used to display the stimuli.
+        - output_directory: The experiment's output directory, for saving the trial's pickle file if `save_pickle` is True.
         - see gaze detection keyword arguments in `LWS.pre_processing_scripts.detect_events.detect_all_events()`
     """
     trial.is_processed = False
@@ -67,3 +71,7 @@ def process_trial(trial: LWSTrial, **kwargs):
     trial.set_gaze_events(events)
 
     trial.is_processed = True
+
+    if save_pickle:
+        output_dir = kwargs.pop('output_directory', cnfg.OUTPUT_DIR)
+        trial.to_pickle(output_dir)
