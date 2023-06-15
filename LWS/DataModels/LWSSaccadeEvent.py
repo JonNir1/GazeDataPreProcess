@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 
 import Utils.angle_utils as angle_utils
-from Utils.ScreenMonitor import ScreenMonitor
 from GazeEvents.SaccadeEvent import SaccadeEvent
 
 
