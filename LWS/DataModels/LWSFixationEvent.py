@@ -31,8 +31,8 @@ class LWSFixationEvent(FixationEvent):
         return self.__visual_angle_to_target
 
     @visual_angle_to_target.setter
-    def visual_angle_to_target(self, distance: float):
-        self.__visual_angle_to_target = distance
+    def visual_angle_to_target(self, visual_angle: float):
+        self.__visual_angle_to_target = visual_angle
 
     def to_series(self) -> pd.Series:
         """
