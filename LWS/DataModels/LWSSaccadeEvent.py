@@ -17,7 +17,7 @@ class LWSSaccadeEvent(SaccadeEvent):
     @property
     def visual_angle(self) -> float:
         return angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point,
-                                                  d=self.__distance, screen_monitor=self.__screen_monitor)
+                                                  d=self.__distance, pixel_size=self.__screen_monitor.pixel_size)
 
     def to_series(self) -> pd.Series:
         """

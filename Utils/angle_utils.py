@@ -37,9 +37,7 @@ def calculate_azimuth(p1: Optional[Tuple[Optional[float], Optional[float]]],
 def calculate_visual_angle(
         p1: Optional[Tuple[Optional[float], Optional[float]]],
         p2: Optional[Tuple[Optional[float], Optional[float]]],
-        d: float,
-        screen_monitor: Optional[ScreenMonitor] = None,
-        use_radians=False) -> float:
+        d: float, pixel_size: float, use_radians=False) -> float:
     # TODO: fix implementation so that:
     #  1. it assumes y-axis is pointing **down** (and not up) and that x-axis is pointing **right**
     #  2. ii assumes the distance d is from the **center** of the screen to the participant's eyes
@@ -57,9 +55,8 @@ def calculate_visual_angle(
 
     x1, y1 = p1
     x2, y2 = p2
-    screen_monitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
     euclidean_distance = np.sqrt(np.power(x1 - x2, 2) + np.power(y1 - y2, 2))  # distance in pixels
-    theta = np.arctan(euclidean_distance * screen_monitor.pixel_size / d)  # angle in radians
+    theta = np.arctan(euclidean_distance * pixel_size / d)  # angle in radians
     if use_radians:
         return theta
     return np.rad2deg(theta)
@@ -89,7 +86,7 @@ def calculate_visual_angle_velocities(x: np.ndarray, y: np.ndarray,
     for i in range(pixels.shape[0]):
         x1, y1, x2, y2 = pixels[i]
         ang = calculate_visual_angle(p1=(x1, y1), p2=(x2, y2), d=d,
-                                     screen_monitor=screen_monitor,
+                                     pixel_size=screen_monitor.pixel_size,
                                      use_radians=use_radians)
         angles.append(ang)
     angles = np.array(angles)
