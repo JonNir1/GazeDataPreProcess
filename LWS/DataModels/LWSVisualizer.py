@@ -55,14 +55,6 @@ class LWSVisualizer:
         triggers = trial.get_behavioral_data().get(cnst.TRIGGER).values
         num_samples = len(timestamps)
 
-        # prepare visual inputs
-        fps = round(trial.sampling_rate)
-        resolution = self.screen_monitor.resolution
-        bg_img = trial.get_stimulus().get_image(color_format='BGR')
-        bg_img = cv2.resize(bg_img, resolution)
-        prev_bg_img = bg_img.copy()  # used to enable reverting to previous bg image if subject's action is undone
-        circle_center = np.array([np.nan, np.nan])  # to draw a circle around the target
-
         # extract keyword arguments
         target_radius = kwargs.get('target_radius', 35)
         target_edge_size = kwargs.get('target_edge_size', 4)
@@ -78,8 +70,16 @@ class LWSVisualizer:
         fixation_color: Tuple[int, int, int] = kwargs.get('fixation_color', (40, 140, 255))                  # default: orange
         fixation_alpha = kwargs.get('fixation_alpha', 0.5)
 
-        # create the video:
+        # prepare visual inputs
+        fps = round(trial.sampling_rate)
+        resolution = self.screen_monitor.resolution
         video_writer = cv2.VideoWriter(save_path, self.FOURCC, fps, resolution)
+        bg_img = trial.get_stimulus().get_image(color_format='BGR')
+        bg_img = cv2.resize(bg_img, resolution)
+        prev_bg_img = bg_img.copy()  # used to enable reverting to previous bg image if subject's action is undone
+        circle_center = np.array([np.nan, np.nan])  # to draw a circle around the target
+
+        # create the video:
         for i in range(num_samples):
             # get current sample data
             curr_x = int(x[i]) if not np.isnan(x[i]) else None
