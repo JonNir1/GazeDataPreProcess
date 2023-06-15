@@ -31,14 +31,17 @@ class LWSVisualizer:
         :param kwargs: Additional keyword arguments for customizing the visualization parameters.
 
         keyword arguments:
+
             Trigger Visualization:
             - target_radius (int): The radius of the target circle in pixels. Defaults to 25.
             - target_edge_size (int): The width of the target circle's edge in pixels. Defaults to 4.
             - marked_target_color (Tuple[int, int, int]): The color of the marked target circle in BGR format. Defaults to (0, 0, 0) (black).
             - confirmed_target_color (Tuple[int, int, int]): The color of the confirmed target circle in BGR format. Defaults to (0, 0, 160) (dark red).
+
             Gaze Visualization:
             - gaze_radius (int): The radius of the gaze circle in pixels. Defaults to 10.
             - gaze_color (Tuple[int, int, int]): The color of the gaze circle in BGR format. Defaults to (255, 200, 100) (light-blue).
+
             Fixation Visualization:
             - fixation_radius (int): The radius of the fixation circle in pixels. Defaults to 45.
             - fixation_color (Tuple[int, int, int]): The color of the fixation circle in BGR format. Defaults to (40, 140, 255) (orange).
