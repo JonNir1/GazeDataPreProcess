@@ -29,7 +29,9 @@ class LWSSaccadeEvent(SaccadeEvent):
             - is_outlier: boolean indicating whether the event is an outlier or not
             - start_point: saccade's start point (2D pixel coordinates)
             - end_point: saccade's end point (2D pixel coordinates)
-            - azimuth: saccade's azimuth in degrees
+            - distance: saccade's distance (in pixels)
+            - velocity: saccade's velocity (in pixels per second)
+            - azimuth: saccade's azimuth (in degrees)
             - visual_angle: saccade's visual angle in degrees
         """
         series = super().to_series()

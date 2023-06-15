@@ -28,7 +28,9 @@ class SaccadeEvent(BaseGazeEvent):
             - is_outlier: boolean indicating whether the event is an outlier or not
             - start_point: saccade's start point (2D pixel coordinates)
             - end_point: saccade's end point (2D pixel coordinates)
-            - azimuth: saccade's azimuth in degrees
+            - distance: saccade's distance (in pixels)
+            - velocity: saccade's velocity (in pixels per second)
+            - azimuth: saccade's azimuth (in degrees)
         """
         series = super().to_series()
         series["start_point"] = self.start_point
@@ -52,6 +54,18 @@ class SaccadeEvent(BaseGazeEvent):
     def end_point(self) -> Tuple[float, float]:
         # returns the saccade's end point as a tuple of the X,Y coordinates
         return self.__x[-1], self.__y[-1]
+
+    @property
+    def distance(self) -> float:
+        # returns the distance of the saccade in pixels
+        x_start, y_start = self.start_point
+        x_end, y_end = self.end_point
+        return np.sqrt((x_end - x_start) ** 2 + (y_end - y_start) ** 2)
+
+    @property
+    def velocity(self) -> float:
+        # returns the velocity of the saccade in pixels per second
+        return self.distance / self.duration * 1000
 
     @property
     def azimuth(self) -> float:
