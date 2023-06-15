@@ -7,7 +7,7 @@ from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
 
 from LWS.pre_processing_scripts.read_subject import read_subject_trials
-from LWS.pre_processing_scripts.distance_to_targets import calculate_visual_angle_between_gaze_data_and_targets
+from LWS.pre_processing_scripts.visual_angle_to_targets import calculate_visual_angle_between_gaze_data_and_targets
 from LWS.pre_processing_scripts.detect_events import detect_all_events
 from LWS.pre_processing_scripts.gen_lws_gaze_events import gen_all_lws_events
 
