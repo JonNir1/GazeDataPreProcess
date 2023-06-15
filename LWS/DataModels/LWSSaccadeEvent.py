@@ -35,3 +35,12 @@ class LWSSaccadeEvent(SaccadeEvent):
         series = super().to_series()
         series["visual_angle"] = self.visual_angle
         return series
+
+    def __eq__(self, other):
+        if not super().__eq__(other):
+            return False
+        if not self.__distance == other.__distance:
+            return False
+        if not self.__screen_monitor == other.__screen_monitor:
+            return False
+        return True
