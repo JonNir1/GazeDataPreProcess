@@ -88,9 +88,9 @@ class LWSVisualizer:
             bg_img = np.zeros((*resolution, 3), dtype=np.uint8)
         bg_img = cv2.resize(bg_img, resolution)
         prev_bg_img = bg_img.copy()  # used to enable reverting to previous bg image if subject's action is undone
-        circle_center = np.array([np.nan, np.nan])  # to draw a circle around the target
 
         # create the video:
+        circle_center = np.array([np.nan, np.nan])  # to draw a circle around the target
         for i in range(num_samples):
             # get current sample data
             curr_x = int(x[i]) if not np.isnan(x[i]) else None
