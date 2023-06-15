@@ -35,7 +35,7 @@ class LWSVisualizer:
             - target_radius (int): The radius of the target circle in pixels. Defaults to 25.
             - target_edge_size (int): The width of the target circle's edge in pixels. Defaults to 4.
             - marked_target_color (Tuple[int, int, int]): The color of the marked target circle in BGR format. Defaults to (0, 0, 0) (black).
-            - confirmed_target_color (Tuple[int, int, int]): The color of the confirmed target circle in BGR format. Defaults to (50, 150, 50) (dark green).
+            - confirmed_target_color (Tuple[int, int, int]): The color of the confirmed target circle in BGR format. Defaults to (0, 0, 160) (dark red).
             Gaze Visualization:
             - gaze_radius (int): The radius of the gaze circle in pixels. Defaults to 10.
             - gaze_color (Tuple[int, int, int]): The color of the gaze circle in BGR format. Defaults to (255, 200, 100) (light-blue).
@@ -65,7 +65,7 @@ class LWSVisualizer:
         target_radius = kwargs.get('target_radius', 35)
         target_edge_size = kwargs.get('target_edge_size', 4)
         marked_target_color: Tuple[int, int, int] = kwargs.get('marked_target_color', (0, 0, 0))            # default: black
-        confirmed_target_color: Tuple[int, int, int] = kwargs.get('confirmed_target_color', (50, 150, 50))  # default: dark green
+        confirmed_target_color: Tuple[int, int, int] = kwargs.get('confirmed_target_color', (0, 0, 160))  # default: dark red
         gaze_radius = kwargs.get('gaze_radius', 10)
         gaze_color: Tuple[int, int, int] = kwargs.get('gaze_color', (255, 200, 100))                        # default: light-blue
         fixation_radius = kwargs.get('fixation_radius', 45)
