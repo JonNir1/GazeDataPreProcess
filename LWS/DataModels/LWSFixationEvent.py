@@ -51,3 +51,20 @@ class LWSFixationEvent(FixationEvent):
         series[cnst.TRIGGER] = self.triggers
         series["distance_to_target"] = self.distance_to_target
         return series
+
+    def __eq__(self, other):
+        if not super().__eq__(other):
+            return False
+        if not np.array_equal(self.__triggers, other.__triggers):
+            return False
+        return self.__is_equal_distance_to_target(other)
+
+    def __is_equal_distance_to_target(self, other):
+        # checks if `self` and `other` have the same distance_to_target, taking into account the possibility of NaNs
+        if self.__distance_to_target is None and other.__distance_to_target is None:
+            return True
+        if np.isnan(self.__distance_to_target) and np.isnan(other.__distance_to_target):
+            return True
+        if self.__distance_to_target == other.__distance_to_target:
+            return True
+        return False
