@@ -56,9 +56,9 @@ class FixationEvent(BaseGazeEvent):
     def __eq__(self, other):
         if not super().__eq__(other):
             return False
-        if not np.array_equal(self.__x, other.__x):
+        if not np.array_equal(self.__x, other.__x, equal_nan=True):
             return False
-        if not np.array_equal(self.__y, other.__y):
+        if not np.array_equal(self.__y, other.__y, equal_nan=True):
             return False
         return True
 
