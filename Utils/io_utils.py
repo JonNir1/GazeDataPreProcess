@@ -4,10 +4,13 @@ from typing import Optional, Union
 import experiment_config as cnfg
 
 
-def create_subject_output_directory(subject_id: Union[int, str], output_dir: str = cnfg.OUTPUT_DIR) -> str:
+def create_subject_output_directory(subject_id: Union[int, str], output_dir: Optional[str] = cnfg.OUTPUT_DIR) -> str:
     """
-    create subject output directory with a unique name with the following format: PATH/TO/OUTPUT_DIR/SXXX
+    Create subject output directory with a unique name with the following format: PATH/TO/OUTPUT_DIR/SXXX
+    If argument `output_dir` is not provided, the default output directory from `experiment_config` is used.
     """
+    if output_dir is None:
+        output_dir = cnfg.OUTPUT_DIR
     if isinstance(subject_id, int):
         subject_id = f"{subject_id:03d}"
     return create_directory(dirname=f"S{subject_id}", parent_dir=output_dir)

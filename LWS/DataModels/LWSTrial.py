@@ -1,8 +1,11 @@
+import os
 import numpy as np
+import pickle as pkl
 import warnings as w
 from typing import Tuple, List, Optional
 
 import constants as cnst
+import Utils.io_utils as ioutils
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
@@ -13,8 +16,6 @@ class LWSTrial:
     """
     Represents a single trial in the LWS Demo experiment.
     """
-
-    # TODO: encode as hdf5 file
 
     def __init__(self,
                  trial_num: int,
@@ -119,6 +120,25 @@ class LWSTrial:
             x_r, y_r = bd.get(cnst.RIGHT_X).values, bd.get(cnst.RIGHT_Y).values
             return ts, np.vstack((x_l, x_r)), np.vstack((y_l, y_r))
         raise ValueError(f'Invalid eye: {eye}')
+
+    def to_pickle(self, output_dir: Optional[str] = None) -> str:
+        subject_dir = ioutils.create_subject_output_directory(subject_id=self.__subject_info.subject_id,
+                                                              output_dir=output_dir)
+        trials_dir = ioutils.create_directory(dirname='trials', parent_dir=subject_dir)
+        full_path = os.path.join(trials_dir, f"{str(self)}.pkl")
+        with open(full_path, "wb") as f:
+            pkl.dump(self, f)
+        return full_path
+
+    @staticmethod
+    def from_pickle(pickle_path: str) -> 'LWSTrial':
+        if not os.path.exists(pickle_path):
+            raise FileNotFoundError(f"Could not find pickle file: {pickle_path}")
+        with open(pickle_path, "rb") as f:
+            trial = pkl.load(f)
+        if not isinstance(trial, LWSTrial):
+            raise RuntimeError(f"Expected LWSTrial, got {type(trial)}")
+        return trial
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}_S{self.__subject_info.subject_id}_T{self.__trial_num}"
