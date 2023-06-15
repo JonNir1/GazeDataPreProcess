@@ -19,6 +19,10 @@ class LWSSaccadeEvent(SaccadeEvent):
         return angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point,
                                                   d=self.__distance, pixel_size=self.__pixel_size)
 
+    @property
+    def angular_velocity(self) -> float:
+        return self.visual_angle / self.duration * 1000
+
     def to_series(self) -> pd.Series:
         """
         creates a pandas Series with summary of saccade information.
@@ -32,7 +36,8 @@ class LWSSaccadeEvent(SaccadeEvent):
             - distance: saccade's distance (in pixels)
             - velocity: saccade's velocity (in pixels per second)
             - azimuth: saccade's azimuth (in degrees)
-            - visual_angle: saccade's visual angle in degrees
+            - visual_angle: saccade's visual angle (in degrees)
+            - angular_velocity: saccade's angular velocity (in degrees per second)
         """
         series = super().to_series()
         series["visual_angle"] = self.visual_angle
