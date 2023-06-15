@@ -53,3 +53,16 @@ class ScreenMonitor:
 
     def __str__(self) -> str:
         return self.__repr__()
+
+    def __eq__(self, other):
+        if not isinstance(other, ScreenMonitor):
+            return False
+        if self.width != other.width:
+            return False
+        if self.height != other.height:
+            return False
+        if self.refresh_rate != other.refresh_rate:
+            return False
+        if self.resolution != other.resolution:
+            return False
+        return True
