@@ -5,6 +5,7 @@ from typing import Tuple
 
 import constants as cnst
 import experiment_config as cnfg
+import Utils.io_utils as ioutils
 from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
 
@@ -143,14 +144,10 @@ class LWSVisualizer:
 
     @staticmethod
     def __get_video_full_path(output_directory: str, subject_id: int, trial_num: int):
-        subject_dir = os.path.join(output_directory, f'S{subject_id}')
-        if not os.path.exists(subject_dir):
-            os.makedirs(subject_dir)
-        subject_video_dir = os.path.join(subject_dir, 'videos')
-        if not os.path.exists(subject_video_dir):
-            os.makedirs(subject_video_dir)
-        output_filename = f'T{trial_num:03d}.{LWSVisualizer.FILE_SUFFIX}'
-        return os.path.join(subject_video_dir, output_filename)
+        subject_dir = ioutils.create_subject_output_directory(subject_id=subject_id, output_dir=output_directory)
+        video_dir = ioutils.create_directory(dirname='videos', parent_dir=subject_dir)
+        filename = f"T{trial_num:03d}.{LWSVisualizer.FILE_SUFFIX}"
+        return os.path.join(video_dir, filename)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}"
