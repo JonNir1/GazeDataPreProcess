@@ -17,16 +17,13 @@ class LWSVisualizer:
     def __init__(self, screen_monitor: ScreenMonitor = None):
         self.screen_monitor = ScreenMonitor.from_config() if screen_monitor is None else screen_monitor
 
-    def visualize(self, trial: LWSTrial, output_directory: str = cnfg.OUTPUT_DIR,
-                  display_gaze: bool = True, display_fixations: bool = True, show=False, **kwargs):
+    def visualize(self, trial: LWSTrial, output_directory: str = cnfg.OUTPUT_DIR, show=False, **kwargs):
         """
         Generates a video visualization of the eye-tracking data and behavioral events for the given LWSTrial.
         This video is saved to the path `output_directory/subject_id/trial_id.mp4`.
 
         :param trial: The LWSTrial object containing the raw eye-tracking data, the gaze events and behavioral data (triggers).
         :param output_directory: The directory where the generated video will be saved. If not specified, the default directory is used.
-        :param display_gaze: Whether to display the gaze circles. Defaults to True.
-        :param display_fixations: Whether to display the fixations. Defaults to True.
         :param show: Whether to show the video after generating it. Defaults to False.
         :param kwargs: Additional keyword arguments for customizing the visualization parameters.
 
@@ -39,10 +36,12 @@ class LWSVisualizer:
             - confirmed_target_color (Tuple[int, int, int]): The color of the confirmed target circle in BGR format. Defaults to (0, 0, 160) (dark red).
 
             Gaze Visualization:
+            - display_gaze: Whether to display the gaze circles. Defaults to True.
             - gaze_radius (int): The radius of the gaze circle in pixels. Defaults to 10.
             - gaze_color (Tuple[int, int, int]): The color of the gaze circle in BGR format. Defaults to (255, 200, 100) (light-blue).
 
             Fixation Visualization:
+            - display_fixations: Whether to display the fixations. Defaults to True.
             - fixation_radius (int): The radius of the fixation circle in pixels. Defaults to 45.
             - fixation_color (Tuple[int, int, int]): The color of the fixation circle in BGR format. Defaults to (40, 140, 255) (orange).
             - fixation_alpha (float): The opacity of the fixation circle. Defaults to 0.5.
@@ -69,12 +68,17 @@ class LWSVisualizer:
         target_edge_size = kwargs.get('target_edge_size', 4)
         marked_target_color: Tuple[int, int, int] = kwargs.get('marked_target_color', (0, 0, 0))            # default: black
         confirmed_target_color: Tuple[int, int, int] = kwargs.get('confirmed_target_color', (0, 0, 160))  # default: dark red
+
+        display_gaze = kwargs.get('display_gaze', True)
         gaze_radius = kwargs.get('gaze_radius', 10)
         gaze_color: Tuple[int, int, int] = kwargs.get('gaze_color', (255, 200, 100))                        # default: light-blue
+
+        display_fixations = kwargs.get('display_fixations', True)
         fixation_radius = kwargs.get('fixation_radius', 45)
         fixation_color: Tuple[int, int, int] = kwargs.get('fixation_color', (40, 140, 255))                  # default: orange
         fixation_alpha = kwargs.get('fixation_alpha', 0.5)
 
+        # create the video:
         video_writer = cv2.VideoWriter(save_path, self.FOURCC, fps, resolution)
         for i in range(num_samples):
             # get current sample data
