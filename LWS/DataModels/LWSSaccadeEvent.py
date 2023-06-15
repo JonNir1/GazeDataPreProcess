@@ -8,15 +8,15 @@ from GazeEvents.SaccadeEvent import SaccadeEvent
 class LWSSaccadeEvent(SaccadeEvent):
 
     def __init__(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray,
-                 distance: float, pixel_size: float):
+                 viewer_distance: float, pixel_size: float):
         super().__init__(timestamps=timestamps, x=x, y=y)
-        self.__distance = distance
-        self.__pixel_size = pixel_size
+        self.__viewer_distance = viewer_distance  # in cm    # TODO: make this a class attribute
+        self.__pixel_size = pixel_size                       # TODO: make this a class attribute
 
     @property
     def visual_angle(self) -> float:
         return angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point,
-                                                  d=self.__distance, pixel_size=self.__pixel_size)
+                                                  d=self.__viewer_distance, pixel_size=self.__pixel_size)
 
     @property
     def angular_velocity(self) -> float:
@@ -45,7 +45,7 @@ class LWSSaccadeEvent(SaccadeEvent):
     def __eq__(self, other):
         if not super().__eq__(other):
             return False
-        if not self.__distance == other.__distance:
+        if not self.__viewer_distance == other.__viewer_distance:
             return False
         if not self.__pixel_size == other.__pixel_size:
             return False
