@@ -125,3 +125,30 @@ class LWSTrial:
 
     def __str__(self) -> str:
         return self.__repr__()
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, LWSTrial):
+            return False
+        if not self.__trial_num == other.__trial_num:
+            return False
+        if not self.__is_processed == other.__is_processed:
+            return False
+
+        self_subject_info = self.get_subject_info()
+        other_subject_info = other.get_subject_info()
+        if not self_subject_info == other_subject_info:
+            return False
+
+        self_bdata = self.get_behavioral_data()
+        other_bdata = other.get_behavioral_data()
+        if not self_bdata == other_bdata:
+            return False
+
+        self_gaze_events = self.get_gaze_events(event_type=cnst.ALL)
+        other_gaze_events = other.get_gaze_events(event_type=cnst.ALL)
+        if not len(self_gaze_events) == len(other_gaze_events):
+            return False
+        for i in range(len(self_gaze_events)):
+            if not self_gaze_events[i] == other_gaze_events[i]:
+                return False
+        return True
