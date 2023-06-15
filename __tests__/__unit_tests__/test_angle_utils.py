@@ -14,7 +14,7 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(315, angle_utils.calculate_azimuth(p1=(0, 0), p2=(1, 1), use_radians=False))
         self.assertEqual(90, angle_utils.calculate_azimuth(p1=(1, 1), p2=(1, -1), use_radians=False))
         self.assertEqual(np.pi, angle_utils.calculate_azimuth(p1=(1, 1), p2=(-2, -2), use_radians=True))
-        self.assertEqual(np.pi * 3/2, angle_utils.calculate_azimuth(p1=(1, 0), p2=(0, 1), use_radians=True))
+        self.assertEqual(np.pi * 3 / 2, angle_utils.calculate_azimuth(p1=(1, 0), p2=(0, 1), use_radians=True))
 
     def test_calculate_visual_angle(self):
         # implausible values
