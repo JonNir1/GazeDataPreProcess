@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt
 from typing import Tuple
 
 import constants as cnst
@@ -51,7 +52,7 @@ class LWSTrialVisualizer:
         """
         # get raw behavioral data
         timestamps, x, y = trial.get_raw_gaze_coordinates(eye='dominant')
-        triggers = trial.get_behavioral_data().get(cnst.TRIGGER).values
+        triggers = trial.get_triggers()
         num_samples = len(timestamps)
 
         # extract keyword arguments

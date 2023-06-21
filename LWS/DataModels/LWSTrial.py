@@ -90,6 +90,10 @@ class LWSTrial:
             w.warn("Overwriting existing gaze events.")
         self.__gaze_events = sorted(gaze_events, key=lambda e: e.start_time)
 
+    def get_triggers(self) -> np.ndarray:
+        """ Returns the trigger values for this trial. """
+        return self.__behavioral_data.get(cnst.TRIGGER).values
+
     def get_raw_gaze_coordinates(self, eye: str = 'dominant') -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Returns the raw gaze coordinates for the given eye or both eyes, along with the timestamps.
