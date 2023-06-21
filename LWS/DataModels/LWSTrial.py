@@ -130,7 +130,7 @@ class LWSTrial:
         subject_dir = ioutils.create_subject_output_directory(subject_id=self.__subject_info.subject_id,
                                                               output_dir=output_dir)
         trials_dir = ioutils.create_directory(dirname='trials', parent_dir=subject_dir)
-        full_path = os.path.join(trials_dir, f"{str(self)}.pkl")
+        full_path = os.path.join(trials_dir, f"{self.__repr__()}.pkl")
         with open(full_path, "wb") as f:
             pkl.dump(self, f)
         return full_path
@@ -149,7 +149,7 @@ class LWSTrial:
         return f"{self.__class__.__name__}_S{self.__subject_info.subject_id}_T{self.__trial_num}"
 
     def __str__(self) -> str:
-        return self.__repr__()
+        return f"Subject {self.__subject_info.subject_id:03d} | Trial {self.__trial_num:03d}"
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, LWSTrial):
