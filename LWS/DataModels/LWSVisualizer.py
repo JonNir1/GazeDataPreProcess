@@ -50,8 +50,6 @@ class LWSVisualizer:
 
         No return value
         """
-        save_path = self.__get_video_full_path(trial.get_subject_info().subject_id, trial.trial_num)
-
         # get raw behavioral data
         timestamps, x, y = trial.get_raw_gaze_coordinates(eye='dominant')
         triggers = trial.get_behavioral_data().get(cnst.TRIGGER).values
@@ -78,6 +76,7 @@ class LWSVisualizer:
         # prepare video writer
         fps = round(trial.sampling_rate)
         resolution = self.screen_resolution
+        save_path = self.__get_video_full_path(trial.get_subject_info().subject_id, trial.trial_num)
         video_writer = cv2.VideoWriter(save_path, self.FOURCC, fps, resolution)
 
         # prepare background image
