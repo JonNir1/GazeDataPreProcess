@@ -20,6 +20,13 @@ class LWSTrialVisualizer:
         self.output_directory = output_directory
 
     def create_gaze_plot(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
+        """
+        TODO: add docstring
+        :param trial:
+        :param savefig:
+        :param kwargs:
+        :return:
+        """
         # extract gaze data:
         dominant_eye = trial.get_subject_info().dominant_eye
         timestamps, x_gaze, y_gaze = trial.get_raw_gaze_coordinates(eye=dominant_eye)
@@ -93,6 +100,15 @@ class LWSTrialVisualizer:
                         transparent=kwargs.get('transparent_figure', False),
                         dpi=kwargs.get('figure_dpi', 300))
         return fig
+
+    def create_targets_figure(self, trial: LWSTrial, **kwargs):
+        """
+        TODO: finish this method to measure distance from targets over time + show triggers
+        :param trial:
+        :param kwargs:
+        :return:
+        """
+        return None
 
     def create_video(self, trial: LWSTrial, **kwargs):
         """
