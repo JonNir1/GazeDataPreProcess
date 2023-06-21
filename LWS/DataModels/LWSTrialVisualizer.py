@@ -128,16 +128,16 @@ class LWSTrialVisualizer:
 
         target_radius = kwargs.get('target_radius', 35)
         target_edge_size = kwargs.get('target_edge_size', 4)
-        marked_target_color: Tuple[int, int, int] = kwargs.get('marked_target_color', (0, 0, 0))            # default: black
+        marked_target_color: Tuple[int, int, int] = kwargs.get('marked_target_color', (0, 0, 0))          # default: black
         confirmed_target_color: Tuple[int, int, int] = kwargs.get('confirmed_target_color', (0, 0, 160))  # default: dark red
 
         display_gaze = kwargs.get('display_gaze', True)
         gaze_radius = kwargs.get('gaze_radius', 10)
-        gaze_color: Tuple[int, int, int] = kwargs.get('gaze_color', (255, 200, 100))                        # default: light-blue
+        gaze_color: Tuple[int, int, int] = kwargs.get('gaze_color', (255, 200, 100))                      # default: light-blue
 
         display_fixations = kwargs.get('display_fixations', True)
         fixation_radius = kwargs.get('fixation_radius', 45)
-        fixation_color: Tuple[int, int, int] = kwargs.get('fixation_color', (40, 140, 255))                  # default: orange
+        fixation_color: Tuple[int, int, int] = kwargs.get('fixation_color', (40, 140, 255))               # default: orange
         fixation_alpha = kwargs.get('fixation_alpha', 0.5)
 
         # prepare video writer
