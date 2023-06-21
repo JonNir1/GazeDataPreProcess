@@ -11,6 +11,7 @@ from LWS.DataModels.LWSTrial import LWSTrial
 
 
 class LWSTrialVisualizer:
+    IMAGE_SUFFIX = 'png'
     VIDEO_SUFFIX = 'mp4'
     FOURCC = cv2.VideoWriter_fourcc(*'mp4v')
 
@@ -83,6 +84,13 @@ class LWSTrialVisualizer:
 
         # invert y-axis to match the screen coordinates:
         ax.invert_yaxis()
+
+        # save figure:
+        subject_id = trial.get_subject_info().subject_id
+        save_path = self.__get_output_full_path(subject_id, trial.trial_num, output_type='image')
+        fig.savefig(save_path, bbox_inches='tight',
+                    transparent=kwargs.get('transparent_figure', False),
+                    dpi=kwargs.get('figure_dpi', 300))
         return fig
 
     def create_video(self, trial: LWSTrial, **kwargs):
@@ -233,8 +241,11 @@ class LWSTrialVisualizer:
             video_dir = ioutils.create_directory(dirname='videos', parent_dir=subject_dir)
             filename = f"T{trial_num:03d}.{LWSTrialVisualizer.VIDEO_SUFFIX}"
             return os.path.join(video_dir, filename)
-        else:
-            raise ValueError(f'Unsupported output type: {output_type}')
+        if output_type == "image":
+            image_dir = ioutils.create_directory(dirname='gaze_figures', parent_dir=subject_dir)
+            filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
+            return os.path.join(image_dir, filename)
+        raise ValueError(f'Unsupported output type: {output_type}')
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}"
