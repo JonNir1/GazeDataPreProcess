@@ -21,7 +21,7 @@ sm = ScreenMonitor.from_config()
 trial = LWSTrial.from_pickle(os.path.join(cnfg.OUTPUT_DIR, "S002", "trials", "LWSTrial_S2_T1.pkl"))
 visualizer = LWSTrialVisualizer(screen_resolution=sm.resolution, output_directory=cnfg.OUTPUT_DIR)
 
-fig = visualizer.create_gaze_plot(trial=trial)
+fig = visualizer.create_gaze_plot(trial=trial, savefig=True)
 fig.show()
 
 end = time.time()

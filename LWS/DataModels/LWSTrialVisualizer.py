@@ -19,7 +19,7 @@ class LWSTrialVisualizer:
         self.screen_resolution = screen_resolution
         self.output_directory = output_directory
 
-    def create_gaze_plot(self, trial: LWSTrial, **kwargs) -> plt.Figure:
+    def create_gaze_plot(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
         # extract gaze data:
         dominant_eye = trial.get_subject_info().dominant_eye
         timestamps, x_gaze, y_gaze = trial.get_raw_gaze_coordinates(eye=dominant_eye)
@@ -86,11 +86,12 @@ class LWSTrialVisualizer:
         ax.invert_yaxis()
 
         # save figure:
-        subject_id = trial.get_subject_info().subject_id
-        save_path = self.__get_output_full_path(subject_id, trial.trial_num, output_type='image')
-        fig.savefig(save_path, bbox_inches='tight',
-                    transparent=kwargs.get('transparent_figure', False),
-                    dpi=kwargs.get('figure_dpi', 300))
+        if savefig:
+            subject_id = trial.get_subject_info().subject_id
+            save_path = self.__get_output_full_path(subject_id, trial.trial_num, output_type='image')
+            fig.savefig(save_path, bbox_inches='tight',
+                        transparent=kwargs.get('transparent_figure', False),
+                        dpi=kwargs.get('figure_dpi', 300))
         return fig
 
     def create_video(self, trial: LWSTrial, **kwargs):
