@@ -91,10 +91,6 @@ class LWSTrial:
             w.warn("Overwriting existing gaze events.")
         self.__gaze_events = sorted(gaze_events, key=lambda e: e.start_time)
 
-    def get_triggers(self) -> np.ndarray:
-        """ Returns the trigger values for this trial. """
-        return self.__behavioral_data.get(cnst.TRIGGER).values
-
     def get_raw_gaze_coordinates(self, eye: str = 'dominant') -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Returns the raw gaze coordinates for the given eye or both eyes, along with the timestamps.
@@ -125,6 +121,10 @@ class LWSTrial:
             x_r, y_r = bd.get(cnst.RIGHT_X).values, bd.get(cnst.RIGHT_Y).values
             return ts, np.vstack((x_l, x_r)), np.vstack((y_l, y_r))
         raise ValueError(f'Invalid eye: {eye}')
+
+    def get_triggers(self) -> np.ndarray:
+        """ Returns the trigger values for this trial. """
+        return self.__behavioral_data.get(cnst.TRIGGER).values
 
     def to_pickle(self, output_dir: Optional[str] = None) -> str:
         subject_dir = ioutils.create_subject_output_directory(subject_id=self.__subject_info.subject_id,
