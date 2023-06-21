@@ -9,7 +9,7 @@ import Utils.io_utils as ioutils
 from LWS.DataModels.LWSTrial import LWSTrial
 
 
-class LWSVisualizer:
+class LWSTrialVisualizer:
     FILE_SUFFIX = 'mp4'
     FOURCC = cv2.VideoWriter_fourcc(*'mp4v')
 
@@ -157,7 +157,7 @@ class LWSVisualizer:
     def __get_video_full_path(self, subject_id: int, trial_num: int):
         subject_dir = ioutils.create_subject_output_directory(subject_id=subject_id, output_dir=self.output_directory)
         video_dir = ioutils.create_directory(dirname='videos', parent_dir=subject_dir)
-        filename = f"T{trial_num:03d}.{LWSVisualizer.FILE_SUFFIX}"
+        filename = f"T{trial_num:03d}.{LWSTrialVisualizer.FILE_SUFFIX}"
         return os.path.join(video_dir, filename)
 
     def __repr__(self) -> str:
@@ -167,7 +167,7 @@ class LWSVisualizer:
         return self.__repr__()
 
     def __eq__(self, other) -> bool:
-        if not isinstance(other, LWSVisualizer):
+        if not isinstance(other, LWSTrialVisualizer):
             return False
         if not self.screen_resolution == other.screen_resolution:
             return False
