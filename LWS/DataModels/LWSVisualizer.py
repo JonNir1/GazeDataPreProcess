@@ -17,13 +17,12 @@ class LWSVisualizer:
         self.screen_resolution = screen_resolution
         self.output_directory = output_directory
 
-    def visualize(self, trial: LWSTrial, show=False, **kwargs):
+    def visualize(self, trial: LWSTrial, **kwargs):
         """
         Generates a video visualization of the eye-tracking data and behavioral events for the given LWSTrial.
         This video is saved to the path `self.output_directory/subject_id/trial_id.mp4`.
 
         :param trial: The LWSTrial object containing the raw eye-tracking data, the gaze events and behavioral data (triggers).
-        :param show: Whether to show the video after generating it. Defaults to False.
         :param kwargs: Additional keyword arguments for customizing the visualization parameters.
 
         keyword arguments:
@@ -131,9 +130,6 @@ class LWSVisualizer:
             final_img = cv2.addWeighted(fix_img, fixation_alpha, gaze_img, 1 - fixation_alpha, 0)
             video_writer.write(final_img)
         video_writer.release()
-
-        if show:
-            self.display_video(trial.get_subject_info().subject_id, trial.trial_num)
 
     def display_video(self, subject_id: int, trial_num: int):
         """
