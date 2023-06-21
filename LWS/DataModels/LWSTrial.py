@@ -23,6 +23,7 @@ class LWSTrial:
                  stimulus: LWSArrayStimulus,
                  behavioral_data: LWSBehavioralData,
                  gaze_events: List[BaseGazeEvent] = None):
+        # TODO: take out SubjectInfo to a new LWSSubject class
         self.__is_processed: bool = False
         self.__trial_num: int = trial_num
         self.__subject_info: LWSSubjectInfo = subject_info
