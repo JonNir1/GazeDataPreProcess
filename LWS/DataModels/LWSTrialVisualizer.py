@@ -18,6 +18,73 @@ class LWSTrialVisualizer:
         self.screen_resolution = screen_resolution
         self.output_directory = output_directory
 
+    def create_gaze_plot(self, trial: LWSTrial, **kwargs) -> plt.Figure:
+        # extract gaze data:
+        dominant_eye = trial.get_subject_info().dominant_eye
+        timestamps, x_gaze, y_gaze = trial.get_raw_gaze_coordinates(eye=dominant_eye)
+        corrected_timestamps = timestamps - timestamps[0]  # start from 0
+        max_time = np.nanmax(corrected_timestamps)
+
+        # create figure:
+        figsize = kwargs.get('figsize', (16, 9))
+        fig, ax = plt.subplots(figsize=figsize, tight_layout=True)
+
+        # plot raw gaze:
+        x_gaze_color = kwargs.get('x_gaze_color', '#f03b20')
+        y_gaze_color = kwargs.get('y_gaze_color', '#20d5f0')
+        ax.plot(corrected_timestamps, x_gaze, color=x_gaze_color, label='X (high is right)')
+        ax.plot(corrected_timestamps, y_gaze, color=y_gaze_color, label='Y (high is down)')
+
+        # extract triggers data:
+        triggers = trial.get_triggers()
+        real_trigger_idxs = np.where((~np.isnan(triggers)) & (triggers != 0))[0]
+        trigger_times = corrected_timestamps[real_trigger_idxs]
+        int_triggers = triggers[real_trigger_idxs].astype(int)
+
+        # plot triggers:
+        text_size = kwargs.get('text_size', 12)
+        trigger_line_color = kwargs.get('triggers_line_color', 'k')
+        trigger_line_width = kwargs.get('trigger_line_width', 4)
+        trigger_line_style = kwargs.get('trigger_line_style', ':')
+        max_val = np.max([np.nanmax(x_gaze), np.nanmax(y_gaze)])
+        min_val = np.min([np.nanmin(x_gaze), np.nanmin(y_gaze)])
+        ax.vlines(x=trigger_times, ymin=0.95 * min_val, ymax=max_val,
+                  color=trigger_line_color, lw=trigger_line_width, ls=trigger_line_style)
+        [ax.text(x=trigger_times[i], y=max_val + text_size + 1, s=str(int_triggers[i]),
+                 fontsize=text_size, ha='center', va='top') for i in range(len(trigger_times))]
+
+        # plot event bar:
+        events_array = trial.get_event_per_sample_array()
+        undefined_event_color = kwargs.pop("undefined_event_color", "#000000")
+        event_colors = np.full(shape=events_array.shape, fill_value=undefined_event_color, dtype=object)
+        event_colors[events_array == cnst.BLINK] = kwargs.pop("blink_event_color", "k")
+        event_colors[events_array == cnst.SACCADE] = kwargs.pop("saccade_event_color", "b")
+        event_colors[events_array == cnst.FIXATION] = kwargs.pop("fixation_event_color", "g")
+        event_bar_size = kwargs.get('event_bar_size', 70)
+        ax.scatter(x=corrected_timestamps, y=np.ones_like(corrected_timestamps),
+                   c=event_colors, s=event_bar_size, marker="s")
+
+        # set axes limits & ticks:
+        ax.set_ylim(bottom=int(-0.02 * max_val), top=int(1.05 * max_val))
+        ax.set_xlim(left=int(-0.01 * max_time), right=int(1.01 * max_time))
+        xticks = [int(val) for val in np.arange(int(max_time)) if val % 1000 == 0]
+        ax.set_xticks(ticks=xticks, labels=[str(tck) for tck in xticks], rotation=45, fontsize=text_size)
+        yticks = [int(val) for val in np.arange(int(max_val)) if val % 200 == 0]
+        ax.set_yticks(ticks=yticks, labels=[str(tck) for tck in yticks], fontsize=text_size)
+
+        # set title & labels:
+        title_size = kwargs.get('title_size', 18)
+        subtitle_size = kwargs.get('subtitle_size', 14)
+        ax.set_xlabel('Time (ms)', fontsize=text_size)
+        ax.set_ylabel('Gaze Position (pixels)', fontsize=text_size)
+        ax.set_title(f"Eye: {dominant_eye}", fontsize=subtitle_size)
+        ax.legend(loc=kwargs.get('legend_location', 'lower center'), fontsize=text_size)
+        fig.suptitle(f"{str(trial)}", fontsize=title_size, y=0.98)
+
+        # invert y-axis to match the screen coordinates:
+        ax.invert_yaxis()
+        return fig
+
     def create_video(self, trial: LWSTrial, **kwargs):
         """
         Generates a video visualization of the eye-tracking data and behavioral events for the given LWSTrial.
