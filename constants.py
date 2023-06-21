@@ -21,6 +21,7 @@ RIGHT_Y = "right_y"
 RIGHT_PUPIL = "right_pupil"
 
 ALL = "all"
+UNDEFINED = "undefined"
 BLINK = "blink"
 SACCADE = "saccade"
 FIXATION = "fixation"
