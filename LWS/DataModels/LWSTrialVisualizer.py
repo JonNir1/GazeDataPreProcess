@@ -88,7 +88,7 @@ class LWSTrialVisualizer:
         # save figure:
         if savefig:
             subject_id = trial.get_subject_info().subject_id
-            save_path = self.__get_output_full_path(subject_id, trial.trial_num, output_type='image')
+            save_path = self.__get_output_full_path(subject_id, trial.trial_num, output_type='gaze_figure')
             fig.savefig(save_path, bbox_inches='tight',
                         transparent=kwargs.get('transparent_figure', False),
                         dpi=kwargs.get('figure_dpi', 300))
@@ -238,14 +238,13 @@ class LWSTrialVisualizer:
         """
         subject_dir = ioutils.create_subject_output_directory(subject_id=subject_id, output_dir=self.output_directory)
         output_type = output_type.lower()
+        output_dir = ioutils.create_directory(dirname=output_type, parent_dir=subject_dir)
         if output_type == 'video':
-            video_dir = ioutils.create_directory(dirname='videos', parent_dir=subject_dir)
             filename = f"T{trial_num:03d}.{LWSTrialVisualizer.VIDEO_SUFFIX}"
-            return os.path.join(video_dir, filename)
-        if output_type == "image":
-            image_dir = ioutils.create_directory(dirname='gaze_figures', parent_dir=subject_dir)
+            return os.path.join(output_dir, filename)
+        if output_type == "gaze_figure":
             filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
-            return os.path.join(image_dir, filename)
+            return os.path.join(output_dir, filename)
         raise ValueError(f'Unsupported output type: {output_type}')
 
     def __repr__(self) -> str:
