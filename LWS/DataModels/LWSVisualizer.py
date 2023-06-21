@@ -6,7 +6,6 @@ from typing import Tuple
 import constants as cnst
 import experiment_config as cnfg
 import Utils.io_utils as ioutils
-from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
 
 
@@ -14,8 +13,8 @@ class LWSVisualizer:
     FILE_SUFFIX = 'mp4'
     FOURCC = cv2.VideoWriter_fourcc(*'mp4v')
 
-    def __init__(self, screen_monitor: ScreenMonitor = None):
-        self.screen_monitor = ScreenMonitor.from_config() if screen_monitor is None else screen_monitor
+    def __init__(self, screen_resolution: Tuple[int, int]):
+        self.screen_resolution = screen_resolution
 
     def visualize(self, trial: LWSTrial, output_directory: str = cnfg.OUTPUT_DIR, show=False, **kwargs):
         """
@@ -78,7 +77,7 @@ class LWSVisualizer:
 
         # prepare video writer
         fps = round(trial.sampling_rate)
-        resolution = self.screen_monitor.resolution
+        resolution = self.screen_resolution
         video_writer = cv2.VideoWriter(save_path, self.FOURCC, fps, resolution)
 
         # prepare background image
