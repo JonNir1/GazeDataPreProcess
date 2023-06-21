@@ -11,7 +11,7 @@ from LWS.DataModels.LWSTrial import LWSTrial
 
 
 class LWSTrialVisualizer:
-    FILE_SUFFIX = 'mp4'
+    VIDEO_SUFFIX = 'mp4'
     FOURCC = cv2.VideoWriter_fourcc(*'mp4v')
 
     def __init__(self, screen_resolution: Tuple[int, int], output_directory: str = cnfg.OUTPUT_DIR):
@@ -143,7 +143,7 @@ class LWSTrialVisualizer:
         # prepare video writer
         fps = round(trial.sampling_rate)
         resolution = self.screen_resolution
-        save_path = self.__get_video_full_path(trial.get_subject_info().subject_id, trial.trial_num)
+        save_path = self.__get_output_full_path(trial.get_subject_info().subject_id, trial.trial_num, output_type='video')
         video_writer = cv2.VideoWriter(save_path, self.FOURCC, fps, resolution)
 
         # prepare background image
@@ -206,7 +206,7 @@ class LWSTrialVisualizer:
 
         :raises FileNotFoundError: If the video file is not found at path `self.output_directory/subject_id/trial_num.mp4`
         """
-        video_path = self.__get_video_full_path(subject_id, trial_num)
+        video_path = self.__get_output_full_path(subject_id, trial_num, output_type="video")
         if not os.path.exists(video_path):
             raise FileNotFoundError(f'Video file not found at {video_path}')
 
@@ -222,11 +222,19 @@ class LWSTrialVisualizer:
         video.release()
         cv2.destroyAllWindows()
 
-    def __get_video_full_path(self, subject_id: int, trial_num: int):
+    def __get_output_full_path(self, subject_id: int, trial_num: int, output_type: str) -> str:
+        """
+        Returns the full path of the output file for the given subject, trial and output type.
+        Raises ValueError if the output type is not supported.
+        """
         subject_dir = ioutils.create_subject_output_directory(subject_id=subject_id, output_dir=self.output_directory)
-        video_dir = ioutils.create_directory(dirname='videos', parent_dir=subject_dir)
-        filename = f"T{trial_num:03d}.{LWSTrialVisualizer.FILE_SUFFIX}"
-        return os.path.join(video_dir, filename)
+        output_type = output_type.lower()
+        if output_type == 'video':
+            video_dir = ioutils.create_directory(dirname='videos', parent_dir=subject_dir)
+            filename = f"T{trial_num:03d}.{LWSTrialVisualizer.VIDEO_SUFFIX}"
+            return os.path.join(video_dir, filename)
+        else:
+            raise ValueError(f'Unsupported output type: {output_type}')
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}"
