@@ -170,3 +170,12 @@ class LWSVisualizer:
 
     def __str__(self) -> str:
         return self.__repr__()
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, LWSVisualizer):
+            return False
+        if not self.screen_resolution == other.screen_resolution:
+            return False
+        if not self.output_directory == other.output_directory:
+            return False
+        return True
