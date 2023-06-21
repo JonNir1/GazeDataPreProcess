@@ -10,7 +10,7 @@ import constants as cnst
 import experiment_config as cnfg
 from Utils.ScreenMonitor import ScreenMonitor
 import LWS.PreProcessing as pp
-from LWS.DataModels.LWSVisualizer import LWSVisualizer
+from LWS.DataModels.LWSTrialVisualizer import LWSTrialVisualizer
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 start = time.time()
@@ -44,12 +44,12 @@ del end
 
 start = time.time()
 
-visualizer = LWSVisualizer(screen_monitor=sm)
+visualizer = LWSTrialVisualizer(screen_resolution=sm.resolution, output_directory=cnfg.OUTPUT_DIR)
 
 for i, tr in enumerate(trials):
     try:
         start_trial = time.time()
-        visualizer.visualize(trial=tr, output_directory=cnfg.OUTPUT_DIR, show=False)
+        visualizer.create_video(trial=tr, output_directory=cnfg.OUTPUT_DIR)
         end_trial = time.time()
         print(f"\t{str(tr)}:\t{(end_trial - start_trial):.2f} s")
     except Exception as e:
