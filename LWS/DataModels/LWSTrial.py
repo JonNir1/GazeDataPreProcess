@@ -103,7 +103,6 @@ class LWSTrial:
 
         :return: a tuple of (timestamps, x coordinates, y coordinates)
         """
-        # Returns the timestamp, x and y coordinates of the gaze data for the dominant eye.
         bd = self.get_behavioral_data()
         ts = bd.get(cnst.MICROSECONDS).values / 1000
 
