@@ -97,6 +97,12 @@ class LWSTrialVisualizer:
                                                xlabel='Time (ms)', ylabel='Visual Angle (deg)',
                                                invert_yaxis=False,
                                                **kwargs)
+        # save figure:
+        if savefig:
+            subject_id = trial.get_subject_info().subject_id
+            save_path = self.__get_output_full_path(subject_id, trial.trial_num, output_type='target_figure')
+            fig.savefig(save_path, bbox_inches='tight', dpi='figure',
+                        transparent=kwargs.get('transparent_figure', False))
         return fig
 
     def create_video(self, trial: LWSTrial, **kwargs):
@@ -248,6 +254,9 @@ class LWSTrialVisualizer:
             filename = f"T{trial_num:03d}.{LWSTrialVisualizer.VIDEO_SUFFIX}"
             return os.path.join(output_dir, filename)
         if output_type == "gaze_figure":
+            filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
+            return os.path.join(output_dir, filename)
+        if output_type == "target_figure":
             filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
             return os.path.join(output_dir, filename)
         raise ValueError(f'Unsupported output type: {output_type}')
