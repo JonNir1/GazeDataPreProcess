@@ -262,8 +262,7 @@ class LWSTrialVisualizer:
         trigger_line_color = kwargs.get('triggers_line_color', 'k')
         trigger_line_width = kwargs.get('trigger_line_width', 4)
         trigger_line_style = kwargs.get('trigger_line_style', ':')
-        min_val = float(np.nanmin([np.ma.masked_invalid(ln.get_data()[1]) for ln in ax.lines]))  # get the minimum y value of the axes
-        max_val = float(np.nanmax([np.ma.masked_invalid(ln.get_data()[1]) for ln in ax.lines]))  # get the maximum y value of the axes
+        min_val, max_val = LWSTrialVisualizer.__get_axis_limits(ax, axis='y')  # get the min/max y values (excluding inf/nan)
         ax.vlines(x=trigger_times, ymin=0.95 * min_val, ymax=max_val,
                   color=trigger_line_color, lw=trigger_line_width, ls=trigger_line_style)
         [ax.text(x=trigger_times[i], y=max_val + text_size + 1, s=str(trigger_vals[i]),
@@ -316,16 +315,16 @@ class LWSTrialVisualizer:
         ax.legend(loc=kwargs.get('legend_location', 'lower center'), fontsize=text_size)
 
         # set x-axis properties
-        xaxis_max = float(np.nanmax([np.ma.masked_invalid(ln.get_data()[0]) for ln in ax.lines]))  # get the maximum x value of the axes
-        ax.set_xlim(left=int(-0.01 * xaxis_max), right=int(1.01 * xaxis_max))
-        xticks = [int(val) for val in np.arange(int(xaxis_max)) if val % 1000 == 0]
+        _, x_axis_max = LWSTrialVisualizer.__get_axis_limits(ax, axis='x')
+        ax.set_xlim(left=int(-0.01 * x_axis_max), right=int(1.01 * x_axis_max))
+        xticks = [int(val) for val in np.arange(int(x_axis_max)) if val % 1000 == 0]
         ax.set_xticks(ticks=xticks, labels=[str(tck) for tck in xticks], rotation=45, fontsize=text_size)
         ax.set_xlabel(xlabel=kwargs.pop('xlabel', ''), fontsize=text_size)
 
         # set y-axis properties
-        yaxis_max = float(np.nanmax([ln.get_data()[1] for ln in ax.lines]))  # get the maximum y value of the axes
-        ax.set_ylim(bottom=int(-0.02 * yaxis_max), top=int(1.05 * yaxis_max))
-        yticks = [int(val) for val in np.arange(int(yaxis_max)) if val % 200 == 0]
+        _, y_axis_max = LWSTrialVisualizer.__get_axis_limits(ax, axis='y')
+        ax.set_ylim(bottom=int(-0.02 * y_axis_max), top=int(1.05 * y_axis_max))
+        yticks = [int(val) for val in np.arange(int(y_axis_max)) if val % 200 == 0]
         ax.set_yticks(ticks=yticks, labels=[str(tck) for tck in yticks], fontsize=text_size)
         ax.set_ylabel(ylabel=kwargs.pop('ylabel', ''), fontsize=text_size)
 
@@ -333,6 +332,23 @@ class LWSTrialVisualizer:
             # invert y-axis to match the screen coordinates:
             ax.invert_yaxis()
         return fig, ax
+
+    @staticmethod
+    def __get_axis_limits(ax: plt.Axes, axis: str) -> Tuple[float, float]:
+        """ Returns the maximum and minimum values for the X or Y axis of the given plt.Axes object, excluding
+        NaNs/inf """
+        axis = axis.lower()
+        if axis not in ['x', 'y']:
+            raise ValueError(f"Invalid axis '{axis}'! Must be either 'x' or 'y'.")
+        axis_idx = 0 if axis == 'x' else 1
+        min_val, max_val = float('inf'), float('-inf')
+        for ln in ax.lines:
+            data = ln.get_data()[axis_idx]
+            tmp_min = float(np.min(np.ma.masked_invalid(data)))
+            tmp_max = float(np.max(np.ma.masked_invalid(data)))
+            min_val = min(min_val, tmp_min)
+            max_val = max(max_val, tmp_max)
+        return min_val, max_val
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}"
