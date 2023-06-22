@@ -50,44 +50,33 @@ class LWSTrialVisualizer:
 
         :returns: the created figure.
         """
+        fig, ax = plt.subplots(tight_layout=True)
+
         # extract gaze data:
         dominant_eye = trial.get_subject_info().dominant_eye
         timestamps, x_gaze, y_gaze = trial.get_raw_gaze_coordinates(eye=dominant_eye)
         corrected_timestamps = timestamps - timestamps[0]  # start from 0
-        max_val = np.max([np.nanmax(x_gaze), np.nanmax(y_gaze)])
-
-        # create figure:
-        figsize = kwargs.get('figsize', (16, 9))
-        fig, ax = plt.subplots(figsize=figsize, tight_layout=True)
 
         # plot trial data:
         x_gaze_color = kwargs.get('x_gaze_color', '#f03b20')
         y_gaze_color = kwargs.get('y_gaze_color', '#20d5f0')
         ax.plot(corrected_timestamps, x_gaze, color=x_gaze_color, label='X (high is right)')
         ax.plot(corrected_timestamps, y_gaze, color=y_gaze_color, label='Y (high is down)')
+
+        # add other visualizations:
         ax = self.__add_triggers_and_events_bar(ax=ax, trial=trial, **kwargs)
-
-        # set axes limits & ticks:
-        text_size = kwargs.get('text_size', 12)
-        ax = self.__set_axes_and_ticks(ax=ax, xmax=float(np.nanmax(corrected_timestamps)), ymax=max_val,
-                                       text_size=text_size)
-        ax = self.__set_title_and_labels(ax=ax, title=f"Eye: {dominant_eye}",
-                                         xlabel='Time (ms)', ylabel='Gaze Position (pixels)',
-                                         title_size=kwargs.get('subtitle_size', 14), text_size=text_size)
-        ax.legend(loc=kwargs.get('legend_location', 'lower center'), fontsize=text_size)
-        fig.suptitle(f"{str(trial)}", fontsize=kwargs.get('title_size', 18), y=0.98)
-
-        if kwargs.get('invert_yaxis', True):
-            # invert y-axis to match the screen coordinates:
-            ax.invert_yaxis()
+        fig, ax = self.__set_figure_properties(fig=fig, ax=ax,
+                                               title=f"{str(trial)}",
+                                               subtitle=f"Eye: {dominant_eye}",
+                                               xlabel='Time (ms)', ylabel='Gaze Position (pixels)',
+                                               **kwargs)
 
         # save figure:
         if savefig:
             subject_id = trial.get_subject_info().subject_id
             save_path = self.__get_output_full_path(subject_id, trial.trial_num, output_type='gaze_figure')
-            fig.savefig(save_path, bbox_inches='tight',
-                        transparent=kwargs.get('transparent_figure', False),
-                        dpi=kwargs.get('figure_dpi', 300))
+            fig.savefig(save_path, bbox_inches='tight', dpi='figure',
+                        transparent=kwargs.get('transparent_figure', False))
         return fig
 
     def create_video(self, trial: LWSTrial, **kwargs):
@@ -282,8 +271,8 @@ class LWSTrialVisualizer:
         trigger_line_color = kwargs.get('triggers_line_color', 'k')
         trigger_line_width = kwargs.get('trigger_line_width', 4)
         trigger_line_style = kwargs.get('trigger_line_style', ':')
-        min_val = float(np.nanmin([ln.get_data()[1] for ln in ax.lines]))  # get the minimum y value of the axes
-        max_val = float(np.nanmax([ln.get_data()[1] for ln in ax.lines]))  # get the maximum y value of the axes
+        min_val = float(np.nanmin([np.ma.masked_invalid(ln.get_data()[1]) for ln in ax.lines]))  # get the minimum y value of the axes
+        max_val = float(np.nanmax([np.ma.masked_invalid(ln.get_data()[1]) for ln in ax.lines]))  # get the maximum y value of the axes
         ax.vlines(x=trigger_times, ymin=0.95 * min_val, ymax=max_val,
                   color=trigger_line_color, lw=trigger_line_width, ls=trigger_line_style)
         [ax.text(x=trigger_times[i], y=max_val + text_size + 1, s=str(trigger_vals[i]),
@@ -301,22 +290,58 @@ class LWSTrialVisualizer:
         return ax
 
     @staticmethod
-    def __set_axes_and_ticks(ax: plt.Axes, xmax: float, ymax: float, text_size: int = 12):
-        ax.set_xlim(left=int(-0.01 * xmax), right=int(1.01 * xmax))
-        xticks = [int(val) for val in np.arange(int(xmax)) if val % 1000 == 0]
-        ax.set_xticks(ticks=xticks, labels=[str(tck) for tck in xticks], rotation=45, fontsize=text_size)
-        ax.set_ylim(bottom=int(-0.02 * ymax), top=int(1.05 * ymax))
-        yticks = [int(val) for val in np.arange(int(ymax)) if val % 200 == 0]
-        ax.set_yticks(ticks=yticks, labels=[str(tck) for tck in yticks], fontsize=text_size)
-        return ax
+    def __set_figure_properties(fig: plt.Figure, ax: plt.Axes, **kwargs):
+        """
+        Sets the properties of the given figure and axes according to the given keyword arguments:
 
-    @staticmethod
-    def __set_title_and_labels(ax: plt.Axes, title: str, xlabel: str, ylabel: str,
-                               title_size: int = 14, text_size: int = 12):
-        ax.set_xlabel(xlabel, fontsize=text_size)
-        ax.set_ylabel(ylabel, fontsize=text_size)
-        ax.set_title(title, fontsize=title_size)
-        return ax
+        Figure Arguments:
+            - figsize: the figure's size (width, height) in inches, default is (16, 9).
+            - figure_dpi: the figure's DPI, default is 300.
+            - title: the figure's title, default is ''.
+            - title_size: the size of the title text object in the figure, default is 18.
+
+        Axes Arguments:
+            - subtitle: the figure's subtitle, default is ''.
+            - subtitle_size: the size of the subtitle text object in the figure, default is 14.
+            - legend_location: the location of the legend in the figure, default is 'lower center'.
+            - invert_yaxis: whether to invert the Y axis or not, default is True.
+
+        X-Axis & Y-Axis Arguments:
+            - x_label: the label of the X axis, default is ''.
+            - y_label: the label of the Y axis, default is ''.
+            - text_size: the size of non-title text objects in the figure, default is 12.
+
+        Returns the figure and axes with the updated properties.
+        """
+        # general figure properties
+        figsize = kwargs.get('figsize', (16, 9))
+        fig.set_size_inches(w=figsize[0], h=figsize[1])
+        fig.set_dpi(kwargs.get('figure_dpi', 300))
+        fig.suptitle(t=kwargs.pop('title', ''), fontsize=kwargs.get('title_size', 18), y=0.98)
+
+        # general axis properties
+        ax.set_title(label=kwargs.pop('subtitle', ''), fontsize=kwargs.pop('subtitle_size', 14))
+        text_size = kwargs.get('text_size', 12)
+        ax.legend(loc=kwargs.get('legend_location', 'lower center'), fontsize=text_size)
+
+        # set x-axis properties
+        xaxis_max = float(np.nanmax([np.ma.masked_invalid(ln.get_data()[0]) for ln in ax.lines]))  # get the maximum x value of the axes
+        ax.set_xlim(left=int(-0.01 * xaxis_max), right=int(1.01 * xaxis_max))
+        xticks = [int(val) for val in np.arange(int(xaxis_max)) if val % 1000 == 0]
+        ax.set_xticks(ticks=xticks, labels=[str(tck) for tck in xticks], rotation=45, fontsize=text_size)
+        ax.set_xlabel(xlabel=kwargs.pop('xlabel', ''), fontsize=text_size)
+
+        # set y-axis properties
+        yaxis_max = float(np.nanmax([ln.get_data()[1] for ln in ax.lines]))  # get the maximum y value of the axes
+        ax.set_ylim(bottom=int(-0.02 * yaxis_max), top=int(1.05 * yaxis_max))
+        yticks = [int(val) for val in np.arange(int(yaxis_max)) if val % 200 == 0]
+        ax.set_yticks(ticks=yticks, labels=[str(tck) for tck in yticks], fontsize=text_size)
+        ax.set_ylabel(ylabel=kwargs.pop('ylabel', ''), fontsize=text_size)
+
+        if kwargs.get('invert_yaxis', True):
+            # invert y-axis to match the screen coordinates:
+            ax.invert_yaxis()
+        return fig, ax
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}"
