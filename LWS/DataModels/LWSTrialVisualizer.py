@@ -29,12 +29,6 @@ class LWSTrialVisualizer:
         :param savefig: whether to save the figure to disk or not.
 
         keyword arguments:
-            General Arguments:
-            - figsize: the figure's size (width, height) in inches, default is (16, 9).
-            - invert_yaxis: whether to invert the Y axis or not, default is True.
-            - transparent_figure: whether to make the figure's background transparent or not, default is False.
-            - figure_dpi: the figure's DPI, default is 300.
-
             Gazes Related Arguments:
             - x_gaze_color: the color of the X gaze data, default is '#f03b20' (red).
             - y_gaze_color: the color of the Y gaze data, default is '#20d5f0' (light blue).
@@ -42,11 +36,8 @@ class LWSTrialVisualizer:
             Trigger & Event Related Arguments:
             See documentation in `__add_triggers_and_events_bar()`.
 
-            Text Related Arguments:
-            - text_size: the size of non-title text objects in the figure, default is 12.
-            - title_size: the size of the title text object in the figure, default is 18.
-            - subtitle_size: the size of the subtitle text object in the figure, default is 14.
-            - legend_location: the location of the legend in the figure, default is 'lower center'.
+            General Arguments:
+            See documentation in `__set_figure_properties()`.
 
         :returns: the created figure.
         """
