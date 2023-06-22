@@ -96,7 +96,6 @@ class LWSTrialVisualizer:
                                fixation_event_color=kwargs.pop("fixation_event_color", "#00ff00"),
                                event_bar_size=kwargs.get('event_bar_size', 70))
 
-
         # set axes limits & ticks:
         ax = self.__set_axes_and_ticks(ax=ax, xmax=float(max_time), ymax=max_val, text_size=text_size)
         ax = self.__set_title_and_labels(ax=ax, title=f"Eye: {dominant_eye}",
