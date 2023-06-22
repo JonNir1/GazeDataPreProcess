@@ -63,7 +63,6 @@ class LWSTrialVisualizer:
         dominant_eye = trial.get_subject_info().dominant_eye
         timestamps, x_gaze, y_gaze = trial.get_raw_gaze_coordinates(eye=dominant_eye)
         corrected_timestamps = timestamps - timestamps[0]  # start from 0
-        max_time = np.nanmax(corrected_timestamps)
         max_val = np.max([np.nanmax(x_gaze), np.nanmax(y_gaze)])
 
         # create figure:
@@ -97,7 +96,8 @@ class LWSTrialVisualizer:
                                event_bar_size=kwargs.get('event_bar_size', 70))
 
         # set axes limits & ticks:
-        ax = self.__set_axes_and_ticks(ax=ax, xmax=float(max_time), ymax=max_val, text_size=text_size)
+        ax = self.__set_axes_and_ticks(ax=ax, xmax=float(np.nanmax(corrected_timestamps)), ymax=max_val,
+                                       text_size=text_size)
         ax = self.__set_title_and_labels(ax=ax, title=f"Eye: {dominant_eye}",
                                          xlabel='Time (ms)', ylabel='Gaze Position (pixels)',
                                          title_size=kwargs.get('subtitle_size', 14), text_size=text_size)
