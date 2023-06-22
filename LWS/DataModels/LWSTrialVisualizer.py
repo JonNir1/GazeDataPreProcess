@@ -70,6 +70,35 @@ class LWSTrialVisualizer:
                         transparent=kwargs.get('transparent_figure', False))
         return fig
 
+    def create_targets_figure(self, trial: LWSTrial, savefig: bool = True, **kwargs):
+        """
+        TODO: finish this method to measure distance from targets over time + show triggers
+        :param trial:
+        :param savefig:
+        :param kwargs:
+        :return:
+        """
+        fig, ax = plt.subplots(tight_layout=True)
+
+        # plot target distance:
+        bd = trial.get_behavioral_data()
+        timestamps = bd.get(cnst.MICROSECONDS).values / 1000
+        corrected_timestamps = timestamps - timestamps[0]  # start from 0
+        target_distance = bd.get(f"{cnst.TARGET}_{cnst.DISTANCE}").values
+        ax.plot(corrected_timestamps, target_distance, color=kwargs.get('line_color', '#ff0000'), label=cnst.ANGLE)
+
+        # add other visualizations:
+        kwargs['legend_location'] = kwargs.get('legend_location', 'upper center')
+        kwargs['event_bar_size'] = kwargs.get('event_bar_size', 200)
+        ax = self.__add_triggers_and_events_bar(ax=ax, trial=trial, **kwargs)
+        fig, ax = self.__set_figure_properties(fig=fig, ax=ax,
+                                               title=f"{str(trial)}",
+                                               subtitle=f"Angular Distance from Closest Target",
+                                               xlabel='Time (ms)', ylabel='Visual Angle (deg)',
+                                               invert_yaxis=False,
+                                               **kwargs)
+        return fig
+
     def create_video(self, trial: LWSTrial, **kwargs):
         """
         Generates a video visualization of the eye-tracking data and behavioral events for the given LWSTrial.
@@ -263,9 +292,9 @@ class LWSTrialVisualizer:
         trigger_line_width = kwargs.get('trigger_line_width', 4)
         trigger_line_style = kwargs.get('trigger_line_style', ':')
         min_val, max_val = LWSTrialVisualizer.__get_axis_limits(ax, axis='y')  # get the min/max y values (excluding inf/nan)
-        ax.vlines(x=trigger_times, ymin=0.95 * min_val, ymax=max_val,
+        ax.vlines(x=trigger_times, ymin=0.95 * min_val, ymax=0.95 * max_val,
                   color=trigger_line_color, lw=trigger_line_width, ls=trigger_line_style)
-        [ax.text(x=trigger_times[i], y=max_val + text_size + 1, s=str(trigger_vals[i]),
+        [ax.text(x=trigger_times[i], y=max_val, s=str(trigger_vals[i]),
                  fontsize=text_size, ha='center', va='top') for i in range(len(trigger_times))]
 
         # Add a horizontal bar at the top of the given axes, colored according to each timestamp's event

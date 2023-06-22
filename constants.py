@@ -11,6 +11,7 @@ TIME = "time"
 TRIGGER = "trigger"
 TARGET = "target"
 DISTANCE = "distance"
+ANGLE = "angle"
 MILLISECONDS = "milliseconds"
 MICROSECONDS = "microseconds"
 
