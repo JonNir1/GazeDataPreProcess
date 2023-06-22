@@ -60,7 +60,7 @@ class LWSTrialVisualizer:
         figsize = kwargs.get('figsize', (16, 9))
         fig, ax = plt.subplots(figsize=figsize, tight_layout=True)
 
-        # plot raw gaze:
+        # plot trial data:
         x_gaze_color = kwargs.get('x_gaze_color', '#f03b20')
         y_gaze_color = kwargs.get('y_gaze_color', '#20d5f0')
         ax.plot(corrected_timestamps, x_gaze, color=x_gaze_color, label='X (high is right)')
