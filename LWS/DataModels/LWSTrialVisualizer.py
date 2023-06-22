@@ -317,14 +317,16 @@ class LWSTrialVisualizer:
         # set x-axis properties
         _, x_axis_max = LWSTrialVisualizer.__get_axis_limits(ax, axis='x')
         ax.set_xlim(left=int(-0.01 * x_axis_max), right=int(1.01 * x_axis_max))
-        xticks = [int(val) for val in np.arange(int(x_axis_max)) if val % 1000 == 0]
+        jumps = 2 * np.power(10, max(0, int(np.log10(x_axis_max)) - 1))
+        xticks = [int(val) for val in np.arange(int(x_axis_max)) if val % jumps == 0]
         ax.set_xticks(ticks=xticks, labels=[str(tck) for tck in xticks], rotation=45, fontsize=text_size)
         ax.set_xlabel(xlabel=kwargs.pop('xlabel', ''), fontsize=text_size)
 
         # set y-axis properties
         _, y_axis_max = LWSTrialVisualizer.__get_axis_limits(ax, axis='y')
         ax.set_ylim(bottom=int(-0.02 * y_axis_max), top=int(1.05 * y_axis_max))
-        yticks = [int(val) for val in np.arange(int(y_axis_max)) if val % 200 == 0]
+        jumps = 2 * np.power(10, max(0, int(np.log10(y_axis_max)) - 1))
+        yticks = [int(val) for val in np.arange(int(y_axis_max)) if val % jumps == 0]
         ax.set_yticks(ticks=yticks, labels=[str(tck) for tck in yticks], fontsize=text_size)
         ax.set_ylabel(ylabel=kwargs.pop('ylabel', ''), fontsize=text_size)
 
