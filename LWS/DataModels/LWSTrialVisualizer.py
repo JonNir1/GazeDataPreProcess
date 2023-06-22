@@ -72,11 +72,25 @@ class LWSTrialVisualizer:
 
     def create_targets_figure(self, trial: LWSTrial, savefig: bool = True, **kwargs):
         """
-        TODO: finish this method to measure distance from targets over time + show triggers
-        :param trial:
-        :param savefig:
-        :param kwargs:
-        :return:
+        Creates a figure depicting the angular distance (visual angle) between the subject's gaze and the closest target
+        during the given trial. Overlaid on the figure are vertical lines marking the user-inputs (triggers), and the
+        corresponding trigger numbers are written above. Additionally, the bottom of the figure depicts gaze event for
+        each sample (fixation, saccade, blink, etc.) as a different color.
+
+        :param trial: the trial to visualize.
+        :param savefig: whether to save the figure to disk or not.
+
+        keyword arguments:
+            Gazes Related Arguments:
+            - line_color: the color of the angular distance line, default is '#ff0000' (red).
+
+            Trigger & Event Related Arguments:
+            See documentation in `__add_triggers_and_events_bar()`.
+
+            General Arguments:
+            See documentation in `__set_figure_properties()`.
+
+        :returns: the created figure.
         """
         fig, ax = plt.subplots(tight_layout=True)
 
@@ -144,7 +158,6 @@ class LWSTrialVisualizer:
 
         # extract keyword arguments
         show_stimulus = kwargs.get('show_stimulus', True)
-        # TODO: add circles around the targets
 
         target_radius = kwargs.get('target_radius', 35)
         target_edge_size = kwargs.get('target_edge_size', 4)
