@@ -29,7 +29,13 @@ class LWSTrialVisualizer:
         :param savefig: whether to save the figure to disk or not.
 
         keyword arguments:
+            General Arguments:
             - figsize: the figure's size (width, height) in inches, default is (16, 9).
+            - invert_yaxis: whether to invert the Y axis or not, default is True.
+            - transparent_figure: whether to make the figure's background transparent or not, default is False.
+            - figure_dpi: the figure's DPI, default is 300.
+
+            Gazes Related Arguments:
             - x_gaze_color: the color of the X gaze data, default is '#f03b20' (red).
             - y_gaze_color: the color of the Y gaze data, default is '#20d5f0' (light blue).
 
@@ -99,24 +105,16 @@ class LWSTrialVisualizer:
                    c=event_colors, s=event_bar_size, marker="s")
 
         # set axes limits & ticks:
-        ax.set_ylim(bottom=int(-0.02 * max_val), top=int(1.05 * max_val))
-        ax.set_xlim(left=int(-0.01 * max_time), right=int(1.01 * max_time))
-        xticks = [int(val) for val in np.arange(int(max_time)) if val % 1000 == 0]
-        ax.set_xticks(ticks=xticks, labels=[str(tck) for tck in xticks], rotation=45, fontsize=text_size)
-        yticks = [int(val) for val in np.arange(int(max_val)) if val % 200 == 0]
-        ax.set_yticks(ticks=yticks, labels=[str(tck) for tck in yticks], fontsize=text_size)
-
-        # set title & labels:
-        title_size = kwargs.get('title_size', 18)
-        subtitle_size = kwargs.get('subtitle_size', 14)
-        ax.set_xlabel('Time (ms)', fontsize=text_size)
-        ax.set_ylabel('Gaze Position (pixels)', fontsize=text_size)
-        ax.set_title(f"Eye: {dominant_eye}", fontsize=subtitle_size)
+        ax = self.__set_axes_and_ticks(ax=ax, xmax=float(max_time), ymax=max_val, text_size=text_size)
+        ax = self.__set_title_and_labels(ax=ax, title=f"Eye: {dominant_eye}",
+                                         xlabel='Time (ms)', ylabel='Gaze Position (pixels)',
+                                         title_size=kwargs.get('subtitle_size', 14), text_size=text_size)
         ax.legend(loc=kwargs.get('legend_location', 'lower center'), fontsize=text_size)
-        fig.suptitle(f"{str(trial)}", fontsize=title_size, y=0.98)
+        fig.suptitle(f"{str(trial)}", fontsize=kwargs.get('title_size', 18), y=0.98)
 
-        # invert y-axis to match the screen coordinates:
-        ax.invert_yaxis()
+        if kwargs.get('invert_yaxis', True):
+            # invert y-axis to match the screen coordinates:
+            ax.invert_yaxis()
 
         # save figure:
         if savefig:
@@ -126,15 +124,6 @@ class LWSTrialVisualizer:
                         transparent=kwargs.get('transparent_figure', False),
                         dpi=kwargs.get('figure_dpi', 300))
         return fig
-
-    def create_targets_figure(self, trial: LWSTrial, **kwargs):
-        """
-        TODO: finish this method to measure distance from targets over time + show triggers
-        :param trial:
-        :param kwargs:
-        :return:
-        """
-        return None
 
     def create_video(self, trial: LWSTrial, **kwargs):
         """
@@ -288,6 +277,24 @@ class LWSTrialVisualizer:
             filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
             return os.path.join(output_dir, filename)
         raise ValueError(f'Unsupported output type: {output_type}')
+
+    @staticmethod
+    def __set_axes_and_ticks(ax: plt.Axes, xmax: float, ymax: float, text_size: int = 12):
+        ax.set_xlim(left=int(-0.01 * xmax), right=int(1.01 * xmax))
+        xticks = [int(val) for val in np.arange(int(xmax)) if val % 1000 == 0]
+        ax.set_xticks(ticks=xticks, labels=[str(tck) for tck in xticks], rotation=45, fontsize=text_size)
+        ax.set_ylim(bottom=int(-0.02 * ymax), top=int(1.05 * ymax))
+        yticks = [int(val) for val in np.arange(int(ymax)) if val % 200 == 0]
+        ax.set_yticks(ticks=yticks, labels=[str(tck) for tck in yticks], fontsize=text_size)
+        return ax
+
+    @staticmethod
+    def __set_title_and_labels(ax: plt.Axes, title: str, xlabel: str, ylabel: str,
+                               title_size: int = 14, text_size: int = 12):
+        ax.set_xlabel(xlabel, fontsize=text_size)
+        ax.set_ylabel(ylabel, fontsize=text_size)
+        ax.set_title(title, fontsize=title_size)
+        return ax
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}"
