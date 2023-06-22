@@ -64,6 +64,7 @@ class LWSTrialVisualizer:
         timestamps, x_gaze, y_gaze = trial.get_raw_gaze_coordinates(eye=dominant_eye)
         corrected_timestamps = timestamps - timestamps[0]  # start from 0
         max_time = np.nanmax(corrected_timestamps)
+        max_val = np.max([np.nanmax(x_gaze), np.nanmax(y_gaze)])
 
         # create figure:
         figsize = kwargs.get('figsize', (16, 9))
@@ -75,34 +76,26 @@ class LWSTrialVisualizer:
         ax.plot(corrected_timestamps, x_gaze, color=x_gaze_color, label='X (high is right)')
         ax.plot(corrected_timestamps, y_gaze, color=y_gaze_color, label='Y (high is down)')
 
-        # extract triggers data:
+        # extract & plot triggers & event bar:
         triggers = trial.get_triggers()
+        event_array = trial.get_event_per_sample_array()
         real_trigger_idxs = np.where((~np.isnan(triggers)) & (triggers != 0))[0]
-        trigger_times = corrected_timestamps[real_trigger_idxs]
-        int_triggers = triggers[real_trigger_idxs].astype(int)
-
-        # plot triggers:
         text_size = kwargs.get('text_size', 12)
-        trigger_line_color = kwargs.get('triggers_line_color', 'k')
-        trigger_line_width = kwargs.get('trigger_line_width', 4)
-        trigger_line_style = kwargs.get('trigger_line_style', ':')
-        max_val = np.max([np.nanmax(x_gaze), np.nanmax(y_gaze)])
-        min_val = np.min([np.nanmin(x_gaze), np.nanmin(y_gaze)])
-        ax.vlines(x=trigger_times, ymin=0.95 * min_val, ymax=max_val,
-                  color=trigger_line_color, lw=trigger_line_width, ls=trigger_line_style)
-        [ax.text(x=trigger_times[i], y=max_val + text_size + 1, s=str(int_triggers[i]),
-                 fontsize=text_size, ha='center', va='top') for i in range(len(trigger_times))]
+        ax = self.__add_triggers(ax,
+                                 trigger_times=corrected_timestamps[real_trigger_idxs],
+                                 trigger_vals=triggers[real_trigger_idxs].astype(int),
+                                 ymin=0.95 * np.min([np.nanmin(x_gaze), np.nanmin(y_gaze)]),
+                                 ymax=max_val, text_size=text_size,
+                                 trigger_line_color=kwargs.get('triggers_line_color', 'k'),
+                                 trigger_line_width=kwargs.get('trigger_line_width', 4),
+                                 trigger_line_style=kwargs.get('trigger_line_style', ':'))
+        ax = self.__add_events(ax, timestamps=corrected_timestamps, events=event_array,
+                               undefined_event_color=kwargs.pop("undefined_event_color", "#808080"),
+                               blink_event_color=kwargs.pop("blink_event_color", "#000000"),
+                               saccade_event_color=kwargs.pop("saccade_event_color", "#0000ff"),
+                               fixation_event_color=kwargs.pop("fixation_event_color", "#00ff00"),
+                               event_bar_size=kwargs.get('event_bar_size', 70))
 
-        # plot event bar:
-        events_array = trial.get_event_per_sample_array()
-        undefined_event_color = kwargs.pop("undefined_event_color", "#808080")
-        event_colors = np.full(shape=events_array.shape, fill_value=undefined_event_color, dtype=object)
-        event_colors[events_array == cnst.BLINK] = kwargs.pop("blink_event_color", "#000000")
-        event_colors[events_array == cnst.SACCADE] = kwargs.pop("saccade_event_color", "#0000ff")
-        event_colors[events_array == cnst.FIXATION] = kwargs.pop("fixation_event_color", "#00ff00")
-        event_bar_size = kwargs.get('event_bar_size', 70)
-        ax.scatter(x=corrected_timestamps, y=np.ones_like(corrected_timestamps),
-                   c=event_colors, s=event_bar_size, marker="s")
 
         # set axes limits & ticks:
         ax = self.__set_axes_and_ticks(ax=ax, xmax=float(max_time), ymax=max_val, text_size=text_size)
@@ -277,6 +270,32 @@ class LWSTrialVisualizer:
             filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
             return os.path.join(output_dir, filename)
         raise ValueError(f'Unsupported output type: {output_type}')
+
+    @staticmethod
+    def __add_triggers(ax: plt.Axes, trigger_times: np.ndarray, trigger_vals: np.ndarray,
+                       ymin: float, ymax: float, **kwargs):
+        """ Adds vertical lines and text to the given axes at the given trigger times. """
+        text_size = kwargs.get('text_size', 12)
+        trigger_line_color = kwargs.get('triggers_line_color', 'k')
+        trigger_line_width = kwargs.get('trigger_line_width', 4)
+        trigger_line_style = kwargs.get('trigger_line_style', ':')
+        ax.vlines(x=trigger_times, ymin=ymin, ymax=ymax,
+                  color=trigger_line_color, lw=trigger_line_width, ls=trigger_line_style)
+        [ax.text(x=trigger_times[i], y=ymax + text_size + 1, s=str(trigger_vals[i]),
+                 fontsize=text_size, ha='center', va='top') for i in range(len(trigger_times))]
+        return ax
+
+    @staticmethod
+    def __add_events(ax: plt.Axes, timestamps: np.ndarray, events: np.ndarray, **kwargs):
+        """ Adds a horizontal bar at the top of the given axes, colored according to each timestamp's event. """
+        undefined_event_color = kwargs.pop("undefined_event_color", "#808080")
+        event_colors = np.full(shape=events.shape, fill_value=undefined_event_color, dtype=object)
+        event_colors[events == cnst.BLINK] = kwargs.pop("blink_event_color", "#000000")
+        event_colors[events == cnst.SACCADE] = kwargs.pop("saccade_event_color", "#0000ff")
+        event_colors[events == cnst.FIXATION] = kwargs.pop("fixation_event_color", "#00ff00")
+        event_bar_size = kwargs.get('event_bar_size', 70)
+        ax.scatter(x=timestamps, y=np.ones_like(events), c=event_colors, s=event_bar_size, marker="s")
+        return ax
 
     @staticmethod
     def __set_axes_and_ticks(ax: plt.Axes, xmax: float, ymax: float, text_size: int = 12):
