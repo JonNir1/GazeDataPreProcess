@@ -19,7 +19,7 @@ class LWSTrialVisualizer:
         self.screen_resolution = screen_resolution
         self.output_directory = output_directory
 
-    def create_gaze_plot(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
+    def create_gaze_figure(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
         """
         Creates a figure of the raw gaze data (X, Y coordinates) during the given trial. Overlaid on the figure are
         vertical lines marking the user-inputs (triggers), and the corresponding trigger numbers are written above.
