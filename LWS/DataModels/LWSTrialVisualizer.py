@@ -21,11 +21,37 @@ class LWSTrialVisualizer:
 
     def create_gaze_plot(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
         """
-        TODO: add docstring
-        :param trial:
-        :param savefig:
-        :param kwargs:
-        :return:
+        Creates a figure of the raw gaze data (X, Y coordinates) during the given trial. Overlaid on the figure are
+        vertical lines marking the user-inputs (triggers), and the corresponding trigger numbers are written above.
+        The top part of the figure shows each sample's gaze event (fixation, saccade, blink, etc.) as a different color.
+
+        :param trial: the trial to visualize.
+        :param savefig: whether to save the figure to disk or not.
+
+        keyword arguments:
+            - figsize: the figure's size (width, height) in inches, default is (16, 9).
+            - x_gaze_color: the color of the X gaze data, default is '#f03b20' (red).
+            - y_gaze_color: the color of the Y gaze data, default is '#20d5f0' (light blue).
+
+            Text Related Arguments:
+            - text_size: the size of non-title text objects in the figure, default is 12.
+            - title_size: the size of the title text object in the figure, default is 18.
+            - subtitle_size: the size of the subtitle text object in the figure, default is 14.
+            - legend_location: the location of the legend in the figure, default is 'lower center'.
+
+            Trigger Related Arguments:
+            - triggers_line_color: the color of the vertical lines marking the triggers, default is 'k' (black).
+            - trigger_line_width: the width of the vertical lines marking the triggers, default is 4.
+            - trigger_line_style: the style of the vertical lines marking the triggers, default is ':' (dotted).
+
+            Event Related Arguments:
+            - undefined_event_color: the color of the undefined gaze events, default is '#808080' (gray).
+            - blink_event_color: the color of the blink gaze events, default is '#000000' (black).
+            - saccade_event_color: the color of the saccade gaze events, default is '#0000ff' (blue).
+            - fixation_event_color: the color of the fixation gaze events, default is '#00ff00' (green).
+            - event_bar_size: the height of the gaze event markers, default is 70 (used for `scatter`).
+
+        :returns: the created figure.
         """
         # extract gaze data:
         dominant_eye = trial.get_subject_info().dominant_eye
@@ -63,11 +89,11 @@ class LWSTrialVisualizer:
 
         # plot event bar:
         events_array = trial.get_event_per_sample_array()
-        undefined_event_color = kwargs.pop("undefined_event_color", "#000000")
+        undefined_event_color = kwargs.pop("undefined_event_color", "#808080")
         event_colors = np.full(shape=events_array.shape, fill_value=undefined_event_color, dtype=object)
-        event_colors[events_array == cnst.BLINK] = kwargs.pop("blink_event_color", "k")
-        event_colors[events_array == cnst.SACCADE] = kwargs.pop("saccade_event_color", "b")
-        event_colors[events_array == cnst.FIXATION] = kwargs.pop("fixation_event_color", "g")
+        event_colors[events_array == cnst.BLINK] = kwargs.pop("blink_event_color", "#000000")
+        event_colors[events_array == cnst.SACCADE] = kwargs.pop("saccade_event_color", "#0000ff")
+        event_colors[events_array == cnst.FIXATION] = kwargs.pop("fixation_event_color", "#00ff00")
         event_bar_size = kwargs.get('event_bar_size', 70)
         ax.scatter(x=corrected_timestamps, y=np.ones_like(corrected_timestamps),
                    c=event_colors, s=event_bar_size, marker="s")
