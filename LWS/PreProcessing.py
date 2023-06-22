@@ -2,6 +2,7 @@ import os
 import pandas as pd
 from typing import List
 
+import constants as cnst
 import experiment_config as cnfg
 from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
@@ -58,8 +59,9 @@ def process_trial(trial: LWSTrial, save_pickle: bool = False, **kwargs):
     # process raw eye-tracking data
     is_blink, is_saccade, is_fixation = detect_all_events(trial, **kwargs)
     target_distance = calculate_visual_angle_between_gaze_data_and_targets(trial, sm=sm)
-    is_event_df = pd.DataFrame({'is_blink': is_blink, 'is_saccade': is_saccade,
-                                'is_fixation': is_fixation, 'target_distance': target_distance}, index=bd.index)
+    is_event_df = pd.DataFrame({f'is_{cnst.BLINK}': is_blink, f'is_{cnst.SACCADE}': is_saccade,
+                                f'is_{cnst.FIXATION}': is_fixation, f'{cnst.TARGET}_{cnst.DISTANCE}': target_distance},
+                               index=bd.index)
 
     # add the new columns to the behavioral data:
     new_behavioral_data = bd.concat(is_event_df)

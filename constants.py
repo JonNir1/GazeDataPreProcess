@@ -9,6 +9,8 @@ MICROSECONDS_PER_MILLISECOND = 1000
 TRIAL = "trial"
 TIME = "time"
 TRIGGER = "trigger"
+TARGET = "target"
+DISTANCE = "distance"
 MILLISECONDS = "milliseconds"
 MICROSECONDS = "microseconds"
 
