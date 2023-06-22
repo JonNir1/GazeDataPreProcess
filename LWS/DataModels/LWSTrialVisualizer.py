@@ -306,7 +306,7 @@ class LWSTrialVisualizer:
         # general figure properties
         figsize = kwargs.get('figsize', (16, 9))
         fig.set_size_inches(w=figsize[0], h=figsize[1])
-        fig.set_dpi(kwargs.get('figure_dpi', 300))
+        fig.set_dpi(kwargs.get('figure_dpi', 500))
         fig.suptitle(t=kwargs.pop('title', ''), fontsize=kwargs.get('title_size', 18), y=0.98)
 
         # general axis properties
