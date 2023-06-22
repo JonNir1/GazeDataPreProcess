@@ -67,7 +67,7 @@ class LWSTrialVisualizer:
         ax = self.__add_triggers_and_events_bar(ax=ax, trial=trial, **kwargs)
         fig, ax = self.__set_figure_properties(fig=fig, ax=ax,
                                                title=f"{str(trial)}",
-                                               subtitle=f"Eye: {dominant_eye}",
+                                               subtitle=f"Dominant Eye: {dominant_eye}",
                                                xlabel='Time (ms)', ylabel='Gaze Position (pixels)',
                                                **kwargs)
 
