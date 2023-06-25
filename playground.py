@@ -18,13 +18,26 @@ from LWS.DataModels.LWSTrialVisualizer import LWSTrialVisualizer
 start = time.time()
 
 sm = ScreenMonitor.from_config()
-trials = [LWSTrial.from_pickle(os.path.join(cnfg.OUTPUT_DIR, "S002", "trials", f"LWSTrial_S2_T{i+1}.pkl")) for i in range(60)]
+trials = [LWSTrial.from_pickle(os.path.join(cnfg.OUTPUT_DIR, "S002", "trials", f"LWSTrial_S2_T{i+1}.pkl")) for i in range(1)]
 visualizer = LWSTrialVisualizer(screen_resolution=sm.resolution, output_directory=cnfg.OUTPUT_DIR)
 
 end = time.time()
 print(f"Finished loading in: {(end - start):.2f} seconds")
 
-figures = [visualizer.create_gaze_plot(trial=trial, savefig=True) for trial in trials]
+start = time.time()
+
+for tr in trials:
+    if tr.trial_num > 1:
+        break
+    start_trial = time.time()
+    # visualizer.create_gaze_figure(trial=tr, savefig=True)
+    # visualizer.create_targets_figure(trial=tr, savefig=True)
+    visualizer.create_video(trial=tr, output_directory=cnfg.OUTPUT_DIR)
+    end_trial = time.time()
+    print(f"\t{tr.__repr__()}:\t{(end_trial - start_trial):.2f} s")
+
+end = time.time()
+print(f"Finished visualization in: {(end - start):.2f} seconds")
 
 # delete irrelevant variables:
 del start
@@ -59,26 +72,4 @@ print(f"Finished preprocessing in: {(end - start):.2f} seconds")
 del start
 del end
 
-##########################################
-
-for i, tr in enumerate(trials):
-    try:
-        start_trial = time.time()
-        visualizer.create_video(trial=tr, output_directory=cnfg.OUTPUT_DIR)
-        end_trial = time.time()
-        print(f"\t{str(tr)}:\t{(end_trial - start_trial):.2f} s")
-    except Exception as e:
-        print(f"\nFailed to visualize {str(tr)}: {{e}}")
-        print("\n")
-
-end = time.time()
-print(f"Finished visualization in: {(end - start):.2f} seconds")
-
-# delete irrelevant variables:
-del start
-del end
-del start_trial
-del end_trial
-del i
-del tr
 
