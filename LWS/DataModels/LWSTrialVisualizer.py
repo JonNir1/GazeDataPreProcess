@@ -189,7 +189,7 @@ class LWSTrialVisualizer:
             target_info = trial.get_stimulus().get_target_data()
             for _, target in target_info.iterrows():
                 center_x, center_y = int(target['center_x']), int(target['center_y'])
-                cv2.rectangle(bg_img, (center_x - 20, center_y - 20), (center_x + 20, center_y + 20),
+                cv2.rectangle(bg_img, (center_x - 25, center_y - 25), (center_x + 25, center_y + 25),
                               (255, 0, 0), target_edge_size)
         bg_img = cv2.resize(bg_img, resolution)
         prev_bg_img = bg_img.copy()  # used to enable reverting to previous bg image if subject's action is undone
