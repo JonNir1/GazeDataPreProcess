@@ -117,8 +117,8 @@ class LWSArrayStimulus:
         target_data = pd.DataFrame({
             "icon_path": self.__icon_paths[target_indices],
             "icon_category": self.__icon_categories[target_indices],
-            "center_x": self.__icon_centers[target_indices][:, 0],
-            "center_y": self.__icon_centers[target_indices][:, 1]
+            "center_x": self.__icon_centers[target_indices][:, 1],  # X is the column index
+            "center_y": self.__icon_centers[target_indices][:, 0]   # Y is the row index
         })
         return target_data
 
@@ -131,7 +131,7 @@ class LWSArrayStimulus:
             target_data = self.get_target_data()
             for i, row in target_data.iterrows():
                 x, y = int(row['center_x']), int(row['center_y'])
-                cv2.circle(im, (y, x), 40, (0, 0, 255), 5)
+                cv2.circle(im, (x, y), 40, (0, 0, 255), 5)
         im_rgb = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
         plt.imshow(im_rgb)
         plt.axis('off')
