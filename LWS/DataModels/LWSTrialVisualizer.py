@@ -70,7 +70,7 @@ class LWSTrialVisualizer:
                         transparent=kwargs.get('transparent_figure', False))
         return fig
 
-    def create_targets_figure(self, trial: LWSTrial, savefig: bool = True, **kwargs):
+    def create_targets_figure(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
         """
         Creates a figure depicting the angular distance (visual angle) between the subject's gaze and the closest target
         during the given trial. Overlaid on the figure are vertical lines marking the user-inputs (triggers), and the
