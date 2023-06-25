@@ -18,7 +18,7 @@ from LWS.DataModels.LWSTrialVisualizer import LWSTrialVisualizer
 start = time.time()
 
 sm = ScreenMonitor.from_config()
-trials = [LWSTrial.from_pickle(os.path.join(cnfg.OUTPUT_DIR, "S002", "trials", f"LWSTrial_S2_T{i+1}.pkl")) for i in range(1)]
+trials = [LWSTrial.from_pickle(os.path.join(cnfg.OUTPUT_DIR, "S002", "trials", f"LWSTrial_S2_T{i+1}.pkl")) for i in range(60)]
 visualizer = LWSTrialVisualizer(screen_resolution=sm.resolution, output_directory=cnfg.OUTPUT_DIR)
 
 end = time.time()
@@ -50,6 +50,8 @@ import LWS.PreProcessing as pp
 
 start = time.time()
 
+sm = ScreenMonitor.from_config()
+
 trials = pp.process_subject(subject_dir=os.path.join(cnfg.RAW_DATA_DIR, 'Rotem Demo'),
                             stimuli_dir=cnfg.STIMULI_DIR,
                             screen_monitor=sm,
@@ -71,5 +73,3 @@ print(f"Finished preprocessing in: {(end - start):.2f} seconds")
 # delete irrelevant variables:
 del start
 del end
-
-
