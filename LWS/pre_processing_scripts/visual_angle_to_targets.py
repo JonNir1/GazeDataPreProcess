@@ -62,8 +62,8 @@ def _calculate_visual_angle_to_target(tx: float, ty: float, xs: np.ndarray, ys: 
 
     distances = np.zeros_like(xs)
     for i in range(len(xs)):
-        distances[i] = angle_utils.calculate_visual_angle_old(p1=(tx, ty), p2=(xs[i], ys[i]), d=d,
-                                                              pixel_size=sm.pixel_size, use_radians=False)
+        distances[i] = angle_utils.calculate_visual_angle(p1=(tx, ty), p2=(xs[i], ys[i]), d=d, pixel_size=sm.pixel_size,
+                                                          use_radians=False)
     return distances
 
 

@@ -75,14 +75,10 @@ def calculate_visual_angle_accurate(
     return np.rad2deg(theta)
 
 
-def calculate_visual_angle_old(
+def calculate_visual_angle(
         p1: Optional[Tuple[Optional[float], Optional[float]]],
         p2: Optional[Tuple[Optional[float], Optional[float]]],
         d: float, pixel_size: float, use_radians=False) -> float:
-    # TODO: fix implementation so that:
-    #  1. it assumes y-axis is pointing **down** (and not up) and that x-axis is pointing **right**
-    #  2. ii assumes the distance d is from the **center** of the screen to the participant's eyes
-    #  3. it takes into account the different sizes of the pixels in the x and y axes
     """
     Calculates the visual angle between two pixels on the screen, given that the viewer is at a distance d (in cm)
         from the screen.
@@ -141,8 +137,8 @@ def calculate_visual_angle_velocities(x: np.ndarray, y: np.ndarray,
     angles = []
     for i in range(pixels.shape[0]):
         x1, y1, x2, y2 = pixels[i]
-        ang = calculate_visual_angle_old(p1=(x1, y1), p2=(x2, y2), d=d, pixel_size=screen_monitor.pixel_size,
-                                         use_radians=use_radians)
+        ang = calculate_visual_angle(p1=(x1, y1), p2=(x2, y2), d=d, pixel_size=screen_monitor.pixel_size,
+                                     use_radians=use_radians)
         angles.append(ang)
     angles = np.array(angles)
     return angles * sr
