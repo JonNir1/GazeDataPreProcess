@@ -15,8 +15,8 @@ class LWSSaccadeEvent(SaccadeEvent):
 
     @property
     def visual_angle(self) -> float:
-        return angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point,
-                                                  d=self.__viewer_distance, pixel_size=self.__pixel_size)
+        return angle_utils.calculate_visual_angle_old(p1=self.start_point, p2=self.end_point, d=self.__viewer_distance,
+                                                      pixel_size=self.__pixel_size)
 
     @property
     def angular_velocity(self) -> float:
