@@ -83,6 +83,13 @@ class LWSArrayStimulus:
         return int(np.sum(self.__is_target_icon))
 
     @property
+    def image_shape(self) -> Tuple[int, int]:
+        # returns the height & width of the stimulus image
+        h = self.__image.shape[0]
+        w = self.__image.shape[1]
+        return h, w
+
+    @property
     def icons_shape(self) -> Tuple[int, int]:
         # returns the number of rows & columns of icons in the stimulus
         return self.__is_target_icon.shape
