@@ -34,47 +34,6 @@ def calculate_azimuth(p1: Optional[Tuple[Optional[float], Optional[float]]],
     return np.rad2deg(diff)
 
 
-def calculate_visual_angle_accurate(
-        P1: Optional[Tuple[Optional[float], Optional[float]]],
-        P2: Optional[Tuple[Optional[float], Optional[float]]],
-        d: float, sm: ScreenMonitor, use_radians=False) -> float:
-    """
-    Calculates the visual angle between two pixels on the screen, given that the viewer is at a distance d (in cm) from
-    the center of the screen, and that the (0,0) pixel is in the top-left corner of the screen.
-
-    Returns the angle in degrees (or radians if `use_radians` is True).
-    Returns np.nan if any of the given points is None or if any of the coordinates is None or np.nan.
-    """
-
-    if not __is_valid_pixel(P1):
-        return np.nan
-    if not __is_valid_pixel(P2):
-        return np.nan
-
-    pixels_distance = d / sm.pixel_size  # distance from screen in pixel units
-    C_x, C_y = sm.resolution[0] / 2, sm.resolution[1] / 2  # pixel coordinates of the center of the screen
-
-    # calculate Euclidean distance between Eye and P1
-    x1, y1 = P1
-    CP1 = np.sqrt(np.power(x1 - C_x, 2) + np.power(y1 - C_y, 2))  # Euclidean distance between C and P1 (in pixels)
-    alpha = np.arctan(CP1 / pixels_distance)  # angle between Eye and P1 (in radians)
-    EP1 = CP1 / np.sin(alpha)  # Euclidean distance between Eye and P1 (in pixels)
-
-    # calculate Euclidean distance between Eye and P2
-    x2, y2 = P2
-    CP2 = np.sqrt(np.power(x2 - C_x, 2) + np.power(y2 - C_y, 2))  # Euclidean distance between C and P2 (in pixels)
-    beta = np.arctan(CP2 / pixels_distance)  # angle between Eye and P2 (in radians)
-    EP2 = CP2 / np.sin(beta)  # Euclidean distance between Eye and P2 (in pixels)
-
-    # calculate the visual angle between P1 and P2 (angle between EP1 and EP2) using the law of cosines
-    P1P2 = np.sqrt(np.power(x1 - x2, 2) + np.power(y1 - y2, 2))  # Euclidean distance between P1 and P2 (in pixels)
-    cos_value = (np.power(EP1, 2) + np.power(EP2, 2) - np.power(P1P2, 2)) / (2 * EP1 * EP2)
-    theta = np.arccos(cos_value)  # angle between EP1 and EP2 (in radians)
-    if use_radians:
-        return theta
-    return np.rad2deg(theta)
-
-
 def calculate_visual_angle(
         p1: Optional[Tuple[Optional[float], Optional[float]]],
         p2: Optional[Tuple[Optional[float], Optional[float]]],
@@ -154,3 +113,46 @@ def __is_valid_pixel(p: Optional[Tuple[Optional[float], Optional[float]]]) -> bo
     if np.isnan(x) or np.isnan(y):
         return False
     return True
+
+
+def calculate_visual_angle_accurate(
+        P1: Optional[Tuple[Optional[float], Optional[float]]],
+        P2: Optional[Tuple[Optional[float], Optional[float]]],
+        d: float, sm: ScreenMonitor, use_radians=False) -> float:
+    """
+    UNUSED! Use calculate_visual_angle() instead.
+
+    Calculates the visual angle between two pixels on the screen, given that the viewer is at a distance d (in cm) from
+    the center of the screen, and that the (0,0) pixel is in the top-left corner of the screen.
+
+    Returns the angle in degrees (or radians if `use_radians` is True).
+    Returns np.nan if any of the given points is None or if any of the coordinates is None or np.nan.
+    """
+
+    if not __is_valid_pixel(P1):
+        return np.nan
+    if not __is_valid_pixel(P2):
+        return np.nan
+
+    pixels_distance = d / sm.pixel_size  # distance from screen in pixel units
+    C_x, C_y = sm.resolution[0] / 2, sm.resolution[1] / 2  # pixel coordinates of the center of the screen
+
+    # calculate Euclidean distance between Eye and P1
+    x1, y1 = P1
+    CP1 = np.sqrt(np.power(x1 - C_x, 2) + np.power(y1 - C_y, 2))  # Euclidean distance between C and P1 (in pixels)
+    alpha = np.arctan(CP1 / pixels_distance)  # angle between Eye and P1 (in radians)
+    EP1 = CP1 / np.sin(alpha)  # Euclidean distance between Eye and P1 (in pixels)
+
+    # calculate Euclidean distance between Eye and P2
+    x2, y2 = P2
+    CP2 = np.sqrt(np.power(x2 - C_x, 2) + np.power(y2 - C_y, 2))  # Euclidean distance between C and P2 (in pixels)
+    beta = np.arctan(CP2 / pixels_distance)  # angle between Eye and P2 (in radians)
+    EP2 = CP2 / np.sin(beta)  # Euclidean distance between Eye and P2 (in pixels)
+
+    # calculate the visual angle between P1 and P2 (angle between EP1 and EP2) using the law of cosines
+    P1P2 = np.sqrt(np.power(x1 - x2, 2) + np.power(y1 - y2, 2))  # Euclidean distance between P1 and P2 (in pixels)
+    cos_value = (np.power(EP1, 2) + np.power(EP2, 2) - np.power(P1P2, 2)) / (2 * EP1 * EP2)
+    theta = np.arccos(cos_value)  # angle between EP1 and EP2 (in radians)
+    if use_radians:
+        return theta
+    return np.rad2deg(theta)
