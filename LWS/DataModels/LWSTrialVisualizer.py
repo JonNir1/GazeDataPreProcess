@@ -334,7 +334,8 @@ class LWSTrialVisualizer:
         event_colors[event_array == cnst.SACCADE] = kwargs.pop("saccade_event_color", "#0000ff")
         event_colors[event_array == cnst.FIXATION] = kwargs.pop("fixation_event_color", "#00ff00")
         event_bar_size = kwargs.get('event_bar_size', 70)
-        ax.scatter(x=corrected_timestamps, y=np.ones_like(event_array), c=event_colors, s=event_bar_size, marker="s")
+        event_bar_height = np.full_like(event_array, fill_value=round(max([0, min([0.95 * min_val, min_val - 1])])))
+        ax.scatter(x=corrected_timestamps, y=event_bar_height, c=event_colors, s=event_bar_size, marker="s")
         return ax
 
     @staticmethod
