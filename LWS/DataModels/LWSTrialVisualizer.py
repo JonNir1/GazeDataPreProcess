@@ -130,7 +130,7 @@ class LWSTrialVisualizer:
         keyword arguments:
             Stimulus Visualization:
             - show_stimulus: Whether to show the stimulus image. Defaults to True.
-            # TODO: add circles around the targets
+            - mark_targets: Whether to mark the targets on the stimulus image. Defaults to True.
 
             Trigger Visualization:
             - target_radius (int): The radius of the target circle in pixels. Defaults to 25.
@@ -158,6 +158,7 @@ class LWSTrialVisualizer:
 
         # extract keyword arguments
         show_stimulus = kwargs.get('show_stimulus', True)
+        mark_targets = kwargs.get('mark_targets', True)
 
         target_radius = kwargs.get('target_radius', 35)
         target_edge_size = kwargs.get('target_edge_size', 4)
@@ -184,6 +185,12 @@ class LWSTrialVisualizer:
             bg_img = trial.get_stimulus().get_image(color_format='BGR')
         else:
             bg_img = np.zeros((*resolution, 3), dtype=np.uint8)
+        if mark_targets:
+            target_info = trial.get_stimulus().get_target_data()
+            for _, target in target_info.iterrows():
+                center_x, center_y = int(target['center_x']), int(target['center_y'])
+                cv2.rectangle(bg_img, (center_y - 20, center_x - 20), (center_y + 20, center_x + 20),
+                              (255, 0, 0), target_edge_size)
         bg_img = cv2.resize(bg_img, resolution)
         prev_bg_img = bg_img.copy()  # used to enable reverting to previous bg image if subject's action is undone
 
