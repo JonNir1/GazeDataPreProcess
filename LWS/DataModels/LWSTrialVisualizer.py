@@ -64,10 +64,8 @@ class LWSTrialVisualizer:
 
         # save figure:
         if savefig:
-            subject_id = trial.get_subject_info().subject_id
-            save_path = self.__get_full_path(subject_id, trial.trial_num, output_type='gaze_figure')
-            fig.savefig(save_path, bbox_inches='tight', dpi='figure',
-                        transparent=kwargs.get('transparent_figure', False))
+            self.__save_figure(fig=fig, trial=trial, output_type='gaze_figure',
+                               is_transparent=kwargs.get('is_transparent', False))
         return fig
 
     def create_targets_figure(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
@@ -113,10 +111,8 @@ class LWSTrialVisualizer:
                                                **kwargs)
         # save figure:
         if savefig:
-            subject_id = trial.get_subject_info().subject_id
-            save_path = self.__get_full_path(subject_id, trial.trial_num, output_type='target_figure')
-            fig.savefig(save_path, bbox_inches='tight', dpi='figure',
-                        transparent=kwargs.get('transparent_figure', False))
+            self.__save_figure(fig=fig, trial=trial, output_type='targets_figure',
+                               is_transparent=kwargs.get('is_transparent', False))
         return fig
 
     def create_video(self, trial: LWSTrial, **kwargs):
@@ -279,6 +275,12 @@ class LWSTrialVisualizer:
                 cv2.rectangle(bg_img, (center_x - 25, center_y - 25), (center_x + 25, center_y + 25), color, edge_size)
         bg_img = cv2.resize(bg_img, res)
         return bg_img
+
+    def __save_figure(self, trial: LWSTrial, fig: plt.Figure, output_type: str, is_transparent: bool = False):
+        subject_id = trial.get_subject_info().subject_id
+        save_path = self.__get_full_path(subject_id, trial.trial_num, output_type=output_type)
+        fig.savefig(save_path, bbox_inches='tight', dpi='figure', transparent=is_transparent)
+        return None
 
     def __get_full_path(self, subject_id: int, trial_num: int, output_type: str) -> str:
         """
