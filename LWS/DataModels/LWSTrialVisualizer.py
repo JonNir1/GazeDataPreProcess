@@ -65,7 +65,7 @@ class LWSTrialVisualizer:
         # save figure:
         if savefig:
             subject_id = trial.get_subject_info().subject_id
-            save_path = self.__get_output_full_path(subject_id, trial.trial_num, output_type='gaze_figure')
+            save_path = self.__get_full_path(subject_id, trial.trial_num, output_type='gaze_figure')
             fig.savefig(save_path, bbox_inches='tight', dpi='figure',
                         transparent=kwargs.get('transparent_figure', False))
         return fig
@@ -114,7 +114,7 @@ class LWSTrialVisualizer:
         # save figure:
         if savefig:
             subject_id = trial.get_subject_info().subject_id
-            save_path = self.__get_output_full_path(subject_id, trial.trial_num, output_type='target_figure')
+            save_path = self.__get_full_path(subject_id, trial.trial_num, output_type='target_figure')
             fig.savefig(save_path, bbox_inches='tight', dpi='figure',
                         transparent=kwargs.get('transparent_figure', False))
         return fig
@@ -180,7 +180,7 @@ class LWSTrialVisualizer:
         # prepare video writer
         fps = round(trial.sampling_rate)
         resolution = self.screen_resolution
-        save_path = self.__get_output_full_path(trial.get_subject_info().subject_id, trial.trial_num, output_type='video')
+        save_path = self.__get_full_path(trial.get_subject_info().subject_id, trial.trial_num, output_type='video')
         video_writer = cv2.VideoWriter(save_path, self.FOURCC, fps, resolution)
 
         # create the video:
@@ -235,7 +235,7 @@ class LWSTrialVisualizer:
 
         :raises FileNotFoundError: If the video file is not found at path `self.output_directory/subject_id/trial_num.mp4`
         """
-        video_path = self.__get_output_full_path(subject_id, trial_num, output_type="video")
+        video_path = self.__get_full_path(subject_id, trial_num, output_type="video")
         if not os.path.exists(video_path):
             raise FileNotFoundError(f'Video file not found at {video_path}')
 
@@ -280,7 +280,7 @@ class LWSTrialVisualizer:
         bg_img = cv2.resize(bg_img, res)
         return bg_img
 
-    def __get_output_full_path(self, subject_id: int, trial_num: int, output_type: str) -> str:
+    def __get_full_path(self, subject_id: int, trial_num: int, output_type: str) -> str:
         """
         Returns the full path of the output file for the given subject, trial and output type.
         Raises ValueError if the output type is not supported.
