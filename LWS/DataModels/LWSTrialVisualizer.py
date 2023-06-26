@@ -57,8 +57,8 @@ class LWSTrialVisualizer:
         # add other visualizations:
         ax = self.__add_triggers_and_events_bar(ax=ax, trial=trial, **kwargs)
         fig, ax = self.__set_figure_properties(fig=fig, ax=ax,
-                                               title=f"{str(trial)}",
-                                               subtitle=f"Dominant Eye: {dominant_eye}",
+                                               title=f"Gaze Position over Time",
+                                               subtitle=f"{str(trial)}",
                                                xlabel='Time (ms)', ylabel='Gaze Position (pixels)',
                                                **kwargs)
 
@@ -106,8 +106,8 @@ class LWSTrialVisualizer:
         kwargs['event_bar_size'] = kwargs.get('event_bar_size', 200)
         ax = self.__add_triggers_and_events_bar(ax=ax, trial=trial, **kwargs)
         fig, ax = self.__set_figure_properties(fig=fig, ax=ax,
-                                               title=f"{str(trial)}",
-                                               subtitle=f"Angular Distance from Closest Target",
+                                               title=f"Angular Distance from Closest Target",
+                                               subtitle=f"{str(trial)}",
                                                xlabel='Time (ms)', ylabel='Visual Angle (deg)',
                                                invert_yaxis=False,
                                                **kwargs)
