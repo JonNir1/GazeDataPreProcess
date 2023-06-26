@@ -131,6 +131,8 @@ class LWSTrialVisualizer:
             Stimulus Visualization:
             - show_stimulus: Whether to show the stimulus image. Defaults to True.
             - show_targets: Whether to show the targets on the stimulus image. Defaults to True.
+            - show_targets_color: The color of the rectangle to draw around each target. Defaults to (255, 0, 0) (blue).
+            - target_edge_size (int): The thickness of the rectangle to draw around each target. Defaults to 4.
 
             Trigger Visualization:
             - target_radius (int): The radius of the target circle in pixels. Defaults to 25.
@@ -156,10 +158,11 @@ class LWSTrialVisualizer:
         triggers = trial.get_triggers()
         num_samples = len(timestamps)
 
-        # extract keyword arguments
-        show_stimulus = kwargs.get('show_stimulus', True)
-        show_targets = kwargs.get('show_targets', True)
+        # prepare background image
+        bg_img = self.__create_background_image(trial, **kwargs)
+        prev_bg_img = bg_img.copy()  # used to enable reverting to previous bg image if subject's action is undone
 
+        # extract keyword arguments outside the loop to avoid unnecessary computation
         target_radius = kwargs.get('target_radius', 35)
         target_edge_size = kwargs.get('target_edge_size', 4)
         marked_target_color: Tuple[int, int, int] = kwargs.get('marked_target_color', (0, 0, 0))          # default: black
@@ -179,20 +182,6 @@ class LWSTrialVisualizer:
         resolution = self.screen_resolution
         save_path = self.__get_output_full_path(trial.get_subject_info().subject_id, trial.trial_num, output_type='video')
         video_writer = cv2.VideoWriter(save_path, self.FOURCC, fps, resolution)
-
-        # prepare background image
-        if show_stimulus:
-            bg_img = trial.get_stimulus().get_image(color_format='BGR')
-        else:
-            bg_img = np.zeros((*resolution, 3), dtype=np.uint8)
-        if show_targets:
-            target_info = trial.get_stimulus().get_target_data()
-            for _, target in target_info.iterrows():
-                center_x, center_y = int(target['center_x']), int(target['center_y'])
-                cv2.rectangle(bg_img, (center_x - 25, center_y - 25), (center_x + 25, center_y + 25),
-                              (255, 0, 0), target_edge_size)
-        bg_img = cv2.resize(bg_img, resolution)
-        prev_bg_img = bg_img.copy()  # used to enable reverting to previous bg image if subject's action is undone
 
         # create the video:
         circle_center = np.array([np.nan, np.nan])  # to draw a circle around the target
@@ -261,6 +250,35 @@ class LWSTrialVisualizer:
                 break
         video.release()
         cv2.destroyAllWindows()
+
+    def __create_background_image(self, trial: LWSTrial, **kwargs) -> np.ndarray:
+        """
+        Creates the background image for the given trial:
+        - If `show_stimulus` is True, the stimulus image is used as the background image. Otherwise, a black image is used.
+        - If `show_targets` is True, a rectangle is drawn around each target in the background image.
+
+        Keyword Arguments:
+        - show_stimulus: Whether to show the stimulus image as the background image. Default is True.
+        - show_targets: Whether to draw a rectangle around each target in the background image. Default is True.
+        - show_targets_color: The color of the rectangle to draw around each target. Default is (255, 0, 0) (blue).
+        - target_edge_size: The thickness of the rectangle to draw around each target. Default is 4.
+
+        :return: The background image as a numpy array of shape (height, width, 3)
+        """
+        res = self.screen_resolution
+        if kwargs.pop("show_stimulus", True):
+            bg_img = trial.get_stimulus().get_image(color_format='BGR')
+        else:
+            bg_img = np.zeros((*res, 3), dtype=np.uint8)
+        if kwargs.pop("show_targets", True):
+            color = kwargs.pop("show_targets_color", (255, 0, 0))  # BGR format
+            edge_size = int(kwargs.pop("target_edge_size", 4))
+            target_info = trial.get_stimulus().get_target_data()
+            for _, target in target_info.iterrows():
+                center_x, center_y = int(target['center_x']), int(target['center_y'])
+                cv2.rectangle(bg_img, (center_x - 25, center_y - 25), (center_x + 25, center_y + 25), color, edge_size)
+        bg_img = cv2.resize(bg_img, res)
+        return bg_img
 
     def __get_output_full_path(self, subject_id: int, trial_num: int, output_type: str) -> str:
         """
