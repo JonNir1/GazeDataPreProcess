@@ -37,14 +37,30 @@ class LWSTrial:
         return self.__trial_num
 
     @property
+    def num_samples(self) -> int:
+        timestamps = self.__behavioral_data.get(cnst.MICROSECONDS).values
+        return len(timestamps)
+
+    @property
     def sampling_rate(self) -> float:
         return self.__behavioral_data.sampling_rate
 
     @property
+    def start_time(self) -> float:
+        # start time in milliseconds
+        timestamps = self.__behavioral_data.get(cnst.MICROSECONDS).values
+        return timestamps[0] / cnst.MICROSECONDS_PER_MILLISECOND
+
+    @property
+    def end_time(self) -> float:
+        # end time in milliseconds
+        timestamps = self.__behavioral_data.get(cnst.MICROSECONDS).values
+        return timestamps[-1] / cnst.MICROSECONDS_PER_MILLISECOND
+
+    @property
     def duration(self) -> float:
         # duration in milliseconds
-        timestamps = self.__behavioral_data.get(cnst.MICROSECONDS).values
-        return (timestamps[-1] - timestamps[0]) / cnst.MICROSECONDS_PER_MILLISECOND
+        return self.end_time - self.start_time
 
     @property
     def is_processed(self) -> bool:
