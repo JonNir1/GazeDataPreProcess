@@ -1,7 +1,6 @@
 import numpy as np
 from scipy.ndimage import gaussian_filter
 import warnings as warn  # to suppress numpy warnings
-from typing import Optional
 from collections import Counter
 
 import constants as cnst
@@ -9,33 +8,44 @@ from LWS.DataModels.LWSTrial import LWSTrial
 from GazeEvents.FixationEvent import FixationEvent
 
 
-def gaze_heatmap(trial: LWSTrial, smoothing_sigma: Optional[float] = None) -> np.ndarray:
+def pixel_counts(trial: LWSTrial) -> np.ndarray:
     """
     Returns a 2D array with the same shape as the stimulus image, where each entry is the number of times the subject's
-    gaze fell on that pixel. If `smoothing_sigma` is not None, then the counts are smoothed using a Gaussian kernel with
-    standard deviation `smoothing_sigma`.
-
-    :raises ValueError: if `smoothing_sigma` is zero or negative.
+    gaze fell on the corresponding pixel.
     """
     h, w = trial.get_stimulus().image_shape
-    heatmap = np.zeros((h, w))
+    counts = np.zeros((h, w))
     _, x_gaze, y_gaze = trial.get_raw_gaze_coordinates(eye='dominant')
     with warn.catch_warnings():
         warn.filterwarnings('ignore', category=RuntimeWarning, message='invalid value encountered in cast')
         x_gaze = np.rint(x_gaze).astype(int)
         y_gaze = np.rint(y_gaze).astype(int)
-    counts = Counter(zip(y_gaze, x_gaze))
-    for (y, x), count in counts.items():
+    counter = Counter(zip(y_gaze, x_gaze))
+    for (y, x), c in counter.items():
         if y < 0 or y >= h:
             continue
         if x < 0 or x >= w:
             continue
-        heatmap[y, x] = count
+        counts[y, x] = c
+    return counts
+
+
+def gaze_heatmap(trial: LWSTrial, smoothing_sigma: float) -> np.ndarray:
+    """
+    Returns a 2D array with the same shape as the stimulus image, where each entry is the relative amount of samples
+    that fell on the corresponding pixel.
+
+    :raises ValueError: if `smoothing_sigma` is nan, inf, zero or negative.
+    """
+    heatmap = pixel_counts(trial)
     if (smoothing_sigma is None) or (not np.isfinite(smoothing_sigma)):
-        return heatmap
+        raise ValueError(f"argument `smoothing_sigma` must be a finite number, got {smoothing_sigma}")
     if smoothing_sigma <= 0:
         raise ValueError(f"argument `smoothing_sigma` must be positive, got {smoothing_sigma}")
-    return gaussian_filter(heatmap, sigma=smoothing_sigma)
+    heatmap = gaussian_filter(heatmap, sigma=smoothing_sigma)
+    # normalize heatmap to values in [0, 1]
+    heatmap = heatmap / np.max(heatmap)
+    return heatmap
 
 
 def fixations_heatmap(trial: LWSTrial) -> np.ndarray:
