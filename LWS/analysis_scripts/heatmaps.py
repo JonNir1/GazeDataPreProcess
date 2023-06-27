@@ -56,7 +56,7 @@ def fixations_heatmap(trial: LWSTrial) -> np.ndarray:
     Returns a 2D array with the same shape as the stimulus image, where each pixel is colored according to the total
     duration of all fixations that fell on it. Each fixation adds a 2D Gaussian to the heatmap, with the center of the
     Gaussian at the fixation's center of mass, it's mean equal to the fixation's duration (in milliseconds), and the
-    standard deviation of the Gaussian equal to double the fixation's standard deviation (on the X and Y axes).
+    standard deviation of the Gaussian equal to the fixation's standard deviation (on the X and Y axes).
     """
     h, w = trial.get_stimulus().image_shape
     heatmap = np.zeros((h, w))
@@ -69,7 +69,7 @@ def fixations_heatmap(trial: LWSTrial) -> np.ndarray:
 
         gaus = np.zeros_like(heatmap)
         gaus[round(center_y), round(center_x)] = duration
-        gaus = gaussian_filter(gaus, sigma=[2 * std_y, 2 * std_x])
+        gaus = gaussian_filter(gaus, sigma=[std_y, std_x])
         heatmap += gaus
     # normalize heatmap to values in [0, 1]
     heatmap = au.normalize_array(heatmap)
