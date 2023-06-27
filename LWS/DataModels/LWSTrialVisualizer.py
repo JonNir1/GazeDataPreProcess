@@ -7,6 +7,7 @@ from typing import Tuple
 import constants as cnst
 import experiment_config as cnfg
 import Utils.io_utils as ioutils
+import Utils.visualization_utils as visutils
 from LWS.DataModels.LWSTrial import LWSTrial
 
 
@@ -55,14 +56,14 @@ class LWSTrialVisualizer:
         ax.plot(corrected_timestamps, y_gaze, color=y_gaze_color, label='Y (high is down)')
 
         # add other visualizations:
-        ax = self.__add_triggers_and_events_bar(ax=ax, trial=trial, **kwargs)
-        fig, ax = self.__set_figure_properties(fig=fig, ax=ax,
-                                               title=f"Gaze Position over Time",
-                                               subtitle=f"{str(trial)}",
-                                               xlabel='Time (ms)', ylabel='Gaze Position (pixels)',
-                                               invert_yaxis=False,
-                                               **kwargs)
-
+        ax = self.__add_trigger_lines(ax=ax, trial=trial, **kwargs)
+        ax = self.__add_events_bar(ax=ax, trial=trial, **kwargs)
+        fig, axes = visutils.set_figure_properties(fig=fig, ax=ax,
+                                                   title=f"Gaze Position over Time",
+                                                   subtitle=f"{str(trial)}",
+                                                   xlabel='Time (ms)', ylabel='Gaze Position (pixels)',
+                                                   invert_yaxis=True,
+                                                   **kwargs)
         # save figure:
         if savefig:
             self.__save_figure(fig=fig, trial=trial, output_type='gaze_figure',
@@ -103,13 +104,14 @@ class LWSTrialVisualizer:
         # add other visualizations:
         kwargs['legend_location'] = kwargs.get('legend_location', 'upper center')
         kwargs['event_bar_size'] = kwargs.get('event_bar_size', 200)
-        ax = self.__add_triggers_and_events_bar(ax=ax, trial=trial, **kwargs)
-        fig, ax = self.__set_figure_properties(fig=fig, ax=ax,
-                                               title=f"Angular Distance from Closest Target",
-                                               subtitle=f"{str(trial)}",
-                                               xlabel='Time (ms)', ylabel='Visual Angle (deg)',
-                                               invert_yaxis=False,
-                                               **kwargs)
+        ax = self.__add_trigger_lines(ax=ax, trial=trial, **kwargs)
+        ax = self.__add_events_bar(ax=ax, trial=trial, **kwargs)
+        fig, ax = visutils.set_figure_properties(fig=fig, ax=ax,
+                                                 title=f"Angular Distance from Closest Target",
+                                                 subtitle=f"{str(trial)}",
+                                                 xlabel='Time (ms)', ylabel='Visual Angle (deg)',
+                                                 invert_yaxis=False,
+                                                 **kwargs)
         # save figure:
         if savefig:
             self.__save_figure(fig=fig, trial=trial, output_type='targets_figure',
@@ -303,52 +305,50 @@ class LWSTrialVisualizer:
         raise ValueError(f'Unsupported output type: {output_type}')
 
     @staticmethod
-    def __add_triggers_and_events_bar(trial: LWSTrial, ax: plt.Axes, **kwargs):
+    def __add_trigger_lines(trial: LWSTrial, ax: plt.Axes, **kwargs) -> plt.Axes:
         """
-        Adds to the given axes two visualizations:
-        1. Vertical lines and text depicting the user-inputs during the trial (i.e. triggers)
-        2. A horizontal line with changing colors depicting each time-point's event type (i.e. fixation, saccade, etc.)
-
+        Adds to the given Axes a set of vertical lines and text depicting the user-inputs during the trial (i.e. triggers)
         :param trial: the trial to visualize
         :param ax: the axes to add the visualizations to
 
         keyword arguments:
             - text_size: the size of the text of the triggers (default: 12)
-
-            Trigger Related Arguments:
             - triggers_line_color: the color of the vertical lines marking the triggers, default is 'k' (black).
             - trigger_line_width: the width of the vertical lines marking the triggers, default is 4.
             - trigger_line_style: the style of the vertical lines marking the triggers, default is ':' (dotted).
 
-            Event Related Arguments:
-            - undefined_event_color: the color of the undefined gaze events, default is '#808080' (gray).
-            - blink_event_color: the color of the blink gaze events, default is '#000000' (black).
-            - saccade_event_color: the color of the saccade gaze events, default is '#0000ff' (blue).
-            - fixation_event_color: the color of the fixation gaze events, default is '#00ff00' (green).
-            - event_bar_size: the height of the gaze event markers, default is 70 (used for `scatter`).
-
         Returns the axes with the added visualizations.
         """
+        # Extract the relevant data from the trial:
         timestamps = trial.get_behavioral_data().get(cnst.MICROSECONDS).values / 1000
         corrected_timestamps = timestamps - timestamps[0]  # start from 0
+        min_val, max_val = visutils.get_axis_limits(ax, axis='y')  # get the min/max y values (excluding inf/nan)
 
-        # Add vertical lines and text to the given axes at the given trigger times:
         triggers = trial.get_triggers()
         real_trigger_idxs = np.where((~np.isnan(triggers)) & (triggers != 0))[0]
         trigger_times = corrected_timestamps[real_trigger_idxs]
         trigger_vals = triggers[real_trigger_idxs].astype(int)
+
+        # Add vertical lines and text to the given axes at the given trigger times:
         text_size = kwargs.get('text_size', 12)
         trigger_line_color = kwargs.get('triggers_line_color', 'k')
         trigger_line_width = kwargs.get('trigger_line_width', 4)
         trigger_line_style = kwargs.get('trigger_line_style', ':')
-        min_val, max_val = LWSTrialVisualizer.__get_axis_limits(ax, axis='y')  # get the min/max y values (excluding inf/nan)
         ax.vlines(x=trigger_times, ymin=0.95 * min_val, ymax=0.95 * max_val,
                   color=trigger_line_color, lw=trigger_line_width, ls=trigger_line_style)
         [ax.text(x=trigger_times[i], y=max_val, s=str(trigger_vals[i]),
                  fontsize=text_size, ha='center', va='top') for i in range(len(trigger_times))]
+        return ax
 
-        # Add a horizontal bar at the top of the given axes, colored according to each timestamp's event
+    @staticmethod
+    def __add_events_bar(trial: LWSTrial, ax: plt.Axes, **kwargs) -> plt.Axes:
+        # Extract the relevant data from the trial:
+        timestamps = trial.get_behavioral_data().get(cnst.MICROSECONDS).values / 1000
+        corrected_timestamps = timestamps - timestamps[0]  # start from 0
+        min_val, max_val = visutils.get_axis_limits(ax, axis='y')  # get the min/max y values (excluding inf/nan)
         event_array = trial.get_event_per_sample_array()
+
+        # Add a horizontal scatter plot to the axes, depicting the events:
         undefined_event_color = kwargs.pop("undefined_event_color", "#808080")
         event_colors = np.full(shape=event_array.shape, fill_value=undefined_event_color, dtype=object)
         event_colors[event_array == cnst.BLINK] = kwargs.pop("blink_event_color", "#000000")
@@ -358,79 +358,6 @@ class LWSTrialVisualizer:
         event_bar_height = np.full_like(event_array, fill_value=round(max([0, min([0.95 * min_val, min_val - 1])])))
         ax.scatter(x=corrected_timestamps, y=event_bar_height, c=event_colors, s=event_bar_size, marker="s")
         return ax
-
-    @staticmethod
-    def __set_figure_properties(fig: plt.Figure, ax: plt.Axes, **kwargs):
-        """
-        Sets the properties of the given figure and axes according to the given keyword arguments:
-
-        Figure Arguments:
-            - figsize: the figure's size (width, height) in inches, default is (16, 9).
-            - figure_dpi: the figure's DPI, default is 300.
-            - title: the figure's title, default is ''.
-            - title_size: the size of the title text object in the figure, default is 18.
-
-        Axes Arguments:
-            - subtitle: the figure's subtitle, default is ''.
-            - subtitle_size: the size of the subtitle text object in the figure, default is 14.
-            - legend_location: the location of the legend in the figure, default is 'lower center'.
-            - invert_yaxis: whether to invert the Y axis or not, default is False.
-
-        X-Axis & Y-Axis Arguments:
-            - x_label: the label of the X axis, default is ''.
-            - y_label: the label of the Y axis, default is ''.
-            - text_size: the size of non-title text objects in the figure, default is 12.
-
-        Returns the figure and axes with the updated properties.
-        """
-        # general figure properties
-        figsize = kwargs.get('figsize', (16, 9))
-        fig.set_size_inches(w=figsize[0], h=figsize[1])
-        fig.set_dpi(kwargs.get('figure_dpi', 500))
-        fig.suptitle(t=kwargs.pop('title', ''), fontsize=kwargs.get('title_size', 18), y=0.98)
-
-        # general axes properties
-        ax.set_title(label=kwargs.pop('subtitle', ''), fontsize=kwargs.pop('subtitle_size', 14))
-        text_size = kwargs.get('text_size', 12)
-        ax.legend(loc=kwargs.get('legend_location', 'lower center'), fontsize=text_size)
-
-        # set x-axis properties
-        _, x_axis_max = LWSTrialVisualizer.__get_axis_limits(ax, axis='x')
-        ax.set_xlim(left=int(-0.01 * x_axis_max), right=int(1.01 * x_axis_max))
-        jumps = 2 * np.power(10, max(0, int(np.log10(x_axis_max)) - 1))
-        xticks = [int(val) for val in np.arange(int(x_axis_max)) if val % jumps == 0]
-        ax.set_xticks(ticks=xticks, labels=[str(tck) for tck in xticks], rotation=45, fontsize=text_size)
-        ax.set_xlabel(xlabel=kwargs.pop('xlabel', ''), fontsize=text_size)
-
-        # set y-axis properties
-        _, y_axis_max = LWSTrialVisualizer.__get_axis_limits(ax, axis='y')
-        ax.set_ylim(bottom=int(-0.02 * y_axis_max), top=int(1.05 * y_axis_max))
-        jumps = 2 * np.power(10, max(0, int(np.log10(y_axis_max)) - 1))
-        yticks = [int(val) for val in np.arange(int(y_axis_max)) if val % jumps == 0]
-        ax.set_yticks(ticks=yticks, labels=[str(tck) for tck in yticks], fontsize=text_size)
-        ax.set_ylabel(ylabel=kwargs.pop('ylabel', ''), fontsize=text_size)
-
-        if kwargs.get('invert_yaxis', False):
-            # invert y-axis to match the screen coordinates:
-            ax.invert_yaxis()
-        return fig, ax
-
-    @staticmethod
-    def __get_axis_limits(ax: plt.Axes, axis: str) -> Tuple[float, float]:
-        """ Returns the maximum and minimum values for the X or Y axis of the given plt.Axes object, excluding
-        NaNs/inf """
-        axis = axis.lower()
-        if axis not in ['x', 'y']:
-            raise ValueError(f"Invalid axis '{axis}'! Must be either 'x' or 'y'.")
-        axis_idx = 0 if axis == 'x' else 1
-        min_val, max_val = float('inf'), float('-inf')
-        for ln in ax.lines:
-            data = ln.get_data()[axis_idx]
-            tmp_min = float(np.min(np.ma.masked_invalid(data)))
-            tmp_max = float(np.max(np.ma.masked_invalid(data)))
-            min_val = min(min_val, tmp_min)
-            max_val = max(max_val, tmp_max)
-        return min_val, max_val
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}"
