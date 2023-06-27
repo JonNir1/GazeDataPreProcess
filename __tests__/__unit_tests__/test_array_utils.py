@@ -6,7 +6,7 @@ from Utils import array_utils as au
 
 class TestUtils(unittest.TestCase):
 
-    def test_normalize_array(self):
+    def test_normalize_array_1d(self):
         arr = np.arange(8).astype(float)
         arr[0] = np.nan
         arr[3] = np.nan
@@ -17,6 +17,22 @@ class TestUtils(unittest.TestCase):
                 self.assertTrue(np.isnan(normalized[i]))
             else:
                 self.assertEqual(expected[i], normalized[i])
+
+    def test_normalize_array_2d(self):
+        arr = np.arange(4).astype(float)
+        arr[1] = np.nan
+        arr_2d = arr[:, np.newaxis] * arr
+        normalized_2d = au.normalize_array(arr_2d)
+        expected = np.array([[0, np.nan, 0, 0],
+                             [np.nan, np.nan, np.nan, np.nan],
+                             [0, np.nan, 4 / 9, 6 / 9],
+                             [0, np.nan, 6 / 9, 9 / 9]])
+        for i in range(len(arr)):
+            for j in range(len(arr)):
+                if np.isnan(expected[i, j]):
+                    self.assertTrue(np.isnan(normalized_2d[i, j]))
+                else:
+                    self.assertEqual(expected[i, j], normalized_2d[i, j])
 
     def test_shift_array(self):
         arr = np.arange(8)
