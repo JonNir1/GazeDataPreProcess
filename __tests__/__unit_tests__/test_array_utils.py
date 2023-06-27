@@ -58,6 +58,6 @@ class TestUtils(unittest.TestCase):
         # TODO
         pass
 
-    def test_get_different_event_indices(self):
+    def test_get_chunk_indices(self):
         # TODO
         pass
