@@ -43,7 +43,7 @@ def set_axis_properties(ax: plt.Axes, axis: str, label: str, text_size: int) -> 
     jumps = 2 * np.power(10, max(0, int(np.log10(axis_max)) - 1))
     if axis == 'x':
         ax.set_xlabel(xlabel=label, fontsize=text_size)
-        ax.set_xlimg(bottom=int(-0.02 * axis_max), top=int(1.05 * axis_max))
+        ax.set_xlim(left=int(-0.02 * axis_max), right=int(1.05 * axis_max))
         xticks = [int(val) for val in np.arange(int(axis_max)) if val % jumps == 0]
         ax.set_xticks(ticks=xticks, labels=[str(tck) for tck in xticks], fontsize=text_size)
 
