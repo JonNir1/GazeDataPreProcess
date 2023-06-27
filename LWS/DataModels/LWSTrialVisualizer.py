@@ -60,6 +60,7 @@ class LWSTrialVisualizer:
                                                title=f"Gaze Position over Time",
                                                subtitle=f"{str(trial)}",
                                                xlabel='Time (ms)', ylabel='Gaze Position (pixels)',
+                                               invert_yaxis=False,
                                                **kwargs)
 
         # save figure:
@@ -373,7 +374,7 @@ class LWSTrialVisualizer:
             - subtitle: the figure's subtitle, default is ''.
             - subtitle_size: the size of the subtitle text object in the figure, default is 14.
             - legend_location: the location of the legend in the figure, default is 'lower center'.
-            - invert_yaxis: whether to invert the Y axis or not, default is True.
+            - invert_yaxis: whether to invert the Y axis or not, default is False.
 
         X-Axis & Y-Axis Arguments:
             - x_label: the label of the X axis, default is ''.
@@ -409,7 +410,7 @@ class LWSTrialVisualizer:
         ax.set_yticks(ticks=yticks, labels=[str(tck) for tck in yticks], fontsize=text_size)
         ax.set_ylabel(ylabel=kwargs.pop('ylabel', ''), fontsize=text_size)
 
-        if kwargs.get('invert_yaxis', True):
+        if kwargs.get('invert_yaxis', False):
             # invert y-axis to match the screen coordinates:
             ax.invert_yaxis()
         return fig, ax
