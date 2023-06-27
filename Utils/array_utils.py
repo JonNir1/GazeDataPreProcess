@@ -58,18 +58,18 @@ def median_standard_deviation(x: np.ndarray, min_sd: float = 1e-6) -> float:
     return max(sd, min_sd)
 
 
-def get_different_event_indices(is_event: np.ndarray, min_length: int = 0) -> List[np.ndarray]:
+def get_chunk_indices(bool_arr: np.ndarray, min_length: int = 0) -> List[np.ndarray]:
     """
-    Returns a list of arrays, where each array contains the indices of a different event.
-    :param is_event: np.ndarray - a boolean array, where True indicates that the sample is part of an event.
-    :param min_length: int - the minimum length of an event. Events shorter than this will be ignored.
+    Returns a list of arrays, where each array contains the indices of a different "chunk", i.e. a sequence of True values.
+    :param bool_arr: np.ndarray - a boolean array, where True indicates that the sample is part of a chunk.
+    :param min_length: int - the minimum length of a chunk. Chunks shorter than this will be ignored.
 
-    :return: a list of arrays, where each array contains the indices of a different event.
+    :return: a list of arrays, where each array contains the indices of a different chunk.
     """
-    event_idxs = np.nonzero(is_event)[0]
-    if len(event_idxs) == 0:
+    chunk_idxs = np.nonzero(bool_arr)[0]
+    if len(chunk_idxs) == 0:
         return []
-    event_end_idxs = np.nonzero(np.diff(event_idxs) != 1)[0]
-    different_event_idxs = np.split(event_idxs, event_end_idxs + 1)  # +1 because we want to include the last index
-    different_event_idxs = list(filter(lambda e: len(e) >= min_length, different_event_idxs))
-    return different_event_idxs
+    chunk_end_idxs = np.nonzero(np.diff(chunk_idxs) != 1)[0]
+    different_chunk_idxs = np.split(chunk_idxs, chunk_end_idxs + 1)  # +1 because we want to include the last index
+    different_chunk_idxs = list(filter(lambda e: len(e) >= min_length, different_chunk_idxs))
+    return different_chunk_idxs

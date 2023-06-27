@@ -48,7 +48,7 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial, screen_monitor: Screen
         blinks_list = gen_gaze_events(timestamps=timestamps, is_event=is_event, event_type=cnst.BLINK)
         return blinks_list
 
-    separate_event_idxs = au.get_different_event_indices(is_event, min_length=cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT)
+    separate_event_idxs = au.get_chunk_indices(is_event, min_length=cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT)
 
     if event_type == cnst.SACCADE:
         # create LWSSaccadeEvents
