@@ -2,6 +2,7 @@ import os
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+import seaborn as sns
 from typing import Tuple
 
 import constants as cnst
@@ -9,6 +10,7 @@ import experiment_config as cnfg
 import Utils.io_utils as ioutils
 import Utils.visualization_utils as visutils
 from LWS.DataModels.LWSTrial import LWSTrial
+import LWS.analysis_scripts.heatmaps as hm
 
 
 class LWSTrialVisualizer:
@@ -115,6 +117,43 @@ class LWSTrialVisualizer:
         # save figure:
         if savefig:
             self.__save_figure(fig=fig, trial=trial, output_type='targets_figure',
+                               is_transparent=kwargs.get('is_transparent', False))
+        return fig
+
+    def create_heatmap(self, trial: LWSTrial, fixation_only: bool, savefig: bool = True, **kwargs) -> plt.Figure:
+        # calculate heatmap:
+        if fixation_only:
+            heatmap = hm.fixations_heatmap(trial)
+        else:
+            heatmap = hm.gaze_heatmap(trial, smoothing_std=kwargs.get('smoothing_std', 10))
+        heatmap[heatmap < np.mean(heatmap)] = np.nan  # remove low values
+
+        # create RGB background image:
+        bg_img = self.__create_background_image(trial, **kwargs)
+        bg_img = cv2.cvtColor(bg_img, cv2.COLOR_BGR2RGB)  # convert from BGR to RGB for seaborn
+
+        # overlay heatmap on background image:
+        # see explanation: https://shorturl.at/gEX08
+        fig, ax = plt.subplots(tight_layout=True)
+        sns.heatmap(heatmap, ax=ax, cbar=False, annot=False, zorder=2,
+                    cmap=kwargs.get('cmap', 'jet'),  # can also use 'hot' or 'coolwarm'
+                    alpha=kwargs.get('alpha', 0.5))
+        ax.imshow(bg_img, zorder=1)  # zorder=1 to put background image behind heatmap
+
+        # configure titles and axes:
+        title = "Fixations Heatmap" if fixation_only else "Gaze Heatmap"
+        fig, ax = visutils.set_figure_properties(fig=fig, ax=ax,
+                                                 title=title,
+                                                 subtitle=f"{str(trial)}",
+                                                 show_legend=False,
+                                                 show_axes=False,
+                                                 **kwargs)
+        ax.axis('off')
+
+        # save figure:
+        if savefig:
+            hm_type = title.lower().replace(' ', '_')
+            self.__save_figure(fig=fig, trial=trial, output_type=hm_type,
                                is_transparent=kwargs.get('is_transparent', False))
         return fig
 
@@ -300,6 +339,12 @@ class LWSTrialVisualizer:
             filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
             return os.path.join(output_dir, filename)
         if output_type == "target_figure":
+            filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
+            return os.path.join(output_dir, filename)
+        if output_type == "gaze_heatmap":
+            filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
+            return os.path.join(output_dir, filename)
+        if output_type == "fixations_heatmap":
             filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
             return os.path.join(output_dir, filename)
         raise ValueError(f'Unsupported output type: {output_type}')
