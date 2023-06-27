@@ -55,8 +55,12 @@ class TestUtils(unittest.TestCase):
         np.array_equal(expected, res, equal_nan=True)
 
     def test_median_standard_deviation(self):
-        # TODO
-        pass
+        arr = np.zeros(10)
+        self.assertEqual(au.median_standard_deviation(arr, 0.1), 0.1)
+
+        arr = np.arange(10)
+        self.assertRaises(AssertionError, au.median_standard_deviation, arr, 0)
+        self.assertEqual(au.median_standard_deviation(arr), 0.5)
 
     def test_get_chunk_indices(self):
         arr = np.hstack([np.zeros(3, dtype=bool), np.ones(4, dtype=bool),
