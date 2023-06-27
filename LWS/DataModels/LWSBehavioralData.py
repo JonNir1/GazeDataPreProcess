@@ -11,8 +11,6 @@ class LWSBehavioralData:
     Represents the behavioral data for a single trial in the LWS Demo experiment.
     """
 
-    # TODO: decode+encode as pkl file
-
     def __init__(self, data: pd.DataFrame):
         self.__data = data
 
