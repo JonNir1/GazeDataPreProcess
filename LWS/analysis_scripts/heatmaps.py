@@ -4,7 +4,6 @@ import warnings as warn  # to suppress numpy warnings
 from collections import Counter
 
 import constants as cnst
-import Utils.array_utils as au
 from LWS.DataModels.LWSTrial import LWSTrial
 from GazeEvents.FixationEvent import FixationEvent
 
@@ -45,7 +44,7 @@ def gaze_heatmap(trial: LWSTrial, smoothing_sigma: float) -> np.ndarray:
         raise ValueError(f"argument `smoothing_sigma` must be positive, got {smoothing_sigma}")
     heatmap = gaussian_filter(heatmap, sigma=smoothing_sigma)
     # normalize heatmap to values in [0, 1]
-    heatmap = au.normalize_array(heatmap)
+    heatmap = heatmap / np.max(heatmap)
     return heatmap
 
 
@@ -69,6 +68,4 @@ def fixations_heatmap(trial: LWSTrial) -> np.ndarray:
         gaus[round(center_y), round(center_x)] = duration
         gaus = gaussian_filter(gaus, sigma=[std_y, std_x])
         heatmap += gaus
-    # normalize heatmap to values in [0, 1]
-    heatmap = au.normalize_array(heatmap)
     return heatmap
