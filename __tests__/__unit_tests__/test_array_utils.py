@@ -11,7 +11,7 @@ class TestUtils(unittest.TestCase):
         arr[0] = np.nan
         arr[3] = np.nan
         normalized = au.normalize_array(arr)
-        expected = np.array([np.nan, 0, 1/6, np.nan, 3/6, 4/6, 5/6, 1])
+        expected = np.array([np.nan, 0, 1 / 6, np.nan, 3 / 6, 4 / 6, 5 / 6, 1])
         for i in range(len(arr)):
             if np.isnan(expected[i]):
                 self.assertTrue(np.isnan(normalized[i]))
@@ -61,6 +61,3 @@ class TestUtils(unittest.TestCase):
     def test_get_different_event_indices(self):
         # TODO
         pass
-
-
-
