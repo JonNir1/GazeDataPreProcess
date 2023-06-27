@@ -386,6 +386,8 @@ class LWSTrialVisualizer:
 
     @staticmethod
     def __add_events_bar(trial: LWSTrial, ax: plt.Axes, **kwargs) -> plt.Axes:
+        # TODO: implement this using a second axes, and not a second plot on the same axes.
+        # the second axes should be aligned with the first one, but with no ticks and no labels.
         """
         Adds to the given axes a horizontal line with changing colors depicting each time-point's event-type
         (i.e. fixation, saccade, etc.). The colors are defined by color mappings provided as keyword arguments.
