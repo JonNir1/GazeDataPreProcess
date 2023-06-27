@@ -12,11 +12,7 @@ class TestUtils(unittest.TestCase):
         arr[3] = np.nan
         normalized = au.normalize_array(arr)
         expected = np.array([np.nan, 0, 1 / 6, np.nan, 3 / 6, 4 / 6, 5 / 6, 1])
-        for i in range(len(arr)):
-            if np.isnan(expected[i]):
-                self.assertTrue(np.isnan(normalized[i]))
-            else:
-                self.assertEqual(expected[i], normalized[i])
+        self.assertTrue(np.array_equal(expected, normalized, equal_nan=True))
 
     def test_normalize_array_2d(self):
         arr = np.arange(4).astype(float)
@@ -27,12 +23,7 @@ class TestUtils(unittest.TestCase):
                              [np.nan, np.nan, np.nan, np.nan],
                              [0, np.nan, 4 / 9, 6 / 9],
                              [0, np.nan, 6 / 9, 9 / 9]])
-        for i in range(len(arr)):
-            for j in range(len(arr)):
-                if np.isnan(expected[i, j]):
-                    self.assertTrue(np.isnan(normalized_2d[i, j]))
-                else:
-                    self.assertEqual(expected[i, j], normalized_2d[i, j])
+        self.assertTrue(np.array_equal(expected, normalized_2d, equal_nan=True))
 
     def test_shift_array(self):
         arr = np.arange(8)
