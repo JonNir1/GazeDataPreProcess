@@ -37,23 +37,26 @@ start = time.time()
 
 visualizer = LWSTrialVisualizer(screen_resolution=sm.resolution, output_directory=cnfg.OUTPUT_DIR)
 
+failed_trials = []
 for tr in trials:
-    start_trial = time.time()
-    visualizer.create_gaze_figure(trial=tr, savefig=True)
-    visualizer.create_targets_figure(trial=tr, savefig=True)
-    # visualizer.create_heatmap(trial=tr, savefig=True, fixation_only=True, show_targets_color=(0, 0, 0))
-    # visualizer.create_heatmap(trial=tr, savefig=True, fixation_only=False, show_targets_color=(0, 0, 0))
-    # visualizer.create_video(trial=tr, output_directory=cnfg.OUTPUT_DIR)
-    end_trial = time.time()
-    print(f"\t{tr.__repr__()}:\t{(end_trial - start_trial):.2f} s")
-    if tr.trial_num > -1:
-        break
+    try:
+        start_trial = time.time()
+        visualizer.create_gaze_figure(trial=tr, savefig=True)
+        visualizer.create_targets_figure(trial=tr, savefig=True)
+        visualizer.create_heatmap(trial=tr, savefig=True, fixation_only=True, show_targets_color=(0, 0, 0))
+        visualizer.create_heatmap(trial=tr, savefig=True, fixation_only=False, show_targets_color=(0, 0, 0))
+        visualizer.create_video(trial=tr, output_directory=cnfg.OUTPUT_DIR)
+        end_trial = time.time()
+        print(f"\t{tr.__repr__()}:\t{(end_trial - start_trial):.2f} s")
+    except Exception as e:
+        failed_trials.append((tr, e))
+        print(f"Failed to visualize trial: {tr.__repr__()}")
 
 end = time.time()
 print(f"Finished visualization in: {(end - start):.2f} seconds")
 
 # delete irrelevant variables:
-del start, end, tr
+del start, end, start_trial, end_trial, tr
 
 ##########################################
 ###  ANALYZING DATA  #####################
@@ -103,5 +106,5 @@ end = time.time()
 print(f"Finished preprocessing in: {(end - start):.2f} seconds")
 
 # delete irrelevant variables:
-del start, end, start_trial, end_trial
+del start, end
 
