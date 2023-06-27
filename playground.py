@@ -24,10 +24,32 @@ trials = [LWSTrial.from_pickle(os.path.join(cnfg.OUTPUT_DIR, "S002", "trials", f
 
 end = time.time()
 print(f"Finished loading in: {(end - start):.2f} seconds")
+del start, end
 
 ##########################################
 ###  ANALYZING DATA  #####################
 ##########################################
+
+import LWS.analysis_scripts.trial_summary as trsum
+import LWS.analysis_scripts.events_summary as evsum
+
+start = time.time()
+
+trial_summary = trsum.summarize_all_trials(trials)
+
+all_blinks = [b for tr in trials for b in tr.get_gaze_events(cnst.BLINK)]
+blink_summary = evsum.summarize_events(all_blinks)
+
+all_saccades = [s for tr in trials for s in tr.get_gaze_events(cnst.SACCADE)]
+saccade_summary = evsum.summarize_events(all_saccades)
+
+all_fixations = [f for tr in trials for f in tr.get_gaze_events(cnst.FIXATION)]
+fixation_summary = evsum.summarize_events(all_fixations)
+
+end = time.time()
+print(f"Finished analysis in: {(end - start):.2f} seconds")
+
+del start, end
 
 ##########################################
 ###  VISUALIZING DATA  ###################
@@ -40,9 +62,14 @@ start = time.time()
 visualizer = LWSTrialVisualizer(screen_resolution=sm.resolution, output_directory=cnfg.OUTPUT_DIR)
 
 for tr in trials:
+    if tr.trial_num > 1:
+        break
+
     start_trial = time.time()
     # visualizer.create_gaze_figure(trial=tr, savefig=True)
     # visualizer.create_targets_figure(trial=tr, savefig=True)
+    visualizer.create_heatmap(trial=tr, savefig=True, fixation_only=True)
+    visualizer.create_heatmap(trial=tr, savefig=True, fixation_only=False)
     # visualizer.create_video(trial=tr, output_directory=cnfg.OUTPUT_DIR)
     end_trial = time.time()
     print(f"\t{tr.__repr__()}:\t{(end_trial - start_trial):.2f} s")
@@ -51,8 +78,7 @@ end = time.time()
 print(f"Finished visualization in: {(end - start):.2f} seconds")
 
 # delete irrelevant variables:
-del start
-del end
+del start, end
 
 ##########################################
 ### PREPROCESSING GAZE DATA  #############
