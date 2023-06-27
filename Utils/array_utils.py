@@ -12,7 +12,6 @@ def normalize_array(arr: np.ndarray) -> np.ndarray:
     return corrected_arr / values_range
 
 
-
 def shift_array(array: np.ndarray, shift: int) -> np.ndarray:
     """
     Shifts an array by a given amount.
