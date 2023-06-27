@@ -35,10 +35,10 @@ class LWSTrialVisualizer:
             - y_gaze_color: the color of the Y gaze data, default is '#20d5f0' (light blue).
 
             Trigger & Event Related Arguments:
-            See documentation in `__add_triggers_and_events_bar()`.
+            See documentation in `self.__add_trigger_lines()` and `self.__add_events_bar()`.
 
             General Arguments:
-            See documentation in `__set_figure_properties()`.
+            See documentation in `visutils.set_figure_properties()`.
 
         :returns: the created figure.
         """
@@ -85,10 +85,10 @@ class LWSTrialVisualizer:
             - line_color: the color of the angular distance line, default is '#ff0000' (red).
 
             Trigger & Event Related Arguments:
-            See documentation in `__add_triggers_and_events_bar()`.
+            See documentation in `self.__add_trigger_lines()` and `self.__add_events_bar()`.
 
             General Arguments:
-            See documentation in `__set_figure_properties()`.
+            See documentation in `visutils.set_figure_properties()`.
 
         :returns: the created figure.
         """
