@@ -3,6 +3,16 @@ import pandas as pd
 from typing import List
 
 
+def normalize_array(arr: np.ndarray) -> np.ndarray:
+    """
+    Returns a copy of the given array, normalized to the range [0, 1].
+    """
+    values_range = np.nanmax(arr) - np.nanmin(arr)
+    corrected_arr = arr - np.nanmin(arr)
+    return corrected_arr / values_range
+
+
+
 def shift_array(array: np.ndarray, shift: int) -> np.ndarray:
     """
     Shifts an array by a given amount.
