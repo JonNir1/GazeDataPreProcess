@@ -51,8 +51,17 @@ class TestUtils(unittest.TestCase):
             self.assertTrue(np.isnan(shifted_minus[i]))
 
     def test_numerical_derivative(self):
-        # TODO
-        pass
+        arr = np.ones(10)
+        self.assertRaises(ValueError, au.numerical_derivative, arr, 0)
+        self.assertRaises(ValueError, au.numerical_derivative, arr, 5)
+        res = au.numerical_derivative(arr, n=2)
+        expected = np.array([np.nan, 0, 0, 0, 0, 0, 0, 0, 0, np.nan])
+        np.array_equal(expected, res, equal_nan=True)
+
+        arr = np.arange(10)
+        res = au.numerical_derivative(arr, n=1)
+        expected = np.array([np.nan, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, np.nan])
+        np.array_equal(expected, res, equal_nan=True)
 
     def test_median_standard_deviation(self):
         # TODO
