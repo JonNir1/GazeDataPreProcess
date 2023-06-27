@@ -104,8 +104,6 @@ class LWSTrialVisualizer:
         ax.plot(corrected_timestamps, target_distance, color=kwargs.get('line_color', '#ff0000'), label=cnst.ANGLE)
 
         # add other visualizations:
-        kwargs['legend_location'] = kwargs.get('legend_location', 'upper center')
-        kwargs['event_bar_size'] = kwargs.get('event_bar_size', 200)
         ax = self.__add_trigger_lines(ax=ax, trial=trial, **kwargs)
         ax = self.__add_events_bar(ax=ax, trial=trial, **kwargs)
         fig, ax = visutils.set_figure_properties(fig=fig, ax=ax,
@@ -113,6 +111,7 @@ class LWSTrialVisualizer:
                                                  subtitle=f"{str(trial)}",
                                                  xlabel='Time (ms)', ylabel='Visual Angle (deg)',
                                                  invert_yaxis=False,
+                                                 show_legend=False,
                                                  **kwargs)
         # save figure:
         if savefig:
@@ -338,7 +337,7 @@ class LWSTrialVisualizer:
         if output_type == "gaze_figure":
             filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
             return os.path.join(output_dir, filename)
-        if output_type == "target_figure":
+        if output_type == "targets_figure":
             filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
             return os.path.join(output_dir, filename)
         if output_type == "gaze_heatmap":
@@ -387,21 +386,40 @@ class LWSTrialVisualizer:
 
     @staticmethod
     def __add_events_bar(trial: LWSTrial, ax: plt.Axes, **kwargs) -> plt.Axes:
+        """
+        Adds to the given axes a horizontal line with changing colors depicting each time-point's event-type
+        (i.e. fixation, saccade, etc.). The colors are defined by color mappings provided as keyword arguments.
+        :param trial: the trial to visualize
+        :param ax: the axes to add the visualizations to
+
+        keyword arguments:
+            - text_size: the size of the text of the triggers (default: 12)
+            - undefined_event_color: the color of the undefined gaze events, default is '#808080' (gray).
+            - blink_event_color: the color of the blink gaze events, default is '#000000' (black).
+            - saccade_event_color: the color of the saccade gaze events, default is '#0000ff' (blue).
+            - fixation_event_color: the color of the fixation gaze events, default is '#00ff00' (green).
+            - event_bar_width: the height of the gaze event markers, default is 70 (used for `scatter`).
+
+        Returns the axes with the added visualizations.
+        """
+
         # Extract the relevant data from the trial:
         timestamps = trial.get_behavioral_data().get(cnst.MICROSECONDS).values / 1000
         corrected_timestamps = timestamps - timestamps[0]  # start from 0
-        min_val, max_val = visutils.get_axis_limits(ax, axis='y')  # get the min/max y values (excluding inf/nan)
-        event_array = trial.get_event_per_sample_array()
 
-        # Add a horizontal scatter plot to the axes, depicting the events:
+        # create an array of colors per sample, depicting the events:
+        event_array = trial.get_event_per_sample_array()
         undefined_event_color = kwargs.pop("undefined_event_color", "#808080")
         event_colors = np.full(shape=event_array.shape, fill_value=undefined_event_color, dtype=object)
         event_colors[event_array == cnst.BLINK] = kwargs.pop("blink_event_color", "#000000")
         event_colors[event_array == cnst.SACCADE] = kwargs.pop("saccade_event_color", "#0000ff")
         event_colors[event_array == cnst.FIXATION] = kwargs.pop("fixation_event_color", "#00ff00")
-        event_bar_size = kwargs.get('event_bar_size', 70)
+
+        # Add a horizontal scatter plot to the axes, depicting the events:
+        min_val, max_val = visutils.get_axis_limits(ax, axis='y')  # get the min/max y values (excluding inf/nan)
+        event_bar_width = kwargs.get('event_bar_width', 50)
         event_bar_height = np.full_like(event_array, fill_value=round(max([0, min([0.95 * min_val, min_val - 1])])))
-        ax.scatter(x=corrected_timestamps, y=event_bar_height, c=event_colors, s=event_bar_size, marker="s")
+        ax.scatter(x=corrected_timestamps, y=event_bar_height, c=event_colors, s=event_bar_width, marker="s")
         return ax
 
     def __repr__(self) -> str:
