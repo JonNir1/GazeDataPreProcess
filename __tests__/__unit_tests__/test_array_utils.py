@@ -59,5 +59,16 @@ class TestUtils(unittest.TestCase):
         pass
 
     def test_get_chunk_indices(self):
-        # TODO
-        pass
+        arr = np.hstack([np.zeros(3, dtype=bool), np.ones(4, dtype=bool),
+                         np.zeros(3, dtype=bool), np.ones(2, dtype=bool)])
+        res0 = au.get_chunk_indices(arr, min_length=0)
+        expected0 = [list(range(3, 7)), list(range(10, 12))]
+        self.assertEqual(len(res0), len(expected0))
+        for i in range(len(res0)):
+            self.assertTrue(np.array_equal(res0[i], expected0[i]))
+
+        res3 = au.get_chunk_indices(arr, min_length=3)
+        expected3 = [list(range(3, 7))]
+        self.assertEqual(len(res3), len(expected3))
+        for i in range(len(res3)):
+            self.assertTrue(np.array_equal(res3[i], expected3[i]))
