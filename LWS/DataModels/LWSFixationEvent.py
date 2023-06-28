@@ -43,7 +43,7 @@ class LWSFixationEvent(FixationEvent):
             - duration: event's duration in milliseconds
             - is_outlier: boolean indicating whether the event is an outlier or not
             - center_of_mass: fixation's center of mass (2D pixel coordinates)
-            - std: fixation's standard deviation (in pixels units)
+            - covariance_matrix: fixation's covariance matrix (2x2 matrix, in pixel^2 units)
             - max_dispersion: maximum distance between any two points in the fixation (in pixels units)
             - trigger: list of tuples (timestamp, trigger) for each trigger that occurred during the fixation
             - visual_angle_to_target: angular distance from the fixation's center of mass to the closest target's center of mass

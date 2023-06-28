@@ -20,12 +20,11 @@ class FixationEvent(BaseVisualGazeEvent):
         y_mean = float(np.nanmean(self._y))
         return x_mean, y_mean
 
-    @property
-    def std(self) -> Tuple[float, float]:
-        # returns the standard deviation of the fixation on the X,Y axes
-        x_std = float(np.nanstd(self._x))
-        y_std = float(np.nanstd(self._y))
-        return x_std, y_std
+    def covariance_matrix(self) -> np.ndarray:
+        # returns the covariance matrix of the fixation on the X,Y axes
+        points = np.column_stack((self._x, self._y))
+        cov = np.cov(points, rowvar=False)
+        return cov
 
     @property
     def max_dispersion(self) -> float:
@@ -44,12 +43,12 @@ class FixationEvent(BaseVisualGazeEvent):
             - duration: event's duration in milliseconds
             - is_outlier: boolean indicating whether the event is an outlier or not
             - center_of_mass: fixation's center of mass (2D pixel coordinates)
-            - std: fixation's standard deviation (in pixels units)
+            - covariance_matrix: fixation's covariance matrix (2x2 matrix, in pixel^2 units)
             - max_dispersion: maximum distance between any two points in the fixation (in pixels units)
         """
         series = super().to_series()
         series["center_of_mass"] = self.center_of_mass
-        series["std"] = self.std
+        series["covariance_matrix"] = self.covariance_matrix
         return series
 
     @property
