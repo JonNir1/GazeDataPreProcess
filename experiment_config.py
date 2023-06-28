@@ -14,7 +14,8 @@ RAW_DATA_DIR = os.path.join(BASE_DIR, "RawData")
 OUTPUT_DIR = os.path.join(BASE_DIR, "Results")
 
 # GLOBAL VARIABLES
-SCREEN_MONITOR: ScreenMonitor = ScreenMonitor.from_default()  # global screen monitor object
+VIEWER_DISTANCE = 65  # global variable: distance between subject and screen center (cm)
+SCREEN_MONITOR: ScreenMonitor = ScreenMonitor.from_default()  # global variable: screen monitor object
 
 
 # GAZE DATA & GAZE EVENTS CONFIGURATION
