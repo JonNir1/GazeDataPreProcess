@@ -6,7 +6,6 @@ from typing import Tuple, List, Optional
 
 import constants as cnst
 import Utils.io_utils as ioutils
-from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
