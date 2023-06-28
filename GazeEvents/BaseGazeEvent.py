@@ -8,16 +8,8 @@ from Config import experiment_config as cnfg
 
 
 class BaseGazeEvent(ABC):
-    _ViewerDistance: float = None
 
-    def __init__(self, timestamps: np.ndarray,
-                 viewer_distance: Optional[float] = None):
-        # set class attributes:
-        if self._ViewerDistance is None and viewer_distance is None:
-            raise ValueError("Must set ViewerDistance before creating any GazeEvent object")
-        if viewer_distance is not None:
-            self._ViewerDistance = viewer_distance
-
+    def __init__(self, timestamps: np.ndarray):
         # set instance attributes:
         if len(timestamps) < cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT:
             raise ValueError("event must be at least {} samples long".format(cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT))
@@ -63,12 +55,6 @@ class BaseGazeEvent(ABC):
     @abstractmethod
     def event_type(cls) -> str:
         raise NotImplementedError
-
-    @classmethod
-    def set_viewer_distance(cls, viewer_distance: float):
-        if cls._ViewerDistance is not None:
-            w.warn("Overwriting existing ViewerDistance value.")
-        cls._ViewerDistance = viewer_distance
 
     def __repr__(self):
         return f"{self.event_type().capitalize()} ({self.duration:.1f} ms)"
