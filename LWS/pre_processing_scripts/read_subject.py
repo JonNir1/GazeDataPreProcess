@@ -36,11 +36,11 @@ def read_subject_trials(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, *
     # read the behavioral data:
     trials = []
     subject_info = read_subject_info(subject_dir)
-    behavioral_trials = read_behavioral_data(subject_dir, **kwargs)
-    for i, bt in enumerate(behavioral_trials):
-        stimulus = LWSArrayStimulus.from_stimulus_name(stim_id=bt.image_num,
-                                                       stim_type=bt.stim_type,
+    behavioral_trials_data = read_behavioral_data(subject_dir, **kwargs)
+    for i, bd in enumerate(behavioral_trials_data):
+        stimulus = LWSArrayStimulus.from_stimulus_name(stim_id=bd.image_num,
+                                                       stim_type=bd.stim_type,
                                                        stim_directory=stimuli_dir)
-        lws_trial = LWSTrial(trial_num=i + 1, behavioral_data=bt, stimulus=stimulus)
+        lws_trial = LWSTrial(trial_num=i + 1, behavioral_data=bd, stimulus=stimulus)
         trials.append(lws_trial)
     return trials
