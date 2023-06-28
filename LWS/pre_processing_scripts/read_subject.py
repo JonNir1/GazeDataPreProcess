@@ -8,7 +8,7 @@ from Config import experiment_config as cnfg
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSTrial import LWSTrial
-from LWS.pre_processing_scripts.read_behavioral_data import read_behavioral_data
+from LWS.pre_processing_scripts.read_raw_data import read_behavioral_data
 
 
 def read_subject_trials(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwargs) -> List[LWSTrial]:
