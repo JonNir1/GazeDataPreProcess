@@ -16,7 +16,7 @@ class LWSSubject:
         self.__trials: List[LWSTrial] = trials if trials is not None else []
 
     @staticmethod
-    def from_pickle(pickle_path: str) -> 'LWSSubject':
+    def from_pickle(pickle_path: str) -> "LWSSubject":
         if not os.path.exists(pickle_path):
             raise FileNotFoundError(f"Could not find pickle file: {pickle_path}")
         with open(pickle_path, "rb") as f:
@@ -45,6 +45,9 @@ class LWSSubject:
     def num_trials(self) -> int:
         return len(self.__trials)
 
+    def add_trial(self, trial: "LWSTrial"):
+        self.__trials.append(trial)
+
     def get_trial(self, trial_num: int) -> "LWSTrial":
         trials = list(filter(lambda t: t.trial_num == trial_num, self.__trials))
         if len(trials) == 0:
@@ -59,9 +62,6 @@ class LWSSubject:
         with open(full_path, "wb") as f:
             pkl.dump(self, f)
         return full_path
-
-    def add_trial(self, trial: "LWSTrial"):
-        self.__trials.append(trial)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}_{self.subject_id:03d}"
