@@ -1,8 +1,8 @@
 import numpy as np
 from typing import Optional, Tuple
 
+import experiment_config as cnfg
 import Utils.array_utils as au
-from Utils.ScreenMonitor import ScreenMonitor
 
 
 def calculate_azimuth(p1: Optional[Tuple[Optional[float], Optional[float]]],
@@ -75,7 +75,6 @@ def visual_angle_to_pixels(d: float, angle: float, pixel_size: float) -> float:
 
 def calculate_visual_angle_velocities(x: np.ndarray, y: np.ndarray,
                                       sr: float, d: float,
-                                      screen_monitor: Optional[ScreenMonitor] = None,
                                       use_radians: bool = False) -> np.ndarray:
     """
     Calculates the visual-angle velocities of the gaze data between two adjacent samples.
@@ -83,12 +82,10 @@ def calculate_visual_angle_velocities(x: np.ndarray, y: np.ndarray,
     :param y: 1D array of y-coordinates.
     :param sr: sampling rate of the data.
     :param d: distance between the monitor and the participant's eyes.
-    :param screen_monitor: ScreenMonitor object.
     :param use_radians: if True, the angular velocity will be returned in radians per second.
 
     :return: 1D array of angular velocities (rad/s or deg/s)
     """
-    screen_monitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
     x_shifted = au.shift_array(x, 1)
     y_shifted = au.shift_array(y, 1)
     pixels = np.transpose(np.vstack([x, y, x_shifted, y_shifted]))  # shape (N, 4)
@@ -96,7 +93,8 @@ def calculate_visual_angle_velocities(x: np.ndarray, y: np.ndarray,
     angles = []
     for i in range(pixels.shape[0]):
         x1, y1, x2, y2 = pixels[i]
-        ang = calculate_visual_angle(p1=(x1, y1), p2=(x2, y2), d=d, pixel_size=screen_monitor.pixel_size,
+        ang = calculate_visual_angle(p1=(x1, y1), p2=(x2, y2), d=d,
+                                     pixel_size=cnfg.SCREEN_MONITOR.pixel_size,
                                      use_radians=use_radians)
         angles.append(ang)
     angles = np.array(angles)
@@ -118,7 +116,7 @@ def __is_valid_pixel(p: Optional[Tuple[Optional[float], Optional[float]]]) -> bo
 def calculate_visual_angle_accurate(
         P1: Optional[Tuple[Optional[float], Optional[float]]],
         P2: Optional[Tuple[Optional[float], Optional[float]]],
-        d: float, sm: ScreenMonitor, use_radians=False) -> float:
+        d: float, use_radians=False) -> float:
     """
     UNUSED! Use calculate_visual_angle() instead.
 
@@ -134,6 +132,7 @@ def calculate_visual_angle_accurate(
     if not __is_valid_pixel(P2):
         return np.nan
 
+    sm = cnfg.SCREEN_MONITOR
     pixels_distance = d / sm.pixel_size  # distance from screen in pixel units
     C_x, C_y = sm.resolution[0] / 2, sm.resolution[1] / 2  # pixel coordinates of the center of the screen
 
