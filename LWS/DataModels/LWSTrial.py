@@ -22,7 +22,8 @@ class LWSTrial:
                  subject_info: LWSSubjectInfo,
                  stimulus: LWSArrayStimulus,
                  behavioral_data: LWSBehavioralData,
-                 gaze_events: List[BaseGazeEvent] = None):
+                 gaze_events: List[BaseGazeEvent] = None,
+                 subject: "LWSSubject" = None):
         # TODO: take out SubjectInfo to a new LWSSubject class
         self.__is_processed: bool = False
         self.__trial_num: int = trial_num
@@ -31,6 +32,7 @@ class LWSTrial:
         self.__behavioral_data: LWSBehavioralData = behavioral_data
         self.__gaze_events: List[BaseGazeEvent] = sorted(self.__gaze_events,
                                                          key=lambda e: e.start_time) if gaze_events is not None else []
+        self.__subject: LWSSubject = subject
 
     @property
     def trial_num(self) -> int:
@@ -197,3 +199,7 @@ class LWSTrial:
             if not self_gaze_events[i] == other_gaze_events[i]:
                 return False
         return True
+
+
+# import at the bottom to avoid circular imports
+from LWS.DataModels.LWSSubject import LWSSubject
