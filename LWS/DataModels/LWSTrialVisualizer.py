@@ -50,8 +50,7 @@ class LWSTrialVisualizer:
         fig, ax = plt.subplots(tight_layout=True)
 
         # extract gaze data:
-        dominant_eye = trial.get_subject_info().dominant_eye
-        timestamps, x_gaze, y_gaze = trial.get_raw_gaze_coordinates(eye=dominant_eye)
+        timestamps, x_gaze, y_gaze = trial.get_raw_gaze_coordinates(eye='dominant')
         corrected_timestamps = timestamps - timestamps[0]  # start from 0
 
         # plot trial data:
