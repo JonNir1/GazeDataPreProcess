@@ -5,15 +5,16 @@ from typing import List
 import constants as cnst
 from Config import experiment_config as cnfg
 from LWS.DataModels.LWSTrial import LWSTrial
+from LWS.DataModels.LWSSubject import LWSSubject
 
-from LWS.pre_processing_scripts.read_subject import read_subject_trials
+from LWS.pre_processing_scripts.read_subject import read_subject_from_raw_data
 from LWS.pre_processing_scripts.visual_angle_to_targets import calculate_visual_angle_between_gaze_data_and_targets
 from LWS.pre_processing_scripts.detect_events import detect_all_events
 from LWS.pre_processing_scripts.gen_lws_gaze_events import gen_all_lws_events
 
 
 def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR,
-                    save_pickle: bool = False, **kwargs) -> List[LWSTrial]:
+                    save_pickle: bool = False, **kwargs) -> LWSSubject:
     """
     For a given subject directory, extracts the subject-info, gaze-data and trigger-log files, and uses those to create
     the LWSTrial objects of that subject. Then, each trial is processed so that we detect blinks, saccades and fixations
@@ -34,10 +35,14 @@ def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR,
     if not os.path.isdir(stimuli_dir):
         raise NotADirectoryError(f"Directory {stimuli_dir} does not exist.")
 
-    trials = read_subject_trials(subject_dir, stimuli_dir, **kwargs)
-    for _i, trial in enumerate(trials):
-        process_trial(trial, save_pickle, **kwargs)
-    return trials
+    subject = read_subject_from_raw_data(subject_dir, stimuli_dir, **kwargs)
+    for i in range(subject.num_trials):
+        trial = subject.get_trial(i+1)  # trial numbers start from 1
+        process_trial(trial, **kwargs)
+    if save_pickle:
+        output_dir = kwargs.pop('output_directory', cnfg.OUTPUT_DIR)
+        subject.to_pickle(output_dir)
+    return subject
 
 
 def process_trial(trial: LWSTrial, save_pickle: bool = False, **kwargs):
@@ -45,7 +50,6 @@ def process_trial(trial: LWSTrial, save_pickle: bool = False, **kwargs):
     Processes the given trial and adds the processed data to the trial object.
 
     keyword arguments:
-        - output_directory: The experiment's output directory, for saving the trial's pickle file if `save_pickle` is True.
         - see gaze detection keyword arguments in `LWS.pre_processing_scripts.detect_events.detect_all_events()`
     """
     trial.is_processed = False
@@ -68,7 +72,3 @@ def process_trial(trial: LWSTrial, save_pickle: bool = False, **kwargs):
     trial.set_gaze_events(events)
 
     trial.is_processed = True
-
-    if save_pickle:
-        output_dir = kwargs.pop('output_directory', cnfg.OUTPUT_DIR)
-        trial.to_pickle(output_dir)
