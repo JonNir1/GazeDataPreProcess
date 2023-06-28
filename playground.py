@@ -10,10 +10,7 @@ import seaborn as sns
 
 import constants as cnst
 import experiment_config as cnfg
-from Utils.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
-
-sm = ScreenMonitor.from_config()
 
 ##########################################
 ###  LOADING DATA FROM PICKLE FILES  #####
@@ -91,11 +88,9 @@ import LWS.PreProcessing as pp
 
 start = time.time()
 
-sm = ScreenMonitor.from_config()
-
 trials = pp.process_subject(subject_dir=os.path.join(cnfg.RAW_DATA_DIR, 'Rotem Demo'),
                             stimuli_dir=cnfg.STIMULI_DIR,
-                            screen_monitor=sm,
+                            screen_monitor=cnfg.SCREEN_MONITOR,
                             save_pickle=True,
                             stuff_with='fixation',
                             blink_detector_type='missing data',
