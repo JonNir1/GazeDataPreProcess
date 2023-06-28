@@ -31,6 +31,16 @@ class LWSTrial:
                                                          key=lambda e: e.start_time) if gaze_events is not None else []
         self.__subject: LWSSubject = subject
 
+    @staticmethod
+    def from_pickle(pickle_path: str) -> 'LWSTrial':
+        if not os.path.exists(pickle_path):
+            raise FileNotFoundError(f"Could not find pickle file: {pickle_path}")
+        with open(pickle_path, "rb") as f:
+            trial = pkl.load(f)
+        if not isinstance(trial, LWSTrial):
+            raise RuntimeError(f"Expected LWSTrial, got {type(trial)}")
+        return trial
+
     @property
     def trial_num(self) -> int:
         return self.__trial_num
@@ -159,16 +169,6 @@ class LWSTrial:
         with open(full_path, "wb") as f:
             pkl.dump(self, f)
         return full_path
-
-    @staticmethod
-    def from_pickle(pickle_path: str) -> 'LWSTrial':
-        if not os.path.exists(pickle_path):
-            raise FileNotFoundError(f"Could not find pickle file: {pickle_path}")
-        with open(pickle_path, "rb") as f:
-            trial = pkl.load(f)
-        if not isinstance(trial, LWSTrial):
-            raise RuntimeError(f"Expected LWSTrial, got {type(trial)}")
-        return trial
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}_S{self.subject.subject_id}_T{self.__trial_num}"
