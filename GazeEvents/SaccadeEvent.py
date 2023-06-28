@@ -39,11 +39,6 @@ class SaccadeEvent(BaseVisualGazeEvent):
         return np.sqrt((x_end - x_start) ** 2 + (y_end - y_start) ** 2)
 
     @property
-    def velocity(self) -> float:
-        # returns the velocity of the saccade in pixels per second
-        return self.distance / self.duration * 1000
-
-    @property
     def azimuth(self) -> float:
         # returns the azimuth of the saccade in degrees
         # see Utils.angle_utils.calculate_azimuth for more information
