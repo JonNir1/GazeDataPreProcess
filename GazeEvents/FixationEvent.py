@@ -45,6 +45,7 @@ class FixationEvent(BaseVisualGazeEvent):
         series = super().to_series()
         series["center_of_mass"] = self.center_of_mass
         series["covariance_matrix"] = self.covariance_matrix
+        series["max_dispersion"] = self.max_dispersion
         return series
 
     @property
