@@ -1,6 +1,5 @@
 import numpy as np
-from scipy.ndimage import gaussian_filter, convolve
-from scipy.stats import multivariate_normal
+from scipy.ndimage import gaussian_filter
 import warnings as warn  # to suppress numpy warnings
 from collections import Counter
 
