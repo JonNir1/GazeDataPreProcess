@@ -2,6 +2,7 @@ from abc import ABC
 import numpy as np
 import pandas as pd
 
+import Utils.array_utils as au
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
 
 
@@ -45,10 +46,9 @@ class BaseVisualGazeEvent(BaseGazeEvent, ABC):
         return series
 
     def __calculate_velocities(self) -> np.ndarray:
-        dx = np.diff(self._x)
-        dy = np.diff(self._y)
+        distances = au.distance_between_subsequent_pixels(self._x, self._y)
         dt = np.diff(self._timestamps)
-        return np.sqrt(dx ** 2 + dy ** 2) / dt
+        return distances / dt
 
     def __eq__(self, other):
         if not isinstance(other, type(self)):
