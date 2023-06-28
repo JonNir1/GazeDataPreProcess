@@ -39,15 +39,16 @@ class SaccadeEvent(BaseVisualGazeEvent):
         return np.sqrt((x_end - x_start) ** 2 + (y_end - y_start) ** 2)
 
     @property
+    def amplitude(self) -> float:
+        # returns the amplitude of the saccade (visual angle) in degrees
+        return angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point,
+                                                  d=self._viewer_distance, pixel_size=cnfg.SCREEN_MONITOR.pixel_size)
+
+    @property
     def azimuth(self) -> float:
         # returns the azimuth of the saccade in degrees
         # see Utils.angle_utils.calculate_azimuth for more information
         return angle_utils.calculate_azimuth(p1=self.start_point, p2=self.end_point, use_radians=False)
-
-    @property
-    def amplitude(self) -> float:
-        return angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point,
-                                                  d=self._viewer_distance, pixel_size=cnfg.SCREEN_MONITOR.pixel_size)
 
     def to_series(self) -> pd.Series:
         """
@@ -60,13 +61,13 @@ class SaccadeEvent(BaseVisualGazeEvent):
             - start_point: saccade's start point (2D pixel coordinates)
             - end_point: saccade's end point (2D pixel coordinates)
             - distance: saccade's distance (in pixels)
-            - velocity: saccade's velocity (in pixels per second)
-            - azimuth: saccade's azimuth (in degrees)
             - amplitude: saccade's visual angle (in degrees)
+            - azimuth: saccade's azimuth (in degrees)
         """
         series = super().to_series()
         series["start_point"] = self.start_point
         series["end_point"] = self.end_point
-        series["azimuth"] = self.azimuth
+        series["distance"] = self.distance
         series["amplitude"] = self.amplitude
+        series["azimuth"] = self.azimuth
         return series
