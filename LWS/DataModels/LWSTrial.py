@@ -184,11 +184,6 @@ class LWSTrial:
         if not self.__is_processed == other.__is_processed:
             return False
 
-        self_subject_info = self.get_subject_info()
-        other_subject_info = other.get_subject_info()
-        if not self_subject_info == other_subject_info:
-            return False
-
         self_bdata = self.get_behavioral_data()
         other_bdata = other.get_behavioral_data()
         if not self_bdata == other_bdata:
