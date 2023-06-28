@@ -174,7 +174,7 @@ class LWSTrial:
         return f"{self.__class__.__name__}_S{self.__subject_info.subject_id}_T{self.__trial_num}"
 
     def __str__(self) -> str:
-        return f"Subject {self.__subject_info.subject_id:03d} | Trial {self.__trial_num:03d}"
+        return f"Trial {self.__trial_num:03d} | Subject {self.__subject_info.subject_id:03d}"
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, LWSTrial):
