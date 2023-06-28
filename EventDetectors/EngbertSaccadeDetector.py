@@ -1,8 +1,7 @@
 import numpy as np
-import pandas as pd
 from typing import List, Tuple
 
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 import Utils.array_utils as au
 from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector
 

@@ -3,8 +3,7 @@ import pandas as pd
 from typing import List
 
 import constants as cnst
-import experiment_config as cnfg
-from Utils.ScreenMonitor import ScreenMonitor
+from Config import experiment_config as cnfg
 from LWS.DataModels.LWSTrial import LWSTrial
 
 from LWS.pre_processing_scripts.read_subject import read_subject_trials
@@ -25,7 +24,6 @@ def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR,
     :param save_pickle: If True, saves the trials' pickle files to the output directory.
 
     keyword arguments:
-        - screen_monitor: The screen monitor used to display the stimuli.
         - output_directory: The experiment's output directory, for saving the trials' pickle files if `save_pickle` is True.
         - see gaze detection keyword arguments in `LWS.pre_processing_scripts.detect_events.detect_all_events()`
 
@@ -36,7 +34,6 @@ def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR,
     if not os.path.isdir(stimuli_dir):
         raise NotADirectoryError(f"Directory {stimuli_dir} does not exist.")
 
-    kwargs["screen_monitor"] = kwargs.get("screen_monitor", None) or ScreenMonitor.from_config()
     trials = read_subject_trials(subject_dir, stimuli_dir, **kwargs)
     for _i, trial in enumerate(trials):
         process_trial(trial, save_pickle, **kwargs)
@@ -48,12 +45,10 @@ def process_trial(trial: LWSTrial, save_pickle: bool = False, **kwargs):
     Processes the given trial and adds the processed data to the trial object.
 
     keyword arguments:
-        - screen_monitor: The screen monitor used to display the stimuli.
         - output_directory: The experiment's output directory, for saving the trial's pickle file if `save_pickle` is True.
         - see gaze detection keyword arguments in `LWS.pre_processing_scripts.detect_events.detect_all_events()`
     """
     trial.is_processed = False
-    sm = kwargs.pop('screen_monitor', None) or ScreenMonitor.from_config()
     bd = trial.get_behavioral_data()
 
     # process raw eye-tracking data

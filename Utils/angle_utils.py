@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Optional, Tuple
 
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 import Utils.array_utils as au
 
 

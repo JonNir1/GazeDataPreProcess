@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from math import ceil, floor
 
 import constants as c
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 
 
 class BaseDetector(ABC):

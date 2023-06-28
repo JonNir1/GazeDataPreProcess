@@ -3,7 +3,7 @@
 import numpy as np
 
 import constants as cnst
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 
 from Utils.calculate_sampling_rate import calculate_sampling_rate_from_microseconds
 from DataParser.scripts.parse_eye_tracker import parse_eye_tracker

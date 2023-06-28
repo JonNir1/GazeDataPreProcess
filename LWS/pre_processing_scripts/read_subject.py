@@ -4,7 +4,7 @@ import os
 import re
 from typing import List
 
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSTrial import LWSTrial
@@ -19,7 +19,6 @@ def read_subject_trials(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, *
     :param subject_dir: the directory in which the subject's data is stored.
     :param stimuli_dir: the directory in which the stimuli are stored.
 
-    :keyword screen_monitor: a ScreenMonitor object that contains the screen's parameters.
     :keyword experiment_columns or additional_columns: a list of columns that should be read from the behavioral data.
     :keyword start_trigger, end_trigger: the triggers that mark the beginning and end of each trial.
 

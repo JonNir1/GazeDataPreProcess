@@ -6,7 +6,7 @@ import seaborn as sns
 from typing import Tuple
 
 import constants as cnst
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 import Utils.io_utils as ioutils
 import Utils.visualization_utils as visutils
 from LWS.DataModels.LWSTrial import LWSTrial

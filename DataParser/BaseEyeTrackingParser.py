@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 
 import constants as cnst
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 from DataParser.BaseParser import BaseParser
 
 

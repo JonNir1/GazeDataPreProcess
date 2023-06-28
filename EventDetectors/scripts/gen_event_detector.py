@@ -1,6 +1,6 @@
 from typing import Optional, Tuple, Dict, Any
 
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 from EventDetectors.BaseDetector import BaseDetector
 from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
 from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector

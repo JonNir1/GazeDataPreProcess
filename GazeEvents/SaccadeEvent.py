@@ -3,7 +3,7 @@ import pandas as pd
 from typing import Tuple
 
 import constants as cnst
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 from Utils import angle_utils as angle_utils
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
 

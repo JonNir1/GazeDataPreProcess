@@ -1,13 +1,31 @@
+from abc import ABC, abstractmethod
+from typing import Optional
+import warnings as w
 import numpy as np
 import pandas as pd
-from abc import ABC, abstractmethod
 
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
+from Config.ScreenMonitor import ScreenMonitor
 
 
 class BaseGazeEvent(ABC):
+    _ScreenMonitor: ScreenMonitor = None
+    _ViewerDistance: float = None
 
-    def __init__(self, timestamps: np.ndarray):
+    def __init__(self, timestamps: np.ndarray,
+                 sm: Optional[ScreenMonitor] = None,
+                 viewer_distance: Optional[float] = None):
+        # set class attributes:
+        if self._ScreenMonitor is None and sm is None:
+            raise ValueError("Must set ScreenMonitor object before creating any GazeEvent object")
+        if self._ViewerDistance is None and viewer_distance is None:
+            raise ValueError("Must set ViewerDistance before creating any GazeEvent object")
+        if sm is not None:
+            self._ScreenMonitor = sm
+        if viewer_distance is not None:
+            self._ViewerDistance = viewer_distance
+
+        # set instance attributes:
         if len(timestamps) < cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT:
             raise ValueError("event must be at least {} samples long".format(cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT))
         if np.isnan(timestamps).any() or np.isinf(timestamps).any():
@@ -52,6 +70,18 @@ class BaseGazeEvent(ABC):
     @abstractmethod
     def event_type(cls) -> str:
         raise NotImplementedError
+
+    @classmethod
+    def set_screen_monitor(cls, screen_monitor: ScreenMonitor):
+        if cls._ScreenMonitor is not None:
+            w.warn("Overwriting existing ScreenMonitor object.")
+        cls._ScreenMonitor = screen_monitor
+
+    @classmethod
+    def set_viewer_distance(cls, viewer_distance: float):
+        if cls._ViewerDistance is not None:
+            w.warn("Overwriting existing ViewerDistance value.")
+        cls._ViewerDistance = viewer_distance
 
     def __repr__(self):
         return f"{self.event_type().capitalize()} ({self.duration:.1f} ms)"

@@ -1,6 +1,6 @@
 from abc import ABC
 
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 from EventDetectors.BaseDetector import BaseDetector
 
 

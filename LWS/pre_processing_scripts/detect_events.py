@@ -3,7 +3,7 @@
 import numpy as np
 from typing import Tuple
 
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 from LWS.DataModels.LWSTrial import LWSTrial
 from EventDetectors.scripts.detect_events import detect_event, backfill_unidentified_samples
 from EventDetectors.EngbertSaccadeDetector import DEFAULT_DERIVATION_WINDOW_SIZE, DEFAULT_LAMBDA_NOISE_THRESHOLD

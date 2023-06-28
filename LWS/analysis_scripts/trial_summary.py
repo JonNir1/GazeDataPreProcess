@@ -4,7 +4,7 @@ import warnings as w  # to suppress numpy warnings
 from typing import List
 
 import constants as cnst
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 from LWS.DataModels.LWSTrial import LWSTrial
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
 

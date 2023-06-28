@@ -3,7 +3,7 @@ import pandas as pd
 from typing import Optional, List
 
 import constants as cnst
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
 import Utils.array_utils as au
 

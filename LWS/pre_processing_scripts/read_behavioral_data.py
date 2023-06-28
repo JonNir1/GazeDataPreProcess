@@ -7,7 +7,7 @@ import pandas as pd
 from typing import List, Union
 
 import constants as cnst
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 from DataParser.TobiiCSVEyeTrackingParser import TobiiCSVEyeTrackingParser
 from DataParser.EPrimeTriggerLogParser import EPrimeTriggerLogParser
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData

@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from scipy.io import loadmat
 from typing import Tuple
 
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 from LWS.DataModels.LWSEnums import LWSStimulusTypeEnum
 
 

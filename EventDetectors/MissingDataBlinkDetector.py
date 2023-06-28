@@ -1,7 +1,7 @@
 import numpy as np
 from typing import List
 
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 from EventDetectors.BaseBlinkDetector import BaseBlinkDetector
 
 

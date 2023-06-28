@@ -1,7 +1,7 @@
 import os
 from typing import Optional, Union
 
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 
 
 def create_subject_output_directory(subject_id: Union[int, str], output_dir: Optional[str] = cnfg.OUTPUT_DIR) -> str:

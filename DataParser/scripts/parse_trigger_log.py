@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from typing import List, Union
 
-import experiment_config as cnfg
+from Config import experiment_config as cnfg
 from DataParser.EPrimeTriggerLogParser import EPrimeTriggerLogParser
 
 
