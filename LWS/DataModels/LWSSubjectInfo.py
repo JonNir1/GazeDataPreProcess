@@ -41,7 +41,7 @@ class LWSSubjectInfo:
     @staticmethod
     def from_eprime_file(fullpath: str) -> "LWSSubjectInfo":
         """
-        This method is used to create a new LWSSubjectInfo object from an E-Prime file.
+        Create a new LWSSubjectInfo object from an E-Prime file.
         :param fullpath: The E-Prime file to read from.
         :return: A new LWSSubjectInfo object.
 
