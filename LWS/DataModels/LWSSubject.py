@@ -49,7 +49,6 @@ class LWSSubject:
 
     def add_trial(self, trial: "LWSTrial"):
         self.__trials.append(trial)
-        trial.subject = self
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}_{self.subject_id:03d}"
