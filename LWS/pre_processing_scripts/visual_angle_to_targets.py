@@ -3,7 +3,7 @@
 import numpy as np
 
 import Utils.angle_utils as angle_utils
-from Utils.ScreenMonitor import ScreenMonitor
+from Config.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 

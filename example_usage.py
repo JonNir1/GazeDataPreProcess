@@ -1,17 +1,13 @@
 # Example usage of the package
 
-import os
 import numpy as np
-import pandas as pd
 
 import constants as cnst
 import experiment_config as cnfg
 
-from Utils.ScreenMonitor import ScreenMonitor
 from Utils.calculate_sampling_rate import calculate_sampling_rate_from_microseconds
 from DataParser.scripts.parse_eye_tracker import parse_eye_tracker
 from EventDetectors.scripts.detect_events import detect_all_events
-from GazeEvents.BaseGazeEvent import BaseGazeEvent
 from GazeEvents.scripts.create_gaze_events import gen_gaze_events_summary
 
 

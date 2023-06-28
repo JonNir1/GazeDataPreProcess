@@ -8,7 +8,6 @@ from typing import List, Union
 
 import constants as cnst
 import experiment_config as cnfg
-from Utils.ScreenMonitor import ScreenMonitor
 from DataParser.TobiiCSVEyeTrackingParser import TobiiCSVEyeTrackingParser
 from DataParser.EPrimeTriggerLogParser import EPrimeTriggerLogParser
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData

@@ -6,7 +6,7 @@ from typing import List, Tuple
 import constants as cnst
 import experiment_config as cnfg
 import Utils.array_utils as au
-from Utils.ScreenMonitor import ScreenMonitor
+from Config.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
 

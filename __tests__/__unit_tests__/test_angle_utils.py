@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 
 from Utils import angle_utils as angle_utils
-from Utils.ScreenMonitor import ScreenMonitor
+from Config.ScreenMonitor import ScreenMonitor
 
 
 class TestUtils(unittest.TestCase):

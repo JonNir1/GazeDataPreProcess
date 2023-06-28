@@ -5,7 +5,7 @@ import os
 import numpy as np
 
 import constants as cnst
-from Utils.ScreenMonitor import ScreenMonitor
+from Config.ScreenMonitor import ScreenMonitor
 
 # DIRECTORIES
 BASE_DIR = r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo"

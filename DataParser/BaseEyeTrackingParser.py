@@ -6,7 +6,6 @@ from typing import List, Optional
 import constants as cnst
 import experiment_config as cnfg
 from DataParser.BaseParser import BaseParser
-from Utils.ScreenMonitor import ScreenMonitor
 
 
 class BaseEyeTrackingParser(BaseParser, ABC):
