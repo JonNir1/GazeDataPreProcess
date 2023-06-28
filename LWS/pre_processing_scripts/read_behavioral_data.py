@@ -62,15 +62,13 @@ def parse_gaze_and_triggers(et_path, trigger_path,
     :param trigger_path: path to the trigger-log file
     :param split_trials: if True, will split the data into trials according to the start and end triggers
 
-    :keyword screen_monitor: screen monitor object; if None, will be created from the config file
     :keyword additional_columns: additional columns to parse from the eye-tracking data file; if None, will be taken from the config file
     :keyword start_trigger: trigger indicating start of a trial; if None, will be taken from the config file
     :keyword end_trigger: trigger indicating end of a trial; if None, will be taken from the config file
     """
     # get eye tracking parser:
-    sm = kwargs.get('screen_monitor', None) or ScreenMonitor.from_config()
     additional_columns = kwargs.get('additional_columns', None) or cnfg.ADDITIONAL_COLUMNS
-    et_parser = TobiiCSVEyeTrackingParser(screen_monitor=sm, additional_columns=additional_columns)
+    et_parser = TobiiCSVEyeTrackingParser(additional_columns=additional_columns)
 
     # get trigger parser:
     start_trigger = kwargs.get('start_trigger', cnfg.STIMULUS_ON_TRIGGER)

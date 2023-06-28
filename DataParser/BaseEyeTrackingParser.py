@@ -16,9 +16,8 @@ class BaseEyeTrackingParser(BaseParser, ABC):
     using the method `parse` for parsing the data and `parse_and_split` for splitting the data into trials.
     """
 
-    def __init__(self, additional_columns: Optional[List[str]] = None, screen_monitor: Optional[ScreenMonitor] = None):
+    def __init__(self, additional_columns: Optional[List[str]] = None):
         self.__additional_columns: List[str] = additional_columns if additional_columns is not None else []
-        self.__screen_monitor: ScreenMonitor = screen_monitor if screen_monitor is not None else ScreenMonitor.from_config()
 
     def parse(self, input_path: str, output_path: Optional[str] = None) -> pd.DataFrame:
         if not os.path.exists(input_path):
@@ -30,7 +29,7 @@ class BaseEyeTrackingParser(BaseParser, ABC):
 
         # correct for screen resolution
         # note that coordinates may fall outside the screen, so we don't clip them (see https://shorturl.at/hvBCY)
-        screen_w, screen_h = self.__screen_monitor.resolution
+        screen_w, screen_h = cnfg.SCREEN_MONITOR.resolution
         df[self.LEFT_X_COLUMN()] = df[self.LEFT_X_COLUMN()] * screen_w
         df[self.LEFT_Y_COLUMN()] = df[self.LEFT_Y_COLUMN()] * screen_h
         df[self.RIGHT_X_COLUMN()] = df[self.RIGHT_X_COLUMN()] * screen_w
