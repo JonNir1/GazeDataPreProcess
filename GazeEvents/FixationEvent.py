@@ -16,15 +16,15 @@ class FixationEvent(BaseVisualGazeEvent):
     @property
     def center_of_mass(self) -> Tuple[float, float]:
         # returns the mean coordinates of the fixation on the X,Y axes
-        x_mean = float(np.nanmean(self.__x))
-        y_mean = float(np.nanmean(self.__y))
+        x_mean = float(np.nanmean(self._x))
+        y_mean = float(np.nanmean(self._y))
         return x_mean, y_mean
 
     @property
     def std(self) -> Tuple[float, float]:
         # returns the standard deviation of the fixation on the X,Y axes
-        x_std = float(np.nanstd(self.__x))
-        y_std = float(np.nanstd(self.__y))
+        x_std = float(np.nanstd(self._x))
+        y_std = float(np.nanstd(self._y))
         return x_std, y_std
 
     def to_series(self) -> pd.Series:

@@ -24,12 +24,12 @@ class SaccadeEvent(BaseVisualGazeEvent):
     @property
     def start_point(self) -> Tuple[float, float]:
         # returns the saccade's start point as a tuple of the X,Y coordinates
-        return self.__x[0], self.__y[0]
+        return self._x[0], self._y[0]
 
     @property
     def end_point(self) -> Tuple[float, float]:
         # returns the saccade's end point as a tuple of the X,Y coordinates
-        return self.__x[-1], self.__y[-1]
+        return self._x[-1], self._y[-1]
 
     @property
     def distance(self) -> float:
@@ -51,7 +51,7 @@ class SaccadeEvent(BaseVisualGazeEvent):
 
     @property
     def visual_angle(self) -> float:
-        return angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point, d=self.__viewer_distance,
+        return angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point, d=self._viewer_distance,
                                                   pixel_size=cnfg.SCREEN_MONITOR.pixel_size)
 
     @property
