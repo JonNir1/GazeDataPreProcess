@@ -21,7 +21,8 @@ class LWSTrialVisualizer:
     VIDEO_SUFFIX = 'mp4'
     FOURCC = cv2.VideoWriter_fourcc(*'mp4v')
 
-    def __init__(self, screen_resolution: Tuple[int, int], output_directory: str = cnfg.OUTPUT_DIR):
+    def __init__(self, screen_resolution: Tuple[int, int] = cnfg.SCREEN_MONITOR.resolution,
+                 output_directory: str = cnfg.OUTPUT_DIR):
         self.screen_resolution = screen_resolution
         self.output_directory = output_directory
 
