@@ -1,22 +1,20 @@
 import numpy as np
 import pandas as pd
 
+import Config.experiment_config as cnfg
 import Utils.angle_utils as angle_utils
 from GazeEvents.SaccadeEvent import SaccadeEvent
 
 
 class LWSSaccadeEvent(SaccadeEvent):
 
-    def __init__(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray,
-                 viewer_distance: float, pixel_size: float):
-        super().__init__(timestamps=timestamps, x=x, y=y)
-        self.__viewer_distance = viewer_distance  # in cm    # TODO: make this a class attribute
-        self.__pixel_size = pixel_size                       # TODO: make this a class attribute
+    def __init__(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray, viewer_distance: float):
+        super().__init__(timestamps=timestamps, x=x, y=y, viewer_distance=viewer_distance)
 
     @property
     def visual_angle(self) -> float:
         return angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point, d=self.__viewer_distance,
-                                                  pixel_size=self.__pixel_size)
+                                                  pixel_size=cnfg.SCREEN_MONITOR.pixel_size)
 
     @property
     def angular_velocity(self) -> float:
@@ -46,7 +44,5 @@ class LWSSaccadeEvent(SaccadeEvent):
         if not super().__eq__(other):
             return False
         if not self.__viewer_distance == other.__viewer_distance:
-            return False
-        if not self.__pixel_size == other.__pixel_size:
             return False
         return True
