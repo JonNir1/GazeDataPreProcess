@@ -14,7 +14,8 @@ import LWS.analysis_scripts.heatmaps as hm
 
 
 class LWSTrialVisualizer:
-    # TODO: split to separate Visualizer classes for each type of visualization (e.g. GazeVisualizer, TargetsVisualizer, etc.)
+    # TODO: split to separate Visualizer classes for each type of visualization
+    #  (e.g. GazeVisualizer, TargetsVisualizer, etc.)
     # TODO: velocity (and acceleration?) figure with events and triggers
 
     IMAGE_SUFFIX = 'png'
