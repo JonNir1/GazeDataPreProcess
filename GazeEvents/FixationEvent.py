@@ -37,6 +37,8 @@ class FixationEvent(BaseGazeEvent):
         if self.duration < cnfg.DEFAULT_FIXATION_MINIMUM_DURATION:
             return True
         # TODO: check max velocity
+        # TODO: check max acceleration
+        # TODO: check max dispersion
         return False
 
     @property
