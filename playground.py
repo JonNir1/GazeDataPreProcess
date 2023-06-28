@@ -1,5 +1,10 @@
 import os
 import time
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import cv2
 # from typing import Optional, Tuple, List, Union, Dict
 
 import constants as cnst
@@ -51,17 +56,16 @@ start = time.time()
 visualizer = LWSTrialVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution, output_directory=cnfg.OUTPUT_DIR)
 
 failed_trials = []
-for i in range(subject.num_trials):
-    if i > 0:
+for tr in subject.get_all_trials():
+    if tr.trial_num > 2:
         break
-    tr = subject.get_trial(i+1)  # trial numbers start from 1
     try:
         start_trial = time.time()
-        visualizer.create_gaze_figure(trial=tr, savefig=True)
-        visualizer.create_targets_figure(trial=tr, savefig=True)
+        # visualizer.create_gaze_figure(trial=tr, savefig=True)
+        # visualizer.create_targets_figure(trial=tr, savefig=True)
         visualizer.create_heatmap(trial=tr, savefig=True, fixation_only=True, show_targets_color=(0, 0, 0))
-        visualizer.create_heatmap(trial=tr, savefig=True, fixation_only=False, show_targets_color=(0, 0, 0))
-        visualizer.create_video(trial=tr, output_directory=cnfg.OUTPUT_DIR)
+        # visualizer.create_heatmap(trial=tr, savefig=True, fixation_only=False, show_targets_color=(0, 0, 0))
+        # visualizer.create_video(trial=tr, output_directory=cnfg.OUTPUT_DIR)
         end_trial = time.time()
         print(f"\t{tr.__repr__()}:\t{(end_trial - start_trial):.2f} s")
     except Exception as e:
@@ -73,6 +77,8 @@ print(f"Finished visualization in: {(end - start):.2f} seconds")
 
 # delete irrelevant variables:
 del start, end, start_trial, end_trial, tr
+if len(failed_trials) == 0:
+    del failed_trials
 
 ##########################################
 ###  ANALYZING DATA  #####################

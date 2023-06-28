@@ -1,5 +1,6 @@
 import numpy as np
-from scipy.ndimage import gaussian_filter
+from scipy.ndimage import gaussian_filter, convolve
+from scipy.stats import multivariate_normal
 import warnings as warn  # to suppress numpy warnings
 from collections import Counter
 
@@ -63,14 +64,14 @@ def fixations_heatmap(trial: LWSTrial) -> np.ndarray:
     fixations = trial.get_gaze_events(cnst.FIXATION)
     for fixation in fixations:
         fixation: FixationEvent
+        duration = fixation.duration
         center_x, center_y = fixation.center_of_mass
         cov = fixation.covariance_matrix()
-        duration = fixation.duration
 
-        gaus = np.zeros_like(heatmap)
-        gaus[round(center_y), round(center_x)] = duration
-        gaus = gaussian_filter(gaus, sigma=[np.sqrt(cov[1, 1]), np.sqrt(cov[0, 0])])
-        heatmap += gaus
+        addition = np.zeros_like(heatmap)
+        addition[round(center_y), round(center_x)] = duration
+        addition = gaussian_filter(addition, sigma=[np.sqrt(cov[1, 1]), np.sqrt(cov[0, 0])])
+        heatmap += addition
     # normalize heatmap to values in [0, 1]
     heatmap = au.normalize_array(heatmap)
     return heatmap
