@@ -54,7 +54,8 @@ def create_gaze_events(event_type: str, timestamps: np.ndarray, is_event: np.nda
 
     if event_type == cnst.FIXATION:
         from GazeEvents.FixationEvent import FixationEvent
-        events_list = [FixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs]) for idxs in different_event_idxs]
+        events_list = [FixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], viewer_distance=viewer_distance)
+                       for idxs in different_event_idxs]
 
     events_list.sort(key=lambda event: event.start_time)
     return events_list

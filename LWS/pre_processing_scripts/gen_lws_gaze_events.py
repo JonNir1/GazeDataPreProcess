@@ -56,8 +56,7 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial, screen_monitor: Screen
         distance = trial.subject.distance_to_screen
         saccades_list = []
         for idxs in separate_event_idxs:
-            sacc = LWSSaccadeEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs],
-                                   viewer_distance=distance, pixel_size=screen_monitor.pixel_size)
+            sacc = LWSSaccadeEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], viewer_distance=distance)
             saccades_list.append(sacc)
         return saccades_list
 
