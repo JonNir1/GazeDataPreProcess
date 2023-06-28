@@ -19,7 +19,7 @@ def calculate_visual_angle_between_gaze_data_and_targets(trial: LWSTrial) -> np.
     angular_distances = np.ones_like(xs) * np.inf
     for i, row in target_data.iterrows():
         tx, ty = row['center_x'], row['center_y']
-        dist = _calculate_visual_angle_to_target(tx, ty, xs, ys)
+        dist = _calculate_visual_angle_to_target(tx, ty, xs, ys, trial.subject.distance_to_screen)
         angular_distances = np.nanmin([angular_distances, dist], axis=0)
     return angular_distances
 
@@ -35,12 +35,14 @@ def calculate_visual_angle_between_fixation_and_targets(fix: LWSFixationEvent, t
     angular_distance = np.inf
     for i, row in target_data.iterrows():
         tx, ty = row['center_x'], row['center_y']
-        dist = _calculate_visual_angle_to_target(tx, ty, np.array([x]), np.array([y]))
+        dist = _calculate_visual_angle_to_target(tx, ty, np.array([x]), np.array([y]), trial.subject.distance_to_screen)
         angular_distance = np.nanmin([angular_distance, dist[0]])
     return angular_distance
 
 
-def _calculate_visual_angle_to_target(tx: float, ty: float, xs: np.ndarray, ys: np.ndarray) -> np.ndarray:
+def _calculate_visual_angle_to_target(tx: float, ty: float,
+                                      xs: np.ndarray, ys: np.ndarray,
+                                      viewer_distance: float) -> np.ndarray:
     """
     Calculate the visual angle (in degrees) between the target and each of the points specified by xs, ys.
     :param tx, ty: target x, y coordinates
@@ -50,10 +52,11 @@ def _calculate_visual_angle_to_target(tx: float, ty: float, xs: np.ndarray, ys: 
         raise ValueError("x and y must be of the same length")
     if np.isnan(tx) or np.isnan(ty):
         raise ValueError("Target coordinates cannot be NaN")
-    if np.isnan(d):
-        raise ValueError("Distance cannot be NaN")
+    if not np.isfinite(viewer_distance):
+        raise ValueError("Viewer distance must be finite")
+    if viewer_distance <= 0:
+        raise ValueError("Viewer distance must be positive")
 
-    viewer_distance = cnfg.VIEWER_DISTANCE
     pixel_size = cnfg.SCREEN_MONITOR.pixel_size
     distances = np.zeros_like(xs)
     for i in range(len(xs)):
