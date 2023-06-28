@@ -14,13 +14,12 @@ RAW_DATA_DIR = os.path.join(BASE_DIR, "RawData")
 OUTPUT_DIR = os.path.join(BASE_DIR, "Results")
 
 # GLOBAL VARIABLES
-VIEWER_DISTANCE = 65  # global variable: distance between subject and screen center (cm)
+ADDITIONAL_COLUMNS = ["ConditionName", "BlockNum", "TrialNum", "ImageNum"]  # additional columns to be added to the gaze data
 SCREEN_MONITOR: ScreenMonitor = ScreenMonitor.from_default()  # global variable: screen monitor object
+VIEWER_DISTANCE = 65  # global variable: distance between subject and screen center (cm)
 
 
 # GAZE DATA & GAZE EVENTS CONFIGURATION
-ADDITIONAL_COLUMNS = ["ConditionName", "BlockNum", "TrialNum", "ImageNum"]  # additional columns to be added to the gaze data
-
 EVENT_TYPES = [cnst.BLINK, cnst.SACCADE, cnst.FIXATION]
 
 DEFAULT_MINIMUM_SAMPLES_PER_EVENT = 2  # minimum number of samples in an event (saccade, fixation, etc.)
