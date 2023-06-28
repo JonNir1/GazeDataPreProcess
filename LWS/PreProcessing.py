@@ -68,7 +68,7 @@ def process_trial(trial: LWSTrial, save_pickle: bool = False, **kwargs):
 
     # process gaze events
     drop_outlier_events = kwargs.pop('drop_outlier_events', False)
-    events = gen_all_lws_events(trial, sm, drop_outliers=drop_outlier_events)
+    events = gen_all_lws_events(trial, drop_outliers=drop_outlier_events)
     trial.set_gaze_events(events)
 
     trial.is_processed = True

@@ -47,14 +47,14 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial) -> List[BaseGazeEvent]
         return blinks_list
 
     separate_event_idxs = au.get_chunk_indices(is_event, min_length=cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT)
+    viewer_distance = trial.subject.distance_to_screen
 
     if event_type == cnst.SACCADE:
         # create LWSSaccadeEvents
         from GazeEvents.SaccadeEvent import SaccadeEvent
-        distance = trial.subject.distance_to_screen
         saccades_list = []
         for idxs in separate_event_idxs:
-            sacc = SaccadeEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], viewer_distance=distance)
+            sacc = SaccadeEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], viewer_distance=viewer_distance)
             saccades_list.append(sacc)
         return saccades_list
 
@@ -66,7 +66,8 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial) -> List[BaseGazeEvent]
         triggers = trial.get_triggers()
         fixations_list = []
         for idxs in separate_event_idxs:
-            fix = LWSFixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], triggers=triggers[idxs])
+            fix = LWSFixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs],
+                                   viewer_distance=viewer_distance, triggers=triggers[idxs])
             fix.visual_angle_to_target = calc_fixation_distance(fix=fix, trial=trial)
             fixations_list.append(fix)
         return fixations_list
