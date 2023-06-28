@@ -5,23 +5,16 @@ import numpy as np
 import pandas as pd
 
 from Config import experiment_config as cnfg
-from Config.ScreenMonitor import ScreenMonitor
 
 
 class BaseGazeEvent(ABC):
-    _ScreenMonitor: ScreenMonitor = None
     _ViewerDistance: float = None
 
     def __init__(self, timestamps: np.ndarray,
-                 sm: Optional[ScreenMonitor] = None,
                  viewer_distance: Optional[float] = None):
         # set class attributes:
-        if self._ScreenMonitor is None and sm is None:
-            raise ValueError("Must set ScreenMonitor object before creating any GazeEvent object")
         if self._ViewerDistance is None and viewer_distance is None:
             raise ValueError("Must set ViewerDistance before creating any GazeEvent object")
-        if sm is not None:
-            self._ScreenMonitor = sm
         if viewer_distance is not None:
             self._ViewerDistance = viewer_distance
 
@@ -70,12 +63,6 @@ class BaseGazeEvent(ABC):
     @abstractmethod
     def event_type(cls) -> str:
         raise NotImplementedError
-
-    @classmethod
-    def set_screen_monitor(cls, screen_monitor: ScreenMonitor):
-        if cls._ScreenMonitor is not None:
-            w.warn("Overwriting existing ScreenMonitor object.")
-        cls._ScreenMonitor = screen_monitor
 
     @classmethod
     def set_viewer_distance(cls, viewer_distance: float):
