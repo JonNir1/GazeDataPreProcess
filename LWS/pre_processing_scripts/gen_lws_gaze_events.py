@@ -6,18 +6,17 @@ from typing import List, Tuple
 import constants as cnst
 from Config import experiment_config as cnfg
 import Utils.array_utils as au
-from Config.ScreenMonitor import ScreenMonitor
 from LWS.DataModels.LWSTrial import LWSTrial
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
 
 
-def gen_all_lws_events(trial: LWSTrial, screen_monitor: ScreenMonitor, drop_outliers: bool = False) -> List[BaseGazeEvent]:
+def gen_all_lws_events(trial: LWSTrial, drop_outliers: bool = False) -> List[BaseGazeEvent]:
     """
     Generates all gaze events for the given trial and returns the events in a list sorted by their start time.
     """
-    blink_events = gen_lws_gaze_events(cnst.BLINK, trial, screen_monitor)
-    saccade_events = gen_lws_gaze_events(cnst.SACCADE, trial, screen_monitor)
-    fixation_events = gen_lws_gaze_events(cnst.FIXATION, trial, screen_monitor)
+    blink_events = gen_lws_gaze_events(cnst.BLINK, trial)
+    saccade_events = gen_lws_gaze_events(cnst.SACCADE, trial)
+    fixation_events = gen_lws_gaze_events(cnst.FIXATION, trial)
     all_events = blink_events + saccade_events + fixation_events
     if drop_outliers:
         all_events = [event for event in all_events if not event.is_outlier]
@@ -25,7 +24,7 @@ def gen_all_lws_events(trial: LWSTrial, screen_monitor: ScreenMonitor, drop_outl
     return all_events
 
 
-def gen_lws_gaze_events(event_type: str, trial: LWSTrial, screen_monitor: ScreenMonitor) -> List[BaseGazeEvent]:
+def gen_lws_gaze_events(event_type: str, trial: LWSTrial) -> List[BaseGazeEvent]:
     """
     Identifies all chunks of data that belong to this type of event within the trial and creates a GazeEvent object
     for each chunk and returns the list of events.
@@ -33,7 +32,6 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial, screen_monitor: Screen
 
     :param event_type: type of event to extract. Must be one of 'blink', 'saccade' or 'fixation'
     :param trial: LWSTrial object
-    :param screen_monitor: ScreenMonitor object
 
     :return: list of GazeEvent objects
 
