@@ -11,7 +11,6 @@ class LWSSubject:
     def __init__(self, info: LWSSubjectInfo, trials: List["LWSTrial"] = None):
         self.__subject_info: LWSSubjectInfo = info
         self.__trials: List[LWSTrial] = trials if trials is not None else []
-        self.__is_processed = False
 
     @property
     def subject_id(self) -> int:
@@ -27,13 +26,7 @@ class LWSSubject:
 
     @property
     def is_processed(self) -> bool:
-        return self.__is_processed
-
-    @is_processed.setter
-    def is_processed(self, is_processed: bool):
-        if self.__is_processed and not is_processed:
-            raise RuntimeError("Cannot set is_processed to False after it has been set to True.")
-        self.__is_processed = is_processed
+        return all([trial.is_processed for trial in self.__trials])
 
     @property
     def num_trials(self) -> int:
