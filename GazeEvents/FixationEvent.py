@@ -4,20 +4,24 @@ from typing import Tuple
 
 import constants as cnst
 from Config import experiment_config as cnfg
-from GazeEvents.BaseGazeEvent import BaseGazeEvent
+from GazeEvents.BaseVisualGazeEvent import BaseVisualGazeEvent
 
 
-class FixationEvent(BaseGazeEvent):
+class FixationEvent(BaseVisualGazeEvent):
 
-    def __init__(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray, viewer_distance: float):
-        if not np.isfinite(viewer_distance) or viewer_distance <= 0:
-            raise ValueError("viewer_distance must be a positive finite number")
-        if len(timestamps) != len(x) or len(timestamps) != len(y):
-            raise ValueError("Arrays of timestamps, x and y must have the same length")
-        super().__init__(timestamps=timestamps)
-        self.__x = x
-        self.__y = y
-        self.__viewer_distance = viewer_distance  # in cm
+    @classmethod
+    def event_type(cls) -> str:
+        return cnst.FIXATION
+
+    @property
+    def center_of_mass(self) -> Tuple[float, float]:
+        # returns the mean coordinates of the fixation on the X,Y axes
+        return np.nanmean(self.__x), np.nanmean(self.__y)
+
+    @property
+    def std(self) -> Tuple[float, float]:
+        # returns the standard deviation of the fixation on the X,Y axes
+        return np.nanstd(self.__x), np.nanstd(self.__y)
 
     def to_series(self) -> pd.Series:
         """
@@ -43,32 +47,3 @@ class FixationEvent(BaseGazeEvent):
         # TODO: check max acceleration
         # TODO: check max dispersion
         return False
-
-    @property
-    def center_of_mass(self) -> Tuple[float, float]:
-        # returns the mean coordinates of the fixation on the X,Y axes
-        return np.nanmean(self.__x), np.nanmean(self.__y)
-
-    @property
-    def std(self) -> Tuple[float, float]:
-        # returns the standard deviation of the fixation on the X,Y axes
-        return np.nanstd(self.__x), np.nanstd(self.__y)
-
-    @classmethod
-    def event_type(cls) -> str:
-        return cnst.FIXATION
-
-    def __eq__(self, other):
-        if not isinstance(other, FixationEvent):
-            return False
-        if not super().__eq__(other):
-            return False
-        if self.__viewer_distance != other.__viewer_distance:
-            return False
-        if not np.array_equal(self.__x, other.__x, equal_nan=True):
-            return False
-        if not np.array_equal(self.__y, other.__y, equal_nan=True):
-            return False
-        return True
-
-

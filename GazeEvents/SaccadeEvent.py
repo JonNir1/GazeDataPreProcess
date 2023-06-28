@@ -5,44 +5,14 @@ from typing import Tuple
 import constants as cnst
 from Config import experiment_config as cnfg
 from Utils import angle_utils as angle_utils
-from GazeEvents.BaseGazeEvent import BaseGazeEvent
+from GazeEvents.BaseVisualGazeEvent import BaseVisualGazeEvent
 
 
-class SaccadeEvent(BaseGazeEvent):
+class SaccadeEvent(BaseVisualGazeEvent):
 
-    def __init__(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray, viewer_distance: float):
-        if not np.isfinite(viewer_distance) or viewer_distance <= 0:
-            raise ValueError("viewer_distance must be a positive finite number")
-        if len(timestamps) != len(x) or len(timestamps) != len(y):
-            raise ValueError("Arrays of timestamps, x and y must have the same length")
-        super().__init__(timestamps=timestamps)
-        self.__x = x
-        self.__y = y
-        self.__viewer_distance = viewer_distance  # in cm
-
-    def to_series(self) -> pd.Series:
-        """
-        creates a pandas Series with summary of saccade information.
-        :return: a pd.Series with the following index:
-            - start_time: event's start time in milliseconds
-            - end_time: event's end time in milliseconds
-            - duration: event's duration in milliseconds
-            - is_outlier: boolean indicating whether the event is an outlier or not
-            - start_point: saccade's start point (2D pixel coordinates)
-            - end_point: saccade's end point (2D pixel coordinates)
-            - distance: saccade's distance (in pixels)
-            - velocity: saccade's velocity (in pixels per second)
-            - azimuth: saccade's azimuth (in degrees)
-            - visual_angle: saccade's visual angle (in degrees)
-            - angular_velocity: saccade's angular velocity (in degrees per second)
-        """
-        series = super().to_series()
-        series["start_point"] = self.start_point
-        series["end_point"] = self.end_point
-        series["azimuth"] = self.azimuth
-        series["visual_angle"] = self.visual_angle
-        series["angular_velocity"] = self.angular_velocity
-        return series
+    @classmethod
+    def event_type(cls):
+        return cnst.SACCADE
 
     @property
     def is_outlier(self) -> bool:
@@ -88,19 +58,26 @@ class SaccadeEvent(BaseGazeEvent):
     def angular_velocity(self) -> float:
         return self.visual_angle / self.duration * 1000
 
-    @classmethod
-    def event_type(cls):
-        return cnst.SACCADE
-
-    def __eq__(self, other):
-        if not isinstance(other, SaccadeEvent):
-            return False
-        if not super().__eq__(other):
-            return False
-        if self.__viewer_distance != other.__viewer_distance:
-            return False
-        if not np.array_equal(self.__x, other.__x, equal_nan=True):
-            return False
-        if not np.array_equal(self.__y, other.__y, equal_nan=True):
-            return False
-        return True
+    def to_series(self) -> pd.Series:
+        """
+        creates a pandas Series with summary of saccade information.
+        :return: a pd.Series with the following index:
+            - start_time: event's start time in milliseconds
+            - end_time: event's end time in milliseconds
+            - duration: event's duration in milliseconds
+            - is_outlier: boolean indicating whether the event is an outlier or not
+            - start_point: saccade's start point (2D pixel coordinates)
+            - end_point: saccade's end point (2D pixel coordinates)
+            - distance: saccade's distance (in pixels)
+            - velocity: saccade's velocity (in pixels per second)
+            - azimuth: saccade's azimuth (in degrees)
+            - visual_angle: saccade's visual angle (in degrees)
+            - angular_velocity: saccade's angular velocity (in degrees per second)
+        """
+        series = super().to_series()
+        series["start_point"] = self.start_point
+        series["end_point"] = self.end_point
+        series["azimuth"] = self.azimuth
+        series["visual_angle"] = self.visual_angle
+        series["angular_velocity"] = self.angular_velocity
+        return series
