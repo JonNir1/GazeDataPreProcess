@@ -15,7 +15,7 @@ class BaseGazeEvent(ABC):
             raise ValueError("array timestamps must not contain NaN values")
         if (timestamps < 0).any():
             raise ValueError("array timestamps must not contain negative values")
-        self.__timestamps = timestamps
+        self._timestamps = timestamps
 
     def to_series(self) -> pd.Series:
         """
@@ -32,12 +32,12 @@ class BaseGazeEvent(ABC):
     @property
     def start_time(self) -> float:
         # Event's start time in milliseconds
-        return self.__timestamps[0]
+        return self._timestamps[0]
 
     @property
     def end_time(self) -> float:
         # Event's end time in milliseconds
-        return self.__timestamps[-1]
+        return self._timestamps[-1]
 
     @property
     def duration(self) -> float:
@@ -63,8 +63,8 @@ class BaseGazeEvent(ABC):
     def __eq__(self, other):
         if not isinstance(other, type(self)):
             return False
-        if self.__timestamps.shape != other.__timestamps.shape:
+        if self._timestamps.shape != other._timestamps.shape:
             return False
-        if not np.allclose(self.__timestamps, other.__timestamps):
+        if not np.allclose(self._timestamps, other._timestamps):
             return False
         return True
