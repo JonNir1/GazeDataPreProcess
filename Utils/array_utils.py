@@ -82,3 +82,17 @@ def get_chunk_indices(bool_arr: np.ndarray, min_length: int = 0) -> List[np.ndar
     different_chunk_idxs = np.split(chunk_idxs, chunk_end_idxs + 1)  # +1 because we want to include the last index
     different_chunk_idxs = list(filter(lambda e: len(e) >= min_length, different_chunk_idxs))
     return different_chunk_idxs
+
+
+def distance_between_subsequent_pixels(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    """
+    Calculates the Euclidean distance between subsequent pixels in the given x and y coordinates.
+    :param x: x coordinates
+    :param y: y coordinates
+    :return: distance between subsequent pixels
+    """
+    assert len(x) == len(y), "x and y must be of the same length"
+    x_diff = np.diff(x)
+    y_diff = np.diff(y)
+    dist = np.sqrt(np.power(x_diff, 2) + np.power(y_diff, 2))
+    return dist
