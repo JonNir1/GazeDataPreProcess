@@ -4,15 +4,37 @@ import time
 
 import constants as cnst
 from Config import experiment_config as cnfg
-from LWS.DataModels.LWSTrial import LWSTrial
+from LWS.DataModels.LWSSubject import LWSSubject
+
+# ##########################################
+# ### PREPROCESSING GAZE DATA  #############
+# ##########################################
+#
+# import LWS.PreProcessing as pp
+#
+# start = time.time()
+#
+# subject = pp.process_subject(subject_dir=os.path.join(cnfg.RAW_DATA_DIR, 'Rotem Demo'),
+#                              screen_monitor=cnfg.SCREEN_MONITOR,
+#                              save_pickle=True,
+#                              stuff_with='fixation',
+#                              blink_detector_type='missing data',
+#                              saccade_detector_type='engbert',
+#                              drop_outlier_events=False)
+#
+# end = time.time()
+# print(f"Finished preprocessing in: {(end - start):.2f} seconds")
+#
+# # delete irrelevant variables:
+# del start, end
 
 ##########################################
-###  LOADING DATA FROM PICKLE FILES  #####
+###  LOAD DATA FROM PICKLE FILES  ########
 ##########################################
 
 start = time.time()
 
-trials = [LWSTrial.from_pickle(os.path.join(cnfg.OUTPUT_DIR, "S002", "trials", f"LWSTrial_S2_T{i+1}.pkl")) for i in range(60)]
+subject = LWSSubject.from_pickle(os.path.join(cnfg.OUTPUT_DIR, "S002", "LWSSubject_002.pkl"))
 
 end = time.time()
 print(f"Finished loading in: {(end - start):.2f} seconds")
@@ -26,10 +48,13 @@ from LWS.DataModels.LWSTrialVisualizer import LWSTrialVisualizer
 
 start = time.time()
 
-visualizer = LWSTrialVisualizer(screen_resolution=sm.resolution, output_directory=cnfg.OUTPUT_DIR)
+visualizer = LWSTrialVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution, output_directory=cnfg.OUTPUT_DIR)
 
 failed_trials = []
-for tr in trials:
+for i in range(subject.num_trials):
+    if i > 0:
+        break
+    tr = subject.get_trial(i+1)  # trial numbers start from 1
     try:
         start_trial = time.time()
         visualizer.create_gaze_figure(trial=tr, savefig=True)
@@ -58,6 +83,8 @@ import LWS.analysis_scripts.events_summary as evsum
 
 start = time.time()
 
+trials = subject.get_all_trials()
+
 trial_summary = trsum.summarize_all_trials(trials)
 
 all_blinks = [b for tr in trials for b in tr.get_gaze_events(cnst.BLINK)]
@@ -74,26 +101,4 @@ print(f"Finished analysis in: {(end - start):.2f} seconds")
 
 del start, end
 
-##########################################
-### PREPROCESSING GAZE DATA  #############
-##########################################
-
-import LWS.PreProcessing as pp
-
-start = time.time()
-
-trials = pp.process_subject(subject_dir=os.path.join(cnfg.RAW_DATA_DIR, 'Rotem Demo'),
-                            stimuli_dir=cnfg.STIMULI_DIR,
-                            screen_monitor=cnfg.SCREEN_MONITOR,
-                            save_pickle=True,
-                            stuff_with='fixation',
-                            blink_detector_type='missing data',
-                            saccade_detector_type='engbert',
-                            drop_outlier_events=False)
-
-end = time.time()
-print(f"Finished preprocessing in: {(end - start):.2f} seconds")
-
-# delete irrelevant variables:
-del start, end
 
