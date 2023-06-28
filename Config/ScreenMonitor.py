@@ -18,9 +18,12 @@ class ScreenMonitor:
         self.__refresh_rate = refresh_rate
         self.__resolution = resolution
 
-    @classmethod
-    def from_default(cls):
-        return cls(cls.__DEFAULT_WIDTH, cls.__DEFAULT_HEIGHT, cls.__DEFAULT_REFRESH_RATE, cls.__DEFAULT_RESOLUTION)
+    @staticmethod
+    def from_default() -> "ScreenMonitor":
+        return ScreenMonitor(width=ScreenMonitor.__DEFAULT_WIDTH,
+                             height=ScreenMonitor.__DEFAULT_HEIGHT,
+                             refresh_rate=ScreenMonitor.__DEFAULT_REFRESH_RATE,
+                             resolution=ScreenMonitor.__DEFAULT_RESOLUTION)
 
     @property
     def width(self) -> float:
