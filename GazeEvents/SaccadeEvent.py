@@ -33,11 +33,15 @@ class SaccadeEvent(BaseGazeEvent):
             - distance: saccade's distance (in pixels)
             - velocity: saccade's velocity (in pixels per second)
             - azimuth: saccade's azimuth (in degrees)
+            - visual_angle: saccade's visual angle (in degrees)
+            - angular_velocity: saccade's angular velocity (in degrees per second)
         """
         series = super().to_series()
         series["start_point"] = self.start_point
         series["end_point"] = self.end_point
         series["azimuth"] = self.azimuth
+        series["visual_angle"] = self.visual_angle
+        series["angular_velocity"] = self.angular_velocity
         return series
 
     @property
@@ -74,6 +78,15 @@ class SaccadeEvent(BaseGazeEvent):
         # returns the azimuth of the saccade in degrees
         # see Utils.angle_utils.calculate_azimuth for more information
         return angle_utils.calculate_azimuth(p1=self.start_point, p2=self.end_point, use_radians=False)
+
+    @property
+    def visual_angle(self) -> float:
+        return angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point, d=self.__viewer_distance,
+                                                  pixel_size=cnfg.SCREEN_MONITOR.pixel_size)
+
+    @property
+    def angular_velocity(self) -> float:
+        return self.visual_angle / self.duration * 1000
 
     @classmethod
     def event_type(cls):
