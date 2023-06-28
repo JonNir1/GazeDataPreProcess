@@ -1,15 +1,15 @@
 # LWS PreProcessing Pipeline
 
 import os
-from typing import List
 
 from Config import experiment_config as cnfg
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSTrial import LWSTrial
+from LWS.DataModels.LWSSubject import LWSSubject
 from LWS.pre_processing_scripts.read_raw_data import read_behavioral_data, read_subject_info
 
 
-def read_subject_trials(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwargs) -> List[LWSTrial]:
+def read_subject_from_raw_data(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwargs) -> LWSSubject:
     """
     Reads the subject's behavioral data and creates a list of trials, each containing the subject's behavioral data,
     the stimulus that was presented in that trial, and the subject's info.
@@ -33,14 +33,16 @@ def read_subject_trials(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, *
     if not os.path.isdir(stimuli_dir):
         raise NotADirectoryError(f"Directory {stimuli_dir} does not exist.")
 
-    # read the behavioral data:
-    trials = []
+    # create LWSSubject object:
     subject_info = read_subject_info(subject_dir)
+    subject = LWSSubject(info=subject_info)
+
+    # read the trials and assign them to the subject:
     behavioral_trials_data = read_behavioral_data(subject_dir, **kwargs)
     for i, bd in enumerate(behavioral_trials_data):
         stimulus = LWSArrayStimulus.from_stimulus_name(stim_id=bd.image_num,
                                                        stim_type=bd.stim_type,
                                                        stim_directory=stimuli_dir)
-        lws_trial = LWSTrial(trial_num=i + 1, behavioral_data=bd, stimulus=stimulus)
-        trials.append(lws_trial)
-    return trials
+        trial = LWSTrial(trial_num=i + 1, behavioral_data=bd, stimulus=stimulus, subject=subject)
+        subject.add_trial(trial)
+    return subject
