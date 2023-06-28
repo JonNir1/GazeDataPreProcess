@@ -50,9 +50,9 @@ class SaccadeEvent(BaseVisualGazeEvent):
         return angle_utils.calculate_azimuth(p1=self.start_point, p2=self.end_point, use_radians=False)
 
     @property
-    def visual_angle(self) -> float:
-        return angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point, d=self._viewer_distance,
-                                                  pixel_size=cnfg.SCREEN_MONITOR.pixel_size)
+    def amplitude(self) -> float:
+        return angle_utils.calculate_visual_angle(p1=self.start_point, p2=self.end_point,
+                                                  d=self._viewer_distance, pixel_size=cnfg.SCREEN_MONITOR.pixel_size)
 
     def to_series(self) -> pd.Series:
         """
@@ -67,11 +67,11 @@ class SaccadeEvent(BaseVisualGazeEvent):
             - distance: saccade's distance (in pixels)
             - velocity: saccade's velocity (in pixels per second)
             - azimuth: saccade's azimuth (in degrees)
-            - visual_angle: saccade's visual angle (in degrees)
+            - amplitude: saccade's visual angle (in degrees)
         """
         series = super().to_series()
         series["start_point"] = self.start_point
         series["end_point"] = self.end_point
         series["azimuth"] = self.azimuth
-        series["visual_angle"] = self.visual_angle
+        series["amplitude"] = self.amplitude
         return series

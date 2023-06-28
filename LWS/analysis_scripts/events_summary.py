@@ -93,8 +93,8 @@ def __get_saccade_summary_dict(saccades: List[SaccadeEvent]) -> Dict[str, float]
     :return: dictionary containing summary of saccades
     """
     data = __get_basic_summary_dict(events=saccades)
-    data["visual_angle_mean"] = np.nanmean([s.visual_angle for s in saccades])
-    data["visual_angle_std"] = np.nanstd([s.visual_angle for s in saccades])
+    data["visual_angle_mean"] = np.nanmean([s.amplitude for s in saccades])
+    data["visual_angle_std"] = np.nanstd([s.amplitude for s in saccades])
     return data
 
 
