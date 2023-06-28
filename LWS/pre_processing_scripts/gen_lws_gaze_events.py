@@ -70,7 +70,7 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial, screen_monitor: Screen
         fixations_list = []
         for idxs in separate_event_idxs:
             fix = LWSFixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], triggers=triggers[idxs])
-            fix.visual_angle_to_target = calc_fixation_distance(fix=fix, trial=trial, sm=screen_monitor)
+            fix.visual_angle_to_target = calc_fixation_distance(fix=fix, trial=trial)
             fixations_list.append(fix)
         return fixations_list
 
