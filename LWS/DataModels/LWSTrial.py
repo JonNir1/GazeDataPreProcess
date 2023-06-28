@@ -75,11 +75,8 @@ class LWSTrial:
         self.__is_processed = is_processed
 
     @property
-    def subject_id(self) -> int:
-        return self.__subject.subject_id
-
-    def get_dominant_eye(self) -> str:
-        return self.__subject.dominant_eye
+    def subject(self) -> "LWSSubject":
+        return self.__subject
 
     def get_subject_info(self) -> LWSSubjectInfo:
         return self.__subject_info
@@ -133,7 +130,7 @@ class LWSTrial:
 
         eye = eye.lower()
         if eye == "dominant":
-            eye = self.get_dominant_eye().lower()
+            eye = self.subject.dominant_eye
         if eye == 'left':
             x_l, y_l = bd.get(cnst.LEFT_X).values, bd.get(cnst.LEFT_Y).values
             return ts, x_l, y_l
