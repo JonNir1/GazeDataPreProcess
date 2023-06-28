@@ -133,7 +133,7 @@ class LWSTrial:
 
         eye = eye.lower()
         if eye == "dominant":
-            eye = self.subject.dominant_eye
+            eye = self.subject.dominant_eye.lower()
         if eye == 'left':
             x_l, y_l = bd.get(cnst.LEFT_X).values, bd.get(cnst.LEFT_Y).values
             return ts, x_l, y_l
