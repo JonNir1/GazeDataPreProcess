@@ -5,6 +5,7 @@ import os
 import numpy as np
 
 import constants as cnst
+from Utils.ScreenMonitor import ScreenMonitor
 
 # DIRECTORIES
 BASE_DIR = r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo"
@@ -12,12 +13,8 @@ STIMULI_DIR = os.path.join(BASE_DIR, "Stimuli", "generated_stim1")
 RAW_DATA_DIR = os.path.join(BASE_DIR, "RawData")
 OUTPUT_DIR = os.path.join(BASE_DIR, "Results")
 
-# GENERAL CONFIGURATION
-SCREEN_DISTANCE = 65  # distance between the screen and the participant in cm
-SCREEN_WIDTH = 53.5   # width of the screen in cm
-SCREEN_HEIGHT = 31    # height of the screen in cm
-SCREEN_RESOLUTION = (1920, 1080)  # resolution of the screen in pixels
-SCREEN_REFRESH_RATE = 60  # refresh rate of the screen in Hz
+# GLOBAL VARIABLES
+SCREEN_MONITOR: ScreenMonitor = ScreenMonitor.from_default()  # global screen monitor object
 
 
 # GAZE DATA & GAZE EVENTS CONFIGURATION

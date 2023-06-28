@@ -1,14 +1,16 @@
 import numpy as np
 from typing import Tuple
 
-import experiment_config as cnfg
-
 
 class ScreenMonitor:
     """
     Holds information about the computer screen used for the experiments.
     Default values are taken from the experiment_config.py file.
     """
+    __DEFAULT_WIDTH = 53.5                  # width of the screen in cm
+    __DEFAULT_HEIGHT = 31                   # height of the screen in cm
+    __DEFAULT_REFRESH_RATE = 60             # refresh rate of the screen in Hz
+    __DEFAULT_RESOLUTION = (1920, 1080)     # resolution of the screen in pixels
 
     def __init__(self, width: float, height: float, refresh_rate: float, resolution: Tuple[int, int]):
         self.__width = width
@@ -17,8 +19,8 @@ class ScreenMonitor:
         self.__resolution = resolution
 
     @classmethod
-    def from_config(cls):
-        return cls(cnfg.SCREEN_WIDTH, cnfg.SCREEN_HEIGHT, cnfg.SCREEN_REFRESH_RATE, cnfg.SCREEN_RESOLUTION)
+    def from_default(cls):
+        return cls(cls.__DEFAULT_WIDTH, cls.__DEFAULT_HEIGHT, cls.__DEFAULT_REFRESH_RATE, cls.__DEFAULT_RESOLUTION)
 
     @property
     def width(self) -> float:
