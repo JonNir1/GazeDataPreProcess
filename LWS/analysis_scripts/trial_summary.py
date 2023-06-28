@@ -82,8 +82,8 @@ def __summarize_single_trial_unsafe(trial: LWSTrial) -> pd.Series:
                 [e.visual_angle_to_target for e in events if
                  np.isfinite(e.visual_angle_to_target) and not e.is_outlier])
         elif et == cnst.SACCADE:
-            from LWS.DataModels.LWSSaccadeEvent import LWSSaccadeEvent
-            events: List[LWSSaccadeEvent]
+            from GazeEvents.SaccadeEvent import SaccadeEvent
+            events: List[SaccadeEvent]
             trial_data[f"{et}_mean_visual_angle"] = np.nanmean(
                 [e.visual_angle for e in events if np.isfinite(e.visual_angle)])
             trial_data[f"{et}_mean_visual_angle_no_outliers"] = np.nanmean([e.visual_angle for e in events if

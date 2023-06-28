@@ -4,7 +4,7 @@ from typing import List, Dict
 
 import constants as cnst
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
-from LWS.DataModels.LWSSaccadeEvent import LWSSaccadeEvent
+from GazeEvents.SaccadeEvent import SaccadeEvent
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 
@@ -48,7 +48,7 @@ def summarize_events(events: List[BaseGazeEvent], filter_outliers=False) -> pd.S
         return pd.Series(data)
 
     if event_type == cnst.SACCADE:
-        events: List[LWSSaccadeEvent]
+        events: List[SaccadeEvent]
         data = __get_saccade_summary_dict(saccades=events)
         return pd.Series(data)
 
@@ -79,7 +79,7 @@ def __get_basic_summary_dict(events: List[BaseGazeEvent]) -> Dict[str, float]:
     return data
 
 
-def __get_saccade_summary_dict(saccades: List[LWSSaccadeEvent]) -> Dict[str, float]:
+def __get_saccade_summary_dict(saccades: List[SaccadeEvent]) -> Dict[str, float]:
     """
     Extracts a dictionary containing summary of saccades, with the following keys:
         - count

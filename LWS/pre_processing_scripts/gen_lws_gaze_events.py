@@ -52,11 +52,11 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial, screen_monitor: Screen
 
     if event_type == cnst.SACCADE:
         # create LWSSaccadeEvents
-        from LWS.DataModels.LWSSaccadeEvent import LWSSaccadeEvent
+        from GazeEvents.SaccadeEvent import SaccadeEvent
         distance = trial.subject.distance_to_screen
         saccades_list = []
         for idxs in separate_event_idxs:
-            sacc = LWSSaccadeEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], viewer_distance=distance)
+            sacc = SaccadeEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], viewer_distance=distance)
             saccades_list.append(sacc)
         return saccades_list
 
