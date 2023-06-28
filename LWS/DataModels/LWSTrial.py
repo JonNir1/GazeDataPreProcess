@@ -27,7 +27,6 @@ class LWSTrial:
         # TODO: take out SubjectInfo to a new LWSSubject class
         self.__is_processed: bool = False
         self.__trial_num: int = trial_num
-        self.__subject_info: LWSSubjectInfo = subject_info
         self.__stimulus: LWSArrayStimulus = stimulus
         self.__behavioral_data: LWSBehavioralData = behavioral_data
         self.__gaze_events: List[BaseGazeEvent] = sorted(self.__gaze_events,
@@ -155,7 +154,7 @@ class LWSTrial:
         return events
 
     def to_pickle(self, output_dir: Optional[str] = None) -> str:
-        subject_dir = ioutils.create_subject_output_directory(subject_id=self.__subject_info.subject_id,
+        subject_dir = ioutils.create_subject_output_directory(subject_id=self.subject.subject_id,
                                                               output_dir=output_dir)
         trials_dir = ioutils.create_directory(dirname='trials', parent_dir=subject_dir)
         full_path = os.path.join(trials_dir, f"{self.__repr__()}.pkl")
@@ -174,10 +173,10 @@ class LWSTrial:
         return trial
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}_S{self.__subject_info.subject_id}_T{self.__trial_num}"
+        return f"{self.__class__.__name__}_S{self.subject.subject_id}_T{self.__trial_num}"
 
     def __str__(self) -> str:
-        return f"Trial {self.__trial_num:03d} | Subject {self.__subject_info.subject_id:03d}"
+        return f"Trial {self.__trial_num:03d} | Subject {self.subject.subject_id:03d}"
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, LWSTrial):
