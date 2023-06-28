@@ -48,6 +48,9 @@ class LWSSubject:
     def add_trial(self, trial: "LWSTrial"):
         self.__trials.append(trial)
 
+    def get_all_trials(self) -> List["LWSTrial"]:
+        return self.__trials
+
     def get_trial(self, trial_num: int) -> "LWSTrial":
         trials = list(filter(lambda t: t.trial_num == trial_num, self.__trials))
         if len(trials) == 0:
