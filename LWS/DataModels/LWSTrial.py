@@ -19,12 +19,10 @@ class LWSTrial:
 
     def __init__(self,
                  trial_num: int,
-                 subject_info: LWSSubjectInfo,
                  stimulus: LWSArrayStimulus,
                  behavioral_data: LWSBehavioralData,
                  gaze_events: List[BaseGazeEvent] = None,
                  subject: "LWSSubject" = None):
-        # TODO: take out SubjectInfo to a new LWSSubject class
         self.__is_processed: bool = False
         self.__trial_num: int = trial_num
         self.__stimulus: LWSArrayStimulus = stimulus

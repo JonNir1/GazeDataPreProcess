@@ -43,7 +43,7 @@ def read_subject_trials(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, *
         stimulus = LWSArrayStimulus.from_stimulus_name(stim_id=bt.image_num,
                                                        stim_type=bt.stim_type,
                                                        stim_directory=stimuli_dir)
-        lws_trial = LWSTrial(trial_num=i + 1, subject_info=subject_info, behavioral_data=bt, stimulus=stimulus)
+        lws_trial = LWSTrial(trial_num=i + 1, behavioral_data=bt, stimulus=stimulus)
         trials.append(lws_trial)
     return trials
 
