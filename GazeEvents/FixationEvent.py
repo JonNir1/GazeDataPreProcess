@@ -27,6 +27,14 @@ class FixationEvent(BaseVisualGazeEvent):
         y_std = float(np.nanstd(self._y))
         return x_std, y_std
 
+    @property
+    def max_dispersion(self) -> float:
+        # returns the maximum distance between any two points in the fixation (in pixels units)
+        points = np.column_stack((self._x, self._y))
+        distances = np.linalg.norm(points - points[:, None], axis=-1)
+        max_dist = float(np.nanmax(distances))
+        return max_dist
+
     def to_series(self) -> pd.Series:
         """
         creates a pandas Series with summary of fixation information.
@@ -37,6 +45,7 @@ class FixationEvent(BaseVisualGazeEvent):
             - is_outlier: boolean indicating whether the event is an outlier or not
             - center_of_mass: fixation's center of mass (2D pixel coordinates)
             - std: fixation's standard deviation (in pixels units)
+            - max_dispersion: maximum distance between any two points in the fixation (in pixels units)
         """
         series = super().to_series()
         series["center_of_mass"] = self.center_of_mass
