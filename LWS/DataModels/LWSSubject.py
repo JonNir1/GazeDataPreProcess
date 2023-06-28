@@ -1,5 +1,8 @@
-from typing import List
+import os
+import pickle as pkl
+from typing import List, Optional
 
+import Utils.io_utils as ioutils
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 
 
@@ -11,6 +14,16 @@ class LWSSubject:
     def __init__(self, info: LWSSubjectInfo, trials: List["LWSTrial"] = None):
         self.__subject_info: LWSSubjectInfo = info
         self.__trials: List[LWSTrial] = trials if trials is not None else []
+
+    @staticmethod
+    def from_pickle(pickle_path: str) -> 'LWSSubject':
+        if not os.path.exists(pickle_path):
+            raise FileNotFoundError(f"Could not find pickle file: {pickle_path}")
+        with open(pickle_path, "rb") as f:
+            subject = pkl.load(f)
+        if not isinstance(subject, LWSSubject):
+            raise RuntimeError(f"Expected LWSSubject, got {type(subject)}")
+        return subject
 
     @property
     def subject_id(self) -> int:
@@ -39,6 +52,14 @@ class LWSSubject:
         if len(trials) > 1:
             raise RuntimeError(f"Subject {self.subject_id} has more than one trial with number {trial_num}")
         return trials[0]
+
+    def to_pickle(self, output_dir: Optional[str] = None) -> str:
+        subject_dir = ioutils.create_subject_output_directory(subject_id=self.subject.subject_id,
+                                                              output_dir=output_dir)
+        full_path = os.path.join(subject_dir, f"{self.__repr__()}.pkl")
+        with open(full_path, "wb") as f:
+            pkl.dump(self, f)
+        return full_path
 
     def add_trial(self, trial: "LWSTrial"):
         self.__trials.append(trial)
