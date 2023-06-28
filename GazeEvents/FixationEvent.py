@@ -37,11 +37,7 @@ class FixationEvent(BaseVisualGazeEvent):
     def to_series(self) -> pd.Series:
         """
         creates a pandas Series with summary of fixation information.
-        :return: a pd.Series with the following index:
-            - start_time: event's start time in milliseconds
-            - end_time: event's end time in milliseconds
-            - duration: event's duration in milliseconds
-            - is_outlier: boolean indicating whether the event is an outlier or not
+        :return: a pd.Series with the same values as super().to_series() and the following additional values:
             - center_of_mass: fixation's center of mass (2D pixel coordinates)
             - covariance_matrix: fixation's covariance matrix (2x2 matrix, in pixel^2 units)
             - max_dispersion: maximum distance between any two points in the fixation (in pixels units)

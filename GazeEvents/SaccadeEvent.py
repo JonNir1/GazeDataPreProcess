@@ -53,11 +53,7 @@ class SaccadeEvent(BaseVisualGazeEvent):
     def to_series(self) -> pd.Series:
         """
         creates a pandas Series with summary of saccade information.
-        :return: a pd.Series with the following index:
-            - start_time: event's start time in milliseconds
-            - end_time: event's end time in milliseconds
-            - duration: event's duration in milliseconds
-            - is_outlier: boolean indicating whether the event is an outlier or not
+        :return: a pd.Series with the same values as super().to_series() and the following additional values:
             - start_point: saccade's start point (2D pixel coordinates)
             - end_point: saccade's end point (2D pixel coordinates)
             - distance: saccade's distance (in pixels)
