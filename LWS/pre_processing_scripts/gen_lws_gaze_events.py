@@ -29,7 +29,7 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial, screen_monitor: Screen
     """
     Identifies all chunks of data that belong to this type of event within the trial and creates a GazeEvent object
     for each chunk and returns the list of events.
-    For more information see the generic implementation in GazeEvents.pre_processing_scripts.gen_gaze_events.py
+    For more information see the generic implementation in GazeEvents.pre_processing_scripts.create_gaze_events.py
 
     :param event_type: type of event to extract. Must be one of 'blink', 'saccade' or 'fixation'
     :param trial: LWSTrial object
@@ -44,8 +44,8 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial, screen_monitor: Screen
 
     if event_type == cnst.BLINK:
         # use generic gaze events
-        from GazeEvents.scripts.gen_gaze_events import gen_gaze_events
-        blinks_list = gen_gaze_events(timestamps=timestamps, is_event=is_event, event_type=cnst.BLINK)
+        from GazeEvents.scripts.create_gaze_events import create_gaze_events
+        blinks_list = create_gaze_events(event_type=cnst.BLINK, timestamps=timestamps, is_event=is_event)
         return blinks_list
 
     separate_event_idxs = au.get_chunk_indices(is_event, min_length=cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT)
