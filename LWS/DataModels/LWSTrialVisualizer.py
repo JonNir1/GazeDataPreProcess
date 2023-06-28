@@ -219,7 +219,7 @@ class LWSTrialVisualizer:
         # prepare video writer
         fps = round(trial.sampling_rate)
         resolution = self.screen_resolution
-        save_path = self.__get_full_path(trial.get_subject_info().subject_id, trial.trial_num, output_type='video')
+        save_path = self.__get_full_path(trial.subject.subject_id, trial.trial_num, output_type='video')
         video_writer = cv2.VideoWriter(save_path, self.FOURCC, fps, resolution)
 
         # create the video:
@@ -320,7 +320,7 @@ class LWSTrialVisualizer:
         return bg_img
 
     def __save_figure(self, trial: LWSTrial, fig: plt.Figure, output_type: str, is_transparent: bool = False):
-        subject_id = trial.get_subject_info().subject_id
+        subject_id = trial.subject.subject_id
         save_path = self.__get_full_path(subject_id, trial.trial_num, output_type=output_type)
         fig.savefig(save_path, bbox_inches='tight', dpi='figure', transparent=is_transparent)
         return None

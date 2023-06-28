@@ -78,9 +78,6 @@ class LWSTrial:
     def subject(self) -> "LWSSubject":
         return self.__subject
 
-    def get_subject_info(self) -> LWSSubjectInfo:
-        return self.__subject_info
-
     def get_stimulus(self) -> LWSArrayStimulus:
         return self.__stimulus
 
