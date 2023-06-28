@@ -1,14 +1,12 @@
 # LWS PreProcessing Pipeline
 
 import os
-import re
 from typing import List
 
 from Config import experiment_config as cnfg
-from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSTrial import LWSTrial
-from LWS.pre_processing_scripts.read_raw_data import read_behavioral_data
+from LWS.pre_processing_scripts.read_raw_data import read_behavioral_data, read_subject_info
 
 
 def read_subject_trials(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwargs) -> List[LWSTrial]:
@@ -46,23 +44,3 @@ def read_subject_trials(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, *
         lws_trial = LWSTrial(trial_num=i + 1, behavioral_data=bt, stimulus=stimulus)
         trials.append(lws_trial)
     return trials
-
-
-def read_subject_info(subject_dir: str) -> LWSSubjectInfo:
-    """
-    Finds all files in the provided directory that match the subject-info pattern ("ExpName-21-33.txt"), reads the only
-    file (or raises an error if there are multiple files or no files at all), and extracts a SubjectInfo object from it.
-
-    :raise FileNotFoundError: if no subject info file was found in the provided directory.
-    :raise ValueError: if multiple subject info files were found in the provided directory.
-    """
-    # find all filenames that match the subject-info pattern:
-    pattern = re.compile("[a-zA-z0-9]*-[0-9]*-[0-9]*.txt")
-    subject_info_paths = [os.path.join(subject_dir, file) for file in os.listdir(subject_dir) if pattern.match(file)]
-    subject_info_paths.sort(key=lambda p: int(p.split(".")[0].split("-")[2]))  # sort by session number
-
-    if len(subject_info_paths) == 0:
-        raise FileNotFoundError(f"No subject info file was found in {subject_dir}.")
-    if len(subject_info_paths) > 1:
-        raise ValueError(f"Multiple subject info files were found in {subject_dir}.")
-    return LWSSubjectInfo.from_eprime_file(subject_info_paths[0])
