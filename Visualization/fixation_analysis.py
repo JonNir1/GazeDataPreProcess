@@ -11,7 +11,6 @@ def fixation_histograms_figure(fixations: List[FixationEvent], ignore_outliers: 
 
     fig, axes = plt.subplots(2, 2, figsize=kwargs.get("figsize", (21, 14)))
     fig.suptitle(t=kwargs.get("title", "Fixation Summary"), font_size=kwargs.get("title_size", 16), y=0.98)
-
     nbins = kwargs.get("nbins", 20)
     subtitle_size = kwargs.get("subtitle_size", 14)
     label_size = kwargs.get("label_size", 12)
@@ -20,6 +19,7 @@ def fixation_histograms_figure(fixations: List[FixationEvent], ignore_outliers: 
     ax = visutils.create_histogram([f.duration for f in fixations], axes[0, 0], title="Durations",
                                    xlabel="Duration (ms)", color=kwargs.get("duration_color", "lightblue"),
                                    nbins=nbins, title_size=subtitle_size, label_size=label_size)
+
     # dispersion histogram
     ax = visutils.create_histogram([f.max_dispersion for f in fixations], axes[0, 1], title="Dispersions",
                                    xlabel="Dispersion (pixels)", color=kwargs.get("dispersion_color", "lightblue"),
