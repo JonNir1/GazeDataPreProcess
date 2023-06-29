@@ -2,8 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from typing import Tuple
 
-from LWS.DataModels.LWSTrial import LWSTrial
-
 
 def get_axis_limits(ax: plt.Axes, axis: str) -> Tuple[float, float]:
     """
