@@ -3,6 +3,18 @@ import matplotlib.pyplot as plt
 from typing import Tuple
 
 
+def show_figure(fig):
+    """
+    Create a dummy figure and use its manager to display the given figure.
+    See https://stackoverflow.com/a/54579616/8543025 for more details.
+    """
+    dummy = plt.figure()
+    new_manager = dummy.canvas.manager
+    new_manager.canvas.figure = fig
+    fig.set_canvas(new_manager.canvas)
+    fig.show()
+
+
 def create_histogram(data, ax: plt.Axes, title: str, xlabel: str,
                      nbins: int, color: str, title_size: int, label_size: int) -> plt.Axes:
     ax.hist(data, bins=nbins, color=color)
