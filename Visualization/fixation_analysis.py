@@ -5,7 +5,7 @@ import Visualization.visualization_utils as visutils
 from GazeEvents.FixationEvent import FixationEvent
 
 
-def fixation_histograms(fixations: List[FixationEvent], ignore_outliers: bool = True, **kwargs):
+def fixation_histograms_figure(fixations: List[FixationEvent], ignore_outliers: bool = True, **kwargs):
     if ignore_outliers:
         fixations = [f for f in fixations if not f.is_outlier]
 
