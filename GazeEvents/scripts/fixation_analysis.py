@@ -1,5 +1,4 @@
-import numpy as np
-from typing import List, Tuple
+from typing import List
 import matplotlib.pyplot as plt
 
 from GazeEvents.FixationEvent import FixationEvent
