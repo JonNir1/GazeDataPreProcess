@@ -65,11 +65,11 @@ def fixations_heatmap(trial: LWSTrial) -> np.ndarray:
         fixation: FixationEvent
         duration = fixation.duration
         center_x, center_y = fixation.center_of_mass
-        cov = fixation.covariance_matrix()
+        std_x, std_y = fixation.standard_deviation
 
         addition = np.zeros_like(heatmap)
         addition[round(center_y), round(center_x)] = duration
-        addition = gaussian_filter(addition, sigma=[np.sqrt(cov[1, 1]), np.sqrt(cov[0, 0])])
+        addition = gaussian_filter(addition, sigma=(std_y, std_x))
         heatmap += addition
     # normalize heatmap to values in [0, 1]
     heatmap = au.normalize_array(heatmap)
