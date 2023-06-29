@@ -8,7 +8,6 @@ import Utils.array_utils as au
 def calculate_azimuth(p1: Optional[Tuple[Optional[float], Optional[float]]],
                       p2: Optional[Tuple[Optional[float], Optional[float]]],
                       use_radians=False) -> float:
-    # TODO: fix implementation so that it takes into account the different sizes of the pixels in the x and y axes
     """
     Calculates the counter-clockwise angle between the line starting from (0,0) and ending at p1, and the line starting
     from (0,0) and ending at p2.
