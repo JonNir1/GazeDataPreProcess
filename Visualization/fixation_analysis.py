@@ -5,12 +5,12 @@ import Visualization.visualization_utils as visutils
 from GazeEvents.FixationEvent import FixationEvent
 
 
-def fixation_histograms_figure(fixations: List[FixationEvent], ignore_outliers: bool = True, **kwargs):
+def fixation_histograms_figure(fixations: List[FixationEvent], ignore_outliers: bool = True, **kwargs) -> plt.Figure:
     if ignore_outliers:
         fixations = [f for f in fixations if not f.is_outlier]
 
     fig = plt.Figure(figsize=kwargs.get("figsize", (21, 14)))
-    fig.suptitle(t=kwargs.get("title", "Fixation Summary"), font_size=kwargs.get("title_size", 16), y=0.98)
+    fig.suptitle(t=kwargs.get("title", "Fixation Summary"), fontsize=kwargs.get("title_size", 16), y=0.95)
     nbins = kwargs.get("nbins", 20)
     subtitle_size = kwargs.get("subtitle_size", 14)
     label_size = kwargs.get("label_size", 12)
@@ -29,7 +29,7 @@ def fixation_histograms_figure(fixations: List[FixationEvent], ignore_outliers: 
 
     # max velocity histogram
     ax3 = fig.add_subplot(2, 2, 3)
-    visutils.create_histogram([f.max_velocity for f in fixations], ax3, title="Max Velocities",
+    visutils.create_histogram([f.max_velocity for f in fixations], ax3, title="Maximum Velocities",
                               xlabel="Max Velocity (pixels/ms)", color=kwargs.get("max_vel_color", "lightblue"),
                               nbins=nbins, title_size=subtitle_size, label_size=label_size)
 
