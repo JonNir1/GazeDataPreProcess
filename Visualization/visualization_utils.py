@@ -6,9 +6,9 @@ from typing import Tuple
 def create_histogram(data, ax: plt.Axes, title: str, xlabel: str,
                      nbins: int, color: str, title_size: int, label_size: int) -> plt.Axes:
     ax.hist(data, bins=nbins, color=color)
-    ax.set_title(title, font_size=title_size)
-    ax.set_xlabel(xlabel, font_size=label_size)
-    ax.set_ylabel("Count", font_size=label_size)
+    ax.set_title(title, fontsize=title_size)
+    ax.set_xlabel(xlabel, fontsize=label_size)
+    ax.set_ylabel("Count", fontsize=label_size)
     return ax
 
 
