@@ -1,3 +1,4 @@
+import numpy as np
 from typing import List
 import matplotlib.pyplot as plt
 
@@ -33,9 +34,11 @@ def saccade_histograms_figure(saccades: List[SaccadeEvent], ignore_outliers: boo
                               xlabel="Amplitude (°)", color=kwargs.get("amplitude_color", "lightblue"),
                               nbins=nbins, title_size=subtitle_size, label_size=label_size)
 
-    # azimuth histogram (polar)
-    ax4 = fig.add_subplot(2, 2, 4)
-    visutils.create_histogram([s.azimuth for s in saccades], ax4, title="Azimuth",
-                              xlabel="Azimuth (°)", color=kwargs.get("azimuth_color", "lightblue"),
-                              nbins=nbins, title_size=subtitle_size, label_size=label_size)
+    # azimuth counts (polar)
+    ax4 = fig.add_subplot(2, 2, 4, polar=True)
+    azimuths = [s.azimuth for s in saccades if not np.isnan(s.azimuth)]
+    counts, _edges = np.histogram(azimuths, bins=np.arange(0, 361, 360 / nbins))
+    visutils.create_rose_plot(counts, ax4, title="Azimuth", xlabel="Azimuth (°)", ylabel="Counts",
+                              face_color="none", edge_color=kwargs.get("azimuth_color", "darkblue"),
+                              title_size=subtitle_size, label_size=label_size)
     return fig
