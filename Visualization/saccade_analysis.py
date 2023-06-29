@@ -28,14 +28,14 @@ def saccade_histograms_figure(saccades: List[SaccadeEvent], ignore_outliers: boo
     # max velocity histogram
     ax2 = fig.add_subplot(2, 2, 2)
     visutils.create_histogram([s.max_velocity for s in saccades], ax2, title="Maximum Velocities",
-                              xlabel="Duration (ms)", ylabel="Counts", nbins=nbins,
+                              xlabel="Velocity (px / s)", ylabel="Counts", nbins=nbins,
                               face_color=face_color, edge_color=edge_color,
                               title_size=subtitle_size, label_size=label_size)
 
     # amplitude histogram
     ax3 = fig.add_subplot(2, 2, 3)
     visutils.create_histogram([s.amplitude for s in saccades], ax3, title="Amplitude",
-                              xlabel="Duration (ms)", ylabel="Counts", nbins=nbins,
+                              xlabel="Amplitude (°)", ylabel="Counts", nbins=nbins,
                               face_color=face_color, edge_color=edge_color,
                               title_size=subtitle_size, label_size=label_size)
 
