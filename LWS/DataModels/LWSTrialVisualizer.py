@@ -3,14 +3,14 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 import seaborn as sns
-from typing import Tuple
+from typing import Tuple, List
 
 import constants as cnst
 from Config import experiment_config as cnfg
 import Utils.io_utils as ioutils
 import Visualization.visualization_utils as visutils
+import Visualization.heatmaps as hm
 from LWS.DataModels.LWSTrial import LWSTrial
-import LWS.analysis_scripts.heatmaps as hm
 
 
 class LWSTrialVisualizer:
@@ -125,10 +125,17 @@ class LWSTrialVisualizer:
 
     def create_heatmap(self, trial: LWSTrial, fixation_only: bool, savefig: bool = True, **kwargs) -> plt.Figure:
         # calculate heatmap:
+        screen_resolution = cnfg.SCREEN_MONITOR.resolution
         if fixation_only:
-            heatmap = hm.fixations_heatmap(trial)
+            from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
+            fixations = trial.get_gaze_events(cnst.FIXATION)
+            fixations: List[LWSFixationEvent]
+            heatmap = hm.fixations_heatmap(fixations=fixations, screen_resolution=screen_resolution)
         else:
-            heatmap = hm.gaze_heatmap(trial, smoothing_std=kwargs.get('smoothing_std', 10))
+            _, x_gaze, y_gaze = trial.get_raw_gaze_coordinates(eye='dominant')
+            heatmap = hm.gaze_heatmap(x_gaze=x_gaze, y_gaze=y_gaze,
+                                      screen_resolution=screen_resolution,
+                                      smoothing_std=kwargs.get('smoothing_std', 10))
         heatmap[heatmap < np.mean(heatmap)] = np.nan  # remove low values
 
         # create RGB background image:
