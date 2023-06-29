@@ -21,17 +21,17 @@ class BaseVisualGazeEvent(BaseGazeEvent, ABC):
         self._viewer_distance = viewer_distance  # in cm
         self._x = x
         self._y = y
-        self.velocities = self.__calculate_velocities()
+        self._velocities = self.__calculate_velocities()
 
     @property
     def max_velocity(self) -> float:
         """ Returns the maximum velocity of the event in pixels per second """
-        return float(np.nanmax(self.velocities)) * 1000
+        return float(np.nanmax(self._velocities)) * 1000
 
     @property
     def mean_velocity(self) -> float:
         """ Returns the mean velocity of the event in pixels per second """
-        return float(np.nanmean(self.velocities)) * 1000
+        return float(np.nanmean(self._velocities)) * 1000
 
     def to_series(self) -> pd.Series:
         """
