@@ -36,7 +36,8 @@ def create_rose_plot(data, ax: plt.Axes, title: str, xlabel: str,
     ax.set_title(title, fontsize=title_size)
     ax.set_xlabel(xlabel, fontsize=label_size)
     ax.set_theta_zero_location("N")
-    ax.set_xticklabels(np.arange(0, 360, 45))
+    ticks = np.arange(0, 360, 45)
+    ax.set_xticks(ticks=ticks, labels=ticks, fontsize=label_size)
     return ax
 
 
