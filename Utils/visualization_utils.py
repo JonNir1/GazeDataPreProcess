@@ -3,6 +3,15 @@ import matplotlib.pyplot as plt
 from typing import Tuple
 
 
+def create_histogram(data, ax: plt.Axes, title: str, xlabel: str,
+                     nbins: int, color: str, title_size: int, label_size: int) -> plt.Axes:
+    ax.hist(data, bins=nbins, color=color)
+    ax.set_title(title, font_size=title_size)
+    ax.set_xlabel(xlabel, font_size=label_size)
+    ax.set_ylabel("Count", font_size=label_size)
+    return ax
+
+
 def get_axis_limits(ax: plt.Axes, axis: str) -> Tuple[float, float]:
     """
     Returns the maximun and minimum values among all lines in the given plt.Axes object.
