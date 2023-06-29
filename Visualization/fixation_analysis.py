@@ -10,7 +10,7 @@ def fixation_histograms_figure(fixations: List[FixationEvent], ignore_outliers: 
         fixations = [f for f in fixations if not f.is_outlier]
 
     fig, axes = plt.subplots(2, 2, figsize=kwargs.get("figsize", (21, 14)))
-    fig.suptitle(t="Fixation Summary", y=0.98, font_size=kwargs.get("title_size", 16))
+    fig.suptitle(t=kwargs.get("title", "Fixation Summary"), font_size=kwargs.get("title_size", 16), y=0.98)
 
     nbins = kwargs.get("nbins", 20)
     subtitle_size = kwargs.get("subtitle_size", 14)
