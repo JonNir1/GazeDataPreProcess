@@ -50,7 +50,7 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial) -> List[BaseGazeEvent]
     viewer_distance = trial.subject.distance_to_screen
 
     if event_type == cnst.SACCADE:
-        # create LWSSaccadeEvents
+        # create SaccadeEvents
         from GazeEvents.SaccadeEvent import SaccadeEvent
         saccades_list = []
         for idxs in separate_event_idxs:
