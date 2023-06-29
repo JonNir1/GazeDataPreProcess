@@ -1,7 +1,7 @@
 from typing import List
 import matplotlib.pyplot as plt
 
-import Utils.visualization_utils as visutils
+import Visualization.visualization_utils as visutils
 from GazeEvents.FixationEvent import FixationEvent
 
 
