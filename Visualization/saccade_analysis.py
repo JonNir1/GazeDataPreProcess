@@ -13,32 +13,37 @@ def saccade_histograms_figure(saccades: List[SaccadeEvent], ignore_outliers: boo
     fig = plt.Figure(figsize=kwargs.get("figsize", (21, 14)))
     fig.suptitle(t=kwargs.get("title", "Saccade Summary"), fontsize=kwargs.get("title_size", 16), y=0.95)
     nbins = kwargs.get("nbins", 20)
+    face_color = kwargs.get("face_color", "lightblue")
+    edge_color = kwargs.get("edge_color", "darkblue")
     subtitle_size = kwargs.get("subtitle_size", 14)
     label_size = kwargs.get("label_size", 12)
 
     # durations histogram
     ax1 = fig.add_subplot(2, 2, 1)
     visutils.create_histogram([s.duration for s in saccades], ax1, title="Durations",
-                              xlabel="Duration (ms)", color=kwargs.get("duration_color", "lightblue"),
-                              nbins=nbins, title_size=subtitle_size, label_size=label_size)
+                              xlabel="Duration (ms)", ylabel="Counts", nbins=nbins,
+                              face_color=face_color, edge_color=edge_color,
+                              title_size=subtitle_size, label_size=label_size)
 
     # max velocity histogram
     ax2 = fig.add_subplot(2, 2, 2)
     visutils.create_histogram([s.max_velocity for s in saccades], ax2, title="Maximum Velocities",
-                              xlabel="Velocity (px / s)", color=kwargs.get("max_velocity_color", "lightblue"),
-                              nbins=nbins, title_size=subtitle_size, label_size=label_size)
+                              xlabel="Duration (ms)", ylabel="Counts", nbins=nbins,
+                              face_color=face_color, edge_color=edge_color,
+                              title_size=subtitle_size, label_size=label_size)
 
     # amplitude histogram
     ax3 = fig.add_subplot(2, 2, 3)
     visutils.create_histogram([s.amplitude for s in saccades], ax3, title="Amplitude",
-                              xlabel="Amplitude (°)", color=kwargs.get("amplitude_color", "lightblue"),
-                              nbins=nbins, title_size=subtitle_size, label_size=label_size)
+                              xlabel="Duration (ms)", ylabel="Counts", nbins=nbins,
+                              face_color=face_color, edge_color=edge_color,
+                              title_size=subtitle_size, label_size=label_size)
 
     # azimuth counts (polar)
     ax4 = fig.add_subplot(2, 2, 4, polar=True)
     azimuths = [s.azimuth for s in saccades if not np.isnan(s.azimuth)]
     counts, _edges = np.histogram(azimuths, bins=np.arange(0, 361, 360 / nbins))
-    visutils.create_rose_plot(counts, ax4, title="Azimuth", xlabel="Azimuth (°)", ylabel="Counts",
-                              face_color="none", edge_color=kwargs.get("azimuth_color", "darkblue"),
+    visutils.create_rose_plot(counts, ax4, title="Azimuth", xlabel="Azimuth (°)",
+                              face_color=face_color, edge_color=edge_color,
                               title_size=subtitle_size, label_size=label_size)
     return fig

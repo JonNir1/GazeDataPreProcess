@@ -15,19 +15,19 @@ def show_figure(fig):
     fig.show()
 
 
-def create_histogram(data, ax: plt.Axes, title: str, xlabel: str,
-                     nbins: int, color: str, title_size: int, label_size: int) -> plt.Axes:
-    ax.hist(data, bins=nbins, edgecolor=color, facecolor=color)
+def create_histogram(data, ax: plt.Axes,
+                     title: str, xlabel: str, ylabel: str,
+                     nbins: int, face_color: str, edge_color: str,
+                     title_size: int, label_size: int) -> plt.Axes:
+    ax.hist(data, bins=nbins, edgecolor=edge_color, facecolor=face_color)
     ax.set_title(title, fontsize=title_size)
     ax.set_xlabel(xlabel, fontsize=label_size)
     ax.set_ylabel("Count", fontsize=label_size)
     return ax
 
 
-def create_rose_plot(data, ax: plt.Axes, title: str,
-                     xlabel: str, ylabel: str,
-                     face_color: str, edge_color: str,
-                     title_size: int, label_size: int) -> plt.Axes:
+def create_rose_plot(data, ax: plt.Axes, title: str, xlabel: str,
+                     face_color: str, edge_color: str, title_size: int, label_size: int) -> plt.Axes:
     n = len(data)
     angles = np.linspace(0, 2 * np.pi, n, endpoint=False)
     width = (2 * np.pi) / n
@@ -35,7 +35,6 @@ def create_rose_plot(data, ax: plt.Axes, title: str,
 
     ax.set_title(title, fontsize=title_size)
     ax.set_xlabel(xlabel, fontsize=label_size)
-    ax.set_ylabel(ylabel, fontsize=label_size)
     ax.set_theta_zero_location("N")
     ax.set_xticklabels(np.arange(0, 360, 45))
     return ax
