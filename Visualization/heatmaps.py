@@ -15,7 +15,7 @@ def fixations_heatmap(fixations: List[FixationEvent], screen_resolution: Tuple[f
     Gaussian at the fixation's center of mass, it's mean equal to the fixation's duration (in milliseconds), and the
     standard deviation of the Gaussian equal to the fixation's standard deviation (on the X and Y axes).
     """
-    h, w = screen_resolution
+    w, h = screen_resolution
     if h <= 0 or w <= 0:
         raise ValueError(f"screen resolution must be positive, got {screen_resolution}")
 
@@ -71,7 +71,7 @@ def __pixel_counts(x_gaze: np.ndarray, y_gaze: np.ndarray, screen_resolution: Tu
     :raises ValueError: if `screen_resolution` is non-positive.
     :raises ValueError: if `x_gaze` and `y_gaze` have different lengths.
     """
-    h, w = screen_resolution
+    w, h = screen_resolution
     if h <= 0 or w <= 0:
         raise ValueError(f"screen resolution must be positive, got {screen_resolution}")
     if len(x_gaze) != len(y_gaze):
