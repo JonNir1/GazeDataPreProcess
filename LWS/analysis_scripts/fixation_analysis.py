@@ -20,14 +20,14 @@ def fixation_histograms_figure(fixations: List[LWSFixationEvent], ignore_outlier
     ax = _compare_property_distributions(fixations, axes[0, 0], "duration", "ms", proximity_threshold, **kwargs)
     # max dispersion
     ax = _compare_property_distributions(fixations, axes[0, 1], "max_dispersion", "px", proximity_threshold, **kwargs)
-    # mean pupil size
-    ax = _compare_property_distributions(fixations, axes[0, 2], "mean_pupil_size", "mm", proximity_threshold, **kwargs)
+    # angle to target
+    ax = _compare_property_distributions(fixations, axes[0, 2], "visual_angle_to_target", "°", proximity_threshold, **kwargs)
     # max velocity
     ax = _compare_property_distributions(fixations, axes[1, 0], "max_velocity", "px/s", proximity_threshold, **kwargs)
     # mean velocity
     ax = _compare_property_distributions(fixations, axes[1, 1], "mean_velocity", "px/s", proximity_threshold, **kwargs)
-    # angle to target
-    ax = _compare_property_distributions(fixations, axes[1, 2], "visual_angle_to_target", "°", proximity_threshold, **kwargs)
+    # mean pupil size
+    ax = _compare_property_distributions(fixations, axes[1, 2], "mean_pupil_size", "mm", proximity_threshold, **kwargs)
     return fig
 
 
