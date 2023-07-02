@@ -2,11 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from typing import List, Optional
 
+import Config.experiment_config as cnfg
 import Utils.oop_utils as oop
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 
-def fixation_histograms_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True, **kwargs) -> plt.Figure:
+def fixation_histograms_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
+                               proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
     if ignore_outliers:
         fixations = [f for f in fixations if not f.is_outlier]
 
@@ -15,25 +17,33 @@ def fixation_histograms_figure(fixations: List[LWSFixationEvent], ignore_outlier
     fig.suptitle(title, y=0.98, fontsize=kwargs.get("title_size", 16))
 
     # durations
-    ax = _compare_property_distributions(fixations, axes[0, 0], "duration", "ms", **kwargs)
+    ax = _compare_property_distributions(fixations, axes[0, 0], "duration", "ms", proximity_threshold, **kwargs)
     # max dispersion
-    ax = _compare_property_distributions(fixations, axes[0, 1], "max_dispersion", "px", **kwargs)
+    ax = _compare_property_distributions(fixations, axes[0, 1], "max_dispersion", "px", proximity_threshold, **kwargs)
     # mean pupil size
-    ax = _compare_property_distributions(fixations, axes[0, 2], "mean_pupil_size", "mm", **kwargs)
+    ax = _compare_property_distributions(fixations, axes[0, 2], "mean_pupil_size", "mm", proximity_threshold, **kwargs)
     # max velocity
-    ax = _compare_property_distributions(fixations, axes[1, 0], "max_velocity", "px/s", **kwargs)
+    ax = _compare_property_distributions(fixations, axes[1, 0], "max_velocity", "px/s", proximity_threshold, **kwargs)
     # mean velocity
-    ax = _compare_property_distributions(fixations, axes[1, 1], "mean_velocity", "px/s", **kwargs)
+    ax = _compare_property_distributions(fixations, axes[1, 1], "mean_velocity", "px/s", proximity_threshold, **kwargs)
     # angle to target
-    ax = _compare_property_distributions(fixations, axes[1, 2], "visual_angle_to_target", "°", **kwargs)
+    ax = _compare_property_distributions(fixations, axes[1, 2], "visual_angle_to_target", "°", proximity_threshold, **kwargs)
     return fig
 
 
 def _compare_property_distributions(fixations: List[LWSFixationEvent], ax: plt.Axes,
-                                    property_name: str, property_units: str, **kwargs) -> plt.Axes:
+                                    property_name: str, property_units: str,
+                                    proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Axes:
+    if not np.isfinite(proximity_threshold) or proximity_threshold <= 0:
+        raise ValueError(f"Invalid proximity threshold: {proximity_threshold}")
     nbins = kwargs.get("nbins", 20)
     all_fixations_percentages, all_fixations_centers = __calculate_distribution(
         data=[oop.get_property(f, property_name) for f in fixations],
+        nbins=nbins, min_threshold=1
+    )
+    proximal_fixations = [f for f in fixations if f.visual_angle_to_target <= proximity_threshold]
+    proximal_fixations_percentages, proximal_fixations_centers = __calculate_distribution(
+        data=[oop.get_property(f, property_name) for f in proximal_fixations],
         nbins=nbins, min_threshold=1
     )
     marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
@@ -42,13 +52,20 @@ def _compare_property_distributions(fixations: List[LWSFixationEvent], ax: plt.A
         nbins=nbins, min_threshold=1
     )
 
-    bar_width = np.min([np.min(np.diff(all_fixations_centers)) * 0.9, np.min(np.diff(marking_fixations_centers)) * 0.9])
-    face_colors = kwargs.get("face_colors", ["lightblue", "lightgreen"])
-    edge_colors = kwargs.get("edge_colors", ["darkblue", "darkgreen"])
+    bar_width = np.min([np.min(np.diff(all_fixations_centers)) * 0.9,
+                        np.min(np.diff(proximal_fixations_centers)) * 0.9,
+                        np.min(np.diff(marking_fixations_centers)) * 0.9])
+    face_colors = kwargs.get("face_colors", ["lightblue", "lightcoral", "lightgreen"])
+    edge_colors = kwargs.get("edge_colors", ["darkblue", "darkred", "darkgreen"])
     ax.bar(all_fixations_centers, all_fixations_percentages, width=bar_width,
-           facecolor=face_colors[0], edgecolor=edge_colors[0], align='center', alpha=0.75, label="All Fixations")
+           facecolor=face_colors[0], edgecolor=edge_colors[0], align='center', alpha=0.9,
+           label="All Fixations")
+    ax.bar(proximal_fixations_centers, proximal_fixations_percentages, width=bar_width,
+           facecolor=face_colors[1], edgecolor=edge_colors[1], align='center', alpha=0.8,
+           label="Target-Proximal Fixations")
     ax.bar(marking_fixations_centers, marking_fixations_percentages, width=bar_width,
-           facecolor=face_colors[1], edgecolor=edge_colors[1], align='center', alpha=0.75, label="Target-Marking Fixations")
+           facecolor=face_colors[2], edgecolor=edge_colors[2], align='center', alpha=0.7,
+           label="Target-Marking Fixations")
     ax.set_title(" ".join([s.capitalize() for s in property_name.split("_")]), fontsize=kwargs.get("title_size", 14))
     text_size = kwargs.get("text_size", 12)
     ax.set_ylabel("%", fontsize=text_size)
