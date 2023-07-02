@@ -70,8 +70,7 @@ class LWSTrialVisualizer:
                                                    **kwargs)
         # save figure:
         if savefig:
-            self.__save_figure(fig=fig, trial=trial, output_type='gaze_figure',
-                               is_transparent=kwargs.get('is_transparent', False))
+            self.__save_figure(fig=fig, trial=trial, output_type='gaze_figure', **kwargs)
         return fig
 
     def create_targets_figure(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
@@ -117,8 +116,7 @@ class LWSTrialVisualizer:
                                                  **kwargs)
         # save figure:
         if savefig:
-            self.__save_figure(fig=fig, trial=trial, output_type='targets_figure',
-                               is_transparent=kwargs.get('is_transparent', False))
+            self.__save_figure(fig=fig, trial=trial, output_type='targets_figure', **kwargs)
         return fig
 
     def create_heatmap(self, trial: LWSTrial, fixation_only: bool, savefig: bool = True, **kwargs) -> plt.Figure:
@@ -161,8 +159,7 @@ class LWSTrialVisualizer:
         # save figure:
         if savefig:
             hm_type = title.lower().replace(' ', '_')
-            self.__save_figure(fig=fig, trial=trial, output_type=hm_type,
-                               is_transparent=kwargs.get('is_transparent', False))
+            self.__save_figure(fig=fig, trial=trial, output_type=hm_type, **kwargs)
         return fig
 
     def create_video(self, trial: LWSTrial, **kwargs):
@@ -326,11 +323,10 @@ class LWSTrialVisualizer:
         bg_img = cv2.resize(bg_img, res)
         return bg_img
 
-    def __save_figure(self, trial: LWSTrial, fig: plt.Figure, output_type: str, is_transparent: bool = False):
+    def __save_figure(self, trial: LWSTrial, fig: plt.Figure, output_type: str, **kwargs):
         subject_id = trial.subject.subject_id
         save_path = self.__get_full_path(subject_id, trial.trial_num, output_type=output_type)
-        fig.savefig(save_path, bbox_inches='tight', dpi='figure', transparent=is_transparent)
-        return None
+        visutils.save_figure(fig=fig, save_path=save_path, **kwargs)
 
     def __get_full_path(self, subject_id: int, trial_num: int, output_type: str) -> str:
         """

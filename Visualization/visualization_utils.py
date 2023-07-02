@@ -15,6 +15,16 @@ def show_figure(fig):
     fig.show()
 
 
+def save_figure(fig: plt.Figure, full_path: str, **kwargs):
+    """
+    Save figure to given path.
+    """
+    dpi = kwargs.get("dpi", "figure")
+    bbox_inches = kwargs.get("bbox_inches", "tight")
+    is_transparent = kwargs.get("transparent", False)
+    fig.savefig(full_path, dpi=dpi, bbox_inches=bbox_inches, transparent=is_transparent)
+
+
 def create_histogram(data, ax: plt.Axes,
                      title: str, xlabel: str, ylabel: str,
                      nbins: int, face_color: str, edge_color: str,
