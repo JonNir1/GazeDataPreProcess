@@ -11,7 +11,8 @@ def fixation_histograms_figure(fixations: List[LWSFixationEvent], ignore_outlier
         fixations = [f for f in fixations if not f.is_outlier]
 
     fig, axes = plt.subplots(2, 3, figsize=kwargs.get("figsize", (30, 15)))
-    fig.suptitle("Fixation Summary", y=0.98, fontsize=kwargs.get("title_size", 16))
+    title = kwargs.get("title", f"Fixation Summary (N={len(fixations)})")
+    fig.suptitle(title, y=0.98, fontsize=kwargs.get("title_size", 16))
 
     # durations
     ax = _compare_property_distributions(fixations, axes[0, 0], "duration", "ms", **kwargs)
