@@ -30,8 +30,14 @@ class LWSFixationEvent(FixationEvent):
     def visual_angle_to_target(self, visual_angle: float):
         self.__visual_angle_to_target = visual_angle
 
-    def get_triggers_with_timestamps(self) -> List[Tuple[float, int]]:
-        return self.__triggers
+    def get_triggers_with_timestamps(self, values: List[int] = None) -> List[Tuple[float, int]]:
+        """
+        Returns a list of tuples (timestamp, trigger) for each trigger that occurred during the fixation.
+        If `values` is not None, returns only triggers whose value is in `values`.
+        """
+        if values is None:
+            return self.__triggers
+        return [tup for tup in self.__triggers if tup[1] in values]
 
     def to_series(self) -> pd.Series:
         """
