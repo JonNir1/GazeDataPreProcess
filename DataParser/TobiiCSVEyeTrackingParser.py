@@ -1,3 +1,4 @@
+from typing import List, Union
 from DataParser.BaseEyeTrackingParser import BaseEyeTrackingParser
 
 
@@ -7,8 +8,8 @@ class TobiiCSVEyeTrackingParser(BaseEyeTrackingParser):
     """
 
     @classmethod
-    def MISSING_VALUE(cls) -> float:
-        return -1
+    def MISSING_VALUES(cls) -> List[Union[float, str]]:
+        return [-1, "-1", "-1.#IND0"]
 
     @classmethod
     def TRIAL_COLUMN(cls) -> str:

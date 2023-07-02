@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import constants as cnst
 from Config import experiment_config as cnfg
@@ -24,7 +24,7 @@ class BaseEyeTrackingParser(BaseParser, ABC):
         df = pd.read_csv(input_path, sep='\t', low_memory=False)
         columns_to_keep = self.get_common_columns() + self.__additional_columns
         df.drop(columns=[col for col in df.columns if col not in columns_to_keep], inplace=True)
-        df.replace(to_replace=self.MISSING_VALUE(), value=cnfg.DEFAULT_MISSING_VALUE, inplace=True)
+        df.replace(dict.fromkeys(self.MISSING_VALUES(), cnfg.DEFAULT_MISSING_VALUE), inplace=True)
 
         # correct for screen resolution
         # note that coordinates may fall outside the screen, so we don't clip them (see https://shorturl.at/hvBCY)
@@ -33,6 +33,10 @@ class BaseEyeTrackingParser(BaseParser, ABC):
         df[self.LEFT_Y_COLUMN()] = df[self.LEFT_Y_COLUMN()] * screen_h
         df[self.RIGHT_X_COLUMN()] = df[self.RIGHT_X_COLUMN()] * screen_w
         df[self.RIGHT_Y_COLUMN()] = df[self.RIGHT_Y_COLUMN()] * screen_h
+
+        # convert pupil size to float
+        df[self.LEFT_PUPIL_COLUMN()] = df[self.LEFT_PUPIL_COLUMN()].astype(float)
+        df[self.RIGHT_PUPIL_COLUMN()] = df[self.RIGHT_PUPIL_COLUMN()].astype(float)
 
         # reorder + rename columns to match the standard (except for the additional columns)
         df = df[columns_to_keep]
@@ -59,8 +63,8 @@ class BaseEyeTrackingParser(BaseParser, ABC):
 
     @classmethod
     @abstractmethod
-    def MISSING_VALUE(cls) -> float:
-        # default value for missing data
+    def MISSING_VALUES(cls) -> List[Union[float, str]]:
+        # values of missing data in the raw data file
         raise NotImplementedError
 
     @classmethod
