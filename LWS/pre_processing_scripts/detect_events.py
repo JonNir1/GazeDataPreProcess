@@ -53,7 +53,7 @@ def detect_all_events(trial: LWSTrial, **kwargs) -> Tuple[np.ndarray, np.ndarray
     :return:
     """
     sampling_rate = trial.sampling_rate
-    _ts, x, y = trial.get_raw_gaze_coordinates(eye=kwargs.pop("eye", "both"))
+    _ts, x, y = trial.get_raw_gaze_data(eye=kwargs.pop("eye", "both"))
 
     is_blink = detect_event(x=x, y=y, sampling_rate=sampling_rate,
                             detector_type=kwargs.pop("blink_detector_type", 'missing data'),  # change if we want to use blink detection

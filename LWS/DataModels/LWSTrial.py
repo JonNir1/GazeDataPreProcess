@@ -116,7 +116,7 @@ class LWSTrial:
             w.warn("Overwriting existing gaze events.")
         self.__gaze_events = sorted(gaze_events, key=lambda e: e.start_time)
 
-    def get_raw_gaze_coordinates(self, eye: str = 'dominant') -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def get_raw_gaze_data(self, eye: str = 'dominant') -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Returns the raw gaze coordinates for the given eye or both eyes, along with the timestamps.
         :param eye: controls which eye's gaze coordinates are returned:
@@ -154,7 +154,7 @@ class LWSTrial:
         """
         Returns an array identifying each sample as belonging to a particular event, based on the trial's `gaze_events`.
         """
-        timestamps, _, _ = self.get_raw_gaze_coordinates()
+        timestamps, _, _ = self.get_raw_gaze_data()
         events = np.full(timestamps.shape, cnst.UNDEFINED)
         for ev in self.get_gaze_events(event_type=cnst.ALL):
             events[(ev.start_time <= timestamps) & (timestamps <= ev.end_time)] = ev.event_type()

@@ -13,7 +13,7 @@ def calculate_visual_angle_between_gaze_data_and_targets(trial: LWSTrial) -> np.
     Calculates the visual angle between each gaze datapoint in the trial, and the trial's nearest target.
     Returns np.inf for gaze-points with missing or invalid data.
     """
-    _, xs, ys = trial.get_raw_gaze_coordinates(eye='dominant')
+    _, xs, ys = trial.get_raw_gaze_data(eye='dominant')
     target_data = trial.get_stimulus().get_target_data()
 
     angular_distances = np.ones_like(xs) * np.inf

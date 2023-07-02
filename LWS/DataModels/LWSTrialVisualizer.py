@@ -52,7 +52,7 @@ class LWSTrialVisualizer:
         fig, ax = plt.subplots(tight_layout=True)
 
         # extract gaze data:
-        timestamps, x_gaze, y_gaze = trial.get_raw_gaze_coordinates(eye='dominant')
+        timestamps, x_gaze, y_gaze = trial.get_raw_gaze_data(eye='dominant')
         corrected_timestamps = timestamps - timestamps[0]  # start from 0
 
         # plot trial data:
@@ -132,7 +132,7 @@ class LWSTrialVisualizer:
             fixations: List[LWSFixationEvent]
             heatmap = hm.fixations_heatmap(fixations=fixations, screen_resolution=screen_resolution)
         else:
-            _, x_gaze, y_gaze = trial.get_raw_gaze_coordinates(eye='dominant')
+            _, x_gaze, y_gaze = trial.get_raw_gaze_data(eye='dominant')
             heatmap = hm.gaze_heatmap(x_gaze=x_gaze, y_gaze=y_gaze,
                                       screen_resolution=screen_resolution,
                                       smoothing_std=kwargs.get('smoothing_std', 10))
@@ -202,7 +202,7 @@ class LWSTrialVisualizer:
         No return value
         """
         # get raw behavioral data
-        timestamps, x, y = trial.get_raw_gaze_coordinates(eye='dominant')
+        timestamps, x, y = trial.get_raw_gaze_data(eye='dominant')
         triggers = trial.get_triggers()
         num_samples = len(timestamps)
 
