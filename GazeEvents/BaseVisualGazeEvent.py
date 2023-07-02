@@ -48,7 +48,8 @@ class BaseVisualGazeEvent(BaseGazeEvent, ABC):
     def __calculate_velocities(self) -> np.ndarray:
         distances = au.distance_between_subsequent_pixels(self._x, self._y)
         dt = np.diff(self._timestamps)
-        return distances / dt
+        velocities = distances / dt
+        return np.concatenate(([np.nan], velocities))  # first velocity is always NaN
 
     def __eq__(self, other):
         if not isinstance(other, type(self)):
