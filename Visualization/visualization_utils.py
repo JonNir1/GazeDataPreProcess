@@ -22,7 +22,7 @@ def create_histogram(data, ax: plt.Axes,
     ax.hist(data, bins=nbins, edgecolor=edge_color, facecolor=face_color)
     ax.set_title(title, fontsize=title_size)
     ax.set_xlabel(xlabel, fontsize=label_size)
-    ax.set_ylabel("Count", fontsize=label_size)
+    ax.set_ylabel(ylabel, fontsize=label_size)
     return ax
 
 
