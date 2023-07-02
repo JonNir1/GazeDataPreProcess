@@ -3,6 +3,7 @@ import pandas as pd
 from typing import Tuple, List
 
 import constants as cnst
+from Config import experiment_config as cnfg
 from GazeEvents.FixationEvent import FixationEvent
 
 
@@ -21,6 +22,16 @@ class LWSFixationEvent(FixationEvent):
                                     not np.isnan(triggers[i])]
         self.__triggers: List[Tuple[float, int]] = sorted(triggers_with_timestamps, key=lambda tup: tup[0])
         self.__visual_angle_to_target: float = visual_angle_to_target
+
+    @property
+    def is_mark_target_attempt(self) -> bool:
+        """
+        Returns true if the subject attempted to mark a target during the fixation.
+        """
+        mark_target_triggers = self.get_triggers_with_timestamps(
+            values=[cnfg.MARK_TARGET_SUCCESSFUL_TRIGGER, cnfg.MARK_TARGET_UNSUCCESSFUL_TRIGGER]
+        )
+        return len(mark_target_triggers) > 0
 
     @property
     def visual_angle_to_target(self) -> float:
