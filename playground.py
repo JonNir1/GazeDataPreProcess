@@ -86,24 +86,19 @@ del start, end
 ##########################################
 
 import LWS.analysis_scripts.trial_summary as trsum
-import LWS.analysis_scripts.events_summary as evsum
 import Visualization.saccade_analysis as sacan
 import LWS.analysis_scripts.fixation_analysis as fixan
 
 start = time.time()
 
 trials = subject.get_all_trials()
+trial_summary = trsum.summarize_all_trials(trials)
 
 # all_blinks = [b for tr in trials for b in tr.get_gaze_events(cnst.BLINK)]
 all_saccades = [s for tr in trials for s in tr.get_gaze_events(cnst.SACCADE)]
 all_fixations = [f for tr in trials for f in tr.get_gaze_events(cnst.FIXATION)]
 close_target_fixations = [f for f in all_fixations if f.visual_angle_to_target < cnfg.THRESHOLD_VISUAL_ANGLE]
 mark_target_fixations = [f for f in all_fixations if f.is_mark_target_attempt]
-
-# trial_summary = trsum.summarize_all_trials(trials)
-# blink_summary = evsum.summarize_events(all_blinks)
-# saccade_summary = evsum.summarize_events(all_saccades)
-# fixation_summary = evsum.summarize_events(all_fixations)
 
 sac_hists = sacan.saccade_histograms_figure(all_saccades, ignore_outliers=True)
 all_fix_hists = fixan.fixation_histograms_figure(all_fixations, ignore_outliers=True,
