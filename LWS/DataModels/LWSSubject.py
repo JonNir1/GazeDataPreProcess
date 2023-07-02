@@ -61,7 +61,8 @@ class LWSSubject:
 
     def to_pickle(self, output_dir: Optional[str] = None) -> str:
         subject_dir = ioutils.create_subject_output_directory(subject_id=self.subject_id, output_dir=output_dir)
-        full_path = os.path.join(subject_dir, f"{self.__repr__()}.pkl")
+        filename = ioutils.get_filename(name=self.__repr__(), extension="pkl")
+        full_path = os.path.join(subject_dir, filename)
         with open(full_path, "wb") as f:
             pkl.dump(self, f)
         return full_path
