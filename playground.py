@@ -88,34 +88,33 @@ del start, end
 import LWS.analysis_scripts.trial_summary as trsum
 import LWS.analysis_scripts.events_summary as evsum
 import Visualization.saccade_analysis as sacan
-import Visualization.fixation_analysis as fixan
+import LWS.analysis_scripts.fixation_analysis as fixan
 
-# start = time.time()
+start = time.time()
 
 trials = subject.get_all_trials()
 
-all_blinks = [b for tr in trials for b in tr.get_gaze_events(cnst.BLINK)]
+# all_blinks = [b for tr in trials for b in tr.get_gaze_events(cnst.BLINK)]
 all_saccades = [s for tr in trials for s in tr.get_gaze_events(cnst.SACCADE)]
 all_fixations = [f for tr in trials for f in tr.get_gaze_events(cnst.FIXATION)]
-
-sac_hists = sacan.saccade_histograms_figure(all_saccades, ignore_outliers=True)
-fix_hists = fixan.fixation_histograms_figure(all_fixations, ignore_outliers=True)
-
-visutils.show_figure(sac_hists)
-visutils.show_figure(fix_hists)
-
-start_points = [s.start_point for s in all_saccades if not np.isnan(s.start_point).any()]
-end_points = [s.end_point for s in all_saccades if not np.isnan(s.start_point).any()]
-
+close_target_fixations = [f for f in all_fixations if f.visual_angle_to_target < cnfg.THRESHOLD_VISUAL_ANGLE]
+mark_target_fixations = [f for f in all_fixations if f.is_mark_target_attempt]
 
 # trial_summary = trsum.summarize_all_trials(trials)
 # blink_summary = evsum.summarize_events(all_blinks)
 # saccade_summary = evsum.summarize_events(all_saccades)
 # fixation_summary = evsum.summarize_events(all_fixations)
 
-# end = time.time()
-# print(f"Finished analysis in: {(end - start):.2f} seconds")
-#
-# del start, end
+sac_hists = sacan.saccade_histograms_figure(all_saccades, ignore_outliers=True)
+all_fix_hists = fixan.fixation_histograms_figure(all_fixations, ignore_outliers=True,
+                                                 title="All Fixations vs. Mark-Target Fixations")
+
+visutils.show_figure(sac_hists)
+visutils.show_figure(all_fix_hists)
+
+end = time.time()
+print(f"Finished analysis in: {(end - start):.2f} seconds")
+
+del start, end
 
 
