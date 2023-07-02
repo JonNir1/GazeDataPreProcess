@@ -7,30 +7,49 @@ import Utils.array_utils as au
 
 def calculate_azimuth(p1: Optional[Tuple[Optional[float], Optional[float]]],
                       p2: Optional[Tuple[Optional[float], Optional[float]]],
+                      zero_direction: str = 'E',
                       use_radians=False) -> float:
     """
-    Calculates the counter-clockwise angle between the line starting from (0,0) and ending at p1, and the line starting
-    from (0,0) and ending at p2.
-    The axes are defined by pixel coordinates, with the origin (0,0) in the top-left corner of the screen,
-        the positive x-axis pointing right, and the positive y-axis pointing down.
-    Angles are in range [0, 2*pi) or [0, 360).
+    Calculates the counter-clockwise angle between the line starting from p1 and ending at p2, and the line starting
+    from p1 and pointing in the direction of `zero_direction`.
 
-    Returns the angle in degrees (or radians if `use_radians` is True).
-    Returns np.nan if any of the given points is None or if any of the coordinates is None or np.nan.
+    :param p1: the (x,y) coordinates of the starting point of the line
+    :param p2: the (x,y) coordinates of the ending point of the line
+    :param zero_direction: the direction of the zero angle. Must be one of 'E', 'W', 'S', 'N' (case insensitive).
+    :param use_radians: if True, returns the angle in radians. Otherwise, returns the angle in degrees.
+
+    :return: the angle between the two lines, in range [0, 2*pi) or [0, 360), or np.nan if either p1 or p2 is invalid.
+
+    :raises ValueError: if zero_direction is not one of 'E', 'W', 'S', 'N' (case insensitive).
     """
+
+    zero_direction = zero_direction.upper()
+    valid_directions = ['E', 'W', 'S', 'N']
+    if zero_direction not in valid_directions:
+        raise ValueError(f"zero_direction must be one of {valid_directions}")
     if not __is_valid_pixel(p1):
         return np.nan
     if not __is_valid_pixel(p2):
         return np.nan
+
+    # calculate the angle between the line between p1 and p2, and the rightward facing x-axis
     x1, y1 = p1
     x2, y2 = p2
-    rad1 = np.arctan2(y1, x1)  # clockwise angle from the positive x-axis
-    rad2 = np.arctan2(y2, x2)  # clockwise angle from the positive x-axis
-    diff = rad1 - rad2         # counter-clockwise angle from p1 to p2
-    diff = diff % (2 * np.pi)  # make sure the angle is in range [0, 2*pi)
+    angle_rad = np.arctan2(y1 - y2, x2 - x1)  # counter-clockwise angle line (p1, p2) and the rightward facing x-axis
+
+    # adjust to the desired zero direction
+    if zero_direction == 'W':
+        angle_rad += np.pi
+    elif zero_direction == 'S':
+        angle_rad += np.pi / 2
+    elif zero_direction == 'N':
+        angle_rad -= np.pi / 2
+
+    # make sure the angle is in range [0, 2*pi), and return
+    angle_rad = angle_rad % (2 * np.pi)
     if use_radians:
-        return diff
-    return np.rad2deg(diff)
+        return angle_rad
+    return np.rad2deg(angle_rad)
 
 
 def calculate_visual_angle(
