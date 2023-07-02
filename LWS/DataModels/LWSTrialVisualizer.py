@@ -337,27 +337,15 @@ class LWSTrialVisualizer:
     def __get_full_path(self, subject_id: int, trial_num: int, output_type: str) -> str:
         """
         Returns the full path of the output file for the given subject, trial and output type.
-        Raises ValueError if the output type is not supported.
         """
         subject_dir = ioutils.create_subject_output_directory(subject_id=subject_id, output_dir=self.output_directory)
         output_type = output_type.lower()
         output_dir = ioutils.create_directory(dirname=output_type, parent_dir=subject_dir)
-        if output_type == 'video':
-            filename = f"T{trial_num:03d}.{LWSTrialVisualizer.VIDEO_SUFFIX}"
-            return os.path.join(output_dir, filename)
-        if output_type == "gaze_figure":
-            filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
-            return os.path.join(output_dir, filename)
-        if output_type == "targets_figure":
-            filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
-            return os.path.join(output_dir, filename)
-        if output_type == "gaze_heatmap":
-            filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
-            return os.path.join(output_dir, filename)
-        if output_type == "fixations_heatmap":
-            filename = f"T{trial_num:03d}.{LWSTrialVisualizer.IMAGE_SUFFIX}"
-            return os.path.join(output_dir, filename)
-        raise ValueError(f'Unsupported output type: {output_type}')
+        if output_type == "video":
+            filename = ioutils.get_filename(name=f"T{trial_num:03d}", extension=LWSTrialVisualizer.VIDEO_SUFFIX)
+        else:
+            filename = ioutils.get_filename(name=f"T{trial_num:03d}", extension=LWSTrialVisualizer.IMAGE_SUFFIX)
+        return os.path.join(output_dir, filename)
 
     @staticmethod
     def __add_trigger_lines(trial: LWSTrial, ax: plt.Axes, **kwargs) -> plt.Axes:
