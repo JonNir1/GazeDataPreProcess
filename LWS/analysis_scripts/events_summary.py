@@ -115,10 +115,10 @@ def __get_fixation_summary_dict(fixations: List[LWSFixationEvent]) -> Dict[str, 
     """
     data = __get_basic_summary_dict(events=fixations)
     stds = [f.standard_deviation for f in fixations]
-    data["x_std_mean"] = np.nanmean([std[0] for std in stds])
-    data["y_std_mean"] = np.nanmean([std[1] for std in stds])
-    data["visual_angle_to_target_mean"] = np.nanmean(
-        [f.visual_angle_to_target for f in fixations if np.isfinite(f.visual_angle_to_target)])
-    data["visual_angle_to_target_std"] = np.nanstd(
-        [f.visual_angle_to_target for f in fixations if np.isfinite(f.visual_angle_to_target)])
+    data["x_std_mean"] = float(np.nanmean([std[0] for std in stds]))
+    data["y_std_mean"] = float(np.nanmean([std[1] for std in stds]))
+    data["visual_angle_to_target_mean"] = float(np.nanmean(
+        [f.visual_angle_to_target for f in fixations if np.isfinite(f.visual_angle_to_target)]))
+    data["visual_angle_to_target_std"] = float(np.nanstd(
+        [f.visual_angle_to_target for f in fixations if np.isfinite(f.visual_angle_to_target)]))
     return data
