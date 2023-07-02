@@ -26,7 +26,7 @@ def create_histogram(data, ax: plt.Axes,
     return ax
 
 
-def create_rose_plot(data, ax: plt.Axes, title: str, xlabel: str,
+def create_rose_plot(data, ax: plt.Axes, title: str, xlabel: str, ylabel: str,
                      face_color: str, edge_color: str, title_size: int, label_size: int) -> plt.Axes:
     n = len(data)
     angles = np.linspace(0, 2 * np.pi, n, endpoint=False)
@@ -35,6 +35,7 @@ def create_rose_plot(data, ax: plt.Axes, title: str, xlabel: str,
 
     ax.set_title(title, fontsize=title_size)
     ax.set_xlabel(xlabel, fontsize=label_size)
+    ax.set_ylabel(ylabel, fontsize=label_size)
     ax.set_theta_zero_location("E")  # set 0° to the East
     return ax
 
