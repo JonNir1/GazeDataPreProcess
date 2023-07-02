@@ -23,16 +23,15 @@ class LWSFixationEvent(FixationEvent):
         self.__visual_angle_to_target: float = visual_angle_to_target
 
     @property
-    def triggers(self) -> List[Tuple[float, int]]:
-        return self.__triggers
-
-    @property
     def visual_angle_to_target(self) -> float:
         return self.__visual_angle_to_target
 
     @visual_angle_to_target.setter
     def visual_angle_to_target(self, visual_angle: float):
         self.__visual_angle_to_target = visual_angle
+
+    def get_triggers_with_timestamps(self) -> List[Tuple[float, int]]:
+        return self.__triggers
 
     def to_series(self) -> pd.Series:
         """
@@ -42,7 +41,7 @@ class LWSFixationEvent(FixationEvent):
             - visual_angle_to_target: angular distance from the fixation's center of mass to the closest target's center of mass
         """
         series = super().to_series()
-        series[cnst.TRIGGER] = self.triggers
+        series[cnst.TRIGGER] = self.get_triggers_with_timestamps()
         series["visual_angle_to_target"] = self.visual_angle_to_target
         return series
 
