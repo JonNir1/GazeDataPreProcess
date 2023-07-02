@@ -76,7 +76,7 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial) -> List[BaseGazeEvent]
 
 
 def __extract_raw_event_arrays(trial: LWSTrial, event_type: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    timestamps, x, y = trial.get_raw_gaze_data(eye='dominant')  # timestamps in milliseconds (floating-point, not integer)
+    timestamps, x, y, _p = trial.get_raw_gaze_data(eye='dominant')  # timestamps in milliseconds (floating-point, not integer)
     behavioral_data = trial.get_behavioral_data()
     is_event_colname = f"is_{event_type.lower()}"
     if is_event_colname not in behavioral_data.columns:

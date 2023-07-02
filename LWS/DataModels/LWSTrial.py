@@ -116,9 +116,9 @@ class LWSTrial:
             w.warn("Overwriting existing gaze events.")
         self.__gaze_events = sorted(gaze_events, key=lambda e: e.start_time)
 
-    def get_raw_gaze_data(self, eye: str = 'dominant') -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def get_raw_gaze_data(self, eye: str = 'dominant') -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """
-        Returns the raw gaze coordinates for the given eye or both eyes, along with the timestamps.
+        Returns the raw gaze coordinates for the given eye or both eyes, along with the timestamps and pupil sizes.
         :param eye: controls which eye's gaze coordinates are returned:
             - if 'dominant', return the dominant eye's gaze coordinates (as defined in the subject info)
             - if 'left', return left eye's gaze coordinates
@@ -126,7 +126,7 @@ class LWSTrial:
             - if 'both', return gaze coordinates from both eyes (as a 2xN array)
             - otherwise, raise a ValueError
 
-        :return: a tuple of (timestamps, x coordinates, y coordinates)
+        :return: a tuple of (timestamps, x coordinates, y coordinates, pupil sizes)
         """
         bd = self.get_behavioral_data()
         ts = bd.get(cnst.MICROSECONDS).values / 1000
@@ -135,15 +135,19 @@ class LWSTrial:
         if eye == "dominant":
             eye = self.subject.dominant_eye.lower()
         if eye == 'left':
-            x_l, y_l = bd.get(cnst.LEFT_X).values, bd.get(cnst.LEFT_Y).values
-            return ts, x_l, y_l
+            x_l = bd.get(cnst.LEFT_X).values
+            y_l = bd.get(cnst.LEFT_Y).values
+            p_l = bd.get(cnst.LEFT_PUPIL).values
+            return ts, x_l, y_l, p_l
         if eye == 'right':
-            x_r, y_r = bd.get(cnst.RIGHT_X).values, bd.get(cnst.RIGHT_Y).values
-            return ts, x_r, y_r
+            x_r = bd.get(cnst.RIGHT_X).values
+            y_r = bd.get(cnst.RIGHT_Y).values
+            p_r = bd.get(cnst.RIGHT_PUPIL).values
+            return ts, x_r, y_r, p_r
         if eye == 'both':
-            x_l, y_l = bd.get(cnst.LEFT_X).values, bd.get(cnst.LEFT_Y).values
-            x_r, y_r = bd.get(cnst.RIGHT_X).values, bd.get(cnst.RIGHT_Y).values
-            return ts, np.vstack((x_l, x_r)), np.vstack((y_l, y_r))
+            x_l, y_l, p_l = bd.get(cnst.LEFT_X).values, bd.get(cnst.LEFT_Y).values, bd.get(cnst.LEFT_PUPIL).values
+            x_r, y_r, p_r = bd.get(cnst.RIGHT_X).values, bd.get(cnst.RIGHT_Y).values, bd.get(cnst.RIGHT_PUPIL).values
+            return ts, np.vstack((x_l, x_r)), np.vstack((y_l, y_r)), np.vstack((p_l, p_r))
         raise ValueError(f'Invalid eye: {eye}')
 
     def get_triggers(self) -> np.ndarray:
@@ -154,7 +158,7 @@ class LWSTrial:
         """
         Returns an array identifying each sample as belonging to a particular event, based on the trial's `gaze_events`.
         """
-        timestamps, _, _ = self.get_raw_gaze_data()
+        timestamps, _, _, _ = self.get_raw_gaze_data()
         events = np.full(timestamps.shape, cnst.UNDEFINED)
         for ev in self.get_gaze_events(event_type=cnst.ALL):
             events[(ev.start_time <= timestamps) & (timestamps <= ev.end_time)] = ev.event_type()
