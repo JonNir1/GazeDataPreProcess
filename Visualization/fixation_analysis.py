@@ -44,4 +44,7 @@ def fixation_histograms_figure(fixations: List[FixationEvent], ignore_outliers: 
                               xlabel="Mean Velocity (pixels/ms)", ylabel="Counts", nbins=nbins,
                               face_color=face_color, edge_color=edge_color,
                               title_size=subtitle_size, label_size=label_size)
+
+    # mean pupil size histogram
+    # TODO: create histogram for pupil size
     return fig

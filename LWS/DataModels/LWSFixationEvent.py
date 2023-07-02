@@ -15,9 +15,9 @@ class LWSFixationEvent(FixationEvent):
     """
 
     def __init__(self,
-                 timestamps: np.ndarray, x: np.ndarray, y: np.ndarray,
+                 timestamps: np.ndarray, x: np.ndarray, y: np.ndarray, pupil: np.ndarray,
                  viewer_distance: float, triggers: np.ndarray, visual_angle_to_target: float = np.inf):
-        super().__init__(timestamps=timestamps, x=x, y=y, viewer_distance=viewer_distance)
+        super().__init__(timestamps=timestamps, x=x, y=y, pupil=pupil, viewer_distance=viewer_distance)
         triggers_with_timestamps = [(timestamps[i], triggers[i]) for i in range(len(timestamps)) if
                                     not np.isnan(triggers[i])]
         self.__triggers: List[Tuple[float, int]] = sorted(triggers_with_timestamps, key=lambda tup: tup[0])

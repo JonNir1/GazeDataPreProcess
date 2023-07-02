@@ -9,6 +9,10 @@ from GazeEvents.BaseVisualGazeEvent import BaseVisualGazeEvent
 
 class FixationEvent(BaseVisualGazeEvent):
 
+    def __init__(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray, pupil: np.ndarray, viewer_distance: float):
+        super().__init__(timestamps=timestamps, x=x, y=y, viewer_distance=viewer_distance)
+        self._pupil: np.ndarray = pupil  # pupil size (in mm)
+
     @classmethod
     def event_type(cls) -> str:
         return cnst.FIXATION
@@ -35,6 +39,16 @@ class FixationEvent(BaseVisualGazeEvent):
         max_dist = float(np.nanmax(distances))
         return max_dist
 
+    @property
+    def mean_pupil_size(self) -> float:
+        # returns the mean pupil size during the fixation (in mm)
+        return float(np.nanmean(self._pupil))
+
+    @property
+    def std_pupil_size(self) -> float:
+        # returns the standard deviation of the pupil size during the fixation (in mm)
+        return float(np.nanstd(self._pupil))
+
     def to_series(self) -> pd.Series:
         """
         creates a pandas Series with summary of fixation information.
@@ -47,6 +61,8 @@ class FixationEvent(BaseVisualGazeEvent):
         series["center_of_mass"] = self.center_of_mass
         series["standard_deviation"] = self.standard_deviation
         series["max_dispersion"] = self.max_dispersion
+        series["mean_pupil_size"] = self.mean_pupil_size
+        series["std_pupil_size"] = self.std_pupil_size
         return series
 
     @property

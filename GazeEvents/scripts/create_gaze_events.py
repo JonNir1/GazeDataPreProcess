@@ -10,7 +10,7 @@ import Utils.array_utils as au
 
 def create_gaze_events(event_type: str, timestamps: np.ndarray, is_event: np.ndarray,
                        x: Optional[np.ndarray] = None, y: Optional[np.ndarray] = None,
-                       viewer_distance: Optional[float] = None) -> List[BaseGazeEvent]:
+                       p: Optional[np.ndarray] = None, viewer_distance: Optional[float] = None) -> List[BaseGazeEvent]:
     """
     Splits `timestamps` to chunks of timestamps that are part of the same event, based on `is_event`. Then, for each
     chunk, creates a GazeEvent object of the given type and returns a list of all the events (ordered by start time).
@@ -20,6 +20,7 @@ def create_gaze_events(event_type: str, timestamps: np.ndarray, is_event: np.nda
     :param is_event: array of booleans indicating whether a sample is part of the event or not
     :param x: array of x coordinates, used when extracting saccades or fixations
     :param y: array of y coordinates, used when extracting saccades or fixations
+    :param p: array of pupil sizes, used when extracting fixations
     :param viewer_distance: distance of the viewer from the screen, used when extracting saccades or fixations
 
     :return: list of GazeEvent objects
@@ -54,7 +55,8 @@ def create_gaze_events(event_type: str, timestamps: np.ndarray, is_event: np.nda
 
     if event_type == cnst.FIXATION:
         from GazeEvents.FixationEvent import FixationEvent
-        events_list = [FixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], viewer_distance=viewer_distance)
+        events_list = [FixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs],
+                                     pupil=p[idxs], viewer_distance=viewer_distance)
                        for idxs in different_event_idxs]
 
     events_list.sort(key=lambda event: event.start_time)

@@ -38,7 +38,7 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial) -> List[BaseGazeEvent]
     :raises: ValueError: if `event_type` is not one of 'blink', 'saccade' or 'fixation'
     """
     event_type = event_type.lower()
-    timestamps, x, y, is_event = __extract_raw_event_arrays(trial=trial, event_type=event_type)
+    timestamps, x, y, p, is_event = __extract_raw_event_arrays(trial=trial, event_type=event_type)
 
     if event_type == cnst.BLINK:
         # use generic gaze events
@@ -66,7 +66,7 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial) -> List[BaseGazeEvent]
         triggers = trial.get_triggers()
         fixations_list = []
         for idxs in separate_event_idxs:
-            fix = LWSFixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs],
+            fix = LWSFixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], pupil=p[idxs],
                                    viewer_distance=viewer_distance, triggers=triggers[idxs])
             fix.visual_angle_to_target = calc_fixation_distance(fix=fix, trial=trial)
             fixations_list.append(fix)
@@ -75,11 +75,14 @@ def gen_lws_gaze_events(event_type: str, trial: LWSTrial) -> List[BaseGazeEvent]
     raise ValueError(f"Attempting to extract unknown event type {event_type}.")
 
 
-def __extract_raw_event_arrays(trial: LWSTrial, event_type: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    timestamps, x, y, _p = trial.get_raw_gaze_data(eye='dominant')  # timestamps in milliseconds (floating-point, not integer)
+def __extract_raw_event_arrays(
+        trial: LWSTrial,
+        event_type: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    timestamps, x, y, p = trial.get_raw_gaze_data(
+        eye='dominant')  # timestamps in milliseconds (floating-point, not integer)
     behavioral_data = trial.get_behavioral_data()
     is_event_colname = f"is_{event_type.lower()}"
     if is_event_colname not in behavioral_data.columns:
         raise ValueError(f"Behavioral Data does not contain column {is_event_colname}")
     is_event = behavioral_data.get(is_event_colname).values
-    return timestamps, x, y, is_event
+    return timestamps, x, y, p, is_event
