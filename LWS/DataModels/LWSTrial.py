@@ -168,7 +168,7 @@ class LWSTrial:
         subject_dir = ioutils.create_subject_output_directory(subject_id=self.subject.subject_id,
                                                               output_dir=output_dir)
         trials_dir = ioutils.create_directory(dirname='trials', parent_dir=subject_dir)
-        filename = ioutils.get_filename(name=self.__repr__(), extension="pkl")
+        filename = ioutils.get_filename(name=self.__repr__(), extension=ioutils.PICKLE_EXTENSION)
         full_path = os.path.join(trials_dir, filename)
         with open(full_path, "wb") as f:
             pkl.dump(self, f)

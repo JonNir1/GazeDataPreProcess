@@ -18,8 +18,6 @@ class LWSTrialVisualizer:
     #  (e.g. GazeVisualizer, TargetsVisualizer, etc.)
     # TODO: velocity (and acceleration?) figure with events and triggers
 
-    IMAGE_SUFFIX = 'png'
-    VIDEO_SUFFIX = 'mp4'
     FOURCC = cv2.VideoWriter_fourcc(*'mp4v')
 
     def __init__(self, screen_resolution: Tuple[int, int] = cnfg.SCREEN_MONITOR.resolution,
@@ -342,9 +340,9 @@ class LWSTrialVisualizer:
         output_type = output_type.lower()
         output_dir = ioutils.create_directory(dirname=output_type, parent_dir=subject_dir)
         if output_type == "video":
-            filename = ioutils.get_filename(name=f"T{trial_num:03d}", extension=LWSTrialVisualizer.VIDEO_SUFFIX)
+            filename = ioutils.get_filename(name=f"T{trial_num:03d}", extension=ioutils.VIDEO_EXTENSION)
         else:
-            filename = ioutils.get_filename(name=f"T{trial_num:03d}", extension=LWSTrialVisualizer.IMAGE_SUFFIX)
+            filename = ioutils.get_filename(name=f"T{trial_num:03d}", extension=ioutils.IMAGE_EXTENSION)
         return os.path.join(output_dir, filename)
 
     @staticmethod
