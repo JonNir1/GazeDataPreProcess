@@ -104,8 +104,8 @@ def __get_fixation_summary_dict(fixations: List[LWSFixationEvent]) -> Dict[str, 
         - count
         - duration_mean
         - duration_std
-        - x_mean_std
-        - y_mean_std
+        - x_std_mean
+        - y_std_mean
         - distance_to_target_mean
         - distance_to_target_std
 
