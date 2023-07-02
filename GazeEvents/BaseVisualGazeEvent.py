@@ -33,9 +33,10 @@ class BaseVisualGazeEvent(BaseGazeEvent, ABC):
         """ Returns the mean velocity of the event in pixels per second """
         return float(np.nanmean(self._velocities)) * 1000
 
-    def get_velocity_series(self) -> pd.Series:
+    def get_velocity_series(self, round_decimals: int = 2) -> pd.Series:
         """ Returns a pandas Series with the event's velocities (px / s) and indexed by timestamps """
         timestamps = self._timestamps - self._timestamps[0]  # timestamps in milliseconds, starting from 0
+        timestamps = np.round(timestamps, decimals=round_decimals)
         return pd.Series(data=self._velocities, index=timestamps, name="velocity")
 
     def to_series(self) -> pd.Series:
