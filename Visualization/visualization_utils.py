@@ -40,10 +40,9 @@ def create_rose_plot(data, ax: plt.Axes, title: str, xlabel: str, ylabel: str,
     return ax
 
 
-def get_axis_limits(ax: plt.Axes, axis: str) -> Tuple[float, float]:
+def get_line_axis_limits(ax: plt.Axes, axis: str) -> Tuple[float, float]:
     """
     Returns the maximun and minimum values among all lines in the given plt.Axes object.
-
     :raises ValueError: If axis is not 'x' or 'y'.
     """
     axis = axis.lower()
@@ -60,9 +59,9 @@ def get_axis_limits(ax: plt.Axes, axis: str) -> Tuple[float, float]:
     return min_val, max_val
 
 
-def set_axis_properties(ax: plt.Axes, axis: str, label: str, text_size: int) -> plt.Axes:
+def set_line_axis_properties(ax: plt.Axes, axis: str, label: str, text_size: int) -> plt.Axes:
     """
-    Sets the X/Y axis limits, ticks and label of the given plt.Axes object.
+    Sets the X/Y axis limits, ticks and label of the given plt.Axes object, based on the lines in it.
     :param ax: The plt.Axes object to set the properties of.
     :param axis: The axis to set the properties of. Must be either 'x' or 'y'.
     :param label: The label to set for the axis.
@@ -74,7 +73,7 @@ def set_axis_properties(ax: plt.Axes, axis: str, label: str, text_size: int) -> 
     if axis not in ['x', 'y']:
         raise ValueError(f"Invalid axis '{axis}'! Must be either 'x' or 'y'.")
 
-    _, axis_max = get_axis_limits(ax, axis=axis)
+    _, axis_max = get_line_axis_limits(ax, axis=axis)
     jumps = 2 * np.power(10, max(0, int(np.log10(axis_max)) - 1))
     if axis == 'x':
         ax.set_xlabel(xlabel=label, fontsize=text_size)
@@ -127,8 +126,8 @@ def set_figure_properties(fig: plt.Figure, ax: plt.Axes, **kwargs):
     if kwargs.get('show_legend', True):
         ax.legend(loc=kwargs.get('legend_location', 'lower center'), fontsize=text_size)
     if kwargs.get('show_axes', True):
-        ax = set_axis_properties(ax=ax, axis='x', label=kwargs.get('x_label', ''), text_size=text_size)
-        ax = set_axis_properties(ax=ax, axis='y', label=kwargs.get('y_label', ''), text_size=text_size)
+        ax = set_line_axis_properties(ax=ax, axis='x', label=kwargs.get('x_label', ''), text_size=text_size)
+        ax = set_line_axis_properties(ax=ax, axis='y', label=kwargs.get('y_label', ''), text_size=text_size)
 
     if kwargs.get('invert_yaxis', False):
         # invert y-axis to match the screen coordinates:
