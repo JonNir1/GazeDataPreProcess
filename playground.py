@@ -74,9 +74,8 @@ visutils.show_figure(sac_hists)
 visutils.show_figure(fix_hists)
 visutils.show_figure(fix_dynamics)
 
-
 end = time.time()
-print(f"Finished analysis in: {(end - start):.2f} seconds")
+print(f"Finished subject analysis in: {(end - start):.2f} seconds")
 
 del start, end
 
@@ -108,7 +107,7 @@ del start, end
 #         print(f"Failed to visualize trial: {tr.__repr__()}")
 #
 # end = time.time()
-# print(f"Finished visualization in: {(end - start):.2f} seconds")
+# print(f"Finished subject's trials analysis in: {(end - start):.2f} seconds")
 #
 # # delete irrelevant variables:
 # del start, end, start_trial, end_trial, tr
