@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 from typing import List, Optional
 
 import Config.experiment_config as cnfg
-import Utils.oop_utils as oop
+import Utils.array_utils as au
 import Visualization.dynamics as dyn
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 
 def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
-                               proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
+                    proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
     """
     Creates a 3×2 figure depicting the temporal dynamics of velocity (left column) and pupil size (right column) for
     all fixations (top), target-proximal fixations (middle), and marking fixations (bottom).
@@ -50,7 +50,7 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
 
 
 def histograms_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
-                               proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
+                      proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
     """
     Creates a 2×3 figure with histograms of the following properties: fixation durations, max dispersion, angle to target,
     max velocity, mean velocity, and mean pupil size. Each histogram shows the distribution of all fixations (blue),
@@ -88,18 +88,18 @@ def _compare_property_distributions(fixations: List[LWSFixationEvent], ax: plt.A
                                     property_name: str, property_units: str,
                                     proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Axes:
     nbins = kwargs.get("nbins", 20)
-    all_fixations_percentages, all_fixations_centers = __calculate_distribution(
-        data=[oop.get_property(f, property_name) for f in fixations],
+    all_fixations_percentages, all_fixations_centers = au.calculate_distribution(
+        data=np.array([getattr(f, property_name) for f in fixations]),
         nbins=nbins, min_threshold=1
     )
     proximal_fixations = [f for f in fixations if f.visual_angle_to_target <= proximity_threshold]
-    proximal_fixations_percentages, proximal_fixations_centers = __calculate_distribution(
-        data=[oop.get_property(f, property_name) for f in proximal_fixations],
+    proximal_fixations_percentages, proximal_fixations_centers = au.calculate_distribution(
+        data=np.array([getattr(f, property_name) for f in proximal_fixations]),
         nbins=nbins, min_threshold=1
     )
     marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
-    marking_fixations_percentages, marking_fixations_centers = __calculate_distribution(
-        data=[oop.get_property(f, property_name) for f in marking_fixations],
+    marking_fixations_percentages, marking_fixations_centers = au.calculate_distribution(
+        data=np.array([getattr(f, property_name) for f in marking_fixations]),
         nbins=nbins, min_threshold=1
     )
 
@@ -123,19 +123,3 @@ def _compare_property_distributions(fixations: List[LWSFixationEvent], ax: plt.A
     ax.set_xlabel(f"{property_units}", fontsize=text_size)
     ax.legend(loc=kwargs.get('legend_location', 'upper right'), fontsize=text_size)
     return ax
-
-
-def __calculate_distribution(data: List[float], nbins: int, min_threshold: Optional[float]) -> (np.ndarray, np.ndarray):
-    """
-    Calculates the distribution of the given data, and returns the percentages and centers of the bins. Ignores bins
-    with percentage less than min_threshold.
-    """
-    counts, edges = np.histogram(data, bins=nbins)
-    centers = (edges[:-1] + edges[1:]) / 2
-    percentages = 100 * counts / np.sum(counts)
-    assert len(percentages) == len(centers), "Percentages and centers must have same length"
-
-    if min_threshold is not None:
-        centers = centers[percentages >= min_threshold]
-        percentages = percentages[percentages >= min_threshold]
-    return percentages, centers

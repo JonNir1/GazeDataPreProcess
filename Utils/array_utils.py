@@ -29,6 +29,21 @@ def shift_array(array: np.ndarray, shift: int) -> np.ndarray:
     return shifted_array
 
 
+def calculate_distribution(data: np.ndarray, nbins: int, min_threshold: float = 0) -> (np.ndarray, np.ndarray):
+    """
+    Calculates the distribution of the given data, and returns the percentages and centers of the bins. Ignores bins
+    with percentage less than min_threshold.
+    """
+    counts, edges = np.histogram(data, bins=nbins)
+    centers = (edges[:-1] + edges[1:]) / 2
+    percentages = 100 * counts / np.sum(counts)
+    assert len(percentages) == len(centers), "Percentages and centers must have same length"
+
+    centers = centers[percentages >= min_threshold]
+    percentages = percentages[percentages >= min_threshold]
+    return percentages, centers
+
+
 def numerical_derivative(x, n: int) -> np.ndarray:
     """
     Calculates the numerical derivative of the given values, as described by Engbert & Kliegl(2003):
