@@ -8,7 +8,7 @@ import Visualization.dynamics as dyn
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 
-def compare_dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
+def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
                                proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
     if not np.isfinite(proximity_threshold) or proximity_threshold <= 0:
         raise ValueError(f"Invalid proximity threshold: {proximity_threshold}")
@@ -38,7 +38,7 @@ def compare_dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: 
     return fig
 
 
-def fixation_histograms_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
+def histograms_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
                                proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
     if not np.isfinite(proximity_threshold) or proximity_threshold <= 0:
         raise ValueError(f"Invalid proximity threshold: {proximity_threshold}")
