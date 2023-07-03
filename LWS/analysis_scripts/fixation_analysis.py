@@ -22,17 +22,19 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
 
     # velocities
     ax = dyn.velocity_profile(fixations, axes[0, 0], show_individual=False, show_peak=True,
-                              title="Velocity Dynamics", data_label="All Fixations", primary_color='darkblue', **kwargs)
+                              title="Velocity Dynamics", data_label="All Fixations", xlabel="",
+                              primary_color='darkblue', **kwargs)
     ax = dyn.velocity_profile(proximal_fixations, axes[1, 0], show_individual=False, show_peak=True,
-                              title="", data_label="Proximal Fixations", primary_color='darkred', **kwargs)
+                              title="", data_label="Proximal Fixations", xlabel="", primary_color='darkred', **kwargs)
     ax = dyn.velocity_profile(marking_fixations, axes[2, 0], show_individual=False, show_peak=True,
                               title="", data_label="Marking Fixations", primary_color='darkgreen', **kwargs)
 
     # pupils
     ax = dyn.pupil_size_profile(fixations, axes[0, 1], show_individual=False, show_peak=True,
-                                title="Pupil Size Dynamics", data_label="All Fixations", primary_color='darkblue', **kwargs)
+                                title="Pupil Size Dynamics", data_label="All Fixations", xlabel="",
+                                primary_color='darkblue', **kwargs)
     ax = dyn.pupil_size_profile(proximal_fixations, axes[1, 1], show_individual=False, show_peak=True,
-                                title="", data_label="Proximal Fixations", primary_color='darkred', **kwargs)
+                                title="", data_label="Proximal Fixations", xlabel="", primary_color='darkred', **kwargs)
     ax = dyn.pupil_size_profile(marking_fixations, axes[2, 1], show_individual=False, show_peak=True,
                                 title="", data_label="Marking Fixations", primary_color='darkgreen', **kwargs)
     return fig
