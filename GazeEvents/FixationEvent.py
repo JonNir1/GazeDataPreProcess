@@ -49,10 +49,12 @@ class FixationEvent(BaseVisualGazeEvent):
         # returns the standard deviation of the pupil size during the fixation (in mm)
         return float(np.nanstd(self._pupil))
 
-    def get_pupil_series(self, round_decimals: int = 2) -> pd.Series:
-        """ Returns a pandas Series with the fixation's pupil sizes (mm) and indexed by timestamps """
-        timestamps = self._timestamps - self._timestamps[0]  # timestamps in milliseconds, starting from 0
-        timestamps = np.round(timestamps, decimals=round_decimals)
+    def get_pupil_series(self, round_decimals: int = 1, zero_corrected: bool = True) -> pd.Series:
+        """
+        Returns a pandas Series with the event's pupil sizes (mm) and indexed by timestamps, rounded to the specified
+        number of decimals. If zero_corrected is True, the timestamps will be relative to the first timestamp of the event.
+        """
+        timestamps = self.get_timestamps(round_decimals=round_decimals, zero_corrected=zero_corrected)
         return pd.Series(data=self._pupil, index=timestamps, name="pupil_size")
 
     def to_series(self) -> pd.Series:
