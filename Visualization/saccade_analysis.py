@@ -6,7 +6,7 @@ import Visualization.visualization_utils as visutils
 from GazeEvents.SaccadeEvent import SaccadeEvent
 
 
-def saccade_histograms_figure(saccades: List[SaccadeEvent], ignore_outliers: bool = True, **kwargs) -> plt.Figure:
+def histograms_figure(saccades: List[SaccadeEvent], ignore_outliers: bool = True, **kwargs) -> plt.Figure:
     if ignore_outliers:
         saccades = [s for s in saccades if not s.is_outlier]
 
