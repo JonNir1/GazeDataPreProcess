@@ -61,8 +61,6 @@ import LWS.analysis_scripts.fixation_analysis as fixan
 start = time.time()
 
 trial_summary = trsum.summarize_all_trials(trials)
-close_target_fixations = [f for f in all_fixations if f.visual_angle_to_target < cnfg.THRESHOLD_VISUAL_ANGLE]
-mark_target_fixations = [f for f in all_fixations if f.is_mark_target_attempt]
 
 sac_hists = sacan.histograms_figure(all_saccades, ignore_outliers=True)
 fix_hists = fixan.histograms_figure(all_fixations, ignore_outliers=True,
@@ -73,6 +71,10 @@ fix_dynamics = fixan.dynamics_figure(all_fixations, ignore_outliers=True,
 visutils.show_figure(sac_hists)
 visutils.show_figure(fix_hists)
 visutils.show_figure(fix_dynamics)
+
+visutils.save_figure(sac_hists, full_path=os.path.join(subject.output_dir, "saccade_histograms.png"))
+visutils.save_figure(fix_hists, full_path=os.path.join(subject.output_dir, "fixation_histograms.png"))
+visutils.save_figure(fix_dynamics, full_path=os.path.join(subject.output_dir, "fixation_dynamics.png"))
 
 end = time.time()
 print(f"Finished subject analysis in: {(end - start):.2f} seconds")
