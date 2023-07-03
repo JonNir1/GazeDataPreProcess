@@ -175,10 +175,10 @@ class LWSTrial:
         return full_path
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}_S{self.subject.subject_id}_T{self.__trial_num}"
+        return f"{self.__class__.__name__}_{str(self.subject)}_T{str(self)}"
 
     def __str__(self) -> str:
-        return f"Trial {self.__trial_num:03d} | Subject {self.subject.subject_id:03d}"
+        return f"T{self.__trial_num:03d}"
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, LWSTrial):

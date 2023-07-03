@@ -71,7 +71,7 @@ class LWSSubject:
         return f"{self.__class__.__name__}_{self.subject_id:03d}"
 
     def __str__(self) -> str:
-        return self.__repr__()
+        return f"S{self.subject_id:03d}"
 
     def __eq__(self, other: "LWSSubject") -> bool:
         if not isinstance(other, LWSSubject):
