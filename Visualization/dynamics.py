@@ -32,6 +32,7 @@ def pupil_size_profile(fixations: List[FixationEvent], ax: plt.Axes, **kwargs) -
 
 
 def dynamic_profile(timeseries: List[pd.Series], ax: plt.Axes, **kwargs) -> plt.Axes:
+    # TODO: move to visutils
     """
     Normalizes all timeseries to the same length (by interpolating missing values) and plots the mean and standard error
     of the mean of all timeseries.

@@ -8,6 +8,28 @@ import Visualization.dynamics as dyn
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 
+def target_proximal_comparison(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
+                               proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
+    if ignore_outliers:
+        fixations = [f for f in fixations if not f.is_outlier]
+    marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
+    non_marking_proximal_fixations = [f for f in fixations if
+                                      f.visual_angle_to_target <= proximity_threshold and not f.is_mark_target_attempt]
+
+    fig, axes = plt.subplots(3, 2, figsize=kwargs.get("figsize", (27, 21)), sharex='col', tight_layout=True)
+    fig.suptitle(kwargs.pop("title", f"Comparison of Target-Proximal Fixations"), fontsize=kwargs.get("title_size", 16))
+
+    # TODO
+
+    # durations
+    # dispersion
+    # distance from target
+    # % outliers
+    # velocity dynamics - overlayed
+    # pupil size dynamics - overlayed
+    return None
+
+
 def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
                     proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
     """
