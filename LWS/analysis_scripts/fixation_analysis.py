@@ -9,6 +9,8 @@ from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 def fixation_histograms_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
                                proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
+    if not np.isfinite(proximity_threshold) or proximity_threshold <= 0:
+        raise ValueError(f"Invalid proximity threshold: {proximity_threshold}")
     if ignore_outliers:
         fixations = [f for f in fixations if not f.is_outlier]
 
@@ -34,8 +36,6 @@ def fixation_histograms_figure(fixations: List[LWSFixationEvent], ignore_outlier
 def _compare_property_distributions(fixations: List[LWSFixationEvent], ax: plt.Axes,
                                     property_name: str, property_units: str,
                                     proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Axes:
-    if not np.isfinite(proximity_threshold) or proximity_threshold <= 0:
-        raise ValueError(f"Invalid proximity threshold: {proximity_threshold}")
     nbins = kwargs.get("nbins", 20)
     all_fixations_percentages, all_fixations_centers = __calculate_distribution(
         data=[oop.get_property(f, property_name) for f in fixations],
