@@ -41,6 +41,13 @@ def dynamic_profile(timeseries: List[pd.Series], ax: plt.Axes, **kwargs) -> plt.
     ax.plot(mean.index, mean, color=primary_color, linewidth=primary_linewidth, zorder=10, label='Mean')
     ax.fill_between(mean.index, mean - sem, mean + sem, color=primary_color, alpha=0.5, zorder=2)
 
+    if kwargs.get('show_peak', False):
+        peak_color = kwargs.get('peak_color', '#000000')  # default: black
+        peak_linewidth = kwargs.get('peak_linewidth', 1)
+        peak_idx = np.argmax(mean)
+        ax.axvline(x=mean.index[peak_idx], color=peak_color, linewidth=peak_linewidth,
+                   linestyle='--', zorder=10, label="Max Value")
+
     if kwargs.get('show_individual', False):
         secondary_color = kwargs.get('secondary_color', '#a6bddb')  # default: light blue
         secondary_linewidth = kwargs.get('secondary_linewidth', 1)
