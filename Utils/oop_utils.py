@@ -7,8 +7,7 @@ def get_property(obj, attr: str):
     """
     if is_property(obj, attr):
         return getattr(obj, attr)
-    else:
-        raise AttributeError(f"{type(obj).capitalize()} objects have no attribute `{attr}`")
+    raise AttributeError(f"{type(obj).capitalize()} objects have no attribute `{attr}`")
 
 
 def is_property(obj, attr: str) -> bool:
