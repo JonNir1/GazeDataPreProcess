@@ -38,7 +38,8 @@ def dynamic_profile(timeseries: List[pd.Series], ax: plt.Axes, **kwargs) -> plt.
 
     primary_color = kwargs.get('primary_color', '#034e7b')  # default: dark blue
     primary_linewidth = kwargs.get('primary_linewidth', 2)
-    ax.plot(mean.index, mean, color=primary_color, linewidth=primary_linewidth, zorder=10, label='Mean')
+    data_label = kwargs.get('data_label', '')
+    ax.plot(mean.index, mean, color=primary_color, linewidth=primary_linewidth, label=data_label, zorder=10)
     ax.fill_between(mean.index, mean - sem, mean + sem, color=primary_color, alpha=0.5, zorder=2)
 
     if kwargs.get('show_peak', False):
