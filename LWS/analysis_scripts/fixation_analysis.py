@@ -10,6 +10,15 @@ from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
                                proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
+    """
+    Creates a 3×2 figure depicting the temporal dynamics of velocity (left column) and pupil size (right column) for
+    all fixations (top), target-proximal fixations (middle), and marking fixations (bottom).
+
+    target-proximal fixations are defined as fixations with a visual angle to target less than or equal to the
+    proximity threshold (default: 1.5°). target-marking fixations are defined as fixations during which the subject
+    attempted to mark the target (i.e., the target-marking triggers were recorded).
+    """
+
     if not np.isfinite(proximity_threshold) or proximity_threshold <= 0:
         raise ValueError(f"Invalid proximity threshold: {proximity_threshold}")
     if ignore_outliers:
@@ -42,6 +51,15 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
 
 def histograms_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
                                proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
+    """
+    Creates a 2×3 figure with histograms of the following properties: fixation durations, max dispersion, angle to target,
+    max velocity, mean velocity, and mean pupil size. Each histogram shows the distribution of all fixations (blue),
+    target-proximal fixations (red), and target-marking fixations (green).
+
+    target-proximal fixations are defined as fixations with a visual angle to target less than or equal to the
+    proximity threshold (default: 1.5°). target-marking fixations are defined as fixations during which the subject
+    attempted to mark the target (i.e., the target-marking triggers were recorded).
+    """
     if not np.isfinite(proximity_threshold) or proximity_threshold <= 0:
         raise ValueError(f"Invalid proximity threshold: {proximity_threshold}")
     if ignore_outliers:
