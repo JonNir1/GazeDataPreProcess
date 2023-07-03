@@ -57,13 +57,15 @@ def dynamic_profile(timeseries: List[pd.Series], ax: plt.Axes, **kwargs) -> plt.
                     linewidth=secondary_linewidth, alpha=0.75, zorder=1)
 
     label_size = kwargs.get('label_size', 12)
-    tick_size = kwargs.get('tick_size', 10)
+    text_size = kwargs.get('tick_size', 10)
     ax.set_xlabel("Relative Time (%)", fontsize=label_size)
     ax.set_ylabel(kwargs.get('ylabel', ""), fontsize=label_size)
     ax.set_xticks(ticks=np.arange(0, 110, 10), labels=np.arange(0, 110, 10))
-    ax.tick_params(axis='both', which='major', labelsize=tick_size)
+    ax.tick_params(axis='both', which='major', labelsize=text_size)
     ax.set_title(kwargs.get('title', ""), fontsize=kwargs.get('title_size', 14))
     y_bottom, y_top = ax.get_ylim()
     ax.set_ylim(bottom=max([mean.min() - 2 * sem.max(), y_bottom]), top=min([mean.max() + 2 * sem.max(), y_top]))
+    if kwargs.get('show_legend', True):
+        ax.legend(loc=kwargs.get('legend_location', 'upper right'), fontsize=text_size)
     return ax
 
