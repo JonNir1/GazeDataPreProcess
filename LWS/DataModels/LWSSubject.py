@@ -2,6 +2,7 @@ import os
 import pickle as pkl
 from typing import List, Optional
 
+from Config import experiment_config as cnfg
 import Utils.io_utils as ioutils
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 
@@ -11,9 +12,11 @@ class LWSSubject:
     Represents a single LWS subject, with it's personal info and experimental data
     """
 
-    def __init__(self, info: LWSSubjectInfo, trials: List["LWSTrial"] = None):
+    def __init__(self, info: LWSSubjectInfo, trials: List["LWSTrial"] = None, output_directory: str = cnfg.OUTPUT_DIR):
         self.__subject_info: LWSSubjectInfo = info
         self.__trials: List[LWSTrial] = trials if trials is not None else []
+        self.__output_directory: str = ioutils.create_subject_output_directory(subject_id=self.subject_id,
+                                                                               output_dir=output_directory)
 
     @staticmethod
     def from_pickle(pickle_path: str) -> "LWSSubject":
@@ -28,6 +31,10 @@ class LWSSubject:
     @property
     def subject_id(self) -> int:
         return self.__subject_info.subject_id
+
+    @property
+    def output_dir(self) -> str:
+        return self.__output_directory
 
     @property
     def dominant_eye(self) -> str:
@@ -59,10 +66,9 @@ class LWSSubject:
             raise RuntimeError(f"Subject {self.subject_id} has more than one trial with number {trial_num}")
         return trials[0]
 
-    def to_pickle(self, output_dir: Optional[str] = None) -> str:
-        subject_dir = ioutils.create_subject_output_directory(subject_id=self.subject_id, output_dir=output_dir)
+    def to_pickle(self) -> str:
         filename = ioutils.get_filename(name=self.__repr__(), extension=ioutils.PICKLE_EXTENSION)
-        full_path = os.path.join(subject_dir, filename)
+        full_path = os.path.join(self.output_dir, filename)
         with open(full_path, "wb") as f:
             pkl.dump(self, f)
         return full_path

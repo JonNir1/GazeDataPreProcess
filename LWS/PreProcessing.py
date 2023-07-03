@@ -13,7 +13,9 @@ from LWS.pre_processing_scripts.detect_events import detect_all_events
 from LWS.pre_processing_scripts.gen_lws_gaze_events import gen_all_lws_events
 
 
-def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR,
+def process_subject(subject_dir: str,
+                    stimuli_dir: str = cnfg.STIMULI_DIR,
+                    output_directory: str = cnfg.OUTPUT_DIR,
                     save_pickle: bool = False, **kwargs) -> LWSSubject:
     """
     For a given subject directory, extracts the subject-info, gaze-data and trigger-log files, and uses those to create
@@ -22,6 +24,7 @@ def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR,
 
     :param subject_dir: directory containing the subject's data files.
     :param stimuli_dir: directory containing the stimuli files.
+    :param output_directory: directory in which all output files will be saved.
     :param save_pickle: If True, saves the trials' pickle files to the output directory.
 
     keyword arguments:
@@ -34,14 +37,15 @@ def process_subject(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR,
         raise NotADirectoryError(f"Directory {subject_dir} does not exist.")
     if not os.path.isdir(stimuli_dir):
         raise NotADirectoryError(f"Directory {stimuli_dir} does not exist.")
+    if not os.path.isdir(output_directory):
+        raise NotADirectoryError(f"Directory {output_directory} does not exist.")
 
-    subject = read_subject_from_raw_data(subject_dir, stimuli_dir, **kwargs)
+    subject = read_subject_from_raw_data(subject_dir, stimuli_dir, output_directory, **kwargs)
     for i in range(subject.num_trials):
         trial = subject.get_trial(i+1)  # trial numbers start from 1
         process_trial(trial, **kwargs)
     if save_pickle:
-        output_dir = kwargs.pop('output_directory', cnfg.OUTPUT_DIR)
-        subject.to_pickle(output_dir)
+        subject.to_pickle()
     return subject
 
 

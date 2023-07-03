@@ -9,13 +9,17 @@ from LWS.DataModels.LWSSubject import LWSSubject
 from LWS.pre_processing_scripts.read_raw_data import read_behavioral_data, read_subject_info
 
 
-def read_subject_from_raw_data(subject_dir: str, stimuli_dir: str = cnfg.STIMULI_DIR, **kwargs) -> LWSSubject:
+def read_subject_from_raw_data(subject_dir: str,
+                               stimuli_dir: str = cnfg.STIMULI_DIR,
+                               output_directory: str = cnfg.OUTPUT_DIR,
+                               **kwargs) -> LWSSubject:
     """
     Reads the subject's behavioral data and creates a list of trials, each containing the subject's behavioral data,
     the stimulus that was presented in that trial, and the subject's info.
 
     :param subject_dir: the directory in which the subject's data is stored.
     :param stimuli_dir: the directory in which the stimuli are stored.
+    :param output_directory: the directory in which all output files will be saved.
 
     :keyword experiment_columns or additional_columns: a list of columns that should be read from the behavioral data.
     :keyword start_trigger, end_trigger: the triggers that mark the beginning and end of each trial.
@@ -35,7 +39,7 @@ def read_subject_from_raw_data(subject_dir: str, stimuli_dir: str = cnfg.STIMULI
 
     # create LWSSubject object:
     subject_info = read_subject_info(subject_dir)
-    subject = LWSSubject(info=subject_info)
+    subject = LWSSubject(info=subject_info, output_directory=output_directory)
 
     # read the trials and assign them to the subject:
     behavioral_trials_data = read_behavioral_data(subject_dir, **kwargs)
