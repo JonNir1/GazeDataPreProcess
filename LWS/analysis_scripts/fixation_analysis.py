@@ -17,8 +17,8 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
     proximal_fixations = [f for f in fixations if f.visual_angle_to_target <= proximity_threshold]
     marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
 
-    fig, axes = plt.subplots(3, 2, figsize=kwargs.get("figsize", (21, 27)), sharex='col')
-    fig.suptitle(kwargs.pop("title", f"Fixation Dynamics"), y=0.92, fontsize=kwargs.get("title_size", 16))
+    fig, axes = plt.subplots(3, 2, figsize=kwargs.get("figsize", (21, 27)), sharex='col', tight_layout=True)
+    fig.suptitle(kwargs.pop("title", f"Fixation Dynamics"), fontsize=kwargs.get("title_size", 16))
 
     # velocities
     ax = dyn.velocity_profile(fixations, axes[0, 0], show_individual=False, show_peak=True,
