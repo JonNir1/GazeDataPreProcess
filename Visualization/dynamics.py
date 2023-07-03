@@ -32,6 +32,37 @@ def pupil_size_profile(fixations: List[FixationEvent], ax: plt.Axes, **kwargs) -
 
 
 def dynamic_profile(timeseries: List[pd.Series], ax: plt.Axes, **kwargs) -> plt.Axes:
+    """
+    Normalizes all timeseries to the same length (by interpolating missing values) and plots the mean and standard error
+    of the mean of all timeseries.
+
+    :param timeseries: list of pd.Series objects, indexed by time (float, ms) and containing the values to plot
+    :param ax: the axes object to plot on
+
+    keyword arguments:
+        - interpolation_kind: the kind of interpolation to use for missing values (default: 'linear')
+
+        - primary_color: the color of the mean line and the fill (default: '#034e7b', dark blue)
+        - primary_linewidth: the width of the mean line (default: 2)
+        - data_label: the label of the mean line (default: '')
+
+        - show_peak: whether to show a vertical line at the peak value (default: False)
+        - peak_color: the color of the peak line (default: '#000000', black)
+        - peak_linewidth: the width of the peak line (default: 1)
+
+        - show_individual: whether to show the individual timeseries in the background (default: False)
+        - secondary_color: the color of the individual timeseries (default: '#a6bddb', light blue)
+        - secondary_linewidth: the width of the individual timeseries (default: 1)
+
+        - title_size: the size of the title (default: 14)
+        - title: the title (default: "")
+        - label_size: the size of the x and y labels (default: 12)
+        - xlabel: the x label (default: "Relative Time (%)")
+        - ylabel: the y label (default: "")
+        - text_size: the size of the tick labels and legend (default: 10)
+        - show_legend: whether to show the legend (default: True)
+        - legend_location: the location of the legend (default: 'upper right')
+    """
     timeseries_df = tsutils.interpolate_and_merge_timeseries(timeseries, interpolation_kind=kwargs.get('interpolation_kind', 'linear'))
     mean = timeseries_df.mean(axis=1)
     sem = timeseries_df.sem(axis=1)
