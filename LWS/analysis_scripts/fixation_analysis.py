@@ -67,7 +67,7 @@ def histograms_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool =
 
     fig, axes = plt.subplots(2, 3, figsize=kwargs.get("figsize", (30, 15)))
     title = kwargs.get("title", f"Fixation Summary")
-    fig.suptitle(title, y=0.98, fontsize=kwargs.get("title_size", 16))
+    fig.suptitle(title, y=0.95, fontsize=kwargs.get("title_size", 16))
 
     # durations
     ax = _compare_property_distributions(fixations, axes[0, 0], "duration", "ms", proximity_threshold, **kwargs)
