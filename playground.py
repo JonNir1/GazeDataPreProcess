@@ -50,36 +50,36 @@ end = time.time()
 print(f"Finished loading in: {(end - start):.2f} seconds")
 del start, end
 
-##########################################
-###  ANALYZE SUBJECT-LEVEL DATA  #########
-##########################################
-
-import LWS.analysis_scripts.trial_summary as trsum
-import Visualization.saccade_analysis as sacan
-import LWS.analysis_scripts.fixation_analysis as fixan
-
-start = time.time()
-
-trial_summary = trsum.summarize_all_trials(trials)
-
-sac_hists = sacan.histograms_figure(all_saccades, ignore_outliers=True)
-fix_hists = fixan.histograms_figure(all_fixations, ignore_outliers=True,
-                                    title="Fixations Histograms")
-fix_dynamics = fixan.dynamics_figure(all_fixations, ignore_outliers=True,
-                                     title="Fixations Temporal Dynamics")
-
-visutils.show_figure(sac_hists)
-visutils.show_figure(fix_hists)
-visutils.show_figure(fix_dynamics)
-
-visutils.save_figure(sac_hists, full_path=os.path.join(subject.output_dir, "saccade_histograms.png"))
-visutils.save_figure(fix_hists, full_path=os.path.join(subject.output_dir, "fixation_histograms.png"))
-visutils.save_figure(fix_dynamics, full_path=os.path.join(subject.output_dir, "fixation_dynamics.png"))
-
-end = time.time()
-print(f"Finished subject analysis in: {(end - start):.2f} seconds")
-
-del start, end
+# ##########################################
+# ###  ANALYZE SUBJECT-LEVEL DATA  #########
+# ##########################################
+#
+# import LWS.analysis_scripts.trial_summary as trsum
+# import Visualization.saccade_analysis as sacan
+# import LWS.analysis_scripts.fixation_analysis as fixan
+#
+# start = time.time()
+#
+# trial_summary = trsum.summarize_all_trials(trials)
+#
+# sac_hists = sacan.histograms_figure(all_saccades, ignore_outliers=True)
+# fix_hists = fixan.histograms_figure(all_fixations, ignore_outliers=True,
+#                                     title="Fixations Histograms")
+# fix_dynamics = fixan.dynamics_figure(all_fixations, ignore_outliers=True,
+#                                      title="Fixations Temporal Dynamics")
+#
+# visutils.show_figure(sac_hists)
+# visutils.show_figure(fix_hists)
+# visutils.show_figure(fix_dynamics)
+#
+# visutils.save_figure(sac_hists, full_path=os.path.join(subject.output_dir, "saccade_histograms.png"))
+# visutils.save_figure(fix_hists, full_path=os.path.join(subject.output_dir, "fixation_histograms.png"))
+# visutils.save_figure(fix_dynamics, full_path=os.path.join(subject.output_dir, "fixation_dynamics.png"))
+#
+# end = time.time()
+# print(f"Finished subject analysis in: {(end - start):.2f} seconds")
+#
+# del start, end
 
 # ##########################################
 # ###  ANALYZE TRIAL-LEVEL DATA  ###########
