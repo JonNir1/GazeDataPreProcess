@@ -57,7 +57,7 @@ def dynamic_profile(timeseries: List[pd.Series], ax: plt.Axes, **kwargs) -> plt.
                     linewidth=secondary_linewidth, alpha=0.75, zorder=1)
 
     label_size = kwargs.get('label_size', 12)
-    text_size = kwargs.get('tick_size', 10)
+    text_size = kwargs.get('text_size', 10)
     ax.set_xlabel(kwargs.get('xlabel', "Relative Time (%)"), fontsize=label_size)
     ax.set_ylabel(kwargs.get('ylabel', ""), fontsize=label_size)
     ax.set_xticks(ticks=np.arange(0, 110, 10), labels=np.arange(0, 110, 10))
