@@ -46,6 +46,10 @@ all_blinks = [b for tr in trials for b in tr.get_gaze_events(cnst.BLINK)]
 all_saccades = [s for tr in trials for s in tr.get_gaze_events(cnst.SACCADE)]
 all_fixations = [f for tr in trials for f in tr.get_gaze_events(cnst.FIXATION)]
 
+target_proximal_fixations = [f for f in all_fixations if f.visual_angle_to_target <= cnfg.THRESHOLD_VISUAL_ANGLE]
+target_marking_fixations = [f for f in all_fixations if f.is_mark_target_attempt]
+target_proximal_non_marking_fixations = [f for f in target_proximal_fixations if not f.is_mark_target_attempt]
+
 end = time.time()
 print(f"Finished loading in: {(end - start):.2f} seconds")
 del start, end
@@ -62,9 +66,10 @@ del start, end
 #
 # trial_summary = trsum.summarize_all_trials(trials)
 #
-# sac_hists = sacan.histograms_figure(all_saccades, ignore_outliers=True)
+# sac_hists = sacan.histograms_figure(all_saccades, ignore_outliers=True,
+#                                     title="Saccades Property Distributions")
 # fix_hists = fixan.histograms_figure(all_fixations, ignore_outliers=True,
-#                                     title="Fixations Histograms")
+#                                     title="Fixations Property Distributions")
 # fix_dynamics = fixan.dynamics_figure(all_fixations, ignore_outliers=True,
 #                                      title="Fixations Temporal Dynamics")
 #
@@ -72,9 +77,10 @@ del start, end
 # visutils.show_figure(fix_hists)
 # visutils.show_figure(fix_dynamics)
 #
-# visutils.save_figure(sac_hists, full_path=os.path.join(subject.output_dir, "saccade_histograms.png"))
-# visutils.save_figure(fix_hists, full_path=os.path.join(subject.output_dir, "fixation_histograms.png"))
-# visutils.save_figure(fix_dynamics, full_path=os.path.join(subject.output_dir, "fixation_dynamics.png"))
+# subject_figures_dir = ioutils.create_dir(os.path.join(subject.output_dir, "subject_figures"))
+# visutils.save_figure(sac_hists, full_path=os.path.join(subject_figures_dir, "saccade_histograms.png"))
+# visutils.save_figure(fix_hists, full_path=os.path.join(subject_figures_dir, "fixation_histograms.png"))
+# visutils.save_figure(fix_dynamics, full_path=os.path.join(subject_figures_dir, "fixation_dynamics.png"))
 #
 # end = time.time()
 # print(f"Finished subject analysis in: {(end - start):.2f} seconds")
