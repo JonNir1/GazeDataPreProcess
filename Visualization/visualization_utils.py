@@ -46,18 +46,17 @@ def get_rgba_color(color: Union[str, int], cmap_name: Optional[str]) -> Tuple[fl
     return cmap(color)
 
 
-def set_axes_texts(ax: plt.Axes, title: Optional[str],
+def set_axes_texts(ax: plt.Axes, ax_title: Optional[str],
                    xlabel: Optional[str], ylabel: Optional[str],
-                   title_size: int = 14, label_size: int = 12,
-                   show_legend: bool = False, legend_location: Optional[str] = "upper right") -> plt.Axes:
-    if title:
-        ax.set_title(title, fontsize=title_size)
+                   **kwargs) -> plt.Axes:
+    if ax_title:
+        ax.set_title(ax_title, fontsize=kwargs.get("subtitle_size", 14))
     if xlabel:
-        ax.set_xlabel(xlabel, fontsize=label_size)
+        ax.set_xlabel(xlabel, fontsize=kwargs.get("label_size", 12))
     if ylabel:
-        ax.set_ylabel(ylabel, fontsize=label_size)
-    if show_legend:
-        ax.legend(loc=legend_location, fontsize=label_size)
+        ax.set_ylabel(ylabel, fontsize=kwargs.get("label_size", 12))
+    if kwargs.get("show_legend", False):
+        ax.legend(loc=kwargs.get("legend_location", "upper right"), fontsize=kwargs.get("text_size", 10))
     return ax
 
 
@@ -118,12 +117,8 @@ def distribution_comparison(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) 
         ax.bar(c, p, width=bar_width, label=labels[i], facecolor=facecolor, edgecolor=edgecolor, alpha=0.8)
 
     # set the axis properties:
-    set_axes_texts(ax=ax,
-                   title=kwargs.get("title", ""), title_size=kwargs.get("title_size", 14),
-                   xlabel=kwargs.get("xlabel", ""), ylabel=kwargs.get("ylabel", "%"),
-                   label_size=kwargs.get("text_size", 12),
-                   show_legend=kwargs.get("show_legend", False),
-                   legend_location=kwargs.get("legend_location", "upper right"))
+    set_axes_texts(ax=ax, ax_title=kwargs.get("title", ""),
+                   xlabel=kwargs.get("xlabel", ""), ylabel=kwargs.get("ylabel", "%"), **kwargs)
     return ax
 
 
