@@ -61,19 +61,18 @@ def set_axes_texts(ax: plt.Axes, title: Optional[str],
     return ax
 
 
-def create_rose_plot(counts, ax: plt.Axes,
-                     title: str, xlabel: str, ylabel: str,
-                     title_size: int, label_size: int,
-                     face_color, edge_color) -> plt.Axes:
+def create_rose_plot(data, ax: plt.Axes, nbins: int, face_color, edge_color,
+                     zero_location: str = "E", clockwise_angles: bool = False) -> plt.Axes:
+    if ax.name != "polar":
+        raise ValueError(f"Invalid axis type '{ax.name}'! Must be a polar axis.")
+    counts, _edges = np.histogram(data, bins=np.arange(0, 361, 360 / nbins))
     n = len(counts)
     angles = np.linspace(0, 2 * np.pi, n, endpoint=False)
     width = (2 * np.pi) / n
     _bars = ax.bar(angles, counts, width=width, bottom=0.0, color=face_color, edgecolor=edge_color)
-
-    ax.set_title(title, fontsize=title_size)
-    ax.set_xlabel(xlabel, fontsize=label_size)
-    ax.set_ylabel(ylabel, fontsize=label_size)
-    ax.set_theta_zero_location("E")  # set 0° to the East
+    ax.set_theta_zero_location(zero_location)  # set 0° to the provided location (default: East)
+    if clockwise_angles:
+        ax.set_theta_direction(-1)  # set the direction of the angles to clockwise
     return ax
 
 
