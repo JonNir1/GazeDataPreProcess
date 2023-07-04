@@ -51,10 +51,6 @@ def dynamic_profile(timeseries: List[pd.Series], ax: plt.Axes, **kwargs) -> plt.
         - peak_color: the color of the peak line (default: '#000000', black)
         - peak_linewidth: the width of the peak line (default: 1)
 
-        - show_individual: whether to show the individual timeseries in the background (default: False)
-        - secondary_color: the color of the individual timeseries (default: '#a6bddb', light blue)
-        - secondary_linewidth: the width of the individual timeseries (default: 1)
-
         - title_size: the size of the title (default: 14)
         - title: the title (default: "")
         - label_size: the size of the x and y labels (default: 12)
@@ -80,13 +76,6 @@ def dynamic_profile(timeseries: List[pd.Series], ax: plt.Axes, **kwargs) -> plt.
         peak_idx = np.argmax(mean)
         ax.axvline(x=mean.index[peak_idx], color=peak_color, linewidth=peak_linewidth,
                    linestyle='--', zorder=10, label="Max Value")
-
-    if kwargs.get('show_individual', False):
-        secondary_color = kwargs.get('secondary_color', '#a6bddb')  # default: light blue
-        secondary_linewidth = kwargs.get('secondary_linewidth', 1)
-        for col in timeseries_df.columns:
-            ax.plot(timeseries_df.index, timeseries_df[col], color=secondary_color,
-                    linewidth=secondary_linewidth, alpha=0.75, zorder=1)
 
     label_size = kwargs.get('label_size', 12)
     text_size = kwargs.get('text_size', 10)
