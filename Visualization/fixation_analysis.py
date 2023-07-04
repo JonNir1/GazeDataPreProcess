@@ -1,45 +1,46 @@
+import numpy as np
 from typing import List
 import matplotlib.pyplot as plt
 
 import Visualization.visualization_utils as visutils
+import Visualization.distributions as distributions
 from GazeEvents.FixationEvent import FixationEvent
 
 
-def fixation_histograms_figure(fixations: List[FixationEvent], ignore_outliers: bool = True, **kwargs) -> plt.Figure:
+def distributions_figure(fixations: List[FixationEvent], ignore_outliers: bool = True, **kwargs) -> plt.Figure:
     if ignore_outliers:
         fixations = [f for f in fixations if not f.is_outlier]
 
     fig = plt.Figure()
     visutils.set_figure_properties(fig, title=kwargs.pop("title", "Fixation Summary"),
                                    figsize=kwargs.pop("figsize", (21, 14)), **kwargs)
-    nbins = kwargs.get("nbins", 20)
-    edge_color = visutils.get_rgba_color(color=0, cmap_name=kwargs.get("cmap_name", "tab20"))
-    face_color = visutils.get_rgba_color(color=1, cmap_name=kwargs.get("cmap_name", "tab20"))
 
-    # durations histogram
+    # durations distribution
     ax1 = fig.add_subplot(2, 2, 1)
-    ax1.hist([f.duration for f in fixations], bins=nbins, facecolor=face_color, edgecolor=edge_color)
-    visutils.set_axes_texts(ax1, ax_title="Durations",
-                            xlabel="Duration (ms)", ylabel="Counts", **kwargs)
+    durations_data = [np.array([f.duration for f in fixations])]
+    distributions.bar_chart(ax=ax1, data=durations_data,
+                            labels=["All Fixations"], title="Durations", xlabel="Duration (ms)", **kwargs)
 
-    # dispersion histogram
+    # dispersion distribution
     ax2 = fig.add_subplot(2, 2, 2)
-    ax2.hist([f.max_dispersion for f in fixations], bins=nbins, facecolor=face_color, edgecolor=edge_color)
-    visutils.set_axes_texts(ax2, ax_title="Dispersions",
-                            xlabel="Dispersion (pixels)", ylabel="Counts", **kwargs)
+    dispersions_data = [np.array([f.max_dispersion for f in fixations])]
+    distributions.bar_chart(ax=ax2, data=dispersions_data,
+                            labels=["All Fixations"], title="Dispersions", xlabel="Dispersion (pixels)", **kwargs)
 
-    # max velocity histogram
+    # max velocity distribution
     ax3 = fig.add_subplot(2, 2, 3)
-    ax3.hist([f.max_velocity for f in fixations], bins=nbins, facecolor=face_color, edgecolor=edge_color)
-    visutils.set_axes_texts(ax3, ax_title="Maximum Velocities",
-                            xlabel="Max Velocity (pixels/ms)", ylabel="Counts", **kwargs)
+    max_velocities_data = [np.array([f.max_velocity for f in fixations])]
+    distributions.bar_chart(ax=ax3, data=max_velocities_data,
+                            labels=["All Fixations"], title="Maximum Velocities", xlabel="Max Velocity (pixels/ms)",
+                            **kwargs)
 
-    # mean velocity histogram
+    # mean velocity distribution
     ax4 = fig.add_subplot(2, 2, 4)
-    ax4.hist([f.mean_velocity for f in fixations], bins=nbins, facecolor=face_color, edgecolor=edge_color)
-    visutils.set_axes_texts(ax4, ax_title="Mean Velocities",
-                            xlabel="Mean Velocity (pixels/ms)", ylabel="Counts", **kwargs)
+    mean_velocities_data = [np.array([f.mean_velocity for f in fixations])]
+    distributions.bar_chart(ax=ax4, data=mean_velocities_data,
+                            labels=["All Fixations"], title="Mean Velocities", xlabel="Mean Velocity (pixels/ms)",
+                            **kwargs)
 
-    # mean pupil size histogram
+    # mean pupil size distribution
     # TODO: create histogram for pupil size
     return fig

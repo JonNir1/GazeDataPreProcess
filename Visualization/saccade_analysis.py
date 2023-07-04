@@ -3,10 +3,11 @@ from typing import List
 import matplotlib.pyplot as plt
 
 import Visualization.visualization_utils as visutils
+import Visualization.distributions as distributions
 from GazeEvents.SaccadeEvent import SaccadeEvent
 
 
-def histograms_figure(saccades: List[SaccadeEvent], ignore_outliers: bool = True, **kwargs) -> plt.Figure:
+def distributions_figure(saccades: List[SaccadeEvent], ignore_outliers: bool = True, **kwargs) -> plt.Figure:
     if ignore_outliers:
         saccades = [s for s in saccades if not s.is_outlier]
 
@@ -19,18 +20,22 @@ def histograms_figure(saccades: List[SaccadeEvent], ignore_outliers: bool = True
 
     # durations histogram
     ax1 = fig.add_subplot(2, 2, 1)
-    ax1.hist([s.duration for s in saccades], bins=nbins, facecolor=face_color, edgecolor=edge_color)
-    visutils.set_axes_texts(ax1, ax_title="Durations", xlabel="Duration (ms)", ylabel="Counts", **kwargs)
+    durations_data = [np.array([s.duration for s in saccades])]
+    distributions.bar_chart(ax=ax1, data=durations_data,
+                            labels=["All Saccades"], title="Durations", xlabel="Duration (ms)", **kwargs)
 
     # max velocity histogram
     ax2 = fig.add_subplot(2, 2, 2)
-    ax2.hist([s.max_velocity for s in saccades], bins=nbins, facecolor=face_color, edgecolor=edge_color)
-    visutils.set_axes_texts(ax2, ax_title="Maximum Velocities", xlabel="Velocity (px / s)", ylabel="Counts", **kwargs)
+    max_velocities_data = [np.array([s.max_velocity for s in saccades])]
+    distributions.bar_chart(ax=ax2, data=max_velocities_data,
+                            labels=["All Saccades"], title="Maximum Velocities", xlabel="Max Velocity (pixels/ms)",
+                            **kwargs)
 
     # amplitude histogram
     ax3 = fig.add_subplot(2, 2, 3)
-    ax3.hist([s.amplitude for s in saccades], bins=nbins, facecolor=face_color, edgecolor=edge_color)
-    visutils.set_axes_texts(ax3, ax_title="Amplitude", xlabel="Amplitude (°)", ylabel="Counts", **kwargs)
+    amplitude_data = [np.array([s.amplitude for s in saccades])]
+    distributions.bar_chart(ax=ax3, data=amplitude_data,
+                            labels=["All Saccades"], title="Amplitude", xlabel="Amplitude (°)", **kwargs)
 
     # azimuth counts (polar)
     ax4 = fig.add_subplot(2, 2, 4, polar=True)
