@@ -12,8 +12,8 @@ def fixation_histograms_figure(fixations: List[FixationEvent], ignore_outliers: 
     fig = plt.Figure(figsize=kwargs.get("figsize", (21, 14)))
     fig.suptitle(t=kwargs.get("title", "Fixation Summary"), fontsize=kwargs.get("title_size", 16), y=0.95)
     nbins = kwargs.get("nbins", 20)
-    face_color = kwargs.get("face_color", "lightblue")
-    edge_color = kwargs.get("edge_color", "darkblue")
+    edge_color = visutils.get_rgba_color(color=0, cmap_name=kwargs.get("cmap_name", "tab20"))
+    face_color = visutils.get_rgba_color(color=1, cmap_name=kwargs.get("cmap_name", "tab20"))
     subtitle_size = kwargs.get("subtitle_size", 14)
     label_size = kwargs.get("label_size", 12)
 

@@ -13,8 +13,8 @@ def histograms_figure(saccades: List[SaccadeEvent], ignore_outliers: bool = True
     fig = plt.Figure(figsize=kwargs.get("figsize", (21, 14)))
     fig.suptitle(t=kwargs.get("title", "Saccade Summary"), fontsize=kwargs.get("title_size", 16), y=0.95)
     nbins = kwargs.get("nbins", 20)
-    face_color = kwargs.get("face_color", "lightblue")
-    edge_color = kwargs.get("edge_color", "darkblue")
+    edge_color = visutils.get_rgba_color(color=0, cmap_name=kwargs.get("cmap_name", "tab20"))
+    face_color = visutils.get_rgba_color(color=1, cmap_name=kwargs.get("cmap_name", "tab20"))
     subtitle_size = kwargs.get("subtitle_size", 14)
     label_size = kwargs.get("label_size", 12)
 
@@ -43,7 +43,6 @@ def histograms_figure(saccades: List[SaccadeEvent], ignore_outliers: bool = True
     ax4 = fig.add_subplot(2, 2, 4, polar=True)
     azimuths = [s.azimuth for s in saccades if not np.isnan(s.azimuth)]
     counts, _edges = np.histogram(azimuths, bins=np.arange(0, 361, 360 / nbins))
-    visutils.create_rose_plot(counts, ax4, title="Azimuth (°)", xlabel="", ylabel="",
-                              face_color=face_color, edge_color=edge_color,
-                              title_size=subtitle_size, label_size=label_size)
+    visutils.create_rose_plot(counts, ax4, title="Azimuth (°)", xlabel="", ylabel="", title_size=subtitle_size,
+                              label_size=label_size, face_color=face_color, edge_color=edge_color)
     return fig

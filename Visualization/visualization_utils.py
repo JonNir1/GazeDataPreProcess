@@ -48,8 +48,8 @@ def get_rgba_color(color: Union[str, int], cmap_name: Optional[str]) -> Tuple[fl
 
 def create_histogram(data, ax: plt.Axes,
                      title: str, xlabel: str, ylabel: str,
-                     nbins: int, face_color: str, edge_color: str,
-                     title_size: int, label_size: int) -> plt.Axes:
+                     nbins: int, title_size: int, label_size: int,
+                     face_color, edge_color) -> plt.Axes:
     ax.hist(data, bins=nbins, edgecolor=edge_color, facecolor=face_color)
     ax.set_title(title, fontsize=title_size)
     ax.set_xlabel(xlabel, fontsize=label_size)
@@ -57,12 +57,14 @@ def create_histogram(data, ax: plt.Axes,
     return ax
 
 
-def create_rose_plot(data, ax: plt.Axes, title: str, xlabel: str, ylabel: str,
-                     face_color: str, edge_color: str, title_size: int, label_size: int) -> plt.Axes:
-    n = len(data)
+def create_rose_plot(counts, ax: plt.Axes,
+                     title: str, xlabel: str, ylabel: str,
+                     title_size: int, label_size: int,
+                     face_color, edge_color) -> plt.Axes:
+    n = len(counts)
     angles = np.linspace(0, 2 * np.pi, n, endpoint=False)
     width = (2 * np.pi) / n
-    bars = ax.bar(angles, data, width=width, bottom=0.0, color=face_color, edgecolor=edge_color)
+    _bars = ax.bar(angles, counts, width=width, bottom=0.0, color=face_color, edgecolor=edge_color)
 
     ax.set_title(title, fontsize=title_size)
     ax.set_xlabel(xlabel, fontsize=label_size)
