@@ -94,14 +94,7 @@ def generic_bar_chart(ax: plt.Axes,
         - labels: A list of labels for the datasets. If specified, must be of the same length as the centers/values lists.
         - cmap: The colormap to use for the bars. default: plt.cm.get_cmap("tab20").
         - alpha: The alpha value of the bars. default: 0.8.
-        - title: The title of the axes.
-        - xlabel: The label of the x-axis.
-        - ylabel: The label of the y-axis.
-        - show_legend: Whether to show the legend. default: False.
-        - legend_location: The location of the legend. default: "upper right".
-        - title_size: The size of the title. default: 16.
-        - label_size: The size of the axis labels. default: 12.
-        - text_size: The size of axis ticks, legend, etc. default: 10.
+        - other kwargs: Passed to set_axes_properties().
 
     :raises ValueError: if the length of the centers/values lists is not equal.
             ValueError: if the bar width is invalid.
