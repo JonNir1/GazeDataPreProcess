@@ -46,14 +46,18 @@ def get_rgba_color(color: Union[str, int], cmap_name: Optional[str]) -> Tuple[fl
     return cmap(color)
 
 
-def create_histogram(data, ax: plt.Axes,
-                     title: str, xlabel: str, ylabel: str,
-                     nbins: int, title_size: int, label_size: int,
-                     face_color, edge_color) -> plt.Axes:
-    ax.hist(data, bins=nbins, edgecolor=edge_color, facecolor=face_color)
-    ax.set_title(title, fontsize=title_size)
-    ax.set_xlabel(xlabel, fontsize=label_size)
-    ax.set_ylabel(ylabel, fontsize=label_size)
+def set_axes_texts(ax: plt.Axes, title: Optional[str],
+                   xlabel: Optional[str], ylabel: Optional[str],
+                   title_size: int = 14, label_size: int = 12,
+                   show_legend: bool = False, legend_location: Optional[str] = "upper right") -> plt.Axes:
+    if title:
+        ax.set_title(title, fontsize=title_size)
+    if xlabel:
+        ax.set_xlabel(xlabel, fontsize=label_size)
+    if ylabel:
+        ax.set_ylabel(ylabel, fontsize=label_size)
+    if show_legend:
+        ax.legend(loc=legend_location, fontsize=label_size)
     return ax
 
 

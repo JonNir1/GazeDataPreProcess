@@ -19,31 +19,27 @@ def fixation_histograms_figure(fixations: List[FixationEvent], ignore_outliers: 
 
     # durations histogram
     ax1 = fig.add_subplot(2, 2, 1)
-    visutils.create_histogram([f.duration for f in fixations], ax1, title="Durations",
-                              xlabel="Duration (ms)", ylabel="Counts", nbins=nbins,
-                              face_color=face_color, edge_color=edge_color,
-                              title_size=subtitle_size, label_size=label_size)
+    ax1.hist([f.duration for f in fixations], bins=nbins, facecolor=face_color, edgecolor=edge_color)
+    visutils.set_axes_texts(ax1, title="Durations", xlabel="Duration (ms)", ylabel="Counts",
+                            title_size=subtitle_size, label_size=label_size)
 
     # dispersion histogram
     ax2 = fig.add_subplot(2, 2, 2)
-    visutils.create_histogram([f.max_dispersion for f in fixations], ax2, title="Dispersions",
-                              xlabel="Dispersion (pixels)", ylabel="Counts", nbins=nbins,
-                              face_color=face_color, edge_color=edge_color,
-                              title_size=subtitle_size, label_size=label_size)
+    ax2.hist([f.max_dispersion for f in fixations], bins=nbins, facecolor=face_color, edgecolor=edge_color)
+    visutils.set_axes_texts(ax2, title="Dispersions", xlabel="Dispersion (pixels)", ylabel="Counts",
+                            title_size=subtitle_size, label_size=label_size)
 
     # max velocity histogram
     ax3 = fig.add_subplot(2, 2, 3)
-    visutils.create_histogram([f.max_velocity for f in fixations], ax3, title="Maximum Velocities",
-                              xlabel="Max Velocity (pixels/ms)", ylabel="Counts", nbins=nbins,
-                              face_color=face_color, edge_color=edge_color,
-                              title_size=subtitle_size, label_size=label_size)
+    ax3.hist([f.max_velocity for f in fixations], bins=nbins, facecolor=face_color, edgecolor=edge_color)
+    visutils.set_axes_texts(ax3, title="Maximum Velocities", xlabel="Max Velocity (pixels/ms)", ylabel="Counts",
+                            title_size=subtitle_size, label_size=label_size)
 
     # mean velocity histogram
     ax4 = fig.add_subplot(2, 2, 4)
-    visutils.create_histogram([f.mean_velocity for f in fixations], ax4, title="Mean Velocities",
-                              xlabel="Mean Velocity (pixels/ms)", ylabel="Counts", nbins=nbins,
-                              face_color=face_color, edge_color=edge_color,
-                              title_size=subtitle_size, label_size=label_size)
+    ax4.hist([f.mean_velocity for f in fixations], bins=nbins, facecolor=face_color, edgecolor=edge_color)
+    visutils.set_axes_texts(ax4, title="Mean Velocities", xlabel="Mean Velocity (pixels/ms)", ylabel="Counts",
+                            title_size=subtitle_size, label_size=label_size)
 
     # mean pupil size histogram
     # TODO: create histogram for pupil size

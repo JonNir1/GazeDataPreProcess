@@ -20,24 +20,21 @@ def histograms_figure(saccades: List[SaccadeEvent], ignore_outliers: bool = True
 
     # durations histogram
     ax1 = fig.add_subplot(2, 2, 1)
-    visutils.create_histogram([s.duration for s in saccades], ax1, title="Durations",
-                              xlabel="Duration (ms)", ylabel="Counts", nbins=nbins,
-                              face_color=face_color, edge_color=edge_color,
-                              title_size=subtitle_size, label_size=label_size)
+    ax1.hist([s.duration for s in saccades], bins=nbins, facecolor=face_color, edgecolor=edge_color)
+    visutils.set_axes_texts(ax1, title="Durations", xlabel="Duration (ms)", ylabel="Counts",
+                            title_size=subtitle_size, label_size=label_size)
 
     # max velocity histogram
     ax2 = fig.add_subplot(2, 2, 2)
-    visutils.create_histogram([s.max_velocity for s in saccades], ax2, title="Maximum Velocities",
-                              xlabel="Velocity (px / s)", ylabel="Counts", nbins=nbins,
-                              face_color=face_color, edge_color=edge_color,
-                              title_size=subtitle_size, label_size=label_size)
+    ax2.hist([s.max_velocity for s in saccades], bins=nbins, facecolor=face_color, edgecolor=edge_color)
+    visutils.set_axes_texts(ax2, title="Maximum Velocities", xlabel="Velocity (px / s)", ylabel="Counts",
+                            title_size=subtitle_size, label_size=label_size)
 
     # amplitude histogram
     ax3 = fig.add_subplot(2, 2, 3)
-    visutils.create_histogram([s.amplitude for s in saccades], ax3, title="Amplitude",
-                              xlabel="Amplitude (°)", ylabel="Counts", nbins=nbins,
-                              face_color=face_color, edge_color=edge_color,
-                              title_size=subtitle_size, label_size=label_size)
+    ax3.hist([s.amplitude for s in saccades], bins=nbins, facecolor=face_color, edgecolor=edge_color)
+    visutils.set_axes_texts(ax3, title="Amplitude", xlabel="Amplitude (°)", ylabel="Counts",
+                            title_size=subtitle_size, label_size=label_size)
 
     # azimuth counts (polar)
     ax4 = fig.add_subplot(2, 2, 4, polar=True)
