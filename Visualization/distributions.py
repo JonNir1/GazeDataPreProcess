@@ -27,7 +27,7 @@ def bar_chart(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) -> plt.Axes:
         - show_legend: Whether to show the legend. default: False.
         - legend_location: The location of the legend. default: "upper right".
     """
-    # extract the distributions:
+    # calculate the distributions:
     nbins = kwargs.get("nbins", 20)
     min_percentage_threshold = kwargs.get("min_percentage_threshold", 1)
     percentages, centers = [], []
