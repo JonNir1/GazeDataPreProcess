@@ -130,6 +130,55 @@ def generic_bar_chart(ax: plt.Axes,
     return ax
 
 
+def generic_line_chart(ax: plt.Axes,
+                       xs: List[np.ndarray], ys: List[np.ndarray],
+                       **kwargs) -> plt.Axes:
+    """
+    Plots multiple lines on the given axis.
+    :param ax: the axis to plot the lines on.
+    :param xs: list of numpy arrays, each array contains the x-values of the line for one dataset.
+    :param ys: list of numpy arrays, each array contains the y-values of the line for one dataset.
+
+    keyword arguments:
+        - labels: A list of labels for the datasets. If specified, must be of the same length as the xs/ys lists.
+        - sems: A list of SEMs for the datasets. If specified, must be of the same length as the xs/ys lists.
+        - cmap: The colormap to use for the lines. default: plt.cm.get_cmap("tab20").
+        - lw/line_width/linewidth: The width of the primary line. default: 2.
+        - show_peak: Whether to show the peak of each line. default: False.
+        - other kwargs: Passed to set_axes_texts().
+    """
+    # verify inputs:
+    if len(xs) != len(ys):
+        raise ValueError(f"Number of x-arrays ({len(xs)}) must be equal to number of y-arrays ({len(ys)})!")
+    labels = kwargs.get("labels", [])
+    if (len(labels) != len(xs)) and (len(labels) != 0):
+        raise ValueError(f"Number of labels ({len(labels)}) must be equal to number of datasets ({len(xs)})!")
+    sems = kwargs.get("sems", [])
+    if (len(sems) != len(xs)) and (len(sems) != 0):
+        raise ValueError(f"Number of SEMs ({len(sems)}) must be equal to number of datasets ({len(xs)})!")
+
+    # plot the lines:
+    cmap_name = kwargs.get("cmap", "tab20")
+    primary_line_width = kwargs.get("lw", None) or kwargs.get("line_width", None) or kwargs.get("linewidth", 2)
+    secondary_line_width = max(1, primary_line_width // 2)
+    for i, (x, y) in enumerate(zip(xs, ys)):
+        color = get_rgba_color(color=2*i, cmap_name=cmap_name)
+        ax.plot(x, y, label=labels[i], color=color, linewidth=primary_line_width, zorder=i)
+        if len(sems) > 0:
+            ax.plot(x, y - sems[i], color=color, linewidth=secondary_line_width, alpha=0.4, zorder=i)
+            ax.plot(x, y + sems[i], color=color, linewidth=secondary_line_width, alpha=0.4, zorder=i)
+            ax.fill_between(x, y - sems[i], y + sems[i], color=color, alpha=0.2, zorder=i)
+        if kwargs.get("show_peak", False):
+            peak_idx = np.argmax(y)
+            peak_color = get_rgba_color(color=2*i+1, cmap_name=cmap_name)
+            ax.vlines(x[peak_idx], ymin=0, ymax=y[peak_idx], color=peak_color, linewidth=secondary_line_width, zorder=i)
+
+    # set axes' texts:
+    set_axes_texts(ax=ax, ax_title=kwargs.get("title", ""),
+                   xlabel=kwargs.get("xlabel", ""), ylabel=kwargs.get("ylabel", ""), **kwargs)
+    return ax
+
+
 def get_line_axis_limits(ax: plt.Axes, axis: str) -> Tuple[float, float]:
     """
     Returns the maximun and minimum values among all lines in the given plt.Axes object.
