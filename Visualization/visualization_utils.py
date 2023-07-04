@@ -1,5 +1,6 @@
 import numpy as np
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
+from matplotlib import colors as mcolors
 from typing import Tuple, List, Union, Optional
 
 import Utils.array_utils as au
@@ -27,17 +28,19 @@ def save_figure(fig: plt.Figure, full_path: str, **kwargs):
     fig.savefig(full_path, dpi=dpi, bbox_inches=bbox_inches, transparent=is_transparent)
 
 
-def get_color(color: Union[str, int], cmap_name: Optional[str]) -> str:
+def get_rgba_color(color: Union[str, int], cmap_name: Optional[str]) -> Tuple[float, float, float, float]:
     """
     Returns the color to use based on the color and cmap arguments.
     If `cmap_name` is None, `color` must be a string representing a color. Otherwise, `color` must be an integer
     representing the index of the color in the given cmap.
 
+    :return the matplotlib RGBA color: tuple of floats in range [0,1]
+
     :raise ValueError: If `cmap_name` is None and `color` is not a string representing a color.
     """
     if cmap_name is None:
         if isinstance(color, str):
-            return color
+            return mcolors.to_rgba(color)
         raise ValueError(f"Invalid color '{color}'! Must be a string representing a color.")
     cmap = plt.colormaps.get_cmap(cmap_name)
     return cmap(color)
@@ -105,8 +108,8 @@ def distribution_comparison(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) 
     cmap_name = kwargs.get("cmap", "tab20")
     bar_width = min([np.min(np.diff(c)) for c in centers]) * 0.9
     for i, (p, c) in enumerate(zip(percentages, centers)):
-        edgecolor = get_color(color=2 * i, cmap_name=cmap_name)
-        facecolor = get_color(color=2 * i + 1, cmap_name=cmap_name)
+        edgecolor = get_rgba_color(color=2 * i, cmap_name=cmap_name)
+        facecolor = get_rgba_color(color=2 * i + 1, cmap_name=cmap_name)
         ax.bar(c, p, width=bar_width, label=labels[i], facecolor=facecolor, edgecolor=edgecolor, alpha=0.8)
 
     # set the axis properties:
