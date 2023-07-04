@@ -43,7 +43,7 @@ class LWSTrialVisualizer:
             See documentation in `self.__add_trigger_lines()` and `self.__add_events_bar()`.
 
             General Arguments:
-            See documentation in `visutils.set_figure_properties()`.
+            See documentation in `self.set_figure_properties()`.
 
         :returns: the created figure.
         """
@@ -62,12 +62,12 @@ class LWSTrialVisualizer:
         # add other visualizations:
         ax = self.__add_trigger_lines(ax=ax, trial=trial, **kwargs)
         ax = self.__add_events_bar(ax=ax, trial=trial, **kwargs)
-        fig, axes = visutils.set_figure_properties(fig=fig, ax=ax,
-                                                   title=f"Gaze Position over Time",
-                                                   subtitle=f"{str(trial)}",
-                                                   xlabel='Time (ms)', ylabel='Gaze Position (pixels)',
-                                                   invert_yaxis=True,
-                                                   **kwargs)
+        fig, axes = self.set_figure_properties(fig=fig, ax=ax,
+                                               title=f"Gaze Position over Time",
+                                               subtitle=f"{str(trial)}",
+                                               xlabel='Time (ms)', ylabel='Gaze Position (pixels)',
+                                               invert_yaxis=True,
+                                               **kwargs)
         # save figure:
         if savefig:
             self.__save_figure(fig=fig, trial=trial, output_type='gaze_figure', **kwargs)
@@ -91,7 +91,7 @@ class LWSTrialVisualizer:
             See documentation in `self.__add_trigger_lines()` and `self.__add_events_bar()`.
 
             General Arguments:
-            See documentation in `visutils.set_figure_properties()`.
+            See documentation in `self.set_figure_properties()`.
 
         :returns: the created figure.
         """
@@ -107,13 +107,13 @@ class LWSTrialVisualizer:
         # add other visualizations:
         ax = self.__add_trigger_lines(ax=ax, trial=trial, **kwargs)
         ax = self.__add_events_bar(ax=ax, trial=trial, **kwargs)
-        fig, ax = visutils.set_figure_properties(fig=fig, ax=ax,
-                                                 title=f"Angular Distance from Closest Target",
-                                                 subtitle=f"{str(trial)}",
-                                                 xlabel='Time (ms)', ylabel='Visual Angle (deg)',
-                                                 invert_yaxis=False,
-                                                 show_legend=False,
-                                                 **kwargs)
+        fig, ax = self.set_figure_properties(fig=fig, ax=ax,
+                                             title=f"Angular Distance from Closest Target",
+                                             subtitle=f"{str(trial)}",
+                                             xlabel='Time (ms)', ylabel='Visual Angle (deg)',
+                                             invert_yaxis=False,
+                                             show_legend=False,
+                                             **kwargs)
         # save figure:
         if savefig:
             self.__save_figure(fig=fig, trial=trial, output_type='targets_figure', **kwargs)
@@ -148,12 +148,12 @@ class LWSTrialVisualizer:
 
         # configure titles and axes:
         title = "Fixations Heatmap" if fixation_only else "Gaze Heatmap"
-        fig, ax = visutils.set_figure_properties(fig=fig, ax=ax,
-                                                 title=title,
-                                                 subtitle=f"{str(trial)}",
-                                                 show_legend=False,
-                                                 show_axes=False,
-                                                 **kwargs)
+        fig, ax = self.set_figure_properties(fig=fig, ax=ax,
+                                             title=title,
+                                             subtitle=f"{str(trial)}",
+                                             show_legend=False,
+                                             show_axes=False,
+                                             **kwargs)
         ax.axis('off')
 
         # save figure:
@@ -416,6 +416,39 @@ class LWSTrialVisualizer:
         event_bar_height = np.full_like(event_array, fill_value=round(max([0, min([0.95 * min_val, min_val - 1])])))
         ax.scatter(x=corrected_timestamps, y=event_bar_height, c=event_colors, s=event_bar_width, marker="s")
         return ax
+
+    @staticmethod
+    def set_figure_properties(fig: plt.Figure, ax: plt.Axes, **kwargs):
+        """
+        Sets the properties of the given figure and axes according to the given keyword arguments:
+
+        Figure Arguments:
+            - figsize: the figure's size (width, height) in inches, default is (16, 9).
+            - figure_dpi: the figure's DPI, default is 300.
+            - title: the figure's title, default is ''.
+            - title_size: the size of the title text object in the figure, default is 18.
+
+        Axes Arguments:
+            - subtitle: the figure's subtitle, default is ''.
+            - subtitle_size: the size of the subtitle text object in the figure, default is 14.
+            - show_legend: whether to show the legend or not, default is True.
+            - legend_location: the location of the legend in the figure, default is 'lower center'.
+            - invert_yaxis: whether to invert the Y axis or not, default is False.
+
+        X-Axis & Y-Axis Arguments:
+            - show_axes: whether to show the x,y axes or not, default is True.
+            - x_label: the label of the X axis, default is ''.
+            - y_label: the label of the Y axis, default is ''.
+            - text_size: the size of non-title text objects in the figure, default is 12.
+
+        Returns the figure and axes with the updated properties.
+        """
+        fig = visutils.set_figure_properties(fig=fig, **kwargs)
+        ax = visutils.set_axes_texts(ax=ax, **kwargs)
+        if not kwargs.get("hide_axes", False):
+            visutils.set_line_axis_ticks_and_limits(ax=ax, axis='x', text_size=kwargs.get('text_size', 10))
+            visutils.set_line_axis_ticks_and_limits(ax=ax, axis='y', text_size=kwargs.get('text_size', 10))
+        return fig, ax
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}"
