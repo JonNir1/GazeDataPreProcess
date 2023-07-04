@@ -360,6 +360,7 @@ class LWSTrialVisualizer:
         timestamps = trial.get_behavioral_data().get(cnst.MICROSECONDS).values / 1000
         corrected_timestamps = timestamps - timestamps[0]  # start from 0
         min_val, max_val = visutils.get_line_axis_limits(ax, axis='y')  # get the min/max y values (excluding inf/nan)
+        # TODO: find a better way to set lines' bottom and top limits
 
         triggers = trial.get_triggers()
         real_trigger_idxs = np.where((~np.isnan(triggers)) & (triggers != 0))[0]
