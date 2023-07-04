@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import Tuple, List
+from typing import Tuple, List, Union, Optional
 
 import Utils.array_utils as au
 
@@ -25,6 +25,22 @@ def save_figure(fig: plt.Figure, full_path: str, **kwargs):
     bbox_inches = kwargs.get("bbox_inches", "tight")
     is_transparent = kwargs.get("transparent", False)
     fig.savefig(full_path, dpi=dpi, bbox_inches=bbox_inches, transparent=is_transparent)
+
+
+def get_color(color: Union[str, int], cmap_name: Optional[str]) -> str:
+    """
+    Returns the color to use based on the color and cmap arguments.
+    If `cmap_name` is None, `color` must be a string representing a color. Otherwise, `color` must be an integer
+    representing the index of the color in the given cmap.
+
+    :raise ValueError: If `cmap_name` is None and `color` is not a string representing a color.
+    """
+    if cmap_name is None:
+        if isinstance(color, str):
+            return color
+        raise ValueError(f"Invalid color '{color}'! Must be a string representing a color.")
+    cmap = plt.cm.get_cmap(cmap_name)
+    return cmap(color)
 
 
 def create_histogram(data, ax: plt.Axes,
@@ -87,10 +103,10 @@ def distribution_comparison(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) 
     if (len(labels) != len(datasets)) or (len(labels) == 0):
         raise ValueError(f"Number of labels ({len(labels)}) must be equal to number of datasets ({len(datasets)})!")
     cmap_name = kwargs.get("cmap", "tab20")
-    cmap = plt.cm.get_cmap(cmap_name)
     bar_width = min([np.min(np.diff(c)) for c in centers]) * 0.9
     for i, (p, c) in enumerate(zip(percentages, centers)):
-        edgecolor, facecolor = cmap(2 * i), cmap(2 * i + 1)  # tab20 has dark and light colors arranged in pairs
+        edgecolor = get_color(color=2 * i, cmap_name=cmap_name)
+        facecolor = get_color(color=2 * i + 1, cmap_name=cmap_name)
         ax.bar(c, p, width=bar_width, label=labels[i], facecolor=facecolor, edgecolor=edgecolor, alpha=0.8)
 
     # set the axis properties:
