@@ -39,7 +39,7 @@ def get_color(color: Union[str, int], cmap_name: Optional[str]) -> str:
         if isinstance(color, str):
             return color
         raise ValueError(f"Invalid color '{color}'! Must be a string representing a color.")
-    cmap = plt.cm.get_cmap(cmap_name)
+    cmap = plt.colormaps.get_cmap(cmap_name)
     return cmap(color)
 
 
