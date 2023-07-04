@@ -56,9 +56,9 @@ def set_figure_properties(fig: plt.Figure, **kwargs) -> plt.Figure:
     return fig
 
 
-def set_axes_texts(ax: plt.Axes, ax_title: Optional[str],
-                   xlabel: Optional[str], ylabel: Optional[str],
-                   **kwargs) -> plt.Axes:
+def set_axes_properties(ax: plt.Axes, ax_title: Optional[str],
+                        xlabel: Optional[str], ylabel: Optional[str],
+                        **kwargs) -> plt.Axes:
     if ax_title:
         ax.set_title(ax_title, fontsize=kwargs.get("subtitle_size", 16))
     if xlabel:
@@ -125,8 +125,8 @@ def generic_bar_chart(ax: plt.Axes,
         ax.bar(c, v, width=bar_width, label=labels[i], facecolor=facecolor, edgecolor=edgecolor, alpha=alpha)
 
     # set axes' texts:
-    set_axes_texts(ax=ax, ax_title=kwargs.get("title", ""),
-                   xlabel=kwargs.get("xlabel", ""), ylabel=kwargs.get("ylabel", ""), **kwargs)
+    set_axes_properties(ax=ax, ax_title=kwargs.get("title", ""), xlabel=kwargs.get("xlabel", ""),
+                        ylabel=kwargs.get("ylabel", ""), **kwargs)
     return ax
 
 
@@ -145,7 +145,7 @@ def generic_line_chart(ax: plt.Axes,
         - cmap: The colormap to use for the lines. default: plt.cm.get_cmap("tab20").
         - lw/line_width/linewidth: The width of the primary line. default: 2.
         - show_peak: Whether to show the peak of each line. default: False.
-        - other kwargs: Passed to set_axes_texts().
+        - other kwargs: Passed to set_axes_properties().
     """
     # verify inputs:
     if len(xs) != len(ys):
@@ -174,8 +174,8 @@ def generic_line_chart(ax: plt.Axes,
             ax.vlines(x[peak_idx], ymin=0, ymax=y[peak_idx], color=peak_color, linewidth=secondary_line_width, zorder=i)
 
     # set axes' texts:
-    set_axes_texts(ax=ax, ax_title=kwargs.get("title", ""),
-                   xlabel=kwargs.get("xlabel", ""), ylabel=kwargs.get("ylabel", ""), **kwargs)
+    set_axes_properties(ax=ax, ax_title=kwargs.get("title", ""), xlabel=kwargs.get("xlabel", ""),
+                        ylabel=kwargs.get("ylabel", ""), **kwargs)
     return ax
 
 

@@ -445,7 +445,7 @@ class LWSTrialVisualizer:
         Returns the figure and axes with the updated properties.
         """
         fig = visutils.set_figure_properties(fig=fig, **kwargs)
-        ax = visutils.set_axes_texts(ax=ax, **kwargs)
+        ax = visutils.set_axes_properties(ax=ax, **kwargs)
         if not kwargs.get("hide_axes", False):
             visutils.set_line_axis_ticks_and_limits(ax=ax, axis='x', text_size=kwargs.get('text_size', 10))
             visutils.set_line_axis_ticks_and_limits(ax=ax, axis='y', text_size=kwargs.get('text_size', 10))
