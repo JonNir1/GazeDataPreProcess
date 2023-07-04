@@ -10,8 +10,9 @@ def histograms_figure(saccades: List[SaccadeEvent], ignore_outliers: bool = True
     if ignore_outliers:
         saccades = [s for s in saccades if not s.is_outlier]
 
-    fig = plt.Figure(figsize=kwargs.get("figsize", (21, 14)))
-    fig.suptitle(t=kwargs.get("title", "Saccade Summary"), fontsize=kwargs.get("title_size", 16), y=0.95)
+    fig = plt.Figure()
+    visutils.set_figure_properties(fig, title=kwargs.pop("title", "Saccade Summary"),
+                                   figsize=kwargs.pop("figsize", (21, 14)), **kwargs)
     nbins = kwargs.get("nbins", 20)
     edge_color = visutils.get_rgba_color(color=0, cmap_name=kwargs.get("cmap_name", "tab20"))
     face_color = visutils.get_rgba_color(color=1, cmap_name=kwargs.get("cmap_name", "tab20"))

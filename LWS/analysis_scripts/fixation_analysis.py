@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import List, Optional
+from typing import List
 
 import Config.experiment_config as cnfg
+import Visualization.visualization_utils as visutils
 import Visualization.dynamics as dyn
 import Visualization.distributions as dist
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
@@ -16,8 +17,9 @@ def target_proximal_comparison(fixations: List[LWSFixationEvent], ignore_outlier
     non_marking_proximal_fixations = [f for f in fixations if
                                       f.visual_angle_to_target <= proximity_threshold and not f.is_mark_target_attempt]
 
-    fig, axes = plt.subplots(3, 2, figsize=kwargs.get("figsize", (27, 21)), sharex='col', tight_layout=True)
-    fig.suptitle(kwargs.pop("title", f"Comparison of Target-Proximal Fixations"), fontsize=kwargs.get("title_size", 16))
+    fig, axes = plt.subplots(3, 2, sharex='col', tight_layout=True)
+    visutils.set_figure_properties(fig, title=kwargs.pop("title", f"Comparison of Target-Proximal Fixations"),
+                                   figsize=kwargs.pop("figsize", (27, 21)), **kwargs)
 
     # TODO
 
@@ -48,8 +50,9 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
     proximal_fixations = [f for f in fixations if f.visual_angle_to_target <= proximity_threshold]
     marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
 
-    fig, axes = plt.subplots(3, 2, figsize=kwargs.get("figsize", (21, 27)), sharex='col', tight_layout=True)
-    fig.suptitle(kwargs.pop("title", f"Fixation Dynamics"), fontsize=kwargs.get("title_size", 16))
+    fig, axes = plt.subplots(3, 2, sharex='col', tight_layout=True)
+    visutils.set_figure_properties(fig, title=kwargs.pop("title", f"Fixation Dynamics"),
+                                   figsize=kwargs.pop("figsize", (27, 21)), **kwargs)
 
     # velocities
     ax = dyn.velocity_profile(fixations, axes[0, 0], show_individual=False, show_peak=True,
@@ -74,9 +77,9 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
 def histograms_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
                       proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
     """
-    Creates a 2×3 figure with histograms of the following properties: fixation durations, max dispersion, angle to target,
-    max velocity, mean velocity, and mean pupil size. Each histogram shows the distribution of all fixations (blue),
-    target-proximal fixations (red), and target-marking fixations (green).
+    Creates a 2×3 figure with distributions of the following properties: fixation durations, max dispersion,
+    angle to target, max velocity, mean velocity, and mean pupil size. Each histogram shows the distribution of
+    all fixations (blue), target-proximal fixations (red), and target-marking fixations (green).
 
     target-proximal fixations are defined as fixations with a visual angle to target less than or equal to the
     proximity threshold (default: 1.5°). target-marking fixations are defined as fixations during which the subject
@@ -90,10 +93,9 @@ def histograms_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool =
     target_marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
     data_labels = ["All", "Target-Proximal", "Target-Marking"]
 
-    fig, axes = plt.subplots(2, 3, figsize=kwargs.get("figsize", (30, 15)))
-    title = kwargs.get("title", f"Fixation Summary")
-    fig.suptitle(title, y=0.95, fontsize=kwargs.get("title_size", 16))
-
+    fig, axes = plt.subplots(2, 3)
+    visutils.set_figure_properties(fig, title=kwargs.pop("title", f"Fixation Summary"),
+                                   figsize=kwargs.pop("figsize", (30, 15)), **kwargs)
     # durations
     durations_data = [np.array([f.duration for f in fixations]),
                       np.array([f.duration for f in target_proximal_fixations]),
