@@ -118,12 +118,12 @@ def distribution_comparison(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) 
         ax.bar(c, p, width=bar_width, label=labels[i], facecolor=facecolor, edgecolor=edgecolor, alpha=0.8)
 
     # set the axis properties:
-    ax.set_title(kwargs.get("title", ""), fontsize=kwargs.get("title_size", 14))
-    text_size = kwargs.get("text_size", 12)
-    ax.set_xlabel(kwargs.get("xlabel", ""), fontsize=text_size)
-    ax.set_ylabel(kwargs.get("ylabel", "%"), fontsize=text_size)
-    if kwargs.get("show_legend", False):
-        ax.legend(loc=kwargs.get('legend_location', 'upper right'), fontsize=text_size)
+    set_axes_texts(ax=ax,
+                   title=kwargs.get("title", ""), title_size=kwargs.get("title_size", 14),
+                   xlabel=kwargs.get("xlabel", ""), ylabel=kwargs.get("ylabel", "%"),
+                   label_size=kwargs.get("text_size", 12),
+                   show_legend=kwargs.get("show_legend", False),
+                   legend_location=kwargs.get("legend_location", "upper right"))
     return ax
 
 
