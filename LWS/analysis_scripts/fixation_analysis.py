@@ -92,6 +92,7 @@ def distributions_figure(fixations: List[LWSFixationEvent], ignore_outliers: boo
     target_proximal_fixations = [f for f in fixations if f.visual_angle_to_target <= proximity_threshold]
     target_marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
     data_labels = ["All", "Target-Proximal", "Target-Marking"]
+    kwargs["show_legend"] = kwargs.pop("show_legend", True)  # default to showing legend
 
     fig, axes = plt.subplots(2, 3)
     visutils.set_figure_properties(fig, title=kwargs.pop("title", f"Fixation Summary"),
