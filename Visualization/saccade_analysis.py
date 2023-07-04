@@ -38,7 +38,7 @@ def histograms_figure(saccades: List[SaccadeEvent], ignore_outliers: bool = True
 
     # azimuth counts (polar)
     ax4 = fig.add_subplot(2, 2, 4, polar=True)
-    azimuths = [s.azimuth for s in saccades if not np.isnan(s.azimuth)]
+    azimuths = [s.azimuth for s in saccades if np.isfinite(s.azimuth)]
     counts, _edges = np.histogram(azimuths, bins=np.arange(0, 361, 360 / nbins))
     visutils.create_rose_plot(counts, ax4, title="Azimuth (°)", xlabel="", ylabel="", title_size=subtitle_size,
                               label_size=label_size, face_color=face_color, edge_color=edge_color)
