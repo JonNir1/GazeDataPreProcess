@@ -55,8 +55,17 @@ def set_axes_texts(ax: plt.Axes, ax_title: Optional[str],
         ax.set_xlabel(xlabel, fontsize=kwargs.get("label_size", 12))
     if ylabel:
         ax.set_ylabel(ylabel, fontsize=kwargs.get("label_size", 12))
+
+    text_size = kwargs.get("text_size", 10)
     if kwargs.get("show_legend", False):
-        ax.legend(loc=kwargs.get("legend_location", "upper right"), fontsize=kwargs.get("text_size", 10))
+        ax.legend(loc=kwargs.get("legend_location", "upper right"), fontsize=text_size)
+    if kwargs.get("hide_axes", False):
+        ax.axis("off")
+        return ax
+    ax.tick_params(axis='both', which='major', labelsize=text_size)
+    if kwargs.get('invert_yaxis', False):
+        # invert y-axis to match the screen coordinates:
+        ax.invert_yaxis()
     return ax
 
 
