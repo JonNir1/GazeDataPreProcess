@@ -50,7 +50,7 @@ def set_axes_texts(ax: plt.Axes, ax_title: Optional[str],
                    xlabel: Optional[str], ylabel: Optional[str],
                    **kwargs) -> plt.Axes:
     if ax_title:
-        ax.set_title(ax_title, fontsize=kwargs.get("subtitle_size", 14))
+        ax.set_title(ax_title, fontsize=kwargs.get("subtitle_size", 16))
     if xlabel:
         ax.set_xlabel(xlabel, fontsize=kwargs.get("label_size", 12))
     if ylabel:
