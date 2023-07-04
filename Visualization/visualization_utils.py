@@ -139,6 +139,10 @@ def generic_line_chart(ax: plt.Axes,
         - lw/line_width/linewidth: The width of the primary line. default: 2.
         - show_peak: Whether to show the peak of each line. default: False.
         - other kwargs: Passed to set_axes_properties().
+
+    :raises ValueError: if the length of the xs/ys lists is not equal.
+            ValueError: if the number of labels is not zero or equal to the number of xs/ys lists.
+            ValueError: if the number of SEMs is not zero or equal to the number of xs/ys lists.
     """
     # verify inputs:
     if len(xs) != len(ys):
