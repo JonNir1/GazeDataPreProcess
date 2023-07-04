@@ -80,6 +80,56 @@ def set_axes_texts(ax: plt.Axes, ax_title: Optional[str],
     return ax
 
 
+def generic_bar_chart(ax: plt.Axes,
+                      centers: List[np.ndarray], values: [np.ndarray],
+                      bar_width: float, **kwargs) -> plt.Axes:
+    """
+    Plots a bar chart on the given axis.
+    :param ax: the axis to plot the bar chart on.
+    :param centers: list of numpy arrays, each array contains the center of the bars for one dataset.
+    :param values: list of numpy arrays, each array contains the values of the bars for one dataset.
+    :param bar_width: the width of all bars.
+
+    keyword arguments:
+        - labels: A list of labels for the datasets. If specified, must be of the same length as the centers/values lists.
+        - cmap: The colormap to use for the bars. default: plt.cm.get_cmap("tab20").
+        - alpha: The alpha value of the bars. default: 0.8.
+        - title: The title of the axes.
+        - xlabel: The label of the x-axis.
+        - ylabel: The label of the y-axis.
+        - show_legend: Whether to show the legend. default: False.
+        - legend_location: The location of the legend. default: "upper right".
+        - title_size: The size of the title. default: 16.
+        - label_size: The size of the axis labels. default: 12.
+        - text_size: The size of axis ticks, legend, etc. default: 10.
+
+    :raises ValueError: if the length of the centers/values lists is not equal.
+            ValueError: if the bar width is invalid.
+            ValueError: if the number of labels is not zero or equal to the number of centers/values lists.
+    """
+    # verify inputs:
+    if len(centers) != len(values):
+        raise ValueError(f"Length of centers ({len(centers)}) must be equal to length of values ({len(values)})!")
+    if not np.isfinite(bar_width) or (bar_width <= 0):
+        raise ValueError(f"Invalid bar width ({bar_width})!")
+    labels = kwargs.get("labels", [])
+    if (len(labels) != len(centers)) or (len(labels) == 0):
+        raise ValueError(f"Number of labels ({len(labels)}) must be equal to number of datasets ({len(centers)})!")
+
+    # plot the distributions:
+    cmap_name = kwargs.get("cmap", "tab20")
+    alpha = kwargs.get("alpha", 0.8)
+    for i, (c, v) in enumerate(zip(centers, values)):
+        edgecolor = get_rgba_color(color=2 * i, cmap_name=cmap_name)
+        facecolor = get_rgba_color(color=2 * i + 1, cmap_name=cmap_name)
+        ax.bar(c, v, width=bar_width, label=labels[i], facecolor=facecolor, edgecolor=edgecolor, alpha=alpha)
+
+    # set axes' texts:
+    set_axes_texts(ax=ax, ax_title=kwargs.get("title", ""),
+                   xlabel=kwargs.get("xlabel", ""), ylabel=kwargs.get("ylabel", ""), **kwargs)
+    return ax
+
+
 def get_line_axis_limits(ax: plt.Axes, axis: str) -> Tuple[float, float]:
     """
     Returns the maximun and minimum values among all lines in the given plt.Axes object.
