@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 from typing import List, Optional
 
 import Config.experiment_config as cnfg
-import Visualization.visualization_utils as visutils
 import Visualization.dynamics as dyn
+import Visualization.distributions as dist
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 
@@ -98,36 +98,36 @@ def histograms_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool =
     durations_data = [np.array([f.duration for f in fixations]),
                       np.array([f.duration for f in target_proximal_fixations]),
                       np.array([f.duration for f in target_marking_fixations])]
-    visutils.distribution_comparison(ax=axes[0, 0], data=durations_data, labels=data_labels,
-                                     title="Durations", xlabel="Duration (ms)", **kwargs)
+    dist.bar_chart(ax=axes[0, 0], data=durations_data, labels=data_labels,
+                   title="Durations", xlabel="Duration (ms)", **kwargs)
     # max dispersion
     max_dispersion_data = [np.array([f.max_dispersion for f in fixations]),
                            np.array([f.max_dispersion for f in target_proximal_fixations]),
                            np.array([f.max_dispersion for f in target_marking_fixations])]
-    visutils.distribution_comparison(ax=axes[0, 1], data=max_dispersion_data, labels=data_labels,
-                                     title="Max Dispersion", xlabel="Max Dispersion (px)", **kwargs)
+    dist.bar_chart(ax=axes[0, 1], data=max_dispersion_data, labels=data_labels,
+                   title="Max Dispersion", xlabel="Max Dispersion (px)", **kwargs)
     # angle to target
     angle_to_target_data = [np.array([f.visual_angle_to_target for f in fixations]),
                             np.array([f.visual_angle_to_target for f in target_proximal_fixations]),
                             np.array([f.visual_angle_to_target for f in target_marking_fixations])]
-    visutils.distribution_comparison(ax=axes[0, 2], data=angle_to_target_data, labels=data_labels,
-                                     title="Angle to Target", xlabel="Angle to Target (°)", **kwargs)
+    dist.bar_chart(ax=axes[0, 2], data=angle_to_target_data, labels=data_labels,
+                   title="Angle to Target", xlabel="Angle to Target (°)", **kwargs)
     # max velocity
     max_velocity_data = [np.array([f.max_velocity for f in fixations]),
                          np.array([f.max_velocity for f in target_proximal_fixations]),
                          np.array([f.max_velocity for f in target_marking_fixations])]
-    visutils.distribution_comparison(ax=axes[1, 0], data=max_velocity_data, labels=data_labels,
-                                     title="Max Velocity", xlabel="Max Velocity (px/s)", **kwargs)
+    dist.bar_chart(ax=axes[1, 0], data=max_velocity_data, labels=data_labels,
+                   title="Max Velocity", xlabel="Max Velocity (px/s)", **kwargs)
     # mean velocity
     mean_velocity_data = [np.array([f.mean_velocity for f in fixations]),
                           np.array([f.mean_velocity for f in target_proximal_fixations]),
                           np.array([f.mean_velocity for f in target_marking_fixations])]
-    visutils.distribution_comparison(ax=axes[1, 1], data=mean_velocity_data, labels=data_labels,
-                                     title="Mean Velocity", xlabel="Mean Velocity (px/s)", **kwargs)
+    dist.bar_chart(ax=axes[1, 1], data=mean_velocity_data, labels=data_labels,
+                   title="Mean Velocity", xlabel="Mean Velocity (px/s)", **kwargs)
     # mean pupil size
     mean_pupil_size_data = [np.array([f.mean_pupil_size for f in fixations]),
                             np.array([f.mean_pupil_size for f in target_proximal_fixations]),
                             np.array([f.mean_pupil_size for f in target_marking_fixations])]
-    visutils.distribution_comparison(ax=axes[1, 2], data=mean_pupil_size_data, labels=data_labels,
-                                     title="Mean Pupil Size", xlabel="Mean Pupil Size (mm)", **kwargs)
+    dist.bar_chart(ax=axes[1, 2], data=mean_pupil_size_data, labels=data_labels,
+                   title="Mean Pupil Size", xlabel="Mean Pupil Size (mm)", **kwargs)
     return fig
