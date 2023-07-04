@@ -37,17 +37,32 @@ def bar_chart(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) -> plt.Axes:
         centers.append(c)
 
     # plot the distributions:
-    labels = kwargs.get("labels", [])
-    if (len(labels) != len(datasets)) or (len(labels) == 0):
-        raise ValueError(f"Number of labels ({len(labels)}) must be equal to number of datasets ({len(datasets)})!")
-    cmap_name = kwargs.get("cmap", "tab20")
-    bar_width = min([np.min(np.diff(c)) for c in centers]) * 0.9
-    for i, (p, c) in enumerate(zip(percentages, centers)):
-        edgecolor = visutils.get_rgba_color(color=2 * i, cmap_name=cmap_name)
-        facecolor = visutils.get_rgba_color(color=2 * i + 1, cmap_name=cmap_name)
-        ax.bar(c, p, width=bar_width, label=labels[i], facecolor=facecolor, edgecolor=edgecolor, alpha=0.8)
-
-    # set the axis properties:
-    visutils.set_axes_texts(ax=ax, ax_title=kwargs.get("title", ""),
-                            xlabel=kwargs.get("xlabel", ""), ylabel=kwargs.get("ylabel", "%"), **kwargs)
+    width = min([np.min(np.diff(c)) for c in centers]) * 0.9
+    kwargs["ylabel"] = kwargs.get("ylabel", "%")  # set default y-axis label to "%"
+    ax = visutils.generic_bar_chart(ax=ax, centers=centers, values=percentages, bar_width=width, **kwargs)
     return ax
+
+
+def rose_chart(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) -> plt.Axes:
+    if ax.name != "polar":
+        raise ValueError(f"Invalid axis type '{ax.name}'! Must be a polar axis.")
+
+    # calculate the distributions:
+    nbins = kwargs.get("nbins", 20)
+    percentages = []
+    for data in datasets:
+        counts, edges = np.histogram(data, bins=np.arange(0, 361, 360 / nbins))
+        percentages.append(100 * counts / np.sum(counts))
+
+    # plot the distributions:
+    angles = [np.linspace(0, 2 * np.pi, nbins, endpoint=False)]
+    width = (2 * np.pi) / nbins
+    kwargs["ylabel"] = kwargs.get("ylabel", "%")  # set default y-axis label to "%"
+    ax = visutils.generic_bar_chart(ax=ax, centers=angles, values=percentages, bar_width=width, **kwargs)
+
+    # set additional axes properties:
+    ax.set_theta_zero_location(kwargs.get("zero_location", "E"))  # set 0° to the provided location (default: East)
+    if kwargs.get("clockwise_angles", False):
+        ax.set_theta_direction(-1)
+    return ax
+
