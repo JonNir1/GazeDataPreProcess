@@ -215,7 +215,6 @@ def set_figure_properties(fig: plt.Figure, ax: plt.Axes, **kwargs):
     if kwargs.get('show_axes', True):
         ax = set_line_axis_properties(ax=ax, axis='x', label=kwargs.get('x_label', ''), text_size=text_size)
         ax = set_line_axis_properties(ax=ax, axis='y', label=kwargs.get('y_label', ''), text_size=text_size)
-
     if kwargs.get('invert_yaxis', False):
         # invert y-axis to match the screen coordinates:
         ax.invert_yaxis()
