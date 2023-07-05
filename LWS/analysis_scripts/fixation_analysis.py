@@ -19,9 +19,6 @@ def target_proximal_comparison(fixations: List[LWSFixationEvent], ignore_outlier
     fig = visutils.set_figure_properties(fig=None,
                                          title=kwargs.pop("title", f"Comparison of Target-Proximal Fixations"),
                                          figsize=kwargs.pop("figsize", (27, 21)), **kwargs)
-
-    # TODO
-
     # durations
     # dispersion
     # distance from target
@@ -49,7 +46,6 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
     marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
     fig = visutils.set_figure_properties(fig=None, title=kwargs.pop("title", f"Fixation Dynamics"),
                                          figsize=kwargs.pop("figsize", (27, 21)), **kwargs)
-
     # velocities
     ax5 = fig.add_subplot(3, 2, 5)
     ax3 = fig.add_subplot(3, 2, 3, sharex=ax5)  # use same x-axis as plot at the bottom of the column
