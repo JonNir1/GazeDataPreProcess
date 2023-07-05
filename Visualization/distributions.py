@@ -50,6 +50,35 @@ def bar_chart(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) -> plt.Axes:
 
 
 def rose_chart(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) -> plt.Axes:
+    """
+    Calculates the distribution of each dataset and plots a rose chart of the distributions on the given axis.
+    The distribution is calculated by splitting the data into `nbins` different bins and calculating the percentage of
+    data points in each bin. The bins are then plotted as bars on a polar axis, with width `360 / nbins`.
+
+    :param ax: The axis to plot the distributions on.
+    :param datasets: A list of numpy arrays, each containing the data of a single distribution.
+
+    keyword arguments:
+        keywords for generic_bar_chart():
+        - nbins: The number of bins to use for the histogram.
+        - labels: A list of labels for the datasets. If specified, must be of the same length as the datasets list.
+        - cmap: The colormap to use for the bars. default: plt.cm.get_cmap("tab20").
+
+        keywords for set_axes_properties():
+        - title: The title of the axes.
+        - title_size: The size of the title. default: 14.
+        - xlabel: The label of the x-axis.
+        - ylabel: The label of the y-axis. default: "%".
+        - text_size: The size of the axis labels. default: 12.
+        - show_legend: Whether to show the legend. default: False.
+        - legend_location: The location of the legend. default: "upper right".
+
+        other keywords:
+        - zero_location: The location of the 0° angle. default: "E" (East).
+        - clockwise_angles: Whether to plot the angles clockwise. default: False.
+
+    :raises ValueError: If the axis is not a polar axis.
+    """
     if ax.name != "polar":
         raise ValueError(f"Invalid axis type '{ax.name}'! Must be a polar axis.")
 
