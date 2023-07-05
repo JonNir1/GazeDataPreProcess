@@ -141,7 +141,7 @@ def generic_line_chart(ax: plt.Axes,
     :param ys: list of numpy arrays, each array contains the y-values of the line for one dataset.
 
     keyword arguments:
-        - labels: A list of labels for the datasets. If specified, must be of the same length as the xs/ys lists.
+        - data_labels: A list of labels for the datasets. If specified, must be of the same length as the xs/ys lists.
         - sems: A list of SEMs for the datasets. If specified, must be of the same length as the xs/ys lists.
         - cmap: The colormap to use for the lines. default: plt.cm.get_cmap("tab20").
         - lw/line_width/linewidth: The width of the primary line. default: 2.
@@ -154,9 +154,9 @@ def generic_line_chart(ax: plt.Axes,
     # verify inputs:
     if len(xs) != len(ys):
         raise ValueError(f"Number of x-arrays ({len(xs)}) must be equal to number of y-arrays ({len(ys)})!")
-    labels = kwargs.get("labels", [])
-    if (len(labels) != len(xs)) and (len(labels) != 0):
-        raise ValueError(f"Number of labels ({len(labels)}) must be equal to number of datasets ({len(xs)})!")
+    data_labels = kwargs.get("data_labels", [])
+    if (len(data_labels) != len(xs)) and (len(data_labels) != 0):
+        raise ValueError(f"Number of labels ({len(data_labels)}) must be equal to number of datasets ({len(xs)})!")
     sems = kwargs.get("sems", [])
     if (len(sems) != len(xs)) and (len(sems) != 0):
         raise ValueError(f"Number of SEMs ({len(sems)}) must be equal to number of datasets ({len(xs)})!")
@@ -167,7 +167,7 @@ def generic_line_chart(ax: plt.Axes,
     secondary_line_width = max(1, primary_line_width // 2)
     for i, (x, y) in enumerate(zip(xs, ys)):
         color = get_rgba_color(color=2*i, cmap_name=cmap_name)
-        ax.plot(x, y, label=labels[i], color=color, linewidth=primary_line_width, zorder=i)
+        ax.plot(x, y, label=data_labels[i], color=color, linewidth=primary_line_width, zorder=i)
         if len(sems) > 0:
             ax.plot(x, y - sems[i], color=color, linewidth=secondary_line_width, alpha=0.4, zorder=i)
             ax.plot(x, y + sems[i], color=color, linewidth=secondary_line_width, alpha=0.4, zorder=i)

@@ -51,24 +51,24 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
     ax3 = fig.add_subplot(3, 2, 3, sharex=ax5)  # use same x-axis as plot at the bottom of the column
     ax1 = fig.add_subplot(3, 2, 1, sharex=ax5)  # use same x-axis as plot at the bottom of the column
     dynamics.velocity_profile(fixations, ax1, show_individual=False, show_peak=True,
-                              title="Velocity Dynamics", data_label="All Fixations", xlabel="",
+                              title="Velocity Dynamics", data_label=["All Fixations"], xlabel="",
                               primary_color='darkblue', **kwargs)
     dynamics.velocity_profile(proximal_fixations, ax3, show_individual=False, show_peak=True,
-                              title="", data_label="Proximal Fixations", xlabel="", primary_color='darkred', **kwargs)
+                              title="", data_label=["Proximal Fixations"], xlabel="", primary_color='darkred', **kwargs)
     dynamics.velocity_profile(marking_fixations, ax5, show_individual=False, show_peak=True,
-                              title="", data_label="Marking Fixations", primary_color='darkgreen', **kwargs)
+                              title="", data_labels=["Marking Fixations"], primary_color='darkgreen', **kwargs)
 
     # pupils
     ax6 = fig.add_subplot(3, 2, 6)
     ax4 = fig.add_subplot(3, 2, 4, sharex=ax6)  # use same x-axis as plot at the bottom of the column
     ax2 = fig.add_subplot(3, 2, 2, sharex=ax6)  # use same x-axis as plot at the bottom of the column
     dynamics.pupil_size_profile(fixations, ax2, show_individual=False, show_peak=True,
-                                title="Pupil Size Dynamics", data_label="All Fixations", xlabel="",
+                                title="Pupil Size Dynamics", data_label=["All Fixations"], xlabel="",
                                 primary_color='darkblue', **kwargs)
     dynamics.pupil_size_profile(proximal_fixations, ax4, show_individual=False, show_peak=True,
-                                title="", data_label="Proximal Fixations", xlabel="", primary_color='darkred', **kwargs)
+                                title="", data_label=["Proximal Fixations"], xlabel="", primary_color='darkred', **kwargs)
     dynamics.pupil_size_profile(marking_fixations, ax6, show_individual=False, show_peak=True,
-                                title="", data_label="Marking Fixations", primary_color='darkgreen', **kwargs)
+                                title="", data_label=["Marking Fixations"], primary_color='darkgreen', **kwargs)
     return fig
 
 

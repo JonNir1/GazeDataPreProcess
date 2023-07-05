@@ -46,7 +46,7 @@ def dynamic_profile(ax: plt.Axes, datasets: List[List[pd.Series]], **kwargs) -> 
         - show_sems: whether to show the standard error of the mean (default: True)
 
         keywords for generic_line_chart():
-        - labels: A list of labels for the datasets. If specified, must be of the same length as the datasets list.
+        - data_labels: A list of labels for the datasets. If specified, must be of the same length as the datasets list.
         - show_peak: whether to mark the peak of the dynamics with a vertical line (default: True)
         - cmap: The colormap to use for the bars. default: plt.cm.get_cmap("tab20").
         - lw/line_width/linewidth: The width of the plotted lines. default: 2.
