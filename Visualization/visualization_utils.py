@@ -131,7 +131,6 @@ def generic_line_chart(ax: plt.Axes,
         - cmap: The colormap to use for the lines. default: plt.cm.get_cmap("tab20").
         - lw/line_width/linewidth: The width of the primary line. default: 2.
         - show_peak: Whether to show the peak of each line. default: False.
-        - other kwargs: Passed to set_axes_properties().
 
     :raises ValueError: if the length of the xs/ys lists is not equal.
             ValueError: if the number of labels is not zero or equal to the number of xs/ys lists.
@@ -162,10 +161,6 @@ def generic_line_chart(ax: plt.Axes,
             peak_idx = np.argmax(y)
             peak_color = get_rgba_color(color=2*i+1, cmap_name=cmap_name)
             ax.vlines(x[peak_idx], ymin=0, ymax=y[peak_idx], color=peak_color, linewidth=secondary_line_width, zorder=i)
-
-    # set axes' texts:
-    set_axes_properties(ax=ax, ax_title=kwargs.get("title", ""), xlabel=kwargs.get("xlabel", ""),
-                        ylabel=kwargs.get("ylabel", ""), **kwargs)
     return ax
 
 
