@@ -94,7 +94,6 @@ def generic_bar_chart(ax: plt.Axes,
         - labels: A list of labels for the datasets. If specified, must be of the same length as the centers/values lists.
         - cmap: The colormap to use for the bars. default: plt.cm.get_cmap("tab20").
         - alpha: The alpha value of the bars. default: 0.8.
-        - other kwargs: Passed to set_axes_properties().
 
     :raises ValueError: if the length of the centers/values lists is not equal.
             ValueError: if the bar width is invalid.
@@ -116,10 +115,6 @@ def generic_bar_chart(ax: plt.Axes,
         edgecolor = get_rgba_color(color=2 * i, cmap_name=cmap_name)
         facecolor = get_rgba_color(color=2 * i + 1, cmap_name=cmap_name)
         ax.bar(c, v, width=bar_width, label=labels[i], facecolor=facecolor, edgecolor=edgecolor, alpha=alpha)
-
-    # set axes' texts:
-    set_axes_properties(ax=ax, ax_title=kwargs.get("title", ""), xlabel=kwargs.get("xlabel", ""),
-                        ylabel=kwargs.get("ylabel", ""), **kwargs)
     return ax
 
 

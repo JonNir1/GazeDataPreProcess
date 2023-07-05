@@ -14,11 +14,14 @@ def bar_chart(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) -> plt.Axes:
     :param datasets: A list of numpy arrays, each containing the data of a distribution.
 
     keyword arguments:
+        keywords for generic_bar_chart():
         - nbins: The number of bins to use for the histogram.
         - min_percentage_threshold: The minimum percentage of data points in a bin for it to be included in the
                                     distribution (bins with less data points will be ignored). default: 1.
         - labels: A list of labels for the datasets. If specified, must be of the same length as the datasets list.
         - cmap: The colormap to use for the bars. default: plt.cm.get_cmap("tab20").
+
+        keywords for set_axes_properties():
         - title: The title of the axes.
         - title_size: The size of the title. default: 14.
         - xlabel: The label of the x-axis.
@@ -38,8 +41,11 @@ def bar_chart(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) -> plt.Axes:
 
     # plot the distributions:
     width = min([np.min(np.diff(c)) for c in centers]) * 0.9
-    kwargs["ylabel"] = kwargs.get("ylabel", "%")  # set default y-axis label to "%"
     ax = visutils.generic_bar_chart(ax=ax, centers=centers, values=percentages, bar_width=width, **kwargs)
+
+    # set axes properties:
+    visutils.set_axes_properties(ax=ax, ax_title=kwargs.pop("title", ""),
+                                 xlabel=kwargs.pop("xlabel", "%"), ylabel=kwargs.pop("ylabel", ""), **kwargs)
     return ax
 
 
@@ -57,10 +63,11 @@ def rose_chart(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) -> plt.Axes:
     # plot the distributions:
     angles = [np.linspace(0, 2 * np.pi, nbins, endpoint=False)]
     width = (2 * np.pi) / nbins
-    kwargs["ylabel"] = kwargs.get("ylabel", "%")  # set default y-axis label to "%"
     ax = visutils.generic_bar_chart(ax=ax, centers=angles, values=percentages, bar_width=width, **kwargs)
 
-    # set additional axes properties:
+    # set axes properties:
+    visutils.set_axes_properties(ax=ax, ax_title=kwargs.pop("title", ""),
+                                 xlabel=kwargs.pop("xlabel", ""), ylabel=kwargs.pop("ylabel", ""), **kwargs)
     ax.set_theta_zero_location(kwargs.get("zero_location", "E"))  # set 0° to the provided location (default: East)
     if kwargs.get("clockwise_angles", False):
         ax.set_theta_direction(-1)
