@@ -50,27 +50,33 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
     proximal_fixations = [f for f in fixations if f.visual_angle_to_target <= proximity_threshold]
     marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
 
-    fig, axes = plt.subplots(3, 2, sharex='col', tight_layout=True)
+    fig = plt.figure()
     visutils.set_figure_properties(fig, title=kwargs.pop("title", f"Fixation Dynamics"),
                                    figsize=kwargs.pop("figsize", (27, 21)), **kwargs)
 
     # velocities
-    ax = dynamics.velocity_profile(fixations, axes[0, 0], show_individual=False, show_peak=True,
-                                   title="Velocity Dynamics", data_label="All Fixations", xlabel="",
-                                   primary_color='darkblue', **kwargs)
-    ax = dynamics.velocity_profile(proximal_fixations, axes[1, 0], show_individual=False, show_peak=True,
-                                   title="", data_label="Proximal Fixations", xlabel="", primary_color='darkred', **kwargs)
-    ax = dynamics.velocity_profile(marking_fixations, axes[2, 0], show_individual=False, show_peak=True,
-                                   title="", data_label="Marking Fixations", primary_color='darkgreen', **kwargs)
+    ax1 = fig.add_subplot(3, 2, 1)
+    dynamics.velocity_profile(fixations, ax1, show_individual=False, show_peak=True,
+                              title="Velocity Dynamics", data_label="All Fixations", xlabel="",
+                              primary_color='darkblue', **kwargs)
+    ax2 = fig.add_subplot(3, 2, 3, sharex=ax1)
+    dynamics.velocity_profile(proximal_fixations, ax2, show_individual=False, show_peak=True,
+                              title="", data_label="Proximal Fixations", xlabel="", primary_color='darkred', **kwargs)
+    ax3 = fig.add_subplot(3, 2, 5, sharex=ax1)
+    dynamics.velocity_profile(marking_fixations, ax3, show_individual=False, show_peak=True,
+                              title="", data_label="Marking Fixations", primary_color='darkgreen', **kwargs)
 
     # pupils
-    ax = dynamics.pupil_size_profile(fixations, axes[0, 1], show_individual=False, show_peak=True,
-                                     title="Pupil Size Dynamics", data_label="All Fixations", xlabel="",
-                                     primary_color='darkblue', **kwargs)
-    ax = dynamics.pupil_size_profile(proximal_fixations, axes[1, 1], show_individual=False, show_peak=True,
-                                     title="", data_label="Proximal Fixations", xlabel="", primary_color='darkred', **kwargs)
-    ax = dynamics.pupil_size_profile(marking_fixations, axes[2, 1], show_individual=False, show_peak=True,
-                                     title="", data_label="Marking Fixations", primary_color='darkgreen', **kwargs)
+    ax4 = fig.add_subplot(3, 2, 2)
+    dynamics.pupil_size_profile(fixations, ax4, show_individual=False, show_peak=True,
+                                title="Pupil Size Dynamics", data_label="All Fixations", xlabel="",
+                                primary_color='darkblue', **kwargs)
+    ax5 = fig.add_subplot(3, 2, 4, sharex=ax4)
+    dynamics.pupil_size_profile(proximal_fixations, ax5, show_individual=False, show_peak=True,
+                                title="", data_label="Proximal Fixations", xlabel="", primary_color='darkred', **kwargs)
+    ax6 = fig.add_subplot(3, 2, 6, sharex=ax4)
+    dynamics.pupil_size_profile(marking_fixations, ax6, show_individual=False, show_peak=True,
+                                title="", data_label="Marking Fixations", primary_color='darkgreen', **kwargs)
     return fig
 
 
