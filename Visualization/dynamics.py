@@ -9,6 +9,14 @@ from GazeEvents.BaseVisualGazeEvent import BaseVisualGazeEvent
 from GazeEvents.FixationEvent import FixationEvent
 
 
+def pupil_size_profile(fixations: List[FixationEvent], ax: plt.Axes, **kwargs) -> plt.Axes:
+    pupil_sizes = [f.get_pupil_series() for f in fixations]
+    kwargs['ylabel'] = "Pupil Size (mm)"
+    kwargs['title'] = kwargs.get('title', "Pupil Size Dynamics")
+    ax = dynamic_profile(ax=ax, datasets=[pupil_sizes], **kwargs)
+    return ax
+
+
 def velocity_profile(events: List[BaseVisualGazeEvent], ax: plt.Axes, **kwargs) -> plt.Axes:
     velocities = [e.get_velocity_series() for e in events]
     kwargs['ylabel'] = "Velocity (px/s)"
@@ -22,14 +30,6 @@ def acceleration_profile(events: List[BaseVisualGazeEvent], ax: plt.Axes, **kwar
     kwargs['ylabel'] = "Acceleration (px/s^2)"
     kwargs['title'] = kwargs.get('title', "Acceleration Dynamics")
     raise NotImplementedError
-
-
-def pupil_size_profile(fixations: List[FixationEvent], ax: plt.Axes, **kwargs) -> plt.Axes:
-    pupil_sizes = [f.get_pupil_series() for f in fixations]
-    kwargs['ylabel'] = "Pupil Size (mm)"
-    kwargs['title'] = kwargs.get('title', "Pupil Size Dynamics")
-    ax = dynamic_profile(ax=ax, datasets=[pupil_sizes], **kwargs)
-    return ax
 
 
 def dynamic_profile(ax: plt.Axes, datasets: List[List[pd.Series]], **kwargs) -> plt.Axes:
