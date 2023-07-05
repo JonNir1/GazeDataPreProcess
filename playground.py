@@ -54,38 +54,45 @@ end = time.time()
 print(f"Finished loading in: {(end - start):.2f} seconds")
 del start, end
 
-# ##########################################
-# ###  ANALYZE SUBJECT-LEVEL DATA  #########
-# ##########################################
-#
-# import LWS.analysis_scripts.trial_summary as trsum
-# import Visualization.saccade_analysis as sacan
-# import LWS.analysis_scripts.fixation_analysis as fixan
-#
-# start = time.time()
-#
-# trial_summary = trsum.summarize_all_trials(trials)
-#
-# sac_hists = sacan.histograms_figure(all_saccades, ignore_outliers=True,
-#                                     title="Saccades Property Distributions")
-# fix_hists = fixan.histograms_figure(all_fixations, ignore_outliers=True,
-#                                     title="Fixations Property Distributions")
-# fix_dynamics = fixan.dynamics_figure(all_fixations, ignore_outliers=True,
-#                                      title="Fixations Temporal Dynamics")
-#
-# visutils.show_figure(sac_hists)
-# visutils.show_figure(fix_hists)
-# visutils.show_figure(fix_dynamics)
-#
-# subject_figures_dir = ioutils.create_dir(os.path.join(subject.output_dir, "subject_figures"))
-# visutils.save_figure(sac_hists, full_path=os.path.join(subject_figures_dir, "saccade_histograms.png"))
-# visutils.save_figure(fix_hists, full_path=os.path.join(subject_figures_dir, "fixation_histograms.png"))
-# visutils.save_figure(fix_dynamics, full_path=os.path.join(subject_figures_dir, "fixation_dynamics.png"))
-#
-# end = time.time()
-# print(f"Finished subject analysis in: {(end - start):.2f} seconds")
-#
-# del start, end
+##########################################
+###  ANALYZE SUBJECT-LEVEL DATA  #########
+##########################################
+
+import Utils.io_utils as ioutils
+import LWS.analysis_scripts.trial_summary as trsum
+import Visualization.saccade_analysis as sacan
+import LWS.analysis_scripts.fixation_analysis as fixan
+
+start = time.time()
+
+trial_summary = trsum.summarize_all_trials(trials)
+
+saccade_distributions = sacan.distributions_figure(all_saccades, ignore_outliers=True,
+                                                   title="Saccades Property Distributions", show_legend=True)
+fixation_distributions = fixan.distributions_figure(all_fixations, ignore_outliers=True,
+                                                    title="Fixations Property Distributions", show_legend=True)
+fixation_dynamics = fixan.dynamics_figure(all_fixations, ignore_outliers=True,
+                                          title="Fixations Temporal Dynamics", show_legend=True)
+fixation_proximity_comparison = fixan.target_proximal_comparison(all_fixations, ignore_outliers=True,
+                                                                 title="Fixations Proximity Comparison",
+                                                                 show_legend=True)
+
+subject_figures_dir = ioutils.create_directory(dirname="subject_figures", parent_dir=subject.output_dir)
+visutils.save_figure(saccade_distributions, full_path=os.path.join(subject_figures_dir, "saccade distributions.png"))
+visutils.save_figure(fixation_distributions, full_path=os.path.join(subject_figures_dir, "fixation distributions.png"))
+visutils.save_figure(fixation_dynamics, full_path=os.path.join(subject_figures_dir, "fixation dynamics.png"))
+visutils.save_figure(fixation_proximity_comparison,
+                     full_path=os.path.join(subject_figures_dir, "target-proximal fixation comparison.png"))
+
+visutils.show_figure(saccade_distributions)
+# visutils.show_figure(fixation_distributions)
+# visutils.show_figure(fixation_dynamics)
+# visutils.show_figure(fixation_proximity_comparison)
+
+end = time.time()
+print(f"Finished subject analysis in: {(end - start):.2f} seconds")
+
+del start, end, subject_figures_dir
 
 # ##########################################
 # ###  ANALYZE TRIAL-LEVEL DATA  ###########
