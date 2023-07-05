@@ -16,10 +16,9 @@ def target_proximal_comparison(fixations: List[LWSFixationEvent], ignore_outlier
     marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
     non_marking_proximal_fixations = [f for f in fixations if
                                       f.visual_angle_to_target <= proximity_threshold and not f.is_mark_target_attempt]
-
-    fig, axes = plt.subplots(3, 2, sharex='col', tight_layout=True)
-    visutils.set_figure_properties(fig, title=kwargs.pop("title", f"Comparison of Target-Proximal Fixations"),
-                                   figsize=kwargs.pop("figsize", (27, 21)), **kwargs)
+    fig = visutils.set_figure_properties(fig=None,
+                                         title=kwargs.pop("title", f"Comparison of Target-Proximal Fixations"),
+                                         figsize=kwargs.pop("figsize", (27, 21)), **kwargs)
 
     # TODO
 
@@ -49,10 +48,8 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
         fixations = [f for f in fixations if not f.is_outlier]
     proximal_fixations = [f for f in fixations if f.visual_angle_to_target <= proximity_threshold]
     marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
-
-    fig = plt.figure()
-    visutils.set_figure_properties(fig, title=kwargs.pop("title", f"Fixation Dynamics"),
-                                   figsize=kwargs.pop("figsize", (27, 21)), **kwargs)
+    fig = visutils.set_figure_properties(fig=None, title=kwargs.pop("title", f"Fixation Dynamics"),
+                                         figsize=kwargs.pop("figsize", (27, 21)), **kwargs)
 
     # velocities
     ax1 = fig.add_subplot(3, 2, 1)

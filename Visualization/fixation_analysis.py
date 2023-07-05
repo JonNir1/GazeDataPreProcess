@@ -10,10 +10,8 @@ from GazeEvents.FixationEvent import FixationEvent
 def distributions_figure(fixations: List[FixationEvent], ignore_outliers: bool = True, **kwargs) -> plt.Figure:
     if ignore_outliers:
         fixations = [f for f in fixations if not f.is_outlier]
-
-    fig = plt.Figure()
-    visutils.set_figure_properties(fig, title=kwargs.pop("title", "Fixation Summary"),
-                                   figsize=kwargs.pop("figsize", (21, 14)), **kwargs)
+    fig = visutils.set_figure_properties(fig=None, title=kwargs.pop("title", "Fixation Summary"),
+                                         figsize=kwargs.pop("figsize", (21, 14)), **kwargs)
 
     # durations distribution
     ax1 = fig.add_subplot(2, 2, 1)

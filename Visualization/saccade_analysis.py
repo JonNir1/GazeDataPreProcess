@@ -10,10 +10,8 @@ from GazeEvents.SaccadeEvent import SaccadeEvent
 def distributions_figure(saccades: List[SaccadeEvent], ignore_outliers: bool = True, **kwargs) -> plt.Figure:
     if ignore_outliers:
         saccades = [s for s in saccades if not s.is_outlier]
-
-    fig = plt.Figure()
-    visutils.set_figure_properties(fig, title=kwargs.pop("title", "Saccade Summary"),
-                                   figsize=kwargs.pop("figsize", (21, 14)), **kwargs)
+    fig = visutils.set_figure_properties(fig=None, title=kwargs.pop("title", "Saccade Summary"),
+                                         figsize=kwargs.pop("figsize", (21, 14)), **kwargs)
 
     # durations distribution
     ax1 = fig.add_subplot(2, 2, 1)
