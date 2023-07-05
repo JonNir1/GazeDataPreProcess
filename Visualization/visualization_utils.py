@@ -166,7 +166,6 @@ def generic_line_chart(ax: plt.Axes,
     cmap_name = kwargs.get("cmap", "tab20")
     primary_line_width = kwargs.get("lw", None) or kwargs.get("line_width", None) or kwargs.get("linewidth", 2)
     secondary_line_width = max(1, primary_line_width // 2)
-    ymin, ymax = np.min(ys), np.max(ys)
     for i, (x, y) in enumerate(zip(xs, ys)):
         label = data_labels[i] if len(data_labels) > 0 else None
         color = get_rgba_color(color=2*i, cmap_name=cmap_name)
@@ -175,10 +174,12 @@ def generic_line_chart(ax: plt.Axes,
             ax.plot(x, y - sems[i], color=color, linewidth=secondary_line_width, alpha=0.4, zorder=i)
             ax.plot(x, y + sems[i], color=color, linewidth=secondary_line_width, alpha=0.4, zorder=i)
             ax.fill_between(x, y - sems[i], y + sems[i], color=color, alpha=0.2, zorder=i)
-        if kwargs.get("show_peak", False):
-            peak_idx = np.argmax(y)
-            peak_color = get_rgba_color(color=2*i+1, cmap_name=cmap_name)
-            ax.vlines(x[peak_idx], ymin=0, ymax=y[peak_idx], color=peak_color, linewidth=secondary_line_width, zorder=i)
+    if kwargs.get("show_peak", False):
+        ymin, ymax = ax.get_ylim()
+        peak_idxs = [np.argmax(y) for y in ys]
+        peak_xs = [xs[i][peak_idxs[i]] for i in range(len(xs))]
+        peak_colors = [get_rgba_color(color=2*i, cmap_name=cmap_name) for i in range(len(xs))]
+        ax.vlines(x=peak_xs, ymin=ymin, ymax=ymax, color=peak_colors, lw=secondary_line_width, ls='--')
     return ax
 
 
