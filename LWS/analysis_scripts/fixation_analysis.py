@@ -21,7 +21,9 @@ def target_proximal_comparison(fixations: List[LWSFixationEvent], ignore_outlier
     data_labels = ["Marking Fixations", "Non-Marking Proximal Fixations"]
     fig = visutils.set_figure_properties(fig=None,
                                          title=kwargs.pop("title", f"Comparison of Target-Proximal Fixations"),
-                                         figsize=kwargs.pop("figsize", (27, 21)), **kwargs)
+                                         figsize=kwargs.pop("figsize", (27, 21)),
+                                         title_height=kwargs.pop("title_height", 0.93),
+                                         **kwargs)
     # % outliers
     ax1 = fig.add_subplot(2, 3, 1)  # top left
     # TODO: create a stacked bar chart with the % of outliers in each group
@@ -30,19 +32,19 @@ def target_proximal_comparison(fixations: List[LWSFixationEvent], ignore_outlier
     ax2 = fig.add_subplot(2, 3, 2)  # top middle
     durations_data = [np.array([f.duration for f in marking_fixations]),
                       np.array([f.duration for f in non_marking_proximal_fixations])]
-    distributions.bar_chart(ax=ax1, data=durations_data, data_labels=data_labels,
+    distributions.bar_chart(ax=ax2, datasets=durations_data, data_labels=data_labels,
                             title="Durations", xlabel="Duration (ms)", **kwargs)
     # dispersion
     ax4 = fig.add_subplot(2, 3, 4)  # bottom left
     dispersion_data = [np.array([f.max_dispersion for f in marking_fixations]),
                        np.array([f.max_dispersion for f in non_marking_proximal_fixations])]
-    distributions.bar_chart(ax=ax4, data=dispersion_data, data_labels=data_labels,
+    distributions.bar_chart(ax=ax4, datasets=dispersion_data, data_labels=data_labels,
                             title="Max Dispersion", xlabel="Max Dispersion (pixels)", **kwargs)
     # angle to target
     ax5 = fig.add_subplot(2, 3, 5)  # bottom middle
     distance_data = [np.array([f.visual_angle_to_target for f in marking_fixations]),
                      np.array([f.visual_angle_to_target for f in non_marking_proximal_fixations])]
-    distributions.bar_chart(ax=ax5, data=distance_data, data_labels=data_labels,
+    distributions.bar_chart(ax=ax5, datasets=distance_data, data_labels=data_labels,
                             title="Angle to Target", xlabel="Angle to Target (°)", **kwargs)
 
     # velocity dynamics & pupil size dynamics - in the right column with shared x-axis
@@ -80,17 +82,20 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
         fixations = [f for f in fixations if not f.is_outlier]
     proximal_fixations = [f for f in fixations if f.visual_angle_to_target <= proximity_threshold]
     marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
-    fig = visutils.set_figure_properties(fig=None, title=kwargs.pop("title", f"Fixation Dynamics"),
-                                         figsize=kwargs.pop("figsize", (27, 21)), **kwargs)
+    fig = visutils.set_figure_properties(fig=None,
+                                         title=kwargs.pop("title", f"Fixation Dynamics"),
+                                         figsize=kwargs.pop("figsize", (27, 21)),
+                                         title_height=kwargs.pop("title_height", 0.93),
+                                         **kwargs)
     # velocities
     ax5 = fig.add_subplot(3, 2, 5)
     ax3 = fig.add_subplot(3, 2, 3, sharex=ax5)  # use same x-axis as plot at the bottom of the column
     ax1 = fig.add_subplot(3, 2, 1, sharex=ax5)  # use same x-axis as plot at the bottom of the column
     dynamics.velocity_profile(fixations, ax1, show_individual=False, show_peak=True,
-                              title="Velocity Dynamics", data_label=["All Fixations"], xlabel="",
+                              title="Velocity Dynamics", data_labels=["All Fixations"], xlabel="",
                               primary_color='darkblue', **kwargs)
     dynamics.velocity_profile(proximal_fixations, ax3, show_individual=False, show_peak=True,
-                              title="", data_label=["Proximal Fixations"], xlabel="", primary_color='darkred', **kwargs)
+                              title="", data_labels=["Proximal Fixations"], xlabel="", primary_color='darkred', **kwargs)
     dynamics.velocity_profile(marking_fixations, ax5, show_individual=False, show_peak=True,
                               title="", data_labels=["Marking Fixations"], primary_color='darkgreen', **kwargs)
 
@@ -99,12 +104,12 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
     ax4 = fig.add_subplot(3, 2, 4, sharex=ax6)  # use same x-axis as plot at the bottom of the column
     ax2 = fig.add_subplot(3, 2, 2, sharex=ax6)  # use same x-axis as plot at the bottom of the column
     dynamics.pupil_size_profile(fixations, ax2, show_individual=False, show_peak=True,
-                                title="Pupil Size Dynamics", data_label=["All Fixations"], xlabel="",
+                                title="Pupil Size Dynamics", data_labels=["All Fixations"], xlabel="",
                                 primary_color='darkblue', **kwargs)
     dynamics.pupil_size_profile(proximal_fixations, ax4, show_individual=False, show_peak=True,
-                                title="", data_label=["Proximal Fixations"], xlabel="", primary_color='darkred', **kwargs)
+                                title="", data_labels=["Proximal Fixations"], xlabel="", primary_color='darkred', **kwargs)
     dynamics.pupil_size_profile(marking_fixations, ax6, show_individual=False, show_peak=True,
-                                title="", data_label=["Marking Fixations"], primary_color='darkgreen', **kwargs)
+                                title="", data_labels=["Marking Fixations"], primary_color='darkgreen', **kwargs)
     return fig
 
 
@@ -133,41 +138,41 @@ def distributions_figure(fixations: List[LWSFixationEvent], ignore_outliers: boo
     durations_data = [np.array([f.duration for f in fixations]),
                       np.array([f.duration for f in target_proximal_fixations]),
                       np.array([f.duration for f in target_marking_fixations])]
-    distributions.bar_chart(ax=ax1, data=durations_data, data_labels=data_labels,
+    distributions.bar_chart(ax=ax1, datasets=durations_data, data_labels=data_labels,
                             title="Durations", xlabel="Duration (ms)", **kwargs)
     # max dispersion
     ax2 = fig.add_subplot(2, 3, 2)
     max_dispersion_data = [np.array([f.max_dispersion for f in fixations]),
                            np.array([f.max_dispersion for f in target_proximal_fixations]),
                            np.array([f.max_dispersion for f in target_marking_fixations])]
-    distributions.bar_chart(ax=ax2, data=max_dispersion_data, data_labels=data_labels,
+    distributions.bar_chart(ax=ax2, datasets=max_dispersion_data, data_labels=data_labels,
                             title="Max Dispersion", xlabel="Max Dispersion (px)", **kwargs)
     # angle to target
     ax3 = fig.add_subplot(2, 3, 3)
     angle_to_target_data = [np.array([f.visual_angle_to_target for f in fixations]),
                             np.array([f.visual_angle_to_target for f in target_proximal_fixations]),
                             np.array([f.visual_angle_to_target for f in target_marking_fixations])]
-    distributions.bar_chart(ax=ax3, data=angle_to_target_data, data_labels=data_labels,
+    distributions.bar_chart(ax=ax3, datasets=angle_to_target_data, data_labels=data_labels,
                             title="Angle to Target", xlabel="Angle to Target (°)", **kwargs)
     # max velocity
     ax4 = fig.add_subplot(2, 3, 4)
     max_velocity_data = [np.array([f.max_velocity for f in fixations]),
                          np.array([f.max_velocity for f in target_proximal_fixations]),
                          np.array([f.max_velocity for f in target_marking_fixations])]
-    distributions.bar_chart(ax=ax4, data=max_velocity_data, data_labels=data_labels,
+    distributions.bar_chart(ax=ax4, datasets=max_velocity_data, data_labels=data_labels,
                             title="Max Velocity", xlabel="Max Velocity (px/s)", **kwargs)
     # mean velocity
     ax5 = fig.add_subplot(2, 3, 5)
     mean_velocity_data = [np.array([f.mean_velocity for f in fixations]),
                           np.array([f.mean_velocity for f in target_proximal_fixations]),
                           np.array([f.mean_velocity for f in target_marking_fixations])]
-    distributions.bar_chart(ax=ax5, data=mean_velocity_data, data_labels=data_labels,
+    distributions.bar_chart(ax=ax5, datasets=mean_velocity_data, data_labels=data_labels,
                             title="Mean Velocity", xlabel="Mean Velocity (px/s)", **kwargs)
     # mean pupil size
     ax6 = fig.add_subplot(2, 3, 6)
     mean_pupil_size_data = [np.array([f.mean_pupil_size for f in fixations]),
                             np.array([f.mean_pupil_size for f in target_proximal_fixations]),
                             np.array([f.mean_pupil_size for f in target_marking_fixations])]
-    distributions.bar_chart(ax=ax6, data=mean_pupil_size_data, data_labels=data_labels,
+    distributions.bar_chart(ax=ax6, datasets=mean_pupil_size_data, data_labels=data_labels,
                             title="Mean Pupil Size", xlabel="Mean Pupil Size (mm)", **kwargs)
     return fig

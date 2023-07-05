@@ -78,8 +78,8 @@ def dynamic_profile(ax: plt.Axes, datasets: List[List[pd.Series]], **kwargs) -> 
     kwargs["show_peak"] = kwargs.get("show_peak", True)  # mark peak of dynamics with a vertical line (default: True)
     ax = visutils.generic_line_chart(ax=ax,
                                      xs=[m.index.to_numpy() for m in means],
-                                     ys=[m.values.to_numpy() for m in means],
-                                     sems=[s.values.to_numpy() for s in sems],
+                                     ys=[m.values for m in means],
+                                     sems=[s.values for s in sems],
                                      **kwargs)
     # set axes properties:
     visutils.set_axes_properties(ax=ax, ax_title=kwargs.pop("title", ""), xlabel=kwargs.pop("xlabel", ""),

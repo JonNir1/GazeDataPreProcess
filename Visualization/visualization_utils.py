@@ -125,9 +125,10 @@ def generic_bar_chart(ax: plt.Axes,
     cmap_name = kwargs.get("cmap", "tab20")
     alpha = kwargs.get("alpha", 0.8)
     for i, (c, v) in enumerate(zip(centers, values)):
+        label = data_labels[i] if len(data_labels) > 0 else None
         edgecolor = get_rgba_color(color=2 * i, cmap_name=cmap_name)
         facecolor = get_rgba_color(color=2 * i + 1, cmap_name=cmap_name)
-        ax.bar(c, v, width=bar_width, label=data_labels[i], facecolor=facecolor, edgecolor=edgecolor, alpha=alpha)
+        ax.bar(c, v, width=bar_width, label=label, facecolor=facecolor, edgecolor=edgecolor, alpha=alpha)
     return ax
 
 
@@ -165,9 +166,11 @@ def generic_line_chart(ax: plt.Axes,
     cmap_name = kwargs.get("cmap", "tab20")
     primary_line_width = kwargs.get("lw", None) or kwargs.get("line_width", None) or kwargs.get("linewidth", 2)
     secondary_line_width = max(1, primary_line_width // 2)
+    ymin, ymax = np.min(ys), np.max(ys)
     for i, (x, y) in enumerate(zip(xs, ys)):
+        label = data_labels[i] if len(data_labels) > 0 else None
         color = get_rgba_color(color=2*i, cmap_name=cmap_name)
-        ax.plot(x, y, label=data_labels[i], color=color, linewidth=primary_line_width, zorder=i)
+        ax.plot(x, y, label=label, color=color, linewidth=primary_line_width, zorder=i)
         if len(sems) > 0:
             ax.plot(x, y - sems[i], color=color, linewidth=secondary_line_width, alpha=0.4, zorder=i)
             ax.plot(x, y + sems[i], color=color, linewidth=secondary_line_width, alpha=0.4, zorder=i)
