@@ -152,7 +152,7 @@ class LWSTrialVisualizer:
                                              title=title,
                                              subtitle=f"{str(trial)}",
                                              show_legend=False,
-                                             show_axes=False,
+                                             hide_axes=True,
                                              **kwargs)
         ax.axis('off')
 
@@ -326,7 +326,7 @@ class LWSTrialVisualizer:
     def __save_figure(self, trial: LWSTrial, fig: plt.Figure, output_type: str, **kwargs):
         subject_id = trial.subject.subject_id
         save_path = self.__get_full_path(subject_id, trial.trial_num, output_type=output_type)
-        visutils.save_figure(fig=fig, save_path=save_path, **kwargs)
+        visutils.save_figure(fig=fig, full_path=save_path, **kwargs)
 
     def __get_full_path(self, subject_id: int, trial_num: int, output_type: str) -> str:
         """
@@ -437,15 +437,17 @@ class LWSTrialVisualizer:
             - invert_yaxis: whether to invert the Y axis or not, default is False.
 
         X-Axis & Y-Axis Arguments:
-            - show_axes: whether to show the x,y axes or not, default is True.
-            - x_label: the label of the X axis, default is ''.
-            - y_label: the label of the Y axis, default is ''.
+            - hide_axes: whether to hide the x,y axes or not, default is False.
+            - xlabel: the label of the X axis, default is ''.
+            - ylabel: the label of the Y axis, default is ''.
             - text_size: the size of non-title text objects in the figure, default is 12.
 
         Returns the figure and axes with the updated properties.
         """
         fig = visutils.set_figure_properties(fig=fig, **kwargs)
-        ax = visutils.set_axes_properties(ax=ax, **kwargs)
+        ax = visutils.set_axes_properties(ax=ax, ax_title=kwargs.pop("subtitle", ""),
+                                          xlabel=kwargs.pop("xlabel", ""), ylabel=kwargs.pop("ylabel", ""),
+                                          **kwargs)
         if not kwargs.get("hide_axes", False):
             visutils.set_line_axis_ticks_and_limits(ax=ax, axis='x', text_size=kwargs.get('text_size', 10))
             visutils.set_line_axis_ticks_and_limits(ax=ax, axis='y', text_size=kwargs.get('text_size', 10))
