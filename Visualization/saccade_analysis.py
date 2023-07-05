@@ -17,20 +17,20 @@ def distributions_figure(saccades: List[SaccadeEvent], ignore_outliers: bool = T
     ax1 = fig.add_subplot(2, 2, 1)
     durations_data = [np.array([s.duration for s in saccades])]
     distributions.bar_chart(ax=ax1, datasets=durations_data,
-                            data_labels=["All Saccades"], title="Durations", xlabel="Duration (ms)", **kwargs)
+                            data_labels=["All Saccades"], title="Durations (ms)", **kwargs)
 
     # max velocity distribution
     ax2 = fig.add_subplot(2, 2, 2)
     max_velocities_data = [np.array([s.max_velocity for s in saccades])]
     distributions.bar_chart(ax=ax2, datasets=max_velocities_data,
-                            data_labels=["All Saccades"], title="Maximum Velocities", xlabel="Max Velocity (pixels/ms)",
+                            data_labels=["All Saccades"], title="Maximum Velocities (px/s)",
                             **kwargs)
 
     # amplitude distribution
     ax3 = fig.add_subplot(2, 2, 3)
     amplitude_data = [np.array([s.amplitude for s in saccades if np.isfinite(s.amplitude)])]
     distributions.bar_chart(ax=ax3, datasets=amplitude_data,
-                            data_labels=["All Saccades"], title="Amplitude", xlabel="Amplitude (°)", **kwargs)
+                            data_labels=["All Saccades"], title="Amplitude (°)", **kwargs)
 
     # azimuth distribution (polar)
     ax4 = fig.add_subplot(2, 2, 4, polar=True)
