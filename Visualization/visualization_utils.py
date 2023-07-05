@@ -3,8 +3,6 @@ from matplotlib import pyplot as plt
 from matplotlib import colors as mcolors
 from typing import Tuple, List, Union, Optional
 
-import Utils.array_utils as au
-
 
 def show_figure(fig):
     """
