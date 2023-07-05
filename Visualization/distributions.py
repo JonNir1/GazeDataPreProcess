@@ -22,7 +22,7 @@ def bar_chart(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) -> plt.Axes:
         - nbins: The number of bins to use for the histogram.
         - min_percentage_threshold: The minimum percentage of data points in a bin for it to be included in the
                                     distribution (bins with less data points will be ignored). default: 1.
-        - labels: A list of labels for the datasets. If specified, must be of the same length as the datasets list.
+        - data_labels: A list of labels for the datasets. If specified, must be of the same length as the datasets list.
         - cmap: The colormap to use for the bars. default: plt.cm.get_cmap("tab20").
 
         keywords for set_axes_properties():
@@ -65,7 +65,7 @@ def rose_chart(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) -> plt.Axes:
     keyword arguments:
         keywords for generic_bar_chart():
         - nbins: The number of bins to use for the histogram.
-        - labels: A list of labels for the datasets. If specified, must be of the same length as the datasets list.
+        - data_labels: A list of labels for the datasets. If specified, must be of the same length as the datasets list.
         - cmap: The colormap to use for the bars. default: plt.cm.get_cmap("tab20").
 
         keywords for set_axes_properties():

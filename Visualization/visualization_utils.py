@@ -104,7 +104,7 @@ def generic_bar_chart(ax: plt.Axes,
     :param bar_width: the width of all bars.
 
     keyword arguments:
-        - labels: A list of labels for the datasets. If specified, must be of the same length as the centers/values lists.
+        - data_labels: A list of labels for the datasets. If specified, must be of the same length as the centers/values lists.
         - cmap: The colormap to use for the bars. default: plt.cm.get_cmap("tab20").
         - alpha: The alpha value of the bars. default: 0.8.
 
@@ -117,9 +117,9 @@ def generic_bar_chart(ax: plt.Axes,
         raise ValueError(f"Length of centers ({len(centers)}) must be equal to length of values ({len(values)})!")
     if not np.isfinite(bar_width) or (bar_width <= 0):
         raise ValueError(f"Invalid bar width ({bar_width})!")
-    labels = kwargs.get("labels", [])
-    if (len(labels) != len(centers)) or (len(labels) == 0):
-        raise ValueError(f"Number of labels ({len(labels)}) must be equal to number of datasets ({len(centers)})!")
+    data_labels = kwargs.get("data_labels", [])
+    if (len(data_labels) != len(centers)) or (len(data_labels) == 0):
+        raise ValueError(f"Number of labels ({len(data_labels)}) must be equal to number of datasets ({len(centers)})!")
 
     # plot the distributions:
     cmap_name = kwargs.get("cmap", "tab20")
@@ -127,7 +127,7 @@ def generic_bar_chart(ax: plt.Axes,
     for i, (c, v) in enumerate(zip(centers, values)):
         edgecolor = get_rgba_color(color=2 * i, cmap_name=cmap_name)
         facecolor = get_rgba_color(color=2 * i + 1, cmap_name=cmap_name)
-        ax.bar(c, v, width=bar_width, label=labels[i], facecolor=facecolor, edgecolor=edgecolor, alpha=alpha)
+        ax.bar(c, v, width=bar_width, label=data_labels[i], facecolor=facecolor, edgecolor=edgecolor, alpha=alpha)
     return ax
 
 

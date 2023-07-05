@@ -17,26 +17,26 @@ def distributions_figure(fixations: List[FixationEvent], ignore_outliers: bool =
     ax1 = fig.add_subplot(2, 2, 1)
     durations_data = [np.array([f.duration for f in fixations])]
     distributions.bar_chart(ax=ax1, data=durations_data,
-                            labels=["All Fixations"], title="Durations", xlabel="Duration (ms)", **kwargs)
+                            data_labels=["All Fixations"], title="Durations", xlabel="Duration (ms)", **kwargs)
 
     # dispersion distribution
     ax2 = fig.add_subplot(2, 2, 2)
     dispersions_data = [np.array([f.max_dispersion for f in fixations])]
     distributions.bar_chart(ax=ax2, data=dispersions_data,
-                            labels=["All Fixations"], title="Dispersions", xlabel="Dispersion (pixels)", **kwargs)
+                            data_labels=["All Fixations"], title="Dispersions", xlabel="Dispersion (pixels)", **kwargs)
 
     # max velocity distribution
     ax3 = fig.add_subplot(2, 2, 3)
     max_velocities_data = [np.array([f.max_velocity for f in fixations])]
     distributions.bar_chart(ax=ax3, data=max_velocities_data,
-                            labels=["All Fixations"], title="Maximum Velocities", xlabel="Max Velocity (pixels/ms)",
+                            data_labels=["All Fixations"], title="Maximum Velocities", xlabel="Max Velocity (pixels/ms)",
                             **kwargs)
 
     # mean velocity distribution
     ax4 = fig.add_subplot(2, 2, 4)
     mean_velocities_data = [np.array([f.mean_velocity for f in fixations])]
     distributions.bar_chart(ax=ax4, data=mean_velocities_data,
-                            labels=["All Fixations"], title="Mean Velocities", xlabel="Mean Velocity (pixels/ms)",
+                            data_labels=["All Fixations"], title="Mean Velocities", xlabel="Mean Velocity (pixels/ms)",
                             **kwargs)
 
     # mean pupil size distribution
