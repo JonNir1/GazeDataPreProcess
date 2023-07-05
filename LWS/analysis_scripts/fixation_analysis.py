@@ -95,45 +95,48 @@ def distributions_figure(fixations: List[LWSFixationEvent], ignore_outliers: boo
     target_proximal_fixations = [f for f in fixations if f.visual_angle_to_target <= proximity_threshold]
     target_marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
     data_labels = ["All", "Target-Proximal", "Target-Marking"]
-    kwargs["show_legend"] = kwargs.pop("show_legend", True)  # default to showing legend
-
-    fig, axes = plt.subplots(2, 3)
-    visutils.set_figure_properties(fig, title=kwargs.pop("title", f"Fixation Summary"),
-                                   figsize=kwargs.pop("figsize", (30, 15)), **kwargs)
+    fig = visutils.set_figure_properties(fig=None, title=kwargs.pop("title", f"Fixation Summary"),
+                                         figsize=kwargs.pop("figsize", (30, 15)), **kwargs)
     # durations
+    ax1 = fig.add_subplot(2, 3, 1)
     durations_data = [np.array([f.duration for f in fixations]),
                       np.array([f.duration for f in target_proximal_fixations]),
                       np.array([f.duration for f in target_marking_fixations])]
-    distributions.bar_chart(ax=axes[0, 0], data=durations_data, labels=data_labels,
+    distributions.bar_chart(ax=ax1, data=durations_data, labels=data_labels,
                             title="Durations", xlabel="Duration (ms)", **kwargs)
     # max dispersion
+    ax2 = fig.add_subplot(2, 3, 2)
     max_dispersion_data = [np.array([f.max_dispersion for f in fixations]),
                            np.array([f.max_dispersion for f in target_proximal_fixations]),
                            np.array([f.max_dispersion for f in target_marking_fixations])]
-    distributions.bar_chart(ax=axes[0, 1], data=max_dispersion_data, labels=data_labels,
+    distributions.bar_chart(ax=ax2, data=max_dispersion_data, labels=data_labels,
                             title="Max Dispersion", xlabel="Max Dispersion (px)", **kwargs)
     # angle to target
+    ax3 = fig.add_subplot(2, 3, 3)
     angle_to_target_data = [np.array([f.visual_angle_to_target for f in fixations]),
                             np.array([f.visual_angle_to_target for f in target_proximal_fixations]),
                             np.array([f.visual_angle_to_target for f in target_marking_fixations])]
-    distributions.bar_chart(ax=axes[0, 2], data=angle_to_target_data, labels=data_labels,
+    distributions.bar_chart(ax=ax3, data=angle_to_target_data, labels=data_labels,
                             title="Angle to Target", xlabel="Angle to Target (°)", **kwargs)
     # max velocity
+    ax4 = fig.add_subplot(2, 3, 4)
     max_velocity_data = [np.array([f.max_velocity for f in fixations]),
                          np.array([f.max_velocity for f in target_proximal_fixations]),
                          np.array([f.max_velocity for f in target_marking_fixations])]
-    distributions.bar_chart(ax=axes[1, 0], data=max_velocity_data, labels=data_labels,
+    distributions.bar_chart(ax=ax4, data=max_velocity_data, labels=data_labels,
                             title="Max Velocity", xlabel="Max Velocity (px/s)", **kwargs)
     # mean velocity
+    ax5 = fig.add_subplot(2, 3, 5)
     mean_velocity_data = [np.array([f.mean_velocity for f in fixations]),
                           np.array([f.mean_velocity for f in target_proximal_fixations]),
                           np.array([f.mean_velocity for f in target_marking_fixations])]
-    distributions.bar_chart(ax=axes[1, 1], data=mean_velocity_data, labels=data_labels,
+    distributions.bar_chart(ax=ax5, data=mean_velocity_data, labels=data_labels,
                             title="Mean Velocity", xlabel="Mean Velocity (px/s)", **kwargs)
     # mean pupil size
+    ax6 = fig.add_subplot(2, 3, 6)
     mean_pupil_size_data = [np.array([f.mean_pupil_size for f in fixations]),
                             np.array([f.mean_pupil_size for f in target_proximal_fixations]),
                             np.array([f.mean_pupil_size for f in target_marking_fixations])]
-    distributions.bar_chart(ax=axes[1, 2], data=mean_pupil_size_data, labels=data_labels,
+    distributions.bar_chart(ax=ax6, data=mean_pupil_size_data, labels=data_labels,
                             title="Mean Pupil Size", xlabel="Mean Pupil Size (mm)", **kwargs)
     return fig
