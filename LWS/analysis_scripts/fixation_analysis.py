@@ -11,21 +11,57 @@ from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 def target_proximal_comparison(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
                                proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
+    if not np.isfinite(proximity_threshold) or proximity_threshold <= 0:
+        raise ValueError(f"Invalid proximity threshold: {proximity_threshold}")
     if ignore_outliers:
         fixations = [f for f in fixations if not f.is_outlier]
     marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
     non_marking_proximal_fixations = [f for f in fixations if
                                       f.visual_angle_to_target <= proximity_threshold and not f.is_mark_target_attempt]
+    data_labels = ["Marking Fixations", "Non-Marking Proximal Fixations"]
     fig = visutils.set_figure_properties(fig=None,
                                          title=kwargs.pop("title", f"Comparison of Target-Proximal Fixations"),
                                          figsize=kwargs.pop("figsize", (27, 21)), **kwargs)
-    # durations
-    # dispersion
-    # distance from target
     # % outliers
-    # velocity dynamics - overlayed
-    # pupil size dynamics - overlayed
-    return None
+    ax1 = fig.add_subplot(2, 3, 1)  # top left
+    # TODO: create a stacked bar chart with the % of outliers in each group
+
+    # durations
+    ax2 = fig.add_subplot(2, 3, 2)  # top middle
+    durations_data = [np.array([f.duration for f in marking_fixations]),
+                      np.array([f.duration for f in non_marking_proximal_fixations])]
+    distributions.bar_chart(ax=ax1, data=durations_data, data_labels=data_labels,
+                            title="Durations", xlabel="Duration (ms)", **kwargs)
+    # dispersion
+    ax4 = fig.add_subplot(2, 3, 4)  # bottom left
+    dispersion_data = [np.array([f.max_dispersion for f in marking_fixations]),
+                       np.array([f.max_dispersion for f in non_marking_proximal_fixations])]
+    distributions.bar_chart(ax=ax4, data=dispersion_data, data_labels=data_labels,
+                            title="Max Dispersion", xlabel="Max Dispersion (pixels)", **kwargs)
+    # angle to target
+    ax5 = fig.add_subplot(2, 3, 5)  # bottom middle
+    distance_data = [np.array([f.visual_angle_to_target for f in marking_fixations]),
+                     np.array([f.visual_angle_to_target for f in non_marking_proximal_fixations])]
+    distributions.bar_chart(ax=ax5, data=distance_data, data_labels=data_labels,
+                            title="Angle to Target", xlabel="Angle to Target (°)", **kwargs)
+
+    # velocity dynamics & pupil size dynamics - in the right column with shared x-axis
+    # we interpolate each timeseries to the maximum duration of all fixations in the group, normalize them to
+    # range [0, 1] and plot them on the same axis
+    ax6 = fig.add_subplot(2, 3, 6)  # bottom right
+    ax3 = fig.add_subplot(2, 3, 3, sharex=ax6)  # top right
+
+    # velocity dynamics
+    velocity_data = [[f.get_velocity_series() for f in marking_fixations],
+                     [f.get_velocity_series() for f in non_marking_proximal_fixations]]
+    dynamics.dynamic_profile(ax=ax3, datasets=velocity_data, data_labels=data_labels,
+                             title="Velocity Dynamics", xlabel="Time (ms)", ylabel="Velocity (°/s)", **kwargs)
+    # pupil size dynamics
+    pupil_data = [[f.get_pupil_series() for f in marking_fixations],
+                  [f.get_pupil_series() for f in non_marking_proximal_fixations]]
+    dynamics.dynamic_profile(ax=ax6, datasets=pupil_data, data_labels=data_labels,
+                             title="Pupil Size Dynamics", xlabel="Time (ms)", ylabel="Pupil Size (mm)", **kwargs)
+    return fig
 
 
 def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
