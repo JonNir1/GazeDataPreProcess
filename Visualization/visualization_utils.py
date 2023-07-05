@@ -44,7 +44,22 @@ def get_rgba_color(color: Union[str, int], cmap_name: Optional[str]) -> Tuple[fl
     return cmap(color)
 
 
-def set_figure_properties(fig: plt.Figure, **kwargs) -> plt.Figure:
+def set_figure_properties(fig: Optional[plt.Figure], **kwargs) -> plt.Figure:
+    """
+    Sets properties of the given figure if provided, otherwise creates a new figure and sets its properties.
+    :param fig: existing figure to set properties on, or None to create a new figure.
+
+    keyword arguments:
+        - figsize: tuple of floats (width, height) in inches. default: (16, 9).
+        - figure_dpi: the DPI of the figure. default: 500.
+        - title: the title of the figure. default: "".
+        - title_size: the font size of the figure title. default: 18.
+        - title_height: the height of the figure title. default: 0.95.
+        - tight_layout: whether to call fig.tight_layout(). default: True.
+
+    :return: the figure with the given properties.
+    """
+    fig = fig if fig is not None else plt.Figure()
     figsize = kwargs.get('figsize', (16, 9))
     fig.set_size_inches(w=figsize[0], h=figsize[1])
     fig.set_dpi(kwargs.get('figure_dpi', 500))
