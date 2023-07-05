@@ -9,6 +9,10 @@ import Visualization.visualization_utils as visutils
 def bar_chart(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) -> plt.Axes:
     """
     Calculates the distribution of each dataset and plots a bar chart of the distributions on the given axis.
+    The distribution is calculated by splitting the data into `nbins` different bins and calculating the percentage of
+    data points in each bin. Bins with less than `min_percentage_threshold` percentage of data points are ignored.
+    The bins are then plotted as bars on the x-axis, with width equal to 90% of the minimal difference between the
+    bin centers.
 
     :param ax: The axis to plot the distributions on.
     :param datasets: A list of numpy arrays, each containing the data of a distribution.
