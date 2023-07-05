@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from typing import List
 
 import Utils.timeseries_utils as tsutils
+import Visualization.visualization_utils as visutils
 from GazeEvents.BaseVisualGazeEvent import BaseVisualGazeEvent
 from GazeEvents.FixationEvent import FixationEvent
 
@@ -12,7 +13,7 @@ def velocity_profile(events: List[BaseVisualGazeEvent], ax: plt.Axes, **kwargs) 
     velocities = [e.get_velocity_series() for e in events]
     kwargs['ylabel'] = "Velocity (px/s)"
     kwargs['title'] = kwargs.get('title', "Velocity Dynamics")
-    ax = dynamic_profile(velocities, ax, **kwargs)
+    ax = dynamic_profile(ax=ax, datasets=[velocities], **kwargs)
     return ax
 
 
@@ -27,66 +28,61 @@ def pupil_size_profile(fixations: List[FixationEvent], ax: plt.Axes, **kwargs) -
     pupil_sizes = [f.get_pupil_series() for f in fixations]
     kwargs['ylabel'] = "Pupil Size (mm)"
     kwargs['title'] = kwargs.get('title', "Pupil Size Dynamics")
-    ax = dynamic_profile(pupil_sizes, ax, **kwargs)
+    ax = dynamic_profile(ax=ax, datasets=[pupil_sizes], **kwargs)
     return ax
 
 
-def dynamic_profile(timeseries: List[pd.Series], ax: plt.Axes, **kwargs) -> plt.Axes:
-    # TODO: move to visutils
+def dynamic_profile(ax: plt.Axes, datasets: List[List[pd.Series]], **kwargs) -> plt.Axes:
     """
-    Normalizes all timeseries to the same length (by interpolating missing values) and plots the mean and standard error
-    of the mean of all timeseries.
+    Coerces all datasets to have time range of [0, 1] and within each dataset, interpolates all series to have the same
+    number of samples, then plots the mean and standard error of each dataset on the given axis.
 
-    :param timeseries: list of pd.Series objects, indexed by time (float, ms) and containing the values to plot
-    :param ax: the axes object to plot on
+    :param ax: axis to plot on
+    :param datasets: list of datasets, each dataset is a list of pd.Series where the indexes are timestamps (floats, ms)
+                        and the values are the measured samples of the time series.
 
     keyword arguments:
-        - interpolation_kind: the kind of interpolation to use for missing values (default: 'linear')
+        - interpolation_kind: The kind of interpolation to perform (default: 'linear')
+        - show_sems: whether to show the standard error of the mean (default: True)
 
-        - primary_color: the color of the mean line and the fill (default: '#034e7b', dark blue)
-        - primary_linewidth: the width of the mean line (default: 2)
-        - data_label: the label of the mean line (default: '')
+        keywords for generic_line_chart():
+        - labels: A list of labels for the datasets. If specified, must be of the same length as the datasets list.
+        - show_peak: whether to mark the peak of the dynamics with a vertical line (default: True)
+        - cmap: The colormap to use for the bars. default: plt.cm.get_cmap("tab20").
+        - lw/line_width/linewidth: The width of the plotted lines. default: 2.
+        - show_peak: Whether to show the peak of each line. default: False.
 
-        - show_peak: whether to show a vertical line at the peak value (default: False)
-        - peak_color: the color of the peak line (default: '#000000', black)
-        - peak_linewidth: the width of the peak line (default: 1)
+        keywords for set_axes_properties():
+        - title: The title of the axes.
+        - title_size: The size of the title. default: 14.
+        - xlabel: The label of the x-axis.
+        - ylabel: The label of the y-axis. default: "".
+        - text_size: The size of the axis labels. default: 12.
+        - show_legend: Whether to show the legend. default: False.
+        - legend_location: The location of the legend. default: "upper right".
 
-        - title_size: the size of the title (default: 14)
-        - title: the title (default: "")
-        - label_size: the size of the x and y labels (default: 12)
-        - xlabel: the x label (default: "Relative Time (%)")
-        - ylabel: the y label (default: "")
-        - text_size: the size of the tick labels and legend (default: 10)
-        - show_legend: whether to show the legend (default: True)
-        - legend_location: the location of the legend (default: 'upper right')
+    :return:
     """
-    timeseries_df = tsutils.interpolate_and_merge_timeseries(timeseries, interpolation_kind=kwargs.get('interpolation_kind', 'linear'))
-    mean = timeseries_df.mean(axis=1)
-    sem = timeseries_df.sem(axis=1)
+    # calculate mean and sem for each dataset:
+    means: List[pd.Series] = []
+    sems: List[pd.Series] = []
+    interpolation_kind = kwargs.get('interpolation_kind', 'linear')
+    show_sems = kwargs.get('show_sems', True)
+    for dataset in datasets:
+        interpolated_df: pd.DataFrame = tsutils.interpolate_and_merge_timeseries(dataset, interpolation_kind)
+        means.append(interpolated_df.mean(axis=1))
+        if show_sems:
+            sems.append(interpolated_df.sem(axis=1))
 
-    primary_color = kwargs.get('primary_color', '#034e7b')  # default: dark blue
-    primary_linewidth = kwargs.get('primary_linewidth', 2)
-    data_label = kwargs.get('data_label', '')
-    ax.plot(mean.index, mean, color=primary_color, linewidth=primary_linewidth, label=data_label, zorder=10)
-    ax.fill_between(mean.index, mean - sem, mean + sem, color=primary_color, alpha=0.5, zorder=2)
-
-    if kwargs.get('show_peak', False):
-        peak_color = kwargs.get('peak_color', '#000000')  # default: black
-        peak_linewidth = kwargs.get('peak_linewidth', 1)
-        peak_idx = np.argmax(mean)
-        ax.axvline(x=mean.index[peak_idx], color=peak_color, linewidth=peak_linewidth,
-                   linestyle='--', zorder=10, label="Max Value")
-
-    label_size = kwargs.get('label_size', 12)
-    text_size = kwargs.get('text_size', 10)
-    ax.set_xlabel(kwargs.get('xlabel', "Relative Time (%)"), fontsize=label_size)
-    ax.set_ylabel(kwargs.get('ylabel', ""), fontsize=label_size)
-    ax.set_xticks(ticks=np.arange(0, 110, 10), labels=np.arange(0, 110, 10))
-    ax.tick_params(axis='both', which='major', labelsize=text_size)
-    ax.set_title(kwargs.get('title', ""), fontsize=kwargs.get('title_size', 14))
-    y_bottom, y_top = ax.get_ylim()
-    ax.set_ylim(bottom=max([mean.min() - 2 * sem.max(), y_bottom]), top=min([mean.max() + 2 * sem.max(), y_top]))
-    if kwargs.get('show_legend', True):
-        ax.legend(loc=kwargs.get('legend_location', 'upper right'), fontsize=text_size)
+    # plot:
+    kwargs["show_peak"] = kwargs.get("show_peak", True)  # mark peak of dynamics with a vertical line (default: True)
+    ax = visutils.generic_line_chart(ax=ax,
+                                     xs=[m.index.to_numpy() for m in means],
+                                     ys=[m.values.to_numpy() for m in means],
+                                     sems=[s.values.to_numpy() for s in sems],
+                                     **kwargs)
+    # set axes properties:
+    visutils.set_axes_properties(ax=ax, ax_title=kwargs.pop("title", ""), xlabel=kwargs.pop("xlabel", ""),
+                                 ylabel=kwargs.pop("ylabel", ""), **kwargs)
     return ax
 
