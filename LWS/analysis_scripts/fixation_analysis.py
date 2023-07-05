@@ -41,7 +41,6 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
     proximity threshold (default: 1.5°). target-marking fixations are defined as fixations during which the subject
     attempted to mark the target (i.e., the target-marking triggers were recorded).
     """
-
     if not np.isfinite(proximity_threshold) or proximity_threshold <= 0:
         raise ValueError(f"Invalid proximity threshold: {proximity_threshold}")
     if ignore_outliers:
