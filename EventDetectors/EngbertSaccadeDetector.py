@@ -79,6 +79,10 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         :param is_saccade_candidate: boolean array indicating whether a sample is a saccade candidate
         :return: list of tuples, each tuple containing the start and end indices of a saccade
         """
+        # if there are no saccade candidates, return empty list
+        if not is_saccade_candidate.any():
+            return []
+
         # split saccade candidates to separate saccades
         saccade_candidate_idxs = np.nonzero(is_saccade_candidate)[0]
         splitting_idxs = np.where(np.diff(saccade_candidate_idxs) > self._min_samples_between_events)[
