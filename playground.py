@@ -20,7 +20,7 @@ import Visualization.visualization_utils as visutils
 #
 # start = time.time()
 #
-# subject = pp.process_subject(subject_dir=os.path.join(cnfg.RAW_DATA_DIR, 'Rotem Demo'),
+# subject = pp.process_subject(subject_dir=os.path.join(cnfg.RAW_DATA_DIR, 'GalChen Demo'),
 #                              screen_monitor=cnfg.SCREEN_MONITOR,
 #                              save_pickle=True,
 #                              stuff_with='fixation',
@@ -40,7 +40,7 @@ import Visualization.visualization_utils as visutils
 
 start = time.time()
 
-subject = LWSSubject.from_pickle(os.path.join(cnfg.OUTPUT_DIR, "S002", "LWSSubject_002.pkl"))
+subject = LWSSubject.from_pickle(os.path.join(cnfg.OUTPUT_DIR, "S001", "LWSSubject_001.pkl"))
 trials = subject.get_all_trials()
 all_blinks = [b for tr in trials for b in tr.get_gaze_events(cnst.BLINK)]
 all_saccades = [s for tr in trials for s in tr.get_gaze_events(cnst.SACCADE)]
@@ -57,10 +57,10 @@ del start, end
 
 
 
-##########################################
-###  ANALYZE SUBJECT-LEVEL DATA  #########
-##########################################
-
+# ##########################################
+# ###  ANALYZE SUBJECT-LEVEL DATA  #########
+# ##########################################
+#
 # import Utils.io_utils as ioutils
 # import LWS.analysis_scripts.trial_summary as trsum
 # import Visualization.saccade_analysis as sacan
@@ -69,6 +69,7 @@ del start, end
 # start = time.time()
 #
 # trial_summary = trsum.summarize_all_trials(trials)
+# trial_summary.to_pickle(os.path.join(subject.output_dir, "trials_summary.pkl"))
 #
 # saccade_distributions = sacan.distributions_figure(all_saccades, ignore_outliers=True,
 #                                                    title="Saccades Property Distributions", show_legend=True)
@@ -81,7 +82,6 @@ del start, end
 #                                                                  show_legend=True)
 #
 # subject_figures_dir = ioutils.create_directory(dirname="subject_figures", parent_dir=subject.output_dir)
-# trial_summary.to_pickle(os.path.join(subject.output_dir, "trials_summary.pkl"))
 # visutils.save_figure(saccade_distributions, full_path=os.path.join(subject_figures_dir, "saccade distributions.png"))
 # visutils.save_figure(fixation_distributions, full_path=os.path.join(subject_figures_dir, "fixation distributions.png"))
 # visutils.save_figure(fixation_dynamics, full_path=os.path.join(subject_figures_dir, "fixation dynamics.png"))
@@ -110,8 +110,6 @@ del start, end
 #
 # failed_trials = []
 # for tr in subject.get_all_trials():
-#     if tr.trial_num > 1:  # TODO: remove
-#         break
 #     try:
 #         start_trial = time.time()
 #         visualizer.create_gaze_figure(trial=tr, savefig=True)
@@ -119,6 +117,7 @@ del start, end
 #         visualizer.create_heatmap(trial=tr, savefig=True, fixation_only=False, show_targets_color=(0, 0, 0))
 #         visualizer.create_heatmap(trial=tr, savefig=True, fixation_only=True, show_targets_color=(0, 0, 0))
 #         visualizer.create_video(trial=tr, output_directory=cnfg.OUTPUT_DIR)
+#         plt.close('all')  # close all open figures from memory
 #         end_trial = time.time()
 #         print(f"\t{tr.__repr__()}:\t{(end_trial - start_trial):.2f} s")
 #     except Exception as e:
