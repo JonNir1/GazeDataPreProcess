@@ -95,14 +95,11 @@ class LWSTrial:
             raise RuntimeError("Cannot set behavioral data after trial has been processed.")
         self.__behavioral_data = behavioral_data
 
-    def get_gaze_events(self, event_type: Optional[str] = None) -> List[BaseGazeEvent]:
+    def get_gaze_events(self, event_type: str = cnst.ALL) -> List[BaseGazeEvent]:
         if self.__gaze_events is None:
             return []
         if len(self.__gaze_events) == 0:
             return []
-        if event_type is None:
-            return self.__gaze_events
-
         event_type = event_type.lower()
         if event_type == cnst.ALL:
             return self.__gaze_events
