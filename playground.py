@@ -81,6 +81,7 @@ del start, end
 #                                                                  show_legend=True)
 #
 # subject_figures_dir = ioutils.create_directory(dirname="subject_figures", parent_dir=subject.output_dir)
+# trial_summary.to_pickle(os.path.join(subject.output_dir, "trials_summary.pkl"))
 # visutils.save_figure(saccade_distributions, full_path=os.path.join(subject_figures_dir, "saccade distributions.png"))
 # visutils.save_figure(fixation_distributions, full_path=os.path.join(subject_figures_dir, "fixation distributions.png"))
 # visutils.save_figure(fixation_dynamics, full_path=os.path.join(subject_figures_dir, "fixation dynamics.png"))
