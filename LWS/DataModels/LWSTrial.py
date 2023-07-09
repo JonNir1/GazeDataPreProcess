@@ -175,7 +175,7 @@ class LWSTrial:
         return full_path
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}_{str(self.subject)}_T{str(self)}"
+        return f"{self.__class__.__name__}_{str(self.subject)}_{str(self)}"
 
     def __str__(self) -> str:
         return f"T{self.__trial_num:03d}"
