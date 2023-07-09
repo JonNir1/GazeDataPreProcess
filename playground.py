@@ -50,7 +50,6 @@ end = time.time()
 print(f"Finished loading in: {(end - start):.2f} seconds")
 del start, end
 
-
 ##########################################
 ###  Playground  #########################
 ##########################################
