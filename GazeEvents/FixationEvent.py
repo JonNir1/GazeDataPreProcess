@@ -54,6 +54,7 @@ class FixationEvent(BaseVisualGazeEvent):
         if self.duration < cnfg.DEFAULT_FIXATION_MINIMUM_DURATION:
             reasons.append(cnst.DURATION)
         # TODO: check max velocity, acceleration, dispersion
+        # TODO: check if inside the screen
         return reasons
 
     def get_pupil_series(self, round_decimals: int = 1, zero_corrected: bool = True) -> pd.Series:
