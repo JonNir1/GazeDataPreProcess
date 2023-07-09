@@ -29,9 +29,6 @@ class MissingDataBlinkDetector(BaseBlinkDetector):
     def missing_value(self) -> float:
         return self.__missing_value
 
-    def set_missing_value(self, missing_value: float):
-        self.__missing_value = missing_value
-
     def _find_candidates(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
         Returns a boolean array of the same length as the input data, where True indicates the samples that are
