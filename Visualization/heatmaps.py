@@ -21,8 +21,11 @@ def fixations_heatmap(fixations: List[FixationEvent], screen_resolution: Tuple[f
 
     heatmap = np.zeros((h, w))
     for fixation in fixations:
+        center_x, center_y = fixation.center_of_mass  # could be outside the screen
+        if (not 0 <= center_x < w) or (not 0 <= center_y < h):
+            continue
+
         duration = fixation.duration
-        center_x, center_y = fixation.center_of_mass
         std_x, std_y = fixation.standard_deviation
 
         addition = np.zeros_like(heatmap)
