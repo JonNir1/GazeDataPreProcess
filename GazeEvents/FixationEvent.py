@@ -49,6 +49,13 @@ class FixationEvent(BaseVisualGazeEvent):
         # returns the standard deviation of the pupil size during the fixation (in mm)
         return float(np.nanstd(self._pupil))
 
+    def get_outlier_reasons(self):
+        reasons = []
+        if self.duration < cnfg.DEFAULT_FIXATION_MINIMUM_DURATION:
+            reasons.append(cnst.DURATION)
+        # TODO: check max velocity, acceleration, dispersion
+        return reasons
+
     def get_pupil_series(self, round_decimals: int = 1, zero_corrected: bool = True) -> pd.Series:
         """
         Returns a pandas Series with the event's pupil sizes (mm) and indexed by timestamps, rounded to the specified
@@ -72,12 +79,3 @@ class FixationEvent(BaseVisualGazeEvent):
         series["mean_pupil_size"] = self.mean_pupil_size
         series["std_pupil_size"] = self.std_pupil_size
         return series
-
-    @property
-    def is_outlier(self) -> bool:
-        if self.duration < cnfg.DEFAULT_FIXATION_MINIMUM_DURATION:
-            return True
-        # TODO: check max velocity
-        # TODO: check max acceleration
-        # TODO: check max dispersion
-        return False

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import numpy as np
 import pandas as pd
+from typing import List
 
 from Config import experiment_config as cnfg
 
@@ -45,14 +46,16 @@ class BaseGazeEvent(ABC):
         return self.end_time - self.start_time
 
     @property
-    @abstractmethod
     def is_outlier(self) -> bool:
-        raise NotImplementedError
+        return len(self.get_outlier_reasons()) > 0
 
     @classmethod
     @abstractmethod
     def event_type(cls) -> str:
         raise NotImplementedError
+
+    def get_outlier_reasons(self) -> List[str]:
+        return []
 
     def __repr__(self):
         return f"{self.event_type().capitalize()} ({self.duration:.1f} ms)"

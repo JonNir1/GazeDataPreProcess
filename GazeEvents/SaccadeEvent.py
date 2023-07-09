@@ -50,6 +50,13 @@ class SaccadeEvent(BaseVisualGazeEvent):
         # see Utils.angle_utils.calculate_azimuth for more information
         return angle_utils.calculate_azimuth(p1=self.start_point, p2=self.end_point, use_radians=False)
 
+    def get_outlier_reasons(self):
+        reasons = []
+        if self.duration < cnfg.DEFAULT_SACCADE_MINIMUM_DURATION:
+            reasons.append(cnst.DURATION)
+        # TODO: check min, max velocity
+        return reasons
+
     def to_series(self) -> pd.Series:
         """
         creates a pandas Series with summary of saccade information.

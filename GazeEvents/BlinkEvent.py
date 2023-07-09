@@ -12,3 +12,9 @@ class BlinkEvent(BaseGazeEvent):
     @classmethod
     def event_type(cls):
         return cnst.BLINK
+
+    def get_outlier_reasons(self):
+        reasons = []
+        if self.duration < cnfg.DEFAULT_BLINK_MINIMUM_DURATION:
+            reasons.append(cnst.DURATION)
+        return reasons
