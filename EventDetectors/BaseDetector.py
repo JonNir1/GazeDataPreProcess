@@ -1,6 +1,7 @@
 import numpy as np
 from abc import ABC, abstractmethod
 from math import ceil, floor
+from typing import List, Tuple
 
 import constants as c
 from Config import experiment_config as cnfg
@@ -20,15 +21,26 @@ class BaseDetector(ABC):
         self.__min_duration = min_duration
         self.__inter_event_time = iet
 
-    @abstractmethod
     def detect_monocular(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
         Detects events in the given gaze data from a single eye
         :param x: x-coordinates of gaze data from a single eye
         :param y: y-coordinates of gaze data from a single eye
         :return: array of booleans, where True indicates an event
+        :raises ValueError: if x and y are not of equal lengths
         """
-        raise NotImplementedError
+        if len(x) != len(y):
+            raise ValueError("x and y must have the same length")
+        is_event_candidate = self._find_candidates(x, y)
+        event_start_end_idxs = self._find_event_start_end_indices(is_event_candidate)
+
+        # convert to boolean array
+        is_event = np.zeros(len(x), dtype=bool)
+        if len(event_start_end_idxs) == 0:
+            return is_event
+        event_idxs = np.concatenate([np.arange(start, end + 1) for start, end in event_start_end_idxs])
+        is_event[event_idxs] = True
+        return is_event
 
     def detect_binocular(self,
                          x_l: np.ndarray, y_l: np.ndarray,
@@ -108,3 +120,39 @@ class BaseDetector(ABC):
         Defines the minimal number of samples required to identify two adjacent events as separate events.
         """
         return ceil(self.inter_event_time * self.sampling_rate / c.MILLISECONDS_PER_SECOND)
+
+    @abstractmethod
+    def _find_candidates(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+        """
+        Returns a boolean array of the same length as the input data, where True indicates the samples that are
+        candidates for being part of an event.
+        The logic for identifying candidates is specific to each event type and identifier.
+
+        :param x: x coordinates of gaze data
+        :param y: y coordinates of gaze data
+        """
+        raise NotImplementedError
+
+    def _find_event_start_end_indices(self, is_candidate: np.ndarray) -> List[Tuple[int, int]]:
+        """
+        Every group of consecutive samples that are candidates for being part of an event is considered an event.
+        This method returns a list of tuples, where each tuple contains the start and end indices of an event. The
+        indices are inclusive.
+        Events that are shorter than the minimum duration of an event are excluded from the list.
+
+        :param is_candidate: boolean array indicating whether a sample is a saccade candidate
+        :return: list of tuples, each tuple containing the start and end indices of an event
+        """
+        # if there are no event candidates, return empty list
+        if not is_candidate.any():
+            return []
+
+        # split candidates to separate events
+        candidate_idxs = np.nonzero(is_candidate)[0]
+        splitting_idxs = np.where(np.diff(candidate_idxs) > self._min_samples_between_events)[0] + 1  # +1 because we want the index after the split
+        separate_event_idxs = np.split(candidate_idxs, splitting_idxs)
+
+        # exclude events that are shorter than the minimum duration
+        start_end_idxs = list(map(lambda event_idxs: (event_idxs.min(), event_idxs.max()), separate_event_idxs))
+        start_end_idxs = list(filter(lambda sac: sac[1] - sac[0] >= self._min_samples_within_event, start_end_idxs))
+        return start_end_idxs

@@ -35,16 +35,6 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         self.__derivation_window_size = derivation_window_size
         self.__lambda_noise_threshold = lambda_noise_threshold
 
-    def detect_monocular(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
-        is_saccade_candidate = self._find_candidates(x, y)
-        saccades_start_end_idxs = self._find_start_end_indices(is_saccade_candidate)
-
-        # convert to boolean array
-        saccade_idxs = np.concatenate([np.arange(start, end + 1) for start, end in saccades_start_end_idxs])
-        is_saccade = np.zeros(len(x), dtype=bool)
-        is_saccade[saccade_idxs] = True
-        return is_saccade
-
     def _find_candidates(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
         Detects saccade candidates of a single eye, in the given gaze data.
@@ -72,25 +62,3 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
             vel_y / (sd_y * self.__lambda_noise_threshold), 2)
         is_saccade_candidate = ellipse_thresholds > 1
         return is_saccade_candidate.values
-
-    def _find_start_end_indices(self, is_saccade_candidate: np.ndarray) -> List[Tuple[int, int]]:
-        """
-        Excludes saccade candidates that are shorter than the minimum duration of a saccade.
-        :param is_saccade_candidate: boolean array indicating whether a sample is a saccade candidate
-        :return: list of tuples, each tuple containing the start and end indices of a saccade
-        """
-        # if there are no saccade candidates, return empty list
-        if not is_saccade_candidate.any():
-            return []
-
-        # split saccade candidates to separate saccades
-        saccade_candidate_idxs = np.nonzero(is_saccade_candidate)[0]
-        splitting_idxs = np.where(np.diff(saccade_candidate_idxs) > self._min_samples_between_events)[
-                             0] + 1  # +1 because we want the index after the split
-        separate_saccade_idxs = np.split(saccade_candidate_idxs, splitting_idxs)
-
-        # exclude saccades that are shorter than the minimum duration
-        saccades_start_end = list(map(lambda sac_idxs: (sac_idxs.min(), sac_idxs.max()), separate_saccade_idxs))
-        saccades_start_end = list(
-            filter(lambda sac: sac[1] - sac[0] >= self._min_samples_within_event, saccades_start_end))
-        return saccades_start_end
