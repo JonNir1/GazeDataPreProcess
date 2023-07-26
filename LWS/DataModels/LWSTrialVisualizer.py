@@ -25,251 +25,251 @@ class LWSTrialVisualizer:
         self.screen_resolution = screen_resolution
         self.output_directory = output_directory
 
-    def create_gaze_figure(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
-        """
-        Creates a figure of the raw gaze data (X, Y coordinates) during the given trial. Overlaid on the figure are
-        vertical lines marking the user-inputs (triggers), and the corresponding trigger numbers are written above.
-        The top part of the figure shows each sample's gaze event (fixation, saccade, blink, etc.) as a different color.
+    # def create_gaze_figure(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
+    #     """
+    #     Creates a figure of the raw gaze data (X, Y coordinates) during the given trial. Overlaid on the figure are
+    #     vertical lines marking the user-inputs (triggers), and the corresponding trigger numbers are written above.
+    #     The top part of the figure shows each sample's gaze event (fixation, saccade, blink, etc.) as a different color.
+    #
+    #     :param trial: the trial to visualize.
+    #     :param savefig: whether to save the figure to disk or not.
+    #
+    #     keyword arguments:
+    #         Gazes Related Arguments:
+    #         - x_gaze_color: the color of the X gaze data, default is '#f03b20' (red).
+    #         - y_gaze_color: the color of the Y gaze data, default is '#20d5f0' (light blue).
+    #
+    #         Trigger & Event Related Arguments:
+    #         See documentation in `self.__add_trigger_lines()` and `self.__add_events_bar()`.
+    #
+    #         General Arguments:
+    #         See documentation in `self.set_figure_properties()`.
+    #
+    #     :returns: the created figure.
+    #     """
+    #     fig, ax = plt.subplots(tight_layout=True)
+    #
+    #     # extract gaze data:
+    #     timestamps, x_gaze, y_gaze, _ = trial.get_raw_gaze_data(eye='dominant')
+    #     corrected_timestamps = timestamps - timestamps[0]  # start from 0
+    #
+    #     # plot trial data:
+    #     x_gaze_color = kwargs.get('x_gaze_color', '#f03b20')
+    #     y_gaze_color = kwargs.get('y_gaze_color', '#20d5f0')
+    #     ax.plot(corrected_timestamps, x_gaze, color=x_gaze_color, label='X (high is right)')
+    #     ax.plot(corrected_timestamps, y_gaze, color=y_gaze_color, label='Y (high is down)')
+    #
+    #     # add other visualizations:
+    #     ax = self.__add_trigger_lines(ax=ax, trial=trial, **kwargs)
+    #     ax = self.__add_events_bar(ax=ax, trial=trial, **kwargs)
+    #     fig, axes = self.set_figure_properties(fig=fig, ax=ax,
+    #                                            title=f"Gaze Position over Time",
+    #                                            subtitle=f"{str(trial)}",
+    #                                            xlabel='Time (ms)', ylabel='Gaze Position (pixels)',
+    #                                            invert_yaxis=True,
+    #                                            **kwargs)
+    #     # save figure:
+    #     if savefig:
+    #         self.__save_figure(fig=fig, trial=trial, output_type='gaze_figure', **kwargs)
+    #     return fig
 
-        :param trial: the trial to visualize.
-        :param savefig: whether to save the figure to disk or not.
+    # def create_targets_figure(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
+    #     """
+    #     Creates a figure depicting the angular distance (visual angle) between the subject's gaze and the closest target
+    #     during the given trial. Overlaid on the figure are vertical lines marking the user-inputs (triggers), and the
+    #     corresponding trigger numbers are written above. Additionally, the bottom of the figure depicts gaze event for
+    #     each sample (fixation, saccade, blink, etc.) as a different color.
+    #
+    #     :param trial: the trial to visualize.
+    #     :param savefig: whether to save the figure to disk or not.
+    #
+    #     keyword arguments:
+    #         Gazes Related Arguments:
+    #         - line_color: the color of the angular distance line, default is '#ff0000' (red).
+    #
+    #         Trigger & Event Related Arguments:
+    #         See documentation in `self.__add_trigger_lines()` and `self.__add_events_bar()`.
+    #
+    #         General Arguments:
+    #         See documentation in `self.set_figure_properties()`.
+    #
+    #     :returns: the created figure.
+    #     """
+    #     fig, ax = plt.subplots(tight_layout=True)
+    #
+    #     # plot target distance:
+    #     bd = trial.get_behavioral_data()
+    #     timestamps = bd.get(cnst.MICROSECONDS).values / 1000
+    #     corrected_timestamps = timestamps - timestamps[0]  # start from 0
+    #     target_distance = bd.get(f"{cnst.TARGET}_{cnst.DISTANCE}").values
+    #     ax.plot(corrected_timestamps, target_distance, color=kwargs.get('line_color', '#ff0000'), label=cnst.ANGLE)
+    #
+    #     # add other visualizations:
+    #     ax = self.__add_trigger_lines(ax=ax, trial=trial, **kwargs)
+    #     ax = self.__add_events_bar(ax=ax, trial=trial, **kwargs)
+    #     fig, ax = self.set_figure_properties(fig=fig, ax=ax,
+    #                                          title=f"Angular Distance from Closest Target",
+    #                                          subtitle=f"{str(trial)}",
+    #                                          xlabel='Time (ms)', ylabel='Visual Angle (deg)',
+    #                                          invert_yaxis=False,
+    #                                          show_legend=False,
+    #                                          **kwargs)
+    #     # save figure:
+    #     if savefig:
+    #         self.__save_figure(fig=fig, trial=trial, output_type='targets_figure', **kwargs)
+    #     return fig
 
-        keyword arguments:
-            Gazes Related Arguments:
-            - x_gaze_color: the color of the X gaze data, default is '#f03b20' (red).
-            - y_gaze_color: the color of the Y gaze data, default is '#20d5f0' (light blue).
+    # def create_heatmap(self, trial: LWSTrial, fixation_only: bool, savefig: bool = True, **kwargs) -> plt.Figure:
+    #     # calculate heatmap:
+    #     screen_resolution = cnfg.SCREEN_MONITOR.resolution
+    #     if fixation_only:
+    #         from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
+    #         fixations = trial.get_gaze_events(cnst.FIXATION)
+    #         fixations: List[LWSFixationEvent]
+    #         heatmap = hm.fixations_heatmap(fixations=fixations, screen_resolution=screen_resolution)
+    #     else:
+    #         _, x_gaze, y_gaze, _ = trial.get_raw_gaze_data(eye='dominant')
+    #         heatmap = hm.gaze_heatmap(x_gaze=x_gaze, y_gaze=y_gaze,
+    #                                   screen_resolution=screen_resolution,
+    #                                   smoothing_std=kwargs.get('smoothing_std', 10))
+    #     heatmap[heatmap < np.mean(heatmap)] = np.nan  # remove low values
+    #
+    #     # create RGB background image:
+    #     bg_img = self.__create_background_image(trial, **kwargs)
+    #     bg_img = cv2.cvtColor(bg_img, cv2.COLOR_BGR2RGB)  # convert from BGR to RGB for seaborn
+    #
+    #     # overlay heatmap on background image:
+    #     # see explanation: https://shorturl.at/gEX08
+    #     fig, ax = plt.subplots(tight_layout=True)
+    #     sns.heatmap(heatmap, ax=ax, cbar=False, annot=False, zorder=2,
+    #                 cmap=kwargs.get('cmap', 'jet'),  # can also use 'hot' or 'coolwarm'
+    #                 alpha=kwargs.get('alpha', 0.5))
+    #     ax.imshow(bg_img, zorder=1)  # zorder=1 to put background image behind heatmap
+    #
+    #     # configure titles and axes:
+    #     title = "Fixations Heatmap" if fixation_only else "Gaze Heatmap"
+    #     fig, ax = self.set_figure_properties(fig=fig, ax=ax,
+    #                                          title=title,
+    #                                          subtitle=f"{str(trial)}",
+    #                                          show_legend=False,
+    #                                          hide_axes=True,
+    #                                          **kwargs)
+    #     ax.axis('off')
+    #
+    #     # save figure:
+    #     if savefig:
+    #         hm_type = title.lower().replace(' ', '_')
+    #         self.__save_figure(fig=fig, trial=trial, output_type=hm_type, **kwargs)
+    #     return fig
 
-            Trigger & Event Related Arguments:
-            See documentation in `self.__add_trigger_lines()` and `self.__add_events_bar()`.
-
-            General Arguments:
-            See documentation in `self.set_figure_properties()`.
-
-        :returns: the created figure.
-        """
-        fig, ax = plt.subplots(tight_layout=True)
-
-        # extract gaze data:
-        timestamps, x_gaze, y_gaze, _ = trial.get_raw_gaze_data(eye='dominant')
-        corrected_timestamps = timestamps - timestamps[0]  # start from 0
-
-        # plot trial data:
-        x_gaze_color = kwargs.get('x_gaze_color', '#f03b20')
-        y_gaze_color = kwargs.get('y_gaze_color', '#20d5f0')
-        ax.plot(corrected_timestamps, x_gaze, color=x_gaze_color, label='X (high is right)')
-        ax.plot(corrected_timestamps, y_gaze, color=y_gaze_color, label='Y (high is down)')
-
-        # add other visualizations:
-        ax = self.__add_trigger_lines(ax=ax, trial=trial, **kwargs)
-        ax = self.__add_events_bar(ax=ax, trial=trial, **kwargs)
-        fig, axes = self.set_figure_properties(fig=fig, ax=ax,
-                                               title=f"Gaze Position over Time",
-                                               subtitle=f"{str(trial)}",
-                                               xlabel='Time (ms)', ylabel='Gaze Position (pixels)',
-                                               invert_yaxis=True,
-                                               **kwargs)
-        # save figure:
-        if savefig:
-            self.__save_figure(fig=fig, trial=trial, output_type='gaze_figure', **kwargs)
-        return fig
-
-    def create_targets_figure(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
-        """
-        Creates a figure depicting the angular distance (visual angle) between the subject's gaze and the closest target
-        during the given trial. Overlaid on the figure are vertical lines marking the user-inputs (triggers), and the
-        corresponding trigger numbers are written above. Additionally, the bottom of the figure depicts gaze event for
-        each sample (fixation, saccade, blink, etc.) as a different color.
-
-        :param trial: the trial to visualize.
-        :param savefig: whether to save the figure to disk or not.
-
-        keyword arguments:
-            Gazes Related Arguments:
-            - line_color: the color of the angular distance line, default is '#ff0000' (red).
-
-            Trigger & Event Related Arguments:
-            See documentation in `self.__add_trigger_lines()` and `self.__add_events_bar()`.
-
-            General Arguments:
-            See documentation in `self.set_figure_properties()`.
-
-        :returns: the created figure.
-        """
-        fig, ax = plt.subplots(tight_layout=True)
-
-        # plot target distance:
-        bd = trial.get_behavioral_data()
-        timestamps = bd.get(cnst.MICROSECONDS).values / 1000
-        corrected_timestamps = timestamps - timestamps[0]  # start from 0
-        target_distance = bd.get(f"{cnst.TARGET}_{cnst.DISTANCE}").values
-        ax.plot(corrected_timestamps, target_distance, color=kwargs.get('line_color', '#ff0000'), label=cnst.ANGLE)
-
-        # add other visualizations:
-        ax = self.__add_trigger_lines(ax=ax, trial=trial, **kwargs)
-        ax = self.__add_events_bar(ax=ax, trial=trial, **kwargs)
-        fig, ax = self.set_figure_properties(fig=fig, ax=ax,
-                                             title=f"Angular Distance from Closest Target",
-                                             subtitle=f"{str(trial)}",
-                                             xlabel='Time (ms)', ylabel='Visual Angle (deg)',
-                                             invert_yaxis=False,
-                                             show_legend=False,
-                                             **kwargs)
-        # save figure:
-        if savefig:
-            self.__save_figure(fig=fig, trial=trial, output_type='targets_figure', **kwargs)
-        return fig
-
-    def create_heatmap(self, trial: LWSTrial, fixation_only: bool, savefig: bool = True, **kwargs) -> plt.Figure:
-        # calculate heatmap:
-        screen_resolution = cnfg.SCREEN_MONITOR.resolution
-        if fixation_only:
-            from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
-            fixations = trial.get_gaze_events(cnst.FIXATION)
-            fixations: List[LWSFixationEvent]
-            heatmap = hm.fixations_heatmap(fixations=fixations, screen_resolution=screen_resolution)
-        else:
-            _, x_gaze, y_gaze, _ = trial.get_raw_gaze_data(eye='dominant')
-            heatmap = hm.gaze_heatmap(x_gaze=x_gaze, y_gaze=y_gaze,
-                                      screen_resolution=screen_resolution,
-                                      smoothing_std=kwargs.get('smoothing_std', 10))
-        heatmap[heatmap < np.mean(heatmap)] = np.nan  # remove low values
-
-        # create RGB background image:
-        bg_img = self.__create_background_image(trial, **kwargs)
-        bg_img = cv2.cvtColor(bg_img, cv2.COLOR_BGR2RGB)  # convert from BGR to RGB for seaborn
-
-        # overlay heatmap on background image:
-        # see explanation: https://shorturl.at/gEX08
-        fig, ax = plt.subplots(tight_layout=True)
-        sns.heatmap(heatmap, ax=ax, cbar=False, annot=False, zorder=2,
-                    cmap=kwargs.get('cmap', 'jet'),  # can also use 'hot' or 'coolwarm'
-                    alpha=kwargs.get('alpha', 0.5))
-        ax.imshow(bg_img, zorder=1)  # zorder=1 to put background image behind heatmap
-
-        # configure titles and axes:
-        title = "Fixations Heatmap" if fixation_only else "Gaze Heatmap"
-        fig, ax = self.set_figure_properties(fig=fig, ax=ax,
-                                             title=title,
-                                             subtitle=f"{str(trial)}",
-                                             show_legend=False,
-                                             hide_axes=True,
-                                             **kwargs)
-        ax.axis('off')
-
-        # save figure:
-        if savefig:
-            hm_type = title.lower().replace(' ', '_')
-            self.__save_figure(fig=fig, trial=trial, output_type=hm_type, **kwargs)
-        return fig
-
-    def create_video(self, trial: LWSTrial, **kwargs):
-        """
-        Generates a video visualization of the eye-tracking data and behavioral events for the given LWSTrial.
-        This video is saved to the path `self.output_directory/subject_id/trial_id.mp4`.
-
-        :param trial: The LWSTrial object containing the raw eye-tracking data, the gaze events and behavioral data (triggers).
-        :param kwargs: Additional keyword arguments for customizing the visualization parameters.
-
-        keyword arguments:
-            Stimulus Visualization:
-            - show_stimulus: Whether to show the stimulus image. Defaults to True.
-            - show_targets: Whether to show the targets on the stimulus image. Defaults to True.
-            - show_targets_color: The color of the rectangle to draw around each target. Defaults to (255, 0, 0) (blue).
-            - target_edge_size (int): The thickness of the rectangle to draw around each target. Defaults to 4.
-
-            Trigger Visualization:
-            - target_radius (int): The radius of the target circle in pixels. Defaults to 25.
-            - target_edge_size (int): The width of the target circle's edge in pixels. Defaults to 4.
-            - marked_target_color (Tuple[int, int, int]): The color of the marked target circle in BGR format. Defaults to (0, 0, 0) (black).
-            - confirmed_target_color (Tuple[int, int, int]): The color of the confirmed target circle in BGR format. Defaults to (0, 0, 160) (dark red).
-
-            Gaze Visualization:
-            - display_gaze: Whether to display the gaze circles. Defaults to True.
-            - gaze_radius (int): The radius of the gaze circle in pixels. Defaults to 10.
-            - gaze_color (Tuple[int, int, int]): The color of the gaze circle in BGR format. Defaults to (255, 200, 100) (light-blue).
-
-            Fixation Visualization:
-            - display_fixations: Whether to display the fixations. Defaults to True.
-            - fixation_radius (int): The radius of the fixation circle in pixels. Defaults to 45.
-            - fixation_color (Tuple[int, int, int]): The color of the fixation circle in BGR format. Defaults to (40, 140, 255) (orange).
-            - fixation_alpha (float): The opacity of the fixation circle. Defaults to 0.5.
-
-        No return value
-        """
-        # get raw behavioral data
-        timestamps, x, y, _ = trial.get_raw_gaze_data(eye='dominant')
-        triggers = trial.get_triggers()
-        num_samples = len(timestamps)
-
-        # prepare background image
-        bg_img = self.__create_background_image(trial, **kwargs)
-        prev_bg_img = bg_img.copy()  # used to enable reverting to previous bg image if subject's action is undone
-
-        # extract keyword arguments outside the loop to avoid unnecessary computation
-        target_radius = kwargs.get('target_radius', 35)
-        target_edge_size = kwargs.get('target_edge_size', 4)
-        marked_target_color: Tuple[int, int, int] = kwargs.get('marked_target_color', (0, 0, 0))          # default: black
-        confirmed_target_color: Tuple[int, int, int] = kwargs.get('confirmed_target_color', (0, 0, 160))  # default: dark red
-
-        display_gaze = kwargs.get('display_gaze', True)
-        gaze_radius = kwargs.get('gaze_radius', 10)
-        gaze_color: Tuple[int, int, int] = kwargs.get('gaze_color', (255, 200, 100))                      # default: light-blue
-
-        display_fixations = kwargs.get('display_fixations', True)
-        fixation_radius = kwargs.get('fixation_radius', 45)
-        fixation_color: Tuple[int, int, int] = kwargs.get('fixation_color', (40, 140, 255))               # default: orange
-        fixation_alpha = kwargs.get('fixation_alpha', 0.5)
-
-        # prepare video writer
-        fps = round(trial.sampling_rate)
-        resolution = self.screen_resolution
-        save_path = self.__get_full_path(trial.subject.subject_id, trial.trial_num, output_type='video')
-        video_writer = cv2.VideoWriter(save_path, self.FOURCC, fps, resolution)
-
-        # create the video:
-        circle_center = np.array([np.nan, np.nan])  # to draw a circle around the target
-        for i in range(num_samples):
-            # get current sample data
-            curr_x = int(x[i]) if not np.isnan(x[i]) else None
-            curr_y = int(y[i]) if not np.isnan(y[i]) else None
-            curr_trigger = int(triggers[i]) if not np.isnan(triggers[i]) else None
-
-            # if there is a current trigger, draw it and keep it for future frames
-            if curr_trigger is not None:
-                if curr_trigger == cnfg.MARK_TARGET_SUCCESSFUL_TRIGGER:
-                    # draw a circle around the marked target in future frames until action is confirmed/rejected
-                    cv2.circle(bg_img, (curr_x, curr_y), target_radius, marked_target_color, target_edge_size)
-                    circle_center = np.array([curr_x, curr_y])  # store for confirmation frame
-
-                elif curr_trigger == cnfg.CONFIRM_TARGET_SUCCESSFUL_TRIGGER:
-                    # draw a circle around the marked target in all future frames
-                    cv2.circle(bg_img, circle_center, target_radius, confirmed_target_color, target_edge_size)
-                    prev_bg_img = bg_img.copy()  # write over the prev_bg_img to make sure the circle stays in future frames
-
-                elif curr_trigger == cnfg.REJECT_TARGET_SUCCESSFUL_TRIGGER:
-                    # revert to previous bg image
-                    bg_img = prev_bg_img.copy()
-
-            # draw current gaze data on the frame
-            gaze_img = bg_img.copy()
-            if display_gaze and (curr_x is not None) and (curr_y is not None):
-                cv2.circle(gaze_img, (curr_x, curr_y), gaze_radius, gaze_color, -1)
-
-            # draw the current fixation on the frame if it exists
-            fix_img = gaze_img.copy()
-            if display_fixations:
-                curr_t = timestamps[i]
-                fixations = trial.get_gaze_events(cnst.FIXATION)
-                current_fixations = list(filter(lambda f: f.start_time <= curr_t <= f.end_time, fixations))
-                if len(current_fixations) > 0:
-                    curr_fix = current_fixations[0]  # LWSFixationEvent
-                    fix_x, fix_y = curr_fix.center_of_mass
-                    cv2.circle(fix_img, (int(fix_x), int(fix_y)), fixation_radius, fixation_color, -1)
-
-            # create a combined image of the gaze and fixation images and write it to the video
-            final_img = cv2.addWeighted(fix_img, fixation_alpha, gaze_img, 1 - fixation_alpha, 0)
-            video_writer.write(final_img)
-        video_writer.release()
+    # def create_video(self, trial: LWSTrial, **kwargs):
+    #     """
+    #     Generates a video visualization of the eye-tracking data and behavioral events for the given LWSTrial.
+    #     This video is saved to the path `self.output_directory/subject_id/trial_id.mp4`.
+    #
+    #     :param trial: The LWSTrial object containing the raw eye-tracking data, the gaze events and behavioral data (triggers).
+    #     :param kwargs: Additional keyword arguments for customizing the visualization parameters.
+    #
+    #     keyword arguments:
+    #         Stimulus Visualization:
+    #         - show_stimulus: Whether to show the stimulus image. Defaults to True.
+    #         - show_targets: Whether to show the targets on the stimulus image. Defaults to True.
+    #         - show_targets_color: The color of the rectangle to draw around each target. Defaults to (255, 0, 0) (blue).
+    #         - target_edge_size (int): The thickness of the rectangle to draw around each target. Defaults to 4.
+    #
+    #         Trigger Visualization:
+    #         - target_radius (int): The radius of the target circle in pixels. Defaults to 25.
+    #         - target_edge_size (int): The width of the target circle's edge in pixels. Defaults to 4.
+    #         - marked_target_color (Tuple[int, int, int]): The color of the marked target circle in BGR format. Defaults to (0, 0, 0) (black).
+    #         - confirmed_target_color (Tuple[int, int, int]): The color of the confirmed target circle in BGR format. Defaults to (0, 0, 160) (dark red).
+    #
+    #         Gaze Visualization:
+    #         - display_gaze: Whether to display the gaze circles. Defaults to True.
+    #         - gaze_radius (int): The radius of the gaze circle in pixels. Defaults to 10.
+    #         - gaze_color (Tuple[int, int, int]): The color of the gaze circle in BGR format. Defaults to (255, 200, 100) (light-blue).
+    #
+    #         Fixation Visualization:
+    #         - display_fixations: Whether to display the fixations. Defaults to True.
+    #         - fixation_radius (int): The radius of the fixation circle in pixels. Defaults to 45.
+    #         - fixation_color (Tuple[int, int, int]): The color of the fixation circle in BGR format. Defaults to (40, 140, 255) (orange).
+    #         - fixation_alpha (float): The opacity of the fixation circle. Defaults to 0.5.
+    #
+    #     No return value
+    #     """
+    #     # get raw behavioral data
+    #     timestamps, x, y, _ = trial.get_raw_gaze_data(eye='dominant')
+    #     triggers = trial.get_triggers()
+    #     num_samples = len(timestamps)
+    #
+    #     # prepare background image
+    #     bg_img = self.__create_background_image(trial, **kwargs)
+    #     prev_bg_img = bg_img.copy()  # used to enable reverting to previous bg image if subject's action is undone
+    #
+    #     # extract keyword arguments outside the loop to avoid unnecessary computation
+    #     target_radius = kwargs.get('target_radius', 35)
+    #     target_edge_size = kwargs.get('target_edge_size', 4)
+    #     marked_target_color: Tuple[int, int, int] = kwargs.get('marked_target_color', (0, 0, 0))          # default: black
+    #     confirmed_target_color: Tuple[int, int, int] = kwargs.get('confirmed_target_color', (0, 0, 160))  # default: dark red
+    #
+    #     display_gaze = kwargs.get('display_gaze', True)
+    #     gaze_radius = kwargs.get('gaze_radius', 10)
+    #     gaze_color: Tuple[int, int, int] = kwargs.get('gaze_color', (255, 200, 100))                      # default: light-blue
+    #
+    #     display_fixations = kwargs.get('display_fixations', True)
+    #     fixation_radius = kwargs.get('fixation_radius', 45)
+    #     fixation_color: Tuple[int, int, int] = kwargs.get('fixation_color', (40, 140, 255))               # default: orange
+    #     fixation_alpha = kwargs.get('fixation_alpha', 0.5)
+    #
+    #     # prepare video writer
+    #     fps = round(trial.sampling_rate)
+    #     resolution = self.screen_resolution
+    #     save_path = self.__get_full_path(trial.subject.subject_id, trial.trial_num, output_type='video')
+    #     video_writer = cv2.VideoWriter(save_path, self.FOURCC, fps, resolution)
+    #
+    #     # create the video:
+    #     circle_center = np.array([np.nan, np.nan])  # to draw a circle around the target
+    #     for i in range(num_samples):
+    #         # get current sample data
+    #         curr_x = int(x[i]) if not np.isnan(x[i]) else None
+    #         curr_y = int(y[i]) if not np.isnan(y[i]) else None
+    #         curr_trigger = int(triggers[i]) if not np.isnan(triggers[i]) else None
+    #
+    #         # if there is a current trigger, draw it and keep it for future frames
+    #         if curr_trigger is not None:
+    #             if curr_trigger == cnfg.MARK_TARGET_SUCCESSFUL_TRIGGER:
+    #                 # draw a circle around the marked target in future frames until action is confirmed/rejected
+    #                 cv2.circle(bg_img, (curr_x, curr_y), target_radius, marked_target_color, target_edge_size)
+    #                 circle_center = np.array([curr_x, curr_y])  # store for confirmation frame
+    #
+    #             elif curr_trigger == cnfg.CONFIRM_TARGET_SUCCESSFUL_TRIGGER:
+    #                 # draw a circle around the marked target in all future frames
+    #                 cv2.circle(bg_img, circle_center, target_radius, confirmed_target_color, target_edge_size)
+    #                 prev_bg_img = bg_img.copy()  # write over the prev_bg_img to make sure the circle stays in future frames
+    #
+    #             elif curr_trigger == cnfg.REJECT_TARGET_SUCCESSFUL_TRIGGER:
+    #                 # revert to previous bg image
+    #                 bg_img = prev_bg_img.copy()
+    #
+    #         # draw current gaze data on the frame
+    #         gaze_img = bg_img.copy()
+    #         if display_gaze and (curr_x is not None) and (curr_y is not None):
+    #             cv2.circle(gaze_img, (curr_x, curr_y), gaze_radius, gaze_color, -1)
+    #
+    #         # draw the current fixation on the frame if it exists
+    #         fix_img = gaze_img.copy()
+    #         if display_fixations:
+    #             curr_t = timestamps[i]
+    #             fixations = trial.get_gaze_events(cnst.FIXATION)
+    #             current_fixations = list(filter(lambda f: f.start_time <= curr_t <= f.end_time, fixations))
+    #             if len(current_fixations) > 0:
+    #                 curr_fix = current_fixations[0]  # LWSFixationEvent
+    #                 fix_x, fix_y = curr_fix.center_of_mass
+    #                 cv2.circle(fix_img, (int(fix_x), int(fix_y)), fixation_radius, fixation_color, -1)
+    #
+    #         # create a combined image of the gaze and fixation images and write it to the video
+    #         final_img = cv2.addWeighted(fix_img, fixation_alpha, gaze_img, 1 - fixation_alpha, 0)
+    #         video_writer.write(final_img)
+    #     video_writer.release()
 
     def display_video(self, subject_id: int, trial_num: int):
         """
