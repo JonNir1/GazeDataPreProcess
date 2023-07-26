@@ -95,9 +95,6 @@ class LWSBaseTrialVisualizer(ABC):
         # Extract the relevant data from the trial:
         timestamps = trial.get_behavioral_data().get(cnst.MICROSECONDS).values / 1000
         corrected_timestamps = timestamps - timestamps[0]  # start from 0
-        min_val, max_val = visutils.get_line_axis_limits(ax, axis='y')  # get the min/max y values (excluding inf/nan)
-        # TODO: find a better way to set lines' bottom and top limits
-
         triggers = trial.get_triggers()
         real_trigger_idxs = np.where((~np.isnan(triggers)) & (triggers != 0))[0]
         trigger_times = corrected_timestamps[real_trigger_idxs]
@@ -108,10 +105,11 @@ class LWSBaseTrialVisualizer(ABC):
         trigger_line_color = kwargs.get('triggers_line_color', 'k')
         trigger_line_width = kwargs.get('trigger_line_width', 4)
         trigger_line_style = kwargs.get('trigger_line_style', ':')
-        ax.vlines(x=trigger_times, ymin=0.95 * min_val, ymax=0.95 * max_val,
+        min_val, max_val = ax.get_ylim()
+        ax.vlines(x=trigger_times, ymin=0.95 * min_val, ymax=0.92 * max_val,
                   color=trigger_line_color, lw=trigger_line_width, ls=trigger_line_style)
-        [ax.text(x=trigger_times[i], y=max_val, s=str(trigger_vals[i]),
-                 fontsize=text_size, ha='center', va='top') for i in range(len(trigger_times))]
+        [ax.text(x=trigger_times[i], y=0.93 * max_val, s=str(trigger_vals[i]),
+                 fontsize=text_size, ha='center', va='bottom') for i in range(len(trigger_times))]
         return ax
 
     @staticmethod
@@ -148,9 +146,9 @@ class LWSBaseTrialVisualizer(ABC):
         event_colors[event_array == cnst.FIXATION] = kwargs.pop("fixation_event_color", "#00ff00")
 
         # Add a horizontal scatter plot to the axes, depicting the events:
-        min_val, max_val = visutils.get_line_axis_limits(ax, axis='y')  # get the min/max y values (excluding inf/nan)
+        min_val, _ = ax.get_ylim()
         event_bar_width = kwargs.get('event_bar_width', 50)
-        event_bar_height = np.full_like(event_array, fill_value=round(max([0, min([0.95 * min_val, min_val - 1])])))
+        event_bar_height = np.full_like(event_array, fill_value=round(min_val - 1))
         ax.scatter(x=corrected_timestamps, y=event_bar_height, c=event_colors, s=event_bar_width, marker="s")
         return ax
 
@@ -185,8 +183,8 @@ class LWSBaseTrialVisualizer(ABC):
                                           xlabel=kwargs.pop("xlabel", ""), ylabel=kwargs.pop("ylabel", ""),
                                           **kwargs)
         if not kwargs.get("hide_axes", False):
-            visutils.set_line_axis_ticks_and_limits(ax=ax, axis='x', text_size=kwargs.get('text_size', 10))
-            visutils.set_line_axis_ticks_and_limits(ax=ax, axis='y', text_size=kwargs.get('text_size', 10))
+            visutils.set_line_axis_ticks(ax=ax, axis='x', text_size=kwargs.get('text_size', 10))
+            visutils.set_line_axis_ticks(ax=ax, axis='y', text_size=kwargs.get('text_size', 10))
         return fig, ax
 
     def __repr__(self) -> str:

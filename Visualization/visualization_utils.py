@@ -204,9 +204,9 @@ def get_line_axis_limits(ax: plt.Axes, axis: str) -> Tuple[float, float]:
     return min_val, max_val
 
 
-def set_line_axis_ticks_and_limits(ax: plt.Axes, axis: str, text_size: int) -> plt.Axes:
+def set_line_axis_ticks(ax: plt.Axes, axis: str, text_size: int) -> plt.Axes:
     """
-    Sets the X/Y axis limits and ticks for the given plt.Axes object, based on the lines in it.
+    Sets the X/Y axis ticks for the given plt.Axes object.
     :param ax: The plt.Axes object to set the properties of.
     :param axis: The axis to set the properties of. Must be either 'x' or 'y'.
     :param text_size: The size of the axis label and ticks.
@@ -217,15 +217,12 @@ def set_line_axis_ticks_and_limits(ax: plt.Axes, axis: str, text_size: int) -> p
     if axis not in ['x', 'y']:
         raise ValueError(f"Invalid axis '{axis}'! Must be either 'x' or 'y'.")
 
-    _, axis_max = get_line_axis_limits(ax, axis=axis)
+    _, axis_max = ax.get_ylim() if axis == 'y' else ax.get_xlim()
     jumps = 2 * np.power(10, max(0, int(np.log10(axis_max)) - 1))
     if axis == 'x':
-        ax.set_xlim(left=int(-0.02 * axis_max), right=int(1.05 * axis_max))
         xticks = [int(val) for val in np.arange(int(axis_max)) if val % jumps == 0]
         ax.set_xticks(ticks=xticks, labels=[str(tck) for tck in xticks], fontsize=text_size)
-
     if axis == 'y':
-        ax.set_ylim(bottom=int(-0.02 * axis_max), top=int(1.05 * axis_max))
         yticks = [int(val) for val in np.arange(int(axis_max)) if val % jumps == 0]
         ax.set_yticks(ticks=yticks, labels=[str(tck) for tck in yticks], fontsize=text_size)
     return ax
