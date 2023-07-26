@@ -44,7 +44,7 @@ def load_subject(subject_id: int, verbose: bool = True) -> LWSSubject:
     subject = LWSSubject.from_pickle(os.path.join(cnfg.OUTPUT_DIR, subdir, f"LWSSubject_{subject_id}.pkl"))
     end = time.time()
     if verbose:
-        print(f"Finished loading subject {subject_id:03d}: {(end - start):.2f} seconds")
+        print(f"Finished loading subject {subject_id}: {(end - start):.2f} seconds")
     return subject
 
 
