@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+import Visualization.visualization_utils as visutils
 from LWS.TrialVisualizer.LWSBaseTrialVisualizer import LWSBaseTrialVisualizer
 from LWS.DataModels.LWSTrial import LWSTrial
 
@@ -41,10 +42,11 @@ class LWSTrialGazeVisualizer(LWSBaseTrialVisualizer):
         corrected_timestamps = timestamps - timestamps[0]  # start from 0
 
         # plot trial data:
-        x_gaze_color = kwargs.get('x_gaze_color', '#f03b20')
-        y_gaze_color = kwargs.get('y_gaze_color', '#20d5f0')
-        ax.plot(corrected_timestamps, x_gaze, color=x_gaze_color, label='X (high is right)')
-        ax.plot(corrected_timestamps, y_gaze, color=y_gaze_color, label='Y (high is down)')
+        kwargs["data_labels"] = ['X (high is right)', 'Y (high is down)']
+        visutils.generic_line_chart(ax=ax,
+                                    xs=[corrected_timestamps, corrected_timestamps],
+                                    ys=[x_gaze, y_gaze],
+                                    **kwargs)
 
         # add other visualizations:
         ax = self._add_trigger_lines(ax=ax, trial=trial, **kwargs)
@@ -57,6 +59,5 @@ class LWSTrialGazeVisualizer(LWSBaseTrialVisualizer):
                                                 **kwargs)
         # save figure:
         if savefig:
-            import Visualization.visualization_utils as visutils
             visutils.save_figure(fig=fig, full_path=self.output_path(trial=trial), **kwargs)
         return fig

@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 
 import constants as cnst
+import Visualization.visualization_utils as visutils
 from LWS.TrialVisualizer.LWSBaseTrialVisualizer import LWSBaseTrialVisualizer
 from LWS.DataModels.LWSTrial import LWSTrial
 
@@ -44,9 +45,11 @@ class LWSTrialTargetDistancesVisualizer(LWSBaseTrialVisualizer):
         distances = bd.get(distance_columns).values
 
         # plot the angular distance for each target:
-        for i, col in enumerate(distance_columns):
-            ax.plot(corrected_timestamps, distances[:, i],
-                    color=kwargs.get('line_color', "rgb"[i]), label=f"Target {i+1}")
+        kwargs["data_labels"] = [f"Target {i+1}" for i in range(len(distance_columns))]
+        visutils.generic_line_chart(ax=ax,
+                                    xs=[corrected_timestamps for _ in range(len(distance_columns))],
+                                    ys=[distances[:, i] for i in range(len(distance_columns))],
+                                    **kwargs)
 
         # add other visualizations:
         ax = self._add_trigger_lines(ax=ax, trial=trial, **kwargs)
@@ -60,7 +63,6 @@ class LWSTrialTargetDistancesVisualizer(LWSBaseTrialVisualizer):
                                               **kwargs)
         # save figure:
         if savefig:
-            import Visualization.visualization_utils as visutils
             visutils.save_figure(fig=fig, full_path=self.output_path(trial=trial), **kwargs)
         return fig
 
