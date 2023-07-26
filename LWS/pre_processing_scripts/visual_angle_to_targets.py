@@ -8,7 +8,7 @@ from LWS.DataModels.LWSTrial import LWSTrial
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 
-def calculate_visual_angle_between_gaze_data_and_targets(trial: LWSTrial) -> np.ndarray:
+def visual_angle_gaze_to_targets(trial: LWSTrial) -> np.ndarray:
     """
     Calculates the visual angle between each gaze datapoint in the trial, and the trial's nearest target.
     Returns np.inf for gaze-points with missing or invalid data.
@@ -24,7 +24,7 @@ def calculate_visual_angle_between_gaze_data_and_targets(trial: LWSTrial) -> np.
     return angular_distances
 
 
-def calculate_visual_angle_between_fixation_and_targets(fix: LWSFixationEvent, trial: LWSTrial) -> float:
+def visual_angle_fixation_to_targets(fix: LWSFixationEvent, trial: LWSTrial) -> float:
     """
     Calculates the visual angle between the fixation's center-of-mass, and the trial's nearest target.
     Returns np.inf if the fixation event's center-of-mass is missing or invalid.

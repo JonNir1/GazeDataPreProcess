@@ -8,7 +8,7 @@ from LWS.DataModels.LWSTrial import LWSTrial
 from LWS.DataModels.LWSSubject import LWSSubject
 
 from LWS.pre_processing_scripts.read_subject import read_subject_from_raw_data
-from LWS.pre_processing_scripts.visual_angle_to_targets import calculate_visual_angle_between_gaze_data_and_targets
+from LWS.pre_processing_scripts.visual_angle_to_targets import visual_angle_gaze_to_targets
 from LWS.pre_processing_scripts.detect_events import detect_all_events
 from LWS.pre_processing_scripts.gen_lws_gaze_events import gen_all_lws_events
 
@@ -61,7 +61,7 @@ def process_trial(trial: LWSTrial, save_pickle: bool = False, **kwargs):
 
     # process raw eye-tracking data
     is_blink, is_saccade, is_fixation = detect_all_events(trial, **kwargs)
-    target_distance = calculate_visual_angle_between_gaze_data_and_targets(trial)
+    target_distance = visual_angle_gaze_to_targets(trial)
     is_event_df = pd.DataFrame({f'is_{cnst.BLINK}': is_blink, f'is_{cnst.SACCADE}': is_saccade,
                                 f'is_{cnst.FIXATION}': is_fixation, f'{cnst.TARGET}_{cnst.DISTANCE}': target_distance},
                                index=bd.index)
