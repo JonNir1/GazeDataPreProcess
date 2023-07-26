@@ -58,25 +58,34 @@ def analyze_subject(subject: LWSSubject, save: bool = False, verbose: bool = Tru
     trials = subject.get_all_trials()
     all_saccades = [s for tr in trials for s in tr.get_gaze_events(cnst.SACCADE)]
     all_fixations = [f for tr in trials for f in tr.get_gaze_events(cnst.FIXATION)]
+    subject_figures_dir = ioutils.create_directory(dirname="subject_figures", parent_dir=subject.output_dir)
 
     trial_summary = trsum.summarize_all_trials(trials)
+    if save:
+        trial_summary.to_pickle(os.path.join(subject.output_dir, "trials_summary.pkl"))
+
     saccade_distributions = sacan.distributions_figure(all_saccades, ignore_outliers=True,
                                                        title="Saccades Property Distributions", show_legend=True)
+    if save:
+        visutils.save_figure(saccade_distributions,
+                             full_path=os.path.join(subject_figures_dir, "saccade distributions.png"))
+
     fixation_distributions = fixan.distributions_figure(all_fixations, ignore_outliers=True,
                                                         title="Fixations Property Distributions", show_legend=True)
+    if save:
+        visutils.save_figure(fixation_distributions,
+                             full_path=os.path.join(subject_figures_dir, "fixation distributions.png"))
+
     fixation_dynamics = fixan.dynamics_figure(all_fixations, ignore_outliers=True,
                                               title="Fixations Temporal Dynamics", show_legend=True)
+    if save:
+        visutils.save_figure(fixation_dynamics,
+                             full_path=os.path.join(subject_figures_dir, "fixation dynamics.png"))
+
     fixation_proximity_comparison = fixan.target_proximal_comparison(all_fixations, ignore_outliers=True,
                                                                      title="Fixations Proximity Comparison",
                                                                      show_legend=True)
     if save:
-        trial_summary.to_pickle(os.path.join(subject.output_dir, "trials_summary.pkl"))
-        subject_figures_dir = ioutils.create_directory(dirname="subject_figures", parent_dir=subject.output_dir)
-        visutils.save_figure(saccade_distributions,
-                             full_path=os.path.join(subject_figures_dir, "saccade distributions.png"))
-        visutils.save_figure(fixation_distributions,
-                             full_path=os.path.join(subject_figures_dir, "fixation distributions.png"))
-        visutils.save_figure(fixation_dynamics, full_path=os.path.join(subject_figures_dir, "fixation dynamics.png"))
         visutils.save_figure(fixation_proximity_comparison,
                              full_path=os.path.join(subject_figures_dir, "target-proximal fixation comparison.png"))
     end = time.time()
