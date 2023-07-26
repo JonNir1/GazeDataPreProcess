@@ -10,6 +10,7 @@ import Visualization.visualization_utils as visutils
 
 def full_pipline(name: str, save: bool = True, verbose: bool = True):
     start = time.time()
+    print(f"Processing subject `{name}`...")
     subject = process_subject(name=name, save=save, verbose=verbose)
     subject = load_subject(subject_id=subject.subject_id, verbose=verbose)
     subject_analysis = analyze_subject(subject=subject, save=save, verbose=verbose)
@@ -32,7 +33,7 @@ def process_subject(name: str, save: bool = False, verbose: bool = True) -> LWSS
                                  drop_outlier_events=False)
     end = time.time()
     if verbose:
-        print(f"Finished preprocessing subject {name}: {(end - start):.2f} seconds")
+        print(f"Finished preprocessing subject `{name}`: {(end - start):.2f} seconds")
     return subject
 
 
@@ -43,7 +44,7 @@ def load_subject(subject_id: int, verbose: bool = True) -> LWSSubject:
     subject = LWSSubject.from_pickle(os.path.join(cnfg.OUTPUT_DIR, subdir, f"LWSSubject_{subject_id}.pkl"))
     end = time.time()
     if verbose:
-        print(f"Finished loading subject {subject_id}: {(end - start):.2f} seconds")
+        print(f"Finished loading subject {subject_id:03d}: {(end - start):.2f} seconds")
     return subject
 
 
