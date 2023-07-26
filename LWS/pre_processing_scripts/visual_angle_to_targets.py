@@ -40,17 +40,17 @@ def calculate_visual_angle_between_fixation_and_targets(fix: LWSFixationEvent, t
     return angular_distance
 
 
-def _calculate_visual_angle_to_target(tx: float, ty: float,
+def _calculate_visual_angle_to_target(target_x: float, target_y: float,
                                       xs: np.ndarray, ys: np.ndarray,
                                       viewer_distance: float) -> np.ndarray:
     """
     Calculate the visual angle (in degrees) between the target and each of the points specified by xs, ys.
-    :param tx, ty: target x, y coordinates
+    :param tx, target_y: target x, y coordinates
     :param xs, ys: arrays of (x, y) coordinates
     """
     if len(xs) != len(ys):
         raise ValueError("x and y must be of the same length")
-    if np.isnan(tx) or np.isnan(ty):
+    if np.isnan(target_x) or np.isnan(target_y):
         raise ValueError("Target coordinates cannot be NaN")
     if not np.isfinite(viewer_distance):
         raise ValueError("Viewer distance must be finite")
@@ -60,7 +60,7 @@ def _calculate_visual_angle_to_target(tx: float, ty: float,
     pixel_size = cnfg.SCREEN_MONITOR.pixel_size
     distances = np.zeros_like(xs)
     for i in range(len(xs)):
-        distances[i] = angle_utils.calculate_visual_angle(p1=(tx, ty), p2=(xs[i], ys[i]),
+        distances[i] = angle_utils.calculate_visual_angle(p1=(target_x, target_y), p2=(xs[i], ys[i]),
                                                           d=viewer_distance, pixel_size=pixel_size,
                                                           use_radians=False)
     return distances
