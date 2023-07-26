@@ -61,13 +61,18 @@ def process_trial(trial: LWSTrial, save_pickle: bool = False, **kwargs):
 
     # process raw eye-tracking data
     is_blink, is_saccade, is_fixation = detect_all_events(trial, **kwargs)
-    target_distance = visual_angle_gaze_to_targets(trial)
     is_event_df = pd.DataFrame({f'is_{cnst.BLINK}': is_blink, f'is_{cnst.SACCADE}': is_saccade,
-                                f'is_{cnst.FIXATION}': is_fixation, f'{cnst.TARGET}_{cnst.DISTANCE}': target_distance},
-                               index=bd.index)
+                                f'is_{cnst.FIXATION}': is_fixation}, index=bd.index)
+
+    # calculate visual angles between gaze and targets
+    target_distances = visual_angle_gaze_to_targets(trial)
+    num_targets, _ = target_distances.shape
+    target_distances_df = pd.DataFrame(
+        {f'{cnst.DISTANCE}_{cnst.TARGET}{i + 1}': target_distances[i] for i in range(num_targets)},
+        index=bd.index)
 
     # add the new columns to the behavioral data:
-    new_behavioral_data = bd.concat(is_event_df)
+    new_behavioral_data = bd.concat(is_event_df, target_distances_df)
     trial.set_behavioral_data(new_behavioral_data)
 
     # process gaze events

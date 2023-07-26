@@ -48,11 +48,11 @@ class LWSBehavioralData:
         # Returns the requested column(s) from the data
         return self.__data[columns]
 
-    def concat(self, extra_data: Union[pd.DataFrame, pd.Series]) -> "LWSBehavioralData":
+    def concat(self, *extra_data: Union[pd.DataFrame, pd.Series]) -> "LWSBehavioralData":
         """
         Concatenates the extra data to the end of the current data, and returns a new LWSBehavioralData object.
         """
-        new_df = pd.concat([self.__data, extra_data], axis=1)
+        new_df = pd.concat([self.__data, *extra_data], axis=1)
         return LWSBehavioralData(new_df)
 
     def __len__(self) -> int:

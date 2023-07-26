@@ -10,17 +10,18 @@ from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 def visual_angle_gaze_to_targets(trial: LWSTrial) -> np.ndarray:
     """
-    Calculates the visual angle between each gaze datapoint in the trial, and the trial's nearest target.
-    Returns np.inf for gaze-points with missing or invalid data.
+    Calculates the visual angle between each gaze datapoint in the trial, and each of the trial's target.
+    Fills with np.inf for gaze-points with missing or invalid data.
+    Returns a 2D array of shape (num_targets, num_gaze_points).
     """
     _ts, xs, ys, _ps = trial.get_raw_gaze_data(eye='dominant')
-    target_data = trial.get_stimulus().get_target_data()
-
-    angular_distances = np.ones_like(xs) * np.inf
+    stimulus = trial.get_stimulus()
+    target_data = stimulus.get_target_data()
+    angular_distances = np.zeros((stimulus.num_targets, len(xs)))
     for i, row in target_data.iterrows():
         tx, ty = row['center_x'], row['center_y']
-        dist = _calculate_visual_angle_to_target(tx, ty, xs, ys, trial.subject.distance_to_screen)
-        angular_distances = np.nanmin([angular_distances, dist], axis=0)
+        dists = _calculate_visual_angle_to_target(tx, ty, xs, ys, trial.subject.distance_to_screen)
+        angular_distances[i] = dists
     return angular_distances
 
 
