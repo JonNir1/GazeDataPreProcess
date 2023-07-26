@@ -63,7 +63,9 @@ def set_figure_properties(fig: Optional[plt.Figure], **kwargs) -> plt.Figure:
     figsize = kwargs.get('figsize', (16, 9))
     fig.set_size_inches(w=figsize[0], h=figsize[1])
     fig.set_dpi(kwargs.get('figure_dpi', 500))
-    fig.suptitle(t=kwargs.get('title', ''), fontsize=kwargs.get('title_size', 18), y=kwargs.get("title_height", 0.95))
+    default_title_height = 1 if len(fig.axes) <= 1 else 0.95
+    fig.suptitle(t=kwargs.get('title', ''), fontsize=kwargs.get('title_size', 18),
+                 y=kwargs.get("title_height", default_title_height))
     if kwargs.get('tight_layout', True):
         fig.tight_layout()
     return fig
@@ -73,7 +75,7 @@ def set_axes_properties(ax: plt.Axes, ax_title: Optional[str],
                         xlabel: Optional[str], ylabel: Optional[str],
                         **kwargs) -> plt.Axes:
     if ax_title:
-        ax.set_title(ax_title, fontsize=kwargs.get("subtitle_size", 16))
+        ax.set_title(ax_title, fontsize=kwargs.get("subtitle_size", 14))
     if xlabel:
         ax.set_xlabel(xlabel, fontsize=kwargs.get("label_size", 12))
     if ylabel:
