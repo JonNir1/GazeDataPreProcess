@@ -96,16 +96,16 @@ def visualize_all_trials(subject: LWSSubject, save: bool = False, verbose: bool 
     for tr in subject.get_all_trials():
         try:
             start_trial = time.time()
-            gaze = LWSTrialGazeVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution,
-                                          output_directory=cnfg.OUTPUT_DIR).visualize(tr, should_save=save)
-            targets = LWSTrialTargetDistancesVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution,
-                                                        output_directory=cnfg.OUTPUT_DIR).visualize(tr, should_save=save)
-            gaze_heatmap = LWSTrialGazeHeatmapVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution,
+            _gaze = LWSTrialGazeVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution,
+                                           output_directory=cnfg.OUTPUT_DIR).visualize(tr, should_save=save)
+            _targets = LWSTrialTargetDistancesVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution,
                                                          output_directory=cnfg.OUTPUT_DIR).visualize(tr, should_save=save)
-            fixation_heatmap = LWSTrialFixationsHeatmapVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution,
-                                                                  output_directory=cnfg.OUTPUT_DIR).visualize(tr, should_save=save)
-            video = LWSTrialVideoVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution,
-                                            output_directory=cnfg.OUTPUT_DIR).visualize(tr, should_save=save)
+            _gaze_heatmap = LWSTrialGazeHeatmapVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution,
+                                                          output_directory=cnfg.OUTPUT_DIR).visualize(tr, should_save=save)
+            _fixation_heatmap = LWSTrialFixationsHeatmapVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution,
+                                                                   output_directory=cnfg.OUTPUT_DIR).visualize(tr, should_save=save)
+            _video = LWSTrialVideoVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution,
+                                             output_directory=cnfg.OUTPUT_DIR).visualize(tr, should_save=save)
             plt.close('all')  # close all open figures from memory
             end_trial = time.time()
             if verbose:
