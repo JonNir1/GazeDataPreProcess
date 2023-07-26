@@ -23,8 +23,8 @@ class LWSBaseTrialVisualizer(ABC):
     def _extension(cls) -> str:
         return ioutils.IMAGE_EXTENSION
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def output_dirname(cls) -> str:
         raise NotImplementedError
 
