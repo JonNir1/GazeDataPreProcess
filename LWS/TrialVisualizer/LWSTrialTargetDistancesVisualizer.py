@@ -13,7 +13,7 @@ class LWSTrialTargetDistancesVisualizer(LWSBaseTrialVisualizer):
     def output_dirname(cls) -> str:
         return "targets_distance"
 
-    def visualize(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
+    def visualize(self, trial: LWSTrial, should_save: bool = True, **kwargs) -> plt.Figure:
         """
         Creates a figure depicting the angular distance (visual angle) between the subject's gaze and all targets
         during the given trial. Overlaid on the figure are vertical lines marking the user-inputs (triggers), and the
@@ -21,7 +21,7 @@ class LWSTrialTargetDistancesVisualizer(LWSBaseTrialVisualizer):
         each sample (fixation, saccade, blink, etc.) as a different color.
 
         :param trial: the trial to visualize.
-        :param savefig: whether to save the figure to disk or not.
+        :param should_save: whether to save the figure to disk or not.
 
         keyword arguments:
             Gazes Related Arguments:
@@ -62,7 +62,7 @@ class LWSTrialTargetDistancesVisualizer(LWSBaseTrialVisualizer):
                                               show_legend=True,
                                               **kwargs)
         # save figure:
-        if savefig:
+        if should_save:
             visutils.save_figure(fig=fig, full_path=self.output_path(trial=trial), **kwargs)
         return fig
 

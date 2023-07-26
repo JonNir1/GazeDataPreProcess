@@ -16,7 +16,7 @@ class LWSTrialBaseHeatmapVisualizer(LWSBaseTrialVisualizer):
     def _calculate_heatmap(self, trial: LWSTrial, **kwargs) -> np.ndarray:
         raise NotImplementedError
 
-    def visualize(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
+    def visualize(self, trial: LWSTrial, should_save: bool = True, **kwargs) -> plt.Figure:
         heatmap = self._calculate_heatmap(trial=trial, **kwargs)
         heatmap[heatmap < np.mean(heatmap)] = np.nan  # remove low values
 
@@ -38,7 +38,7 @@ class LWSTrialBaseHeatmapVisualizer(LWSBaseTrialVisualizer):
                                               show_legend=False, hide_axes=True, **kwargs)
         ax.axis('off')
         # save figure:
-        if savefig:
+        if should_save:
             import Visualization.visualization_utils as visutils
             visutils.save_figure(fig=fig, full_path=self.output_path(trial=trial), **kwargs)
         return fig

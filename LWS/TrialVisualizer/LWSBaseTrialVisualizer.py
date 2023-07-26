@@ -28,6 +28,13 @@ class LWSBaseTrialVisualizer(ABC):
     def output_dirname(cls) -> str:
         raise NotImplementedError
 
+    @abstractmethod
+    def visualize(self, trial: LWSTrial, **kwargs):
+        """
+        Visualizes the given trial and saves the output to a file.
+        """
+        raise NotImplementedError
+
     def output_path(self, trial: LWSTrial) -> str:
         """
         Returns the full path of the output file for the given subject, trial and output type.

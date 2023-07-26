@@ -28,12 +28,13 @@ class LWSTrialVideoVisualizer(LWSBaseTrialVisualizer):
     def output_dirname(cls) -> str:
         return "video"
 
-    def create_video(self, trial: LWSTrial, **kwargs):
+    def visualize(self, trial: LWSTrial, should_save: bool = True, **kwargs):
         """
         Generates a video visualization of the eye-tracking data and behavioral events for the given LWSTrial.
         This video is saved to the path `self.output_directory/subject_id/trial_id.mp4`.
 
         :param trial: The LWSTrial object containing the raw eye-tracking data, the gaze events and behavioral data (triggers).
+        :param should_save: Whether to save the result to the output directory. Defaults to True.
         :param kwargs: Additional keyword arguments for customizing the visualization parameters.
 
         keyword arguments:
@@ -86,9 +87,11 @@ class LWSTrialVideoVisualizer(LWSBaseTrialVisualizer):
         fixation_color: Tuple[int, int, int] = kwargs.get('fixation_color', (40, 140, 255))               # default: orange
         fixation_alpha = kwargs.get('fixation_alpha', 0.5)
 
-        # prepare video writer
-        video_writer = cv2.VideoWriter(self.output_path(trial), self._codec,
-                                       round(trial.sampling_rate), self._screen_resolution)
+        # create a video writer object if should_save is True:
+        video_writer = None
+        if should_save:
+            video_writer = cv2.VideoWriter(self.output_path(trial), self._codec,
+                                           round(trial.sampling_rate), self._screen_resolution)
 
         # create the video:
         circle_center = np.array([np.nan, np.nan])  # to draw a circle around the target
@@ -132,5 +135,11 @@ class LWSTrialVideoVisualizer(LWSBaseTrialVisualizer):
 
             # create a combined image of the gaze and fixation images and write it to the video
             final_img = cv2.addWeighted(fix_img, fixation_alpha, gaze_img, 1 - fixation_alpha, 0)
-            video_writer.write(final_img)
-        video_writer.release()
+            if video_writer is not None:
+                assert should_save
+                video_writer.write(final_img)
+
+        # release the video writer object if should_save is True:
+        if video_writer is not None:
+            assert should_save
+            video_writer.release()

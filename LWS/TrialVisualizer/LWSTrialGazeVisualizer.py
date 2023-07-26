@@ -13,14 +13,14 @@ class LWSTrialGazeVisualizer(LWSBaseTrialVisualizer):
     def output_dirname(cls) -> str:
         return "gaze_figure"
 
-    def visualize(self, trial: LWSTrial, savefig: bool = True, **kwargs) -> plt.Figure:
+    def visualize(self, trial: LWSTrial, should_save: bool = True, **kwargs) -> plt.Figure:
         """
         Creates a figure of the raw gaze data (X, Y coordinates) during the given trial. Overlaid on the figure are
         vertical lines marking the user-inputs (triggers), and the corresponding trigger numbers are written above.
         The top part of the figure shows each sample's gaze event (fixation, saccade, blink, etc.) as a different color.
 
         :param trial: the trial to visualize.
-        :param savefig: whether to save the figure to disk or not.
+        :param should_save: whether to save the figure to disk or not.
 
         keyword arguments:
             Gazes Related Arguments:
@@ -58,6 +58,6 @@ class LWSTrialGazeVisualizer(LWSBaseTrialVisualizer):
                                                 invert_yaxis=True,
                                                 **kwargs)
         # save figure:
-        if savefig:
+        if should_save:
             visutils.save_figure(fig=fig, full_path=self.output_path(trial=trial), **kwargs)
         return fig
