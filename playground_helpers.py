@@ -8,6 +8,18 @@ from LWS.DataModels.LWSSubject import LWSSubject
 import Visualization.visualization_utils as visutils
 
 
+def full_pipline(name: str, save: bool = True, verbose: bool = True):
+    start = time.time()
+    subject = process_subject(name=name, save=save, verbose=verbose)
+    subject = load_subject(subject_id=subject.subject_id, verbose=verbose)
+    subject_analysis = analyze_subject(subject=subject, save=save, verbose=verbose)
+    failed_trials = visualize_all_trials(subject=subject, save=save, verbose=verbose)
+    end = time.time()
+    if verbose:
+        print(f"\nFinished processing subject {name}: {(end - start):.2f} seconds\n###############\n")
+    return subject, subject_analysis, failed_trials
+
+
 def process_subject(name: str, save: bool = False, verbose: bool = True) -> LWSSubject:
     start = time.time()
     import LWS.PreProcessing as pp

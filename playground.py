@@ -19,13 +19,7 @@ import Visualization.visualization_utils as visutils
 # subjects: "GalChen Demo" (001), "Rotem Demo" (002)
 # subject = ph.process_subject(name="GalChen Demo", save=True, verbose=True)
 
-subject = ph.load_subject(subject_id=1, verbose=True)
-
-subject_analysis = ph.analyze_subject(subject, save=True, verbose=True)
-trial_summary, saccade_distributions, fixation_distributions, fixation_dynamics, fixation_proximity_comparison = subject_analysis
-del subject_analysis
-
-ph.visualize_all_trials(subject, save=True, verbose=True)
+subject, subject_analysis, failed_trials = ph.full_pipline(name="GalChen Demo", save=True, verbose=True)
 
 ##########################################
 ### PLAYGROUND  ##########################
