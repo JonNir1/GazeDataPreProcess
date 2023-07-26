@@ -21,12 +21,10 @@ import Visualization.visualization_utils as visutils
 subject1, subject1_analysis, failed_trials1 = ph.full_pipline(name="GalChen Demo", save=True, verbose=True)
 subject2, subject2_analysis, failed_trials2 = ph.full_pipline(name="Rotem Demo", save=True, verbose=True)
 
-# TODO: fix dynamics figures
 
 ##########################################
 ### PLAYGROUND  ##########################
 ##########################################
-
 
 
 
