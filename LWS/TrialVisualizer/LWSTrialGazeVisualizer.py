@@ -56,6 +56,7 @@ class LWSTrialGazeVisualizer(LWSBaseTrialVisualizer):
                                                 subtitle=f"{str(trial)}",
                                                 xlabel='Time (ms)', ylabel='Gaze Position (pixels)',
                                                 invert_yaxis=True,
+                                                show_legend=True,
                                                 **kwargs)
         # save figure:
         if should_save:
