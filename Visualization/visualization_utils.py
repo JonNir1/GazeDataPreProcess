@@ -169,10 +169,20 @@ def generic_line_chart(ax: plt.Axes,
     cmap_name = kwargs.get("cmap", "tab20")
     primary_line_width = kwargs.get("lw", None) or kwargs.get("line_width", None) or kwargs.get("linewidth", 2)
     secondary_line_width = max(1, primary_line_width // 2)
+    min_x, min_y = np.inf, np.inf
+    max_x, max_y = -np.inf, -np.inf
     for i, (x, y) in enumerate(zip(xs, ys)):
         label = data_labels[i] if len(data_labels) > 0 else None
         color = get_rgba_color(color=2*i, cmap_name=cmap_name)
         ax.plot(x, y, label=label, color=color, linewidth=primary_line_width, zorder=i)
+
+        # calculate the min/max values:
+        min_x = min(min_x, np.nanmin(x))
+        max_x = max(max_x, np.nanmax(x))
+        min_y = min(min_y, np.nanmin(y - sems[i])) if len(sems) > 0 else min(min_y, np.nanmin(y))
+        max_y = max(max_y, np.nanmax(y + sems[i])) if len(sems) > 0 else max(max_y, np.nanmax(y))
+
+        # plot the SEMs:
         if len(sems) > 0:
             ax.plot(x, y - sems[i], color=color, linewidth=secondary_line_width, alpha=0.4, zorder=i)
             ax.plot(x, y + sems[i], color=color, linewidth=secondary_line_width, alpha=0.4, zorder=i)
@@ -186,18 +196,35 @@ def generic_line_chart(ax: plt.Axes,
         peak_colors = [get_rgba_color(color=2*i, cmap_name=cmap_name) for i in range(len(xs))]
         ax.vlines(x=peak_xs, ymin=ymin, ymax=ymax, color=peak_colors, lw=secondary_line_width, ls='--')
 
-    # add x-axis ticks and labels:
-    x_max = max([np.max(x[np.isfinite(x)]) for x in xs])
-    jumps = 2 * np.power(10, np.nanmax([0, int(np.log10(x_max)) - 1]))
-    x_ticks = [int(val) for val in np.arange(int(x_max)) if val % jumps == 0]
-    ax.set_xticks(ticks=x_ticks, labels=[str(tck) for tck in x_ticks], fontsize=kwargs.get("text_size", 10))
+    # set axis ticks and labels:
+    _set_axis_ticks(ax=ax, min_val=min_x, max_val=max_x, axis='x', **kwargs)
+    _set_axis_ticks(ax=ax, min_val=min_y, max_val=max_y, axis='y', **kwargs)
+    return ax
 
-    # add y-axis ticks and labels:
-    y_max = max([np.max(y[np.isfinite(y)]) for y in ys])
-    jumps = 2 * np.power(10, np.nanmax([0, int(np.log10(y_max)) - 1]))
-    y_ticks = [int(val) for val in np.arange(int(y_max)) if val % jumps == 0]
-    ax.set_yticks(ticks=y_ticks, labels=[str(tck) for tck in y_ticks], fontsize=kwargs.get("text_size", 10))
 
+def _set_axis_ticks(ax, min_val: float, max_val: float, axis: str, **kwargs):
+    """
+    Sets the ticks of the given axis to the given values.
+    :param ax: The plt.Axes object.
+    :param min_val: The minimum value.
+    :param max_val: The maximum value.
+    :param axis: The axis to set the ticks for. Must be either 'x' or 'y'.
+    :param kwargs: Additional keyword arguments to pass to ax.set_xticks or ax.set_yticks.
+    :raises ValueError: If axis is not 'x' or 'y'.
+    """
+    axis = axis.lower()
+    if axis not in ['x', 'y']:
+        raise ValueError(f"Invalid axis '{axis}'! Must be either 'x' or 'y'.")
+    scale = round(float(np.nan_to_num(np.log10(max_val - min_val) - 1, nan=0)))
+    jumps = 2 * np.power(10., scale)
+    ticks = np.arange(min_val, max_val + jumps, jumps)
+    labels = [np.round(tck, 1 - scale) for tck in ticks]
+    if axis == 'x':
+        ax.set_xticks(ticks=ticks, labels=labels,
+                      fontsize=kwargs.get("text_size", 10), rotation=kwargs.get("rotation", 45))
+    else:
+        ax.set_yticks(ticks=ticks, labels=labels,
+                      fontsize=kwargs.get("text_size", 10), rotation=kwargs.get("rotation", 45))
     return ax
 
 
