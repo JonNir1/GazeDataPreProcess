@@ -149,6 +149,7 @@ def generic_line_chart(ax: plt.Axes,
         - cmap: The colormap to use for the lines. default: plt.cm.get_cmap("tab20").
         - lw/line_width/linewidth: The width of the primary line. default: 2.
         - show_peak: Whether to show the peak of each line. default: False.
+        - text_size: The size of the axis label and ticks. default: 10.
 
     :raises ValueError: if the length of the xs/ys lists is not equal.
             ValueError: if the number of labels is not zero or equal to the number of xs/ys lists.
@@ -176,12 +177,27 @@ def generic_line_chart(ax: plt.Axes,
             ax.plot(x, y - sems[i], color=color, linewidth=secondary_line_width, alpha=0.4, zorder=i)
             ax.plot(x, y + sems[i], color=color, linewidth=secondary_line_width, alpha=0.4, zorder=i)
             ax.fill_between(x, y - sems[i], y + sems[i], color=color, alpha=0.2, zorder=i)
+
+    # add vertical lines to mark peaks:
     if kwargs.get("show_peak", False):
         ymin, ymax = ax.get_ylim()
         peak_idxs = [np.argmax(y) for y in ys]
         peak_xs = [xs[i][peak_idxs[i]] for i in range(len(xs))]
         peak_colors = [get_rgba_color(color=2*i, cmap_name=cmap_name) for i in range(len(xs))]
         ax.vlines(x=peak_xs, ymin=ymin, ymax=ymax, color=peak_colors, lw=secondary_line_width, ls='--')
+
+    # add x-axis ticks and labels:
+    x_max = max([np.max(x[np.isfinite(x)]) for x in xs])
+    jumps = 2 * np.power(10, np.nanmax([0, int(np.log10(x_max)) - 1]))
+    x_ticks = [int(val) for val in np.arange(int(x_max)) if val % jumps == 0]
+    ax.set_xticks(ticks=x_ticks, labels=[str(tck) for tck in x_ticks], fontsize=kwargs.get("text_size", 10))
+
+    # add y-axis ticks and labels:
+    y_max = max([np.max(y[np.isfinite(y)]) for y in ys])
+    jumps = 2 * np.power(10, np.nanmax([0, int(np.log10(y_max)) - 1]))
+    y_ticks = [int(val) for val in np.arange(int(y_max)) if val % jumps == 0]
+    ax.set_yticks(ticks=y_ticks, labels=[str(tck) for tck in y_ticks], fontsize=kwargs.get("text_size", 10))
+
     return ax
 
 
@@ -202,28 +218,3 @@ def get_line_axis_limits(ax: plt.Axes, axis: str) -> Tuple[float, float]:
         min_val = min(min_val, tmp_min)
         max_val = max(max_val, tmp_max)
     return min_val, max_val
-
-
-def set_line_axis_ticks(ax: plt.Axes, axis: str, text_size: int) -> plt.Axes:
-    """
-    Sets the X/Y axis ticks for the given plt.Axes object.
-    :param ax: The plt.Axes object to set the properties of.
-    :param axis: The axis to set the properties of. Must be either 'x' or 'y'.
-    :param text_size: The size of the axis label and ticks.
-
-    :raises ValueError: If axis is not 'x' or 'y'.
-    """
-    axis = axis.lower()
-    if axis not in ['x', 'y']:
-        raise ValueError(f"Invalid axis '{axis}'! Must be either 'x' or 'y'.")
-
-    _, axis_max = ax.get_ylim() if axis == 'y' else ax.get_xlim()
-    jumps = 2 * np.power(10, max(0, int(np.log10(axis_max)) - 1))
-    if axis == 'x':
-        xticks = [int(val) for val in np.arange(int(axis_max)) if val % jumps == 0]
-        ax.set_xticks(ticks=xticks, labels=[str(tck) for tck in xticks], fontsize=text_size)
-    if axis == 'y':
-        yticks = [int(val) for val in np.arange(int(axis_max)) if val % jumps == 0]
-        ax.set_yticks(ticks=yticks, labels=[str(tck) for tck in yticks], fontsize=text_size)
-    return ax
-

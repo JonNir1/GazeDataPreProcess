@@ -182,9 +182,6 @@ class LWSBaseTrialVisualizer(ABC):
         ax = visutils.set_axes_properties(ax=ax, ax_title=kwargs.pop("subtitle", ""),
                                           xlabel=kwargs.pop("xlabel", ""), ylabel=kwargs.pop("ylabel", ""),
                                           **kwargs)
-        if not kwargs.get("hide_axes", False):
-            visutils.set_line_axis_ticks(ax=ax, axis='x', text_size=kwargs.get('text_size', 10))
-            visutils.set_line_axis_ticks(ax=ax, axis='y', text_size=kwargs.get('text_size', 10))
         return fig, ax
 
     def __repr__(self) -> str:
