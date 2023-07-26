@@ -3,6 +3,7 @@ import numpy as np
 from typing import Tuple
 
 
+import constants as cnst
 from Config import experiment_config as cnfg
 from LWS.TrialVisualizer.LWSBaseTrialVisualizer import LWSBaseTrialVisualizer
 import Utils.io_utils as ioutils
