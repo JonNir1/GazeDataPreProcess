@@ -30,6 +30,7 @@ def visual_angle_fixation_to_targets(fix: LWSFixationEvent, trial: LWSTrial) -> 
     Calculates the visual angle between the fixation's center-of-mass, and the trial's nearest target.
     Returns np.inf if the fixation event's center-of-mass is missing or invalid.
     """
+    # TODO: calculate distance to each target separately and return all of them
     x, y = fix.center_of_mass
     target_data = trial.get_stimulus().get_target_data()
 
