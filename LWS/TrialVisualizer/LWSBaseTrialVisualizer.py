@@ -10,6 +10,7 @@ from Config import experiment_config as cnfg
 import Utils.io_utils as ioutils
 import Visualization.visualization_utils as visutils
 from LWS.DataModels.LWSTrial import LWSTrial
+from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 
 class LWSBaseTrialVisualizer(ABC):
@@ -148,9 +149,9 @@ class LWSBaseTrialVisualizer(ABC):
         event_array = trial.get_event_per_sample()
         undefined_event_color = kwargs.pop("undefined_event_color", "#808080")
         event_colors = np.full(shape=len(event_array), fill_value=undefined_event_color, dtype=object)
-        event_colors[event_array == cnst.BLINK] = kwargs.pop("blink_event_color", "#000000")
-        event_colors[event_array == cnst.SACCADE] = kwargs.pop("saccade_event_color", "#0000ff")
-        event_colors[event_array == cnst.FIXATION] = kwargs.pop("fixation_event_color", "#00ff00")
+        event_colors[event_array == GazeEventTypeEnum.BLINK] = kwargs.pop("blink_event_color", "#000000")
+        event_colors[event_array == GazeEventTypeEnum.SACCADE] = kwargs.pop("saccade_event_color", "#0000ff")
+        event_colors[event_array == GazeEventTypeEnum.FIXATION] = kwargs.pop("fixation_event_color", "#00ff00")
 
         # Add a horizontal scatter plot to the axes, depicting the events:
         min_val, _ = ax.get_ylim()
