@@ -32,7 +32,7 @@ class BaseGazeEvent(ABC):
             - duration: event's duration in milliseconds
             - is_outlier: boolean indicating whether the event is an outlier or not
         """
-        return pd.Series(data=[self.event_type(), self.start_time, self.end_time, self.duration, self.is_outlier],
+        return pd.Series(data=[self._EVENT_TYPE.name, self.start_time, self.end_time, self.duration, self.is_outlier],
                          index=["event_type", "start_time", "end_time", "duration", "is_outlier"])
 
     @final
@@ -82,7 +82,8 @@ class BaseGazeEvent(ABC):
         cls.MAX_DURATION = max_duration
 
     def __repr__(self):
-        return f"{self.event_type().capitalize()} ({self.duration:.1f} ms)"
+        event_type = self._EVENT_TYPE.name.capitalize()
+        return f"{event_type} ({self.duration:.1f} ms)"
 
     def __str__(self):
         return self.__repr__()
