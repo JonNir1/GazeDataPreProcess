@@ -7,6 +7,7 @@ import constants as cnst
 from Config import experiment_config as cnfg
 from LWS.DataModels.LWSTrial import LWSTrial
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
+from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 
 def summarize_all_trials(trials: List[LWSTrial], safe=True) -> pd.DataFrame:
@@ -64,7 +65,7 @@ def __summarize_single_trial_unsafe(trial: LWSTrial) -> pd.Series:
     if not trial.is_processed:
         raise RuntimeError(f"Trial {trial} is not processed")
     trial_data = {cnst.TRIAL: trial.trial_num, 'duration': trial.duration}
-    for et in cnfg.EVENT_TYPES:
+    for et in GazeEventTypeEnum:
         events: List[BaseGazeEvent] = trial.get_gaze_events(event_type=et)
         events_count = len(events)
         events_outlier_count = len([e for e in events if e.is_outlier])

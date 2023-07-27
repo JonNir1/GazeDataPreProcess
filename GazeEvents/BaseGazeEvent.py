@@ -68,8 +68,8 @@ class BaseGazeEvent(ABC):
 
     @classmethod
     @final
-    def event_type(cls) -> str:
-        return cls._EVENT_TYPE.name.lower()
+    def event_type(cls) -> GazeEventTypeEnum:
+        return cls._EVENT_TYPE
 
     @classmethod
     @final

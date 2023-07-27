@@ -9,6 +9,7 @@ import Utils.io_utils as ioutils
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
+from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 
 class LWSTrial:
@@ -95,7 +96,9 @@ class LWSTrial:
             raise RuntimeError("Cannot set behavioral data after trial has been processed.")
         self.__behavioral_data = behavioral_data
 
-    def get_gaze_events(self, event_type: Optional[str] = None, ignore_outliers: bool = False) -> List[BaseGazeEvent]:
+    def get_gaze_events(self,
+                        event_type: Optional[GazeEventTypeEnum] = None,
+                        ignore_outliers: bool = False) -> List[BaseGazeEvent]:
         if self.__gaze_events is None:
             return []
         if len(self.__gaze_events) == 0:
@@ -104,7 +107,6 @@ class LWSTrial:
         if event_type is None:
             gaze_events = self.__gaze_events
         else:
-            event_type = event_type.lower()
             gaze_events = list(filter(lambda e: e.event_type() == event_type, self.__gaze_events))
         if not ignore_outliers:
             return gaze_events

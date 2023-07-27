@@ -2,12 +2,11 @@ import cv2
 import numpy as np
 from typing import Tuple
 
-
-import constants as cnst
 from Config import experiment_config as cnfg
-from LWS.TrialVisualizer.LWSBaseTrialVisualizer import LWSBaseTrialVisualizer
 import Utils.io_utils as ioutils
+from LWS.TrialVisualizer.LWSBaseTrialVisualizer import LWSBaseTrialVisualizer
 from LWS.DataModels.LWSTrial import LWSTrial
+from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 
 class LWSTrialVideoVisualizer(LWSBaseTrialVisualizer):
@@ -127,7 +126,7 @@ class LWSTrialVideoVisualizer(LWSBaseTrialVisualizer):
             fix_img = gaze_img.copy()
             if display_fixations:
                 curr_t = timestamps[i]
-                fixations = trial.get_gaze_events(cnst.FIXATION)
+                fixations = trial.get_gaze_events(GazeEventTypeEnum.FIXATION)
                 current_fixations = list(filter(lambda f: f.start_time <= curr_t <= f.end_time, fixations))
                 if len(current_fixations) > 0:
                     curr_fix = current_fixations[0]  # LWSFixationEvent

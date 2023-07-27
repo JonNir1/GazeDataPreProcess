@@ -35,7 +35,7 @@ def summarize_events(events: List[BaseGazeEvent], filter_outliers=False) -> pd.S
     if filter_outliers:
         events: List[BaseGazeEvent] = [e for e in events if not e.is_outlier]
 
-    event_types = np.unique([e.event_type().lower() for e in events])
+    event_types = np.unique([e.event_type() for e in events])
     if len(event_types) != 1:
         # summary of multiple event types
         data = __get_basic_summary_dict(events=events)

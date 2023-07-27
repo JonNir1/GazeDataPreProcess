@@ -1,10 +1,10 @@
 import numpy as np
 from typing import List, Tuple
 
-import constants as cnst
 import Config.experiment_config as cnfg
 from LWS.DataModels.LWSTrial import LWSTrial
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
+from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 
@@ -45,7 +45,7 @@ def __get_target_fixations_previous_events_single_trial(trial: LWSTrial,
     for i, e in enumerate(events):
         if i == len(events) - 1:
             continue
-        if events[i + 1].event_type() != cnst.FIXATION:
+        if events[i + 1].event_type() != GazeEventTypeEnum.FIXATION:
             continue
         next_event: LWSFixationEvent = events[i + 1]
         if next_event.visual_angle_to_target <= cnfg.THRESHOLD_VISUAL_ANGLE:

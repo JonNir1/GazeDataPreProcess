@@ -70,7 +70,7 @@ class LWSTrialFixationsHeatmapVisualizer(LWSTrialBaseHeatmapVisualizer):
     def _calculate_heatmap(self, trial: LWSTrial, **kwargs) -> np.ndarray:
         from typing import List
         from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
-        fixations = trial.get_gaze_events(cnst.FIXATION)
+        fixations = trial.get_gaze_events(event_type=LWSFixationEvent.event_type())
         fixations: List[LWSFixationEvent]
         heatmap = hm.fixations_heatmap(fixations=fixations, screen_resolution=self._screen_resolution)
         return heatmap

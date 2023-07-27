@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import constants as cnst
 import Config.experiment_config as cnfg
 from LWS.DataModels.LWSSubject import LWSSubject
+from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 import Visualization.visualization_utils as visutils
 
 
@@ -56,8 +57,8 @@ def analyze_subject(subject: LWSSubject, save: bool = False, verbose: bool = Tru
     import LWS.analysis_scripts.fixation_analysis as fixan
 
     trials = subject.get_all_trials()
-    all_saccades = [s for tr in trials for s in tr.get_gaze_events(cnst.SACCADE)]
-    all_fixations = [f for tr in trials for f in tr.get_gaze_events(cnst.FIXATION)]
+    all_saccades = [s for tr in trials for s in tr.get_gaze_events(GazeEventTypeEnum.SACCADE)]
+    all_fixations = [f for tr in trials for f in tr.get_gaze_events(GazeEventTypeEnum.FIXATION)]
     subject_figures_dir = ioutils.create_directory(dirname="subject_figures", parent_dir=subject.output_dir)
 
     trial_summary = trsum.summarize_all_trials(trials)
