@@ -20,8 +20,6 @@ VIEWER_DISTANCE = 65  # global variable: distance between subject and screen cen
 
 
 # GAZE DATA & GAZE EVENTS CONFIGURATION
-EVENT_TYPES = [cnst.BLINK, cnst.SACCADE, cnst.FIXATION]
-
 DEFAULT_MINIMUM_SAMPLES_PER_EVENT = 2  # minimum number of samples in an event (saccade, fixation, etc.)
 DEFAULT_INTER_EVENT_TIME = 5  # minimal time between two (same) events in milliseconds (two saccades, two fixations, etc.)
 DEFAULT_MISSING_VALUE = np.nan  # default value indicating missing data in the gaze data (x, y)

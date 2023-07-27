@@ -91,6 +91,6 @@ def __summarize_single_trial_unsafe(trial: LWSTrial) -> pd.Series:
                                                                             np.isfinite(
                                                                                 e.amplitude) and not e.is_outlier])
 
-    trial_data["total_events_count"] = sum([trial_data[f"{et}_count"] for et in cnfg.EVENT_TYPES])
-    trial_data["total_outliers_count"] = sum([trial_data[f"{et}_outlier_count"] for et in cnfg.EVENT_TYPES])
+    trial_data["total_events_count"] = sum([trial_data[f"{et.name.lower()}_count"] for et in GazeEventTypeEnum])
+    trial_data["total_outliers_count"] = sum([trial_data[f"{et.name.lower()}_outlier_count"] for et in GazeEventTypeEnum])
     return pd.Series(trial_data)

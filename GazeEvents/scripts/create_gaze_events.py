@@ -4,10 +4,12 @@ from typing import Optional, List
 
 import constants as cnst
 from Config import experiment_config as cnfg
-from GazeEvents.BaseGazeEvent import BaseGazeEvent
 import Utils.array_utils as au
+from GazeEvents.BaseGazeEvent import BaseGazeEvent
+from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 
+# TODO: use GazeEventTypeEnum instead of strings
 def create_gaze_events(event_type: str, timestamps: np.ndarray, is_event: np.ndarray,
                        x: Optional[np.ndarray] = None, y: Optional[np.ndarray] = None,
                        p: Optional[np.ndarray] = None, viewer_distance: Optional[float] = None) -> List[BaseGazeEvent]:
@@ -34,7 +36,7 @@ def create_gaze_events(event_type: str, timestamps: np.ndarray, is_event: np.nda
         raise ValueError("Arrays of `timestamps` and `is_event` must have the same length")
 
     event_type = event_type.lower()
-    allowed_event_types = cnfg.EVENT_TYPES
+    allowed_event_types = [et.name.lower() for et in GazeEventTypeEnum]
     if event_type not in allowed_event_types:
         raise ValueError(f"Attempting to extract unknown event type {event_type}. "
                          f"Argument event_type must be one of {str(allowed_event_types)}")
