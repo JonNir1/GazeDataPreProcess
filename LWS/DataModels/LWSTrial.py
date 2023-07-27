@@ -95,16 +95,16 @@ class LWSTrial:
             raise RuntimeError("Cannot set behavioral data after trial has been processed.")
         self.__behavioral_data = behavioral_data
 
-    def get_gaze_events(self, event_type: str = cnst.ALL, ignore_outliers: bool = False) -> List[BaseGazeEvent]:
+    def get_gaze_events(self, event_type: Optional[str] = None, ignore_outliers: bool = False) -> List[BaseGazeEvent]:
         if self.__gaze_events is None:
             return []
         if len(self.__gaze_events) == 0:
             return []
 
-        event_type = event_type.lower()
-        if event_type == cnst.ALL:
+        if event_type is None:
             gaze_events = self.__gaze_events
         else:
+            event_type = event_type.lower()
             gaze_events = list(filter(lambda e: e.event_type() == event_type, self.__gaze_events))
         if not ignore_outliers:
             return gaze_events
@@ -113,7 +113,7 @@ class LWSTrial:
     def set_gaze_events(self, gaze_events: List[BaseGazeEvent]):
         if self.is_processed:
             raise RuntimeError("Cannot set gaze events after trial has been processed.")
-        ge = self.get_gaze_events(event_type=cnst.ALL)
+        ge = self.get_gaze_events()
         if len(ge) > 0:
             w.warn("Overwriting existing gaze events.")
         self.__gaze_events = sorted(gaze_events, key=lambda e: e.start_time)
@@ -162,7 +162,7 @@ class LWSTrial:
         """
         timestamps, _, _, _ = self.get_raw_gaze_data()
         events = np.full(timestamps.shape, cnst.UNDEFINED)
-        for ev in self.get_gaze_events(event_type=cnst.ALL):
+        for ev in self.get_gaze_events():
             events[(ev.start_time <= timestamps) & (timestamps <= ev.end_time)] = ev.event_type()
         return events
 
@@ -195,8 +195,8 @@ class LWSTrial:
         if not self_bdata == other_bdata:
             return False
 
-        self_gaze_events = self.get_gaze_events(event_type=cnst.ALL)
-        other_gaze_events = other.get_gaze_events(event_type=cnst.ALL)
+        self_gaze_events = self.get_gaze_events()
+        other_gaze_events = other.get_gaze_events()
         if not len(self_gaze_events) == len(other_gaze_events):
             return False
         for i in range(len(self_gaze_events)):
