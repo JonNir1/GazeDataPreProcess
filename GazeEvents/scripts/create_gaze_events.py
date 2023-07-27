@@ -9,15 +9,15 @@ from GazeEvents.BaseGazeEvent import BaseGazeEvent
 from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 
-# TODO: use GazeEventTypeEnum instead of strings
-def create_gaze_events(event_type: str, timestamps: np.ndarray, is_event: np.ndarray,
+
+def create_gaze_events(event_type: GazeEventTypeEnum, timestamps: np.ndarray, is_event: np.ndarray,
                        x: Optional[np.ndarray] = None, y: Optional[np.ndarray] = None,
                        p: Optional[np.ndarray] = None, viewer_distance: Optional[float] = None) -> List[BaseGazeEvent]:
     """
     Splits `timestamps` to chunks of timestamps that are part of the same event, based on `is_event`. Then, for each
     chunk, creates a GazeEvent object of the given type and returns a list of all the events (ordered by start time).
 
-    :param event_type: type of event to extract. Must be one of 'blink', 'saccade' or 'fixation'
+    :param event_type: type of event to extract
     :param timestamps: array of timestamps
     :param is_event: array of booleans indicating whether a sample is part of the event or not
     :param x: array of x coordinates, used when extracting saccades or fixations
@@ -35,27 +35,26 @@ def create_gaze_events(event_type: str, timestamps: np.ndarray, is_event: np.nda
     if len(timestamps) != len(is_event):
         raise ValueError("Arrays of `timestamps` and `is_event` must have the same length")
 
-    event_type = event_type.lower()
     allowed_event_types = [et.name.lower() for et in GazeEventTypeEnum]
     if event_type not in allowed_event_types:
         raise ValueError(f"Attempting to extract unknown event type {event_type}. "
                          f"Argument event_type must be one of {str(allowed_event_types)}")
-    if event_type in [cnst.SACCADE, cnst.FIXATION] and (x is None or y is None):
+    if event_type in [GazeEventTypeEnum.SACCADE, GazeEventTypeEnum.FIXATION] and (x is None or y is None):
         raise ValueError(f"Attempting to extract {event_type} without providing x and y coordinates")
 
     different_event_idxs = au.get_chunk_indices(is_event, min_length=cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT)
     events_list = []
-    if event_type == cnst.BLINK:
+    if event_type == GazeEventTypeEnum.BLINK:
         from GazeEvents.BlinkEvent import BlinkEvent
         events_list = [BlinkEvent(timestamps=timestamps[idxs])
                        for idxs in different_event_idxs]
 
-    if event_type == cnst.SACCADE:
+    if event_type == GazeEventTypeEnum.SACCADE:
         from GazeEvents.SaccadeEvent import SaccadeEvent
         events_list = [SaccadeEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], viewer_distance=viewer_distance)
                        for idxs in different_event_idxs]
 
-    if event_type == cnst.FIXATION:
+    if event_type == GazeEventTypeEnum.FIXATION:
         from GazeEvents.FixationEvent import FixationEvent
         events_list = [FixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs],
                                      pupil=p[idxs], viewer_distance=viewer_distance)

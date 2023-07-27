@@ -43,7 +43,7 @@ def _gen_lws_gaze_events(event_type: GazeEventTypeEnum, trial: LWSTrial) -> List
     if event_type == GazeEventTypeEnum.BLINK:
         # use generic gaze events
         from GazeEvents.scripts.create_gaze_events import create_gaze_events
-        blinks_list = create_gaze_events(event_type=cnst.BLINK, timestamps=timestamps, is_event=is_event)
+        blinks_list = create_gaze_events(event_type=event_type, timestamps=timestamps, is_event=is_event)
         return blinks_list
 
     separate_event_idxs = au.get_chunk_indices(is_event, min_length=cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT)
