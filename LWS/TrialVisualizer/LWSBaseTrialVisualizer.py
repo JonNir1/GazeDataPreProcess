@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 from abc import ABC, abstractmethod
-from typing import Tuple, List
+from typing import Tuple
 
 import constants as cnst
 from Config import experiment_config as cnfg
@@ -145,9 +145,9 @@ class LWSBaseTrialVisualizer(ABC):
         corrected_timestamps = timestamps - timestamps[0]  # start from 0
 
         # create an array of colors per sample, depicting the events:
-        event_array = trial.get_event_per_sample_array()
+        event_array = trial.get_event_per_sample()
         undefined_event_color = kwargs.pop("undefined_event_color", "#808080")
-        event_colors = np.full(shape=event_array.shape, fill_value=undefined_event_color, dtype=object)
+        event_colors = np.full(shape=len(event_array), fill_value=undefined_event_color, dtype=object)
         event_colors[event_array == cnst.BLINK] = kwargs.pop("blink_event_color", "#000000")
         event_colors[event_array == cnst.SACCADE] = kwargs.pop("saccade_event_color", "#0000ff")
         event_colors[event_array == cnst.FIXATION] = kwargs.pop("fixation_event_color", "#00ff00")

@@ -158,15 +158,15 @@ class LWSTrial:
         """ Returns the trigger values for this trial. """
         return self.__behavioral_data.get(cnst.TRIGGER).values
 
-    def get_event_per_sample_array(self) -> np.ndarray:
+    def get_event_per_sample(self) -> List[GazeEventTypeEnum]:
         """
-        Returns an array identifying each sample as belonging to a particular event, based on the trial's `gaze_events`.
+        Returns a list identifying each sample as belonging to a particular event, based on the trial's `gaze_events`.
         """
         timestamps, _, _, _ = self.get_raw_gaze_data()
         events = np.full(timestamps.shape, GazeEventTypeEnum.UNDEFINED)
         for ev in self.get_gaze_events():
             events[(ev.start_time <= timestamps) & (timestamps <= ev.end_time)] = ev.event_type()
-        return events
+        return list(events)
 
     def to_pickle(self, output_dir: Optional[str] = None) -> str:
         subject_dir = ioutils.create_subject_output_directory(subject_id=self.subject.subject_id,
