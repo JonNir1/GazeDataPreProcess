@@ -9,7 +9,6 @@ from GazeEvents.BaseGazeEvent import BaseGazeEvent
 from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 
-
 def create_gaze_events(event_type: GazeEventTypeEnum, timestamps: np.ndarray, is_event: np.ndarray,
                        x: Optional[np.ndarray] = None, y: Optional[np.ndarray] = None,
                        p: Optional[np.ndarray] = None, viewer_distance: Optional[float] = None) -> List[BaseGazeEvent]:
