@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import numpy as np
 import pandas as pd
-from typing import List
+from typing import List, final
 
 from Config import experiment_config as cnfg
 
@@ -45,6 +45,7 @@ class BaseGazeEvent(ABC):
         # Event's duration in milliseconds
         return self.end_time - self.start_time
 
+    @final
     @property
     def is_outlier(self) -> bool:
         return len(self.get_outlier_reasons()) > 0

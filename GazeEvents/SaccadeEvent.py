@@ -15,13 +15,6 @@ class SaccadeEvent(BaseVisualGazeEvent):
         return cnst.SACCADE
 
     @property
-    def is_outlier(self) -> bool:
-        if self.duration < cnfg.DEFAULT_SACCADE_MINIMUM_DURATION:
-            return True
-        # TODO: check min, max velocity
-        return False
-
-    @property
     def start_point(self) -> Tuple[float, float]:
         # returns the saccade's start point as a tuple of the X,Y coordinates
         return self._x[0], self._y[0]
