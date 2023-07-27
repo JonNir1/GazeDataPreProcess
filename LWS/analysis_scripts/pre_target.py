@@ -39,7 +39,7 @@ def __get_target_fixations_previous_events_single_trial(trial: LWSTrial,
     """
     if not np.isfinite(proximity_threshold) or proximity_threshold <= 0:
         raise ValueError(f"Invalid proximity threshold: {proximity_threshold}")
-    events = trial.get_gaze_events(event_type=None)
+    events = trial.get_gaze_events()
     proximal_fixation_previous_events = []
     marking_fixation_previous_events = []
     for i, e in enumerate(events):
