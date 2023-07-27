@@ -1,6 +1,7 @@
 from abc import ABC
 import numpy as np
 import pandas as pd
+from typing import final
 
 import Utils.array_utils as au
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
@@ -23,16 +24,19 @@ class BaseVisualGazeEvent(BaseGazeEvent, ABC):
         self._y = y
         self._velocities = self.__calculate_velocities()
 
+    @final
     @property
     def max_velocity(self) -> float:
         """ Returns the maximum velocity of the event in pixels per second """
         return float(np.nanmax(self._velocities)) * 1000
 
+    @final
     @property
     def mean_velocity(self) -> float:
         """ Returns the mean velocity of the event in pixels per second """
         return float(np.nanmean(self._velocities)) * 1000
 
+    @final
     def get_timestamps(self, round_decimals: int = 1, zero_corrected: bool = True) -> np.ndarray:
         """
         Returns the timestamps of the event, rounded to the specified number of decimals.
@@ -44,6 +48,7 @@ class BaseVisualGazeEvent(BaseGazeEvent, ABC):
         timestamps = np.round(timestamps, decimals=round_decimals)
         return timestamps
 
+    @final
     def get_velocity_series(self, round_decimals: int = 1, zero_corrected: bool = True) -> pd.Series:
         """
         Returns a pandas Series with the event's velocities (px/s) and indexed by timestamps, rounded to the specified

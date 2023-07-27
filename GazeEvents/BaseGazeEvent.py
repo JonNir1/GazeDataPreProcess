@@ -30,16 +30,19 @@ class BaseGazeEvent(ABC):
         return pd.Series(data=[self.event_type(), self.start_time, self.end_time, self.duration, self.is_outlier],
                          index=["event_type", "start_time", "end_time", "duration", "is_outlier"])
 
+    @final
     @property
     def start_time(self) -> float:
         # Event's start time in milliseconds
         return self._timestamps[0]
 
+    @final
     @property
     def end_time(self) -> float:
         # Event's end time in milliseconds
         return self._timestamps[-1]
 
+    @final
     @property
     def duration(self) -> float:
         # Event's duration in milliseconds
