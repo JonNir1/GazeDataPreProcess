@@ -163,7 +163,7 @@ class LWSTrial:
         Returns an array identifying each sample as belonging to a particular event, based on the trial's `gaze_events`.
         """
         timestamps, _, _, _ = self.get_raw_gaze_data()
-        events = np.full(timestamps.shape, cnst.UNDEFINED)
+        events = np.full(timestamps.shape, GazeEventTypeEnum.UNDEFINED)
         for ev in self.get_gaze_events():
             events[(ev.start_time <= timestamps) & (timestamps <= ev.end_time)] = ev.event_type()
         return events
