@@ -74,7 +74,7 @@ def __summarize_single_trial_unsafe(trial: LWSTrial) -> pd.Series:
         trial_data[f"{et}_mean_duration"] = np.nanmean([e.duration for e in events])
         trial_data[f"{et}_mean_duration_no_outliers"] = np.nanmean([e.duration for e in events if not e.is_outlier])
 
-        if et == cnst.FIXATION:
+        if et == GazeEventTypeEnum.FIXATION:
             from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
             events: List[LWSFixationEvent]
             trial_data[f"{et}_mean_distance_to_target"] = np.nanmean([e.visual_angle_to_target for e in events if
@@ -82,7 +82,7 @@ def __summarize_single_trial_unsafe(trial: LWSTrial) -> pd.Series:
             trial_data[f"{et}_mean_distance_to_target_no_outliers"] = np.nanmean(
                 [e.visual_angle_to_target for e in events if
                  np.isfinite(e.visual_angle_to_target) and not e.is_outlier])
-        elif et == cnst.SACCADE:
+        elif et == GazeEventTypeEnum.SACCADE:
             from GazeEvents.SaccadeEvent import SaccadeEvent
             events: List[SaccadeEvent]
             trial_data[f"{et}_mean_visual_angle"] = np.nanmean(

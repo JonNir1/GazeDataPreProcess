@@ -23,6 +23,3 @@ LEFT_PUPIL = "left_pupil"
 RIGHT_X = "right_x"
 RIGHT_Y = "right_y"
 RIGHT_PUPIL = "right_pupil"
-
-SACCADE = "saccade"
-FIXATION = "fixation"
