@@ -24,6 +24,5 @@ RIGHT_X = "right_x"
 RIGHT_Y = "right_y"
 RIGHT_PUPIL = "right_pupil"
 
-BLINK = "blink"
 SACCADE = "saccade"
 FIXATION = "fixation"
