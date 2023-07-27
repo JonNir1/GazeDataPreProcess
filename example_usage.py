@@ -4,6 +4,7 @@ import numpy as np
 
 import constants as cnst
 from Config import experiment_config as cnfg
+from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 from Utils.calculate_sampling_rate import calculate_sampling_rate_from_microseconds
 from DataParser.scripts.parse_eye_tracker import parse_eye_tracker
@@ -28,8 +29,11 @@ is_blink, is_saccade, is_fixation = detect_all_events(x=np.vstack((x_l, x_r)), y
                                                       blink_detector_type="missing_data",
                                                       saccade_detector_type="engbert")
 
-blinks_summary = gen_gaze_events_summary(event_type="blink", timestamps=microseconds, is_event=is_blink,)
-saccades_summary = gen_gaze_events_summary(event_type="saccade", timestamps=microseconds, is_event=is_saccade, x=x_l, y=y_l)
-fixations_summary = gen_gaze_events_summary(event_type="fixation", timestamps=microseconds, is_event=is_fixation, x=x_l, y=y_l)
+blinks_summary = gen_gaze_events_summary(event_type=GazeEventTypeEnum.BLINK,
+                                         timestamps=microseconds, is_event=is_blink,)
+saccades_summary = gen_gaze_events_summary(event_type=GazeEventTypeEnum.SACCADE,
+                                           timestamps=microseconds, is_event=is_saccade, x=x_l, y=y_l)
+fixations_summary = gen_gaze_events_summary(event_type=GazeEventTypeEnum.FIXATION,
+                                            timestamps=microseconds, is_event=is_fixation, x=x_l, y=y_l)
 
 # profit!

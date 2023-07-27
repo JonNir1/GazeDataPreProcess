@@ -65,7 +65,7 @@ def create_gaze_events(event_type: str, timestamps: np.ndarray, is_event: np.nda
     return events_list
 
 
-def gen_gaze_events_summary(event_type: str,
+def gen_gaze_events_summary(event_type: GazeEventTypeEnum,
                             timestamps: np.ndarray, is_event: np.ndarray,
                             x: Optional[np.ndarray] = None, y: Optional[np.ndarray] = None) -> pd.DataFrame:
     """
@@ -76,5 +76,6 @@ def gen_gaze_events_summary(event_type: str,
 
     :return: pandas DataFrame with the events' summary information
     """
-    events_list = create_gaze_events(event_type=event_type, timestamps=timestamps, is_event=is_event, x=x, y=y)
+    events_list = create_gaze_events(event_type=event_type.name.lower(),
+                                     timestamps=timestamps, is_event=is_event, x=x, y=y)
     return pd.concat([event.to_series() for event in events_list], axis=1).T
