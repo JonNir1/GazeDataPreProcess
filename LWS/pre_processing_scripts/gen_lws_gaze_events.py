@@ -39,23 +39,22 @@ def _gen_lws_gaze_events(event_type: GazeEventTypeEnum, trial: LWSTrial) -> List
     :raises: ValueError: if `event_type` is not one of 'blink', 'saccade' or 'fixation'
     """
     timestamps, x, y, p, is_event = __extract_raw_event_arrays(trial=trial, event_type=event_type)
-
-    if event_type == GazeEventTypeEnum.BLINK:
-        # use generic gaze events
-        from GazeEvents.scripts.create_gaze_events import create_gaze_events
-        blinks_list = create_gaze_events(event_type=event_type, timestamps=timestamps, is_event=is_event)
-        return blinks_list
-
     separate_event_idxs = au.get_chunk_indices(is_event, min_length=cnfg.DEFAULT_MINIMUM_SAMPLES_PER_EVENT)
     viewer_distance = trial.subject.distance_to_screen
+
+    if event_type == GazeEventTypeEnum.BLINK:
+        # create BlinkEvents
+        from GazeEvents.BlinkEvent import BlinkEvent
+        blinks_list = [BlinkEvent(timestamps=timestamps[idxs]) for idxs in au.get_chunk_indices(is_event)]
+        return blinks_list
 
     if event_type == GazeEventTypeEnum.SACCADE:
         # create SaccadeEvents
         from GazeEvents.SaccadeEvent import SaccadeEvent
-        saccades_list = []
-        for idxs in separate_event_idxs:
-            sacc = SaccadeEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], viewer_distance=viewer_distance)
-            saccades_list.append(sacc)
+        saccades_list = [
+            SaccadeEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], viewer_distance=viewer_distance)
+            for idxs in separate_event_idxs
+        ]
         return saccades_list
 
     if event_type == GazeEventTypeEnum.FIXATION:
