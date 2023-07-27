@@ -4,6 +4,7 @@ from typing import List, Dict
 
 import constants as cnst
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
+from GazeEvents.BlinkEvent import BlinkEvent
 from GazeEvents.SaccadeEvent import SaccadeEvent
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
@@ -35,24 +36,24 @@ def summarize_events(events: List[BaseGazeEvent], filter_outliers=False) -> pd.S
     if filter_outliers:
         events: List[BaseGazeEvent] = [e for e in events if not e.is_outlier]
 
-    event_types = np.unique([e.event_type() for e in events])
+    event_types = set([e.event_type() for e in events])
     if len(event_types) != 1:
         # summary of multiple event types
         data = __get_basic_summary_dict(events=events)
         return pd.Series(data)
 
     # summary of single event type
-    event_type = event_types[0]
-    if event_type == cnst.BLINK:
+    event_type = event_types.pop()
+    if event_type == BlinkEvent.event_type():
         data = __get_basic_summary_dict(events=events)
         return pd.Series(data)
 
-    if event_type == cnst.SACCADE:
+    if event_type == SaccadeEvent.event_type():
         events: List[SaccadeEvent]
         data = __get_saccade_summary_dict(saccades=events)
         return pd.Series(data)
 
-    if event_type == cnst.FIXATION:
+    if event_type == LWSFixationEvent.event_type():
         events: List[LWSFixationEvent]
         data = __get_fixation_summary_dict(fixations=events)
         return pd.Series(data)
