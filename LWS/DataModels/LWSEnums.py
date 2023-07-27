@@ -8,16 +8,16 @@ class LWSStimulusTypeEnum(StrEnum):
 
 
 class LWSSubjectSexEnum(StrEnum):
-    Male = 'Male'
-    Female = 'Female'
-    Other = 'Other'
+    Male = 'male'
+    Female = 'female'
+    Other = 'other'
 
 
 class LWSSubjectDominantHandEnum(StrEnum):
-    Right = 'Right'
-    Left = 'Left'
+    Right = 'right'
+    Left = 'left'
 
 
 class LWSSubjectDominantEyeEnum(StrEnum):
-    Right = 'Right'
-    Left = 'Left'
+    Right = 'right'
+    Left = 'left'
