@@ -5,9 +5,11 @@ from typing import List, final
 
 import constants as cnst
 from Config import experiment_config as cnfg
+from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 
 class BaseGazeEvent(ABC):
+    _EVENT_TYPE: GazeEventTypeEnum
     MIN_DURATION: float = 1      # minimum duration of an event in milliseconds
     MAX_DURATION: float = 10000  # maximum duration of an event in milliseconds
 
@@ -57,9 +59,9 @@ class BaseGazeEvent(ABC):
         return len(self.get_outlier_reasons()) > 0
 
     @classmethod
-    @abstractmethod
+    @final
     def event_type(cls) -> str:
-        raise NotImplementedError
+        return cls._EVENT_TYPE.name.lower()
 
     def get_outlier_reasons(self) -> List[str]:
         reasons = []

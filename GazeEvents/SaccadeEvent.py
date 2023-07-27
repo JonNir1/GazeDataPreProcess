@@ -2,19 +2,16 @@ import numpy as np
 import pandas as pd
 from typing import Tuple
 
-import constants as cnst
 from Config import experiment_config as cnfg
 from Utils import angle_utils as angle_utils
 from GazeEvents.BaseVisualGazeEvent import BaseVisualGazeEvent
+from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 
 class SaccadeEvent(BaseVisualGazeEvent):
+    _EVENT_TYPE = GazeEventTypeEnum.SACCADE
     MIN_DURATION = 5  # minimum duration of a saccade in milliseconds
     MAX_DURATION = 500  # maximum duration of a saccade in milliseconds
-
-    @classmethod
-    def event_type(cls):
-        return cnst.SACCADE
 
     @property
     def start_point(self) -> Tuple[float, float]:

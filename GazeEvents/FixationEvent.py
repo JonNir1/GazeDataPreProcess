@@ -2,22 +2,18 @@ import numpy as np
 import pandas as pd
 from typing import Tuple
 
-import constants as cnst
-from Config import experiment_config as cnfg
 from GazeEvents.BaseVisualGazeEvent import BaseVisualGazeEvent
+from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 
 class FixationEvent(BaseVisualGazeEvent):
+    _EVENT_TYPE = GazeEventTypeEnum.FIXATION
     MIN_DURATION = 55  # minimum duration of a fixation in milliseconds
     MAX_DURATION = 2000  # maximum duration of a fixation in milliseconds
 
     def __init__(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray, pupil: np.ndarray, viewer_distance: float):
         super().__init__(timestamps=timestamps, x=x, y=y, viewer_distance=viewer_distance)
         self._pupil: np.ndarray = pupil  # pupil size (in mm)
-
-    @classmethod
-    def event_type(cls) -> str:
-        return cnst.FIXATION
 
     @property
     def center_of_mass(self) -> Tuple[float, float]:
