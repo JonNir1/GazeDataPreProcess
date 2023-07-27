@@ -3,10 +3,13 @@ import numpy as np
 import pandas as pd
 from typing import List, final
 
+import constants as cnst
 from Config import experiment_config as cnfg
 
 
 class BaseGazeEvent(ABC):
+    MIN_DURATION: float = 1      # minimum duration of an event in milliseconds
+    MAX_DURATION: float = 10000  # maximum duration of an event in milliseconds
 
     def __init__(self, timestamps: np.ndarray):
         # set instance attributes:
@@ -59,7 +62,22 @@ class BaseGazeEvent(ABC):
         raise NotImplementedError
 
     def get_outlier_reasons(self) -> List[str]:
-        return []
+        reasons = []
+        if self.duration < self.MIN_DURATION:
+            reasons.append(f"min_{cnst.DURATION}")
+        if self.duration > self.MAX_DURATION:
+            reasons.append(f"max_{cnst.DURATION}")
+        return reasons
+
+    @classmethod
+    @final
+    def set_min_duration(cls, min_duration: float):
+        cls.MIN_DURATION = min_duration
+
+    @classmethod
+    @final
+    def set_max_duration(cls, max_duration: float):
+        cls.MAX_DURATION = max_duration
 
     def __repr__(self):
         return f"{self.event_type().capitalize()} ({self.duration:.1f} ms)"

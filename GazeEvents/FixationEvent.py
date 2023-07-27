@@ -8,6 +8,8 @@ from GazeEvents.BaseVisualGazeEvent import BaseVisualGazeEvent
 
 
 class FixationEvent(BaseVisualGazeEvent):
+    MIN_DURATION = 55  # minimum duration of a fixation in milliseconds
+    MAX_DURATION = 2000  # maximum duration of a fixation in milliseconds
 
     def __init__(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray, pupil: np.ndarray, viewer_distance: float):
         super().__init__(timestamps=timestamps, x=x, y=y, viewer_distance=viewer_distance)
@@ -50,9 +52,7 @@ class FixationEvent(BaseVisualGazeEvent):
         return float(np.nanstd(self._pupil))
 
     def get_outlier_reasons(self):
-        reasons = []
-        if self.duration < cnfg.DEFAULT_FIXATION_MINIMUM_DURATION:
-            reasons.append(cnst.DURATION)
+        reasons = super().get_outlier_reasons()
         # TODO: check max velocity, acceleration, dispersion
         # TODO: check if inside the screen
         return reasons

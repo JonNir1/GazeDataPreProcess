@@ -9,6 +9,8 @@ from GazeEvents.BaseVisualGazeEvent import BaseVisualGazeEvent
 
 
 class SaccadeEvent(BaseVisualGazeEvent):
+    MIN_DURATION = 5  # minimum duration of a saccade in milliseconds
+    MAX_DURATION = 500  # maximum duration of a saccade in milliseconds
 
     @classmethod
     def event_type(cls):
@@ -44,9 +46,7 @@ class SaccadeEvent(BaseVisualGazeEvent):
         return angle_utils.calculate_azimuth(p1=self.start_point, p2=self.end_point, use_radians=False)
 
     def get_outlier_reasons(self):
-        reasons = []
-        if self.duration < cnfg.DEFAULT_SACCADE_MINIMUM_DURATION:
-            reasons.append(cnst.DURATION)
+        reasons = super().get_outlier_reasons()
         # TODO: check min, max velocity
         return reasons
 
