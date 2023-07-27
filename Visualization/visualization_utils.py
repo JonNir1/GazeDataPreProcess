@@ -88,7 +88,6 @@ def set_axes_properties(ax: plt.Axes, ax_title: Optional[str],
         ax.axis("off")
         return ax
     ax.tick_params(axis='both', which='major', labelsize=text_size)
-    # TODO: control tick values and labels
     if kwargs.get('invert_yaxis', False):
         # invert y-axis to match the screen coordinates:
         ax.invert_yaxis()
