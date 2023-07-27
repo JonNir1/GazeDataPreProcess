@@ -58,11 +58,6 @@ class BaseGazeEvent(ABC):
     def is_outlier(self) -> bool:
         return len(self.get_outlier_reasons()) > 0
 
-    @classmethod
-    @final
-    def event_type(cls) -> str:
-        return cls._EVENT_TYPE.name.lower()
-
     def get_outlier_reasons(self) -> List[str]:
         reasons = []
         if self.duration < self.MIN_DURATION:
@@ -70,6 +65,11 @@ class BaseGazeEvent(ABC):
         if self.duration > self.MAX_DURATION:
             reasons.append(f"max_{cnst.DURATION}")
         return reasons
+
+    @classmethod
+    @final
+    def event_type(cls) -> str:
+        return cls._EVENT_TYPE.name.lower()
 
     @classmethod
     @final
