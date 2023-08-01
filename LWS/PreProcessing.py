@@ -63,7 +63,7 @@ def process_trial(trial: LWSTrial, save_pickle: bool = False, **kwargs):
     is_blink, is_saccade, is_fixation = detect_all_events(trial, **kwargs)
     is_event_df = pd.DataFrame({f'is_{GazeEventTypeEnum.BLINK.name.lower()}': is_blink,
                                 f'is_{GazeEventTypeEnum.SACCADE.name.lower()}': is_saccade,
-                                f'is_{GazeEventTypeEnum.FIXATION.name.lower}': is_fixation},
+                                f'is_{GazeEventTypeEnum.FIXATION.name.lower()}': is_fixation},
                                index=bd.index)
 
     # calculate visual angles between gaze and targets
