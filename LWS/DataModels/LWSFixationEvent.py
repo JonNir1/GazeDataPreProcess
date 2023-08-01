@@ -72,7 +72,9 @@ class LWSFixationEvent(FixationEvent):
     def __eq__(self, other):
         if not super().__eq__(other):
             return False
-        if not np.array_equal(self.__triggers, other.__triggers, equal_nan=True):
+        if not np.array_equal(self.get_triggers_with_timestamps(),
+                              other.get_triggers_with_timestamps(),
+                              equal_nan=True):
             return False
         if not np.array_equal(self.visual_angle_to_targets, other.visual_angle_to_targets, equal_nan=True):
             return False
