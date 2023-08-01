@@ -36,20 +36,23 @@ class LWSFixationEvent(FixationEvent):
         return len(mark_target_triggers) > 0
 
     @property
-    def visual_angle_to_closest_target(self) -> float:
-        return min(self.__visual_angle_to_targets)
-
-    @visual_angle_to_closest_target.setter
-    def visual_angle_to_closest_target(self, visual_angle: float):
-        self.__visual_angle_to_target = visual_angle
-
-    @property
     def visual_angle_to_targets(self) -> List[float]:
         return self.__visual_angle_to_targets
 
     @visual_angle_to_targets.setter
     def visual_angle_to_targets(self, visual_angles: List[float]):
         self.__visual_angle_to_targets = visual_angles
+
+    @property
+    def visual_angle_to_closest_target(self) -> float:
+        min_dist = np.nanmin(self.__visual_angle_to_targets)
+        if np.isfinite(min_dist):
+            return float(min_dist)
+        return np.nan
+
+    @visual_angle_to_closest_target.setter
+    def visual_angle_to_closest_target(self, visual_angle: float):
+        self.__visual_angle_to_target = visual_angle
 
     def get_triggers_with_timestamps(self, values: List[int] = None) -> List[Tuple[float, int]]:
         """
