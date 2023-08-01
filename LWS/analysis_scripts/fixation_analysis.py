@@ -15,9 +15,9 @@ def target_proximal_comparison(fixations: List[LWSFixationEvent], ignore_outlier
         raise ValueError(f"Invalid proximity threshold: {proximity_threshold}")
     if ignore_outliers:
         fixations = [f for f in fixations if not f.is_outlier]
-    marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
+    marking_fixations = [f for f in fixations if f.is_mark_target_attempt()]
     non_marking_proximal_fixations = [f for f in fixations if
-                                      f.visual_angle_to_closest_target <= proximity_threshold and not f.is_mark_target_attempt]
+                                      f.visual_angle_to_closest_target <= proximity_threshold and not f.is_mark_target_attempt()]
     data_labels = ["Marking Fixations", "Non-Marking Proximal Fixations"]
     fig = visutils.set_figure_properties(fig=None,
                                          title=kwargs.pop("title", f"Comparison of Target-Proximal Fixations"),
@@ -81,7 +81,7 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
     if ignore_outliers:
         fixations = [f for f in fixations if not f.is_outlier]
     proximal_fixations = [f for f in fixations if f.visual_angle_to_closest_target <= proximity_threshold]
-    marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
+    marking_fixations = [f for f in fixations if f.is_mark_target_attempt()]
     fig = visutils.set_figure_properties(fig=None,
                                          title=kwargs.pop("title", f"Fixation Dynamics"),
                                          figsize=kwargs.pop("figsize", (27, 21)),
@@ -129,7 +129,7 @@ def distributions_figure(fixations: List[LWSFixationEvent], ignore_outliers: boo
     if ignore_outliers:
         fixations = [f for f in fixations if not f.is_outlier]
     target_proximal_fixations = [f for f in fixations if f.visual_angle_to_closest_target <= proximity_threshold]
-    target_marking_fixations = [f for f in fixations if f.is_mark_target_attempt]
+    target_marking_fixations = [f for f in fixations if f.is_mark_target_attempt()]
     data_labels = ["All", "Target-Proximal", "Target-Marking"]
     fig = visutils.set_figure_properties(fig=None, title=kwargs.pop("title", f"Fixation Summary"),
                                          figsize=kwargs.pop("figsize", (30, 15)), **kwargs)

@@ -24,16 +24,6 @@ class LWSFixationEvent(FixationEvent):
         self.__visual_angle_to_targets: List[float] = [] if visual_angle_to_targets is None else visual_angle_to_targets
 
     @property
-    def is_mark_target_attempt(self) -> bool:
-        """
-        Returns true if the subject attempted to mark a target during the fixation.
-        """
-        mark_target_triggers = self.get_triggers_with_timestamps(
-            values=[cnfg.MARK_TARGET_SUCCESSFUL_TRIGGER, cnfg.MARK_TARGET_UNSUCCESSFUL_TRIGGER]
-        )
-        return len(mark_target_triggers) > 0
-
-    @property
     def visual_angle_to_targets(self) -> List[float]:
         return self.__visual_angle_to_targets
 
@@ -47,6 +37,15 @@ class LWSFixationEvent(FixationEvent):
         if np.isfinite(min_dist):
             return float(min_dist)
         return np.nan
+
+    def is_mark_target_attempt(self) -> bool:
+        """
+        Returns true if the subject attempted to mark a target during the fixation.
+        """
+        mark_target_triggers = self.get_triggers_with_timestamps(
+            values=[cnfg.MARK_TARGET_SUCCESSFUL_TRIGGER, cnfg.MARK_TARGET_UNSUCCESSFUL_TRIGGER]
+        )
+        return len(mark_target_triggers) > 0
 
     def get_triggers_with_timestamps(self, values: List[int] = None) -> List[Tuple[float, int]]:
         """

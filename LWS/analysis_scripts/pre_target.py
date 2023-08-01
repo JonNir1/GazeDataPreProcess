@@ -50,7 +50,7 @@ def __get_target_fixations_previous_events_single_trial(trial: LWSTrial,
         next_event: LWSFixationEvent = events[i + 1]
         if next_event.visual_angle_to_closest_target <= cnfg.THRESHOLD_VISUAL_ANGLE:
             proximal_fixation_previous_events.append(e)
-        if next_event.is_mark_target_attempt:
+        if next_event.is_mark_target_attempt():
             marking_fixation_previous_events.append(e)
     return proximal_fixation_previous_events, marking_fixation_previous_events
 
