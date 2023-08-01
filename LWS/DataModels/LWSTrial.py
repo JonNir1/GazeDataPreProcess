@@ -42,6 +42,10 @@ class LWSTrial:
         return trial
 
     @property
+    def subject(self) -> "LWSSubject":
+        return self.__subject
+
+    @property
     def trial_num(self) -> int:
         return self.__trial_num
 
@@ -80,10 +84,6 @@ class LWSTrial:
         if self.__is_processed and not is_processed:
             raise RuntimeError("Cannot set is_processed to False after it has been set to True.")
         self.__is_processed = is_processed
-
-    @property
-    def subject(self) -> "LWSSubject":
-        return self.__subject
 
     def get_stimulus(self) -> LWSArrayStimulus:
         return self.__stimulus
