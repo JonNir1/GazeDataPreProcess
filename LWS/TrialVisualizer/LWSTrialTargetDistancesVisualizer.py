@@ -39,10 +39,10 @@ class LWSTrialTargetDistancesVisualizer(LWSBaseTrialVisualizer):
 
         # extract the data
         bd = trial.get_behavioral_data()
-        timestamps = bd.get(cnst.MICROSECONDS).values / 1000
+        timestamps = bd.get(cnst.MICROSECONDS) / 1000
         corrected_timestamps = timestamps - timestamps[0]  # start from 0
         distance_columns = [col for col in bd.columns if f"{cnst.DISTANCE}_{cnst.TARGET}" in col]
-        distances = bd.get(distance_columns).values
+        distances = bd.get(distance_columns)
 
         # plot the angular distance for each target:
         kwargs["data_labels"] = [f"Target {i+1}" for i in range(len(distance_columns))]

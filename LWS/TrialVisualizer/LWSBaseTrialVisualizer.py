@@ -101,7 +101,7 @@ class LWSBaseTrialVisualizer(ABC):
         Returns the axes with the added visualizations.
         """
         # Extract the relevant data from the trial:
-        timestamps = trial.get_behavioral_data().get(cnst.MICROSECONDS).values / 1000
+        timestamps = trial.get_behavioral_data().get(cnst.MICROSECONDS) / 1000
         corrected_timestamps = timestamps - timestamps[0]  # start from 0
         triggers = trial.get_triggers()
         real_trigger_idxs = np.where((~np.isnan(triggers)) & (triggers != 0))[0]
@@ -142,7 +142,7 @@ class LWSBaseTrialVisualizer(ABC):
         """
 
         # Extract the relevant data from the trial:
-        timestamps = trial.get_behavioral_data().get(cnst.MICROSECONDS).values / 1000
+        timestamps = trial.get_behavioral_data().get(cnst.MICROSECONDS) / 1000
         corrected_timestamps = timestamps - timestamps[0]  # start from 0
 
         # create an array of colors per sample, depicting the events:

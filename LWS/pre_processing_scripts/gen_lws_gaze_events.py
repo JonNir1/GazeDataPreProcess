@@ -82,5 +82,5 @@ def __extract_raw_event_arrays(
     is_event_colname = f"is_{event_type.name.lower()}"
     if is_event_colname not in behavioral_data.columns:
         raise ValueError(f"Behavioral Data does not contain column {is_event_colname}")
-    is_event = behavioral_data.get(is_event_colname).values
+    is_event = behavioral_data.get(is_event_colname)
     return timestamps, x, y, p, is_event

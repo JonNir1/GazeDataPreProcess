@@ -53,7 +53,7 @@ class LWSTrial:
 
     @property
     def num_samples(self) -> int:
-        timestamps = self.__behavioral_data.get(cnst.MICROSECONDS).values
+        timestamps = self.__behavioral_data.get(cnst.MICROSECONDS)
         return len(timestamps)
 
     @property
@@ -63,13 +63,13 @@ class LWSTrial:
     @property
     def start_time(self) -> float:
         # start time in milliseconds
-        timestamps = self.__behavioral_data.get(cnst.MICROSECONDS).values
+        timestamps = self.__behavioral_data.get(cnst.MICROSECONDS)
         return timestamps[0] / cnst.MICROSECONDS_PER_MILLISECOND
 
     @property
     def end_time(self) -> float:
         # end time in milliseconds
-        timestamps = self.__behavioral_data.get(cnst.MICROSECONDS).values
+        timestamps = self.__behavioral_data.get(cnst.MICROSECONDS)
         return timestamps[-1] / cnst.MICROSECONDS_PER_MILLISECOND
 
     @property
@@ -139,30 +139,30 @@ class LWSTrial:
         :return: a tuple of (timestamps, x coordinates, y coordinates, pupil sizes)
         """
         bd = self.get_behavioral_data()
-        ts = bd.get(cnst.MICROSECONDS).values / 1000
+        ts = bd.get(cnst.MICROSECONDS) / 1000
 
         eye = eye.lower()
         if eye == "dominant":
             eye = self.subject.dominant_eye.lower()
         if eye == 'left':
-            x_l = bd.get(cnst.LEFT_X).values
-            y_l = bd.get(cnst.LEFT_Y).values
-            p_l = bd.get(cnst.LEFT_PUPIL).values
+            x_l = bd.get(cnst.LEFT_X)
+            y_l = bd.get(cnst.LEFT_Y)
+            p_l = bd.get(cnst.LEFT_PUPIL)
             return ts, x_l, y_l, p_l
         if eye == 'right':
-            x_r = bd.get(cnst.RIGHT_X).values
-            y_r = bd.get(cnst.RIGHT_Y).values
-            p_r = bd.get(cnst.RIGHT_PUPIL).values
+            x_r = bd.get(cnst.RIGHT_X)
+            y_r = bd.get(cnst.RIGHT_Y)
+            p_r = bd.get(cnst.RIGHT_PUPIL)
             return ts, x_r, y_r, p_r
         if eye == 'both':
-            x_l, y_l, p_l = bd.get(cnst.LEFT_X).values, bd.get(cnst.LEFT_Y).values, bd.get(cnst.LEFT_PUPIL).values
-            x_r, y_r, p_r = bd.get(cnst.RIGHT_X).values, bd.get(cnst.RIGHT_Y).values, bd.get(cnst.RIGHT_PUPIL).values
+            x_l, y_l, p_l = bd.get(cnst.LEFT_X), bd.get(cnst.LEFT_Y), bd.get(cnst.LEFT_PUPIL)
+            x_r, y_r, p_r = bd.get(cnst.RIGHT_X), bd.get(cnst.RIGHT_Y), bd.get(cnst.RIGHT_PUPIL)
             return ts, np.vstack((x_l, x_r)), np.vstack((y_l, y_r)), np.vstack((p_l, p_r))
         raise ValueError(f'Invalid eye: {eye}')
 
     def get_triggers(self) -> np.ndarray:
         """ Returns the trigger values for this trial. """
-        return self.__behavioral_data.get(cnst.TRIGGER).values
+        return self.__behavioral_data.get(cnst.TRIGGER)
 
     def get_event_per_sample(self) -> List[GazeEventTypeEnum]:
         """

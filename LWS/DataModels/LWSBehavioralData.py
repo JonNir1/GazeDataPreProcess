@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from typing import Tuple, List, Union
 
@@ -25,16 +26,16 @@ class LWSBehavioralData:
 
     @property
     def trial_num(self) -> int:
-        return self.get(cnst.TRIAL).iloc[0]
+        return self.get(cnst.TRIAL)[0]
 
     @property
     def stim_type(self) -> LWSStimulusTypeEnum:
-        stim_type_str = self.get("ConditionName").iloc[0]
+        stim_type_str = self.get("ConditionName")[0]
         return LWSStimulusTypeEnum(stim_type_str)
 
     @property
     def image_num(self) -> int:
-        return self.get("ImageNum").iloc[0]
+        return self.get("ImageNum")[0]
 
     @property
     def columns(self) -> list:
@@ -44,9 +45,9 @@ class LWSBehavioralData:
     def index(self) -> list:
         return self.__data.index.to_list()
 
-    def get(self, columns: Union[str, List[str]]) -> Union[pd.Series, pd.DataFrame]:
+    def get(self, columns: Union[str, List[str]]) -> np.ndarray:
         # Returns the requested column(s) from the data
-        return self.__data[columns]
+        return self.__data[columns].values
 
     def concat(self, *extra_data: Union[pd.DataFrame, pd.Series]) -> "LWSBehavioralData":
         """
