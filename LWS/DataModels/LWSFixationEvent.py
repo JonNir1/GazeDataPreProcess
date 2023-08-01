@@ -50,12 +50,14 @@ class LWSFixationEvent(FixationEvent):
 
     def get_triggers_with_timestamps(self, values: List[int] = None) -> List[Tuple[float, int]]:
         """
-        Returns a list of tuples (timestamp, trigger) for each trigger that occurred during the fixation.
-        If `values` is not None, returns only triggers whose value is in `values`.
+        Returns a list of tuples (timestamp, trigger) for each trigger that occurred during the fixation, sorted by
+        timestamp. If `values` is not None, returns only triggers whose value is in `values`.
         """
         if values is None:
-            return self.__triggers
-        return [tup for tup in self.__triggers if tup[1] in values]
+            values_triggers = self.__triggers
+        else:
+            values_triggers = [tup for tup in self.__triggers if tup[1] in values]
+        return sorted(values_triggers, key=lambda tup: tup[0])
 
     def to_series(self) -> pd.Series:
         """
