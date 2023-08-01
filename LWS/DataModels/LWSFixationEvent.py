@@ -16,12 +16,14 @@ class LWSFixationEvent(FixationEvent):
 
     def __init__(self,
                  timestamps: np.ndarray, x: np.ndarray, y: np.ndarray, pupil: np.ndarray,
-                 viewer_distance: float, triggers: np.ndarray, visual_angle_to_target: float = np.inf):
+                 viewer_distance: float, triggers: np.ndarray,
+                 visual_angle_to_target: float = np.inf, visual_angle_to_targets: List[float] = None):
         super().__init__(timestamps=timestamps, x=x, y=y, pupil=pupil, viewer_distance=viewer_distance)
         triggers_with_timestamps = [(timestamps[i], triggers[i]) for i in range(len(timestamps)) if
                                     not np.isnan(triggers[i])]
         self.__triggers: List[Tuple[float, int]] = sorted(triggers_with_timestamps, key=lambda tup: tup[0])
         self.__visual_angle_to_target: float = visual_angle_to_target
+        self.__visual_angle_to_targets: List[float] = [] if visual_angle_to_targets is None else visual_angle_to_targets
 
     @property
     def is_mark_target_attempt(self) -> bool:
@@ -40,6 +42,14 @@ class LWSFixationEvent(FixationEvent):
     @visual_angle_to_target.setter
     def visual_angle_to_target(self, visual_angle: float):
         self.__visual_angle_to_target = visual_angle
+
+    @property
+    def visual_angle_to_targets(self) -> List[float]:
+        return self.__visual_angle_to_targets
+
+    @visual_angle_to_targets.setter
+    def visual_angle_to_targets(self, visual_angles: List[float]):
+        self.__visual_angle_to_targets = visual_angles
 
     def get_triggers_with_timestamps(self, values: List[int] = None) -> List[Tuple[float, int]]:
         """
