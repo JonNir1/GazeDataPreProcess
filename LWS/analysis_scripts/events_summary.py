@@ -107,8 +107,8 @@ def __get_fixation_summary_dict(fixations: List[LWSFixationEvent]) -> Dict[str, 
         - duration_std
         - x_std_mean
         - y_std_mean
-        - distance_to_target_mean
-        - distance_to_target_std
+        - mean_visual_angle_to_closest_target
+        - std_visual_angle_to_closest_target
 
     :param fixations: list of fixations to summarize
 
@@ -120,8 +120,12 @@ def __get_fixation_summary_dict(fixations: List[LWSFixationEvent]) -> Dict[str, 
     data["y_std_mean"] = float(np.nanmean([std[1] for std in stds]))
     data["pupil_size_mean"] = float(np.nanmean([f.mean_pupil_size for f in fixations]))
     data["pupil_size_std"] = float(np.nanstd([f.mean_pupil_size for f in fixations]))
-    data["visual_angle_to_target_mean"] = float(np.nanmean(
-        [f.visual_angle_to_target for f in fixations if np.isfinite(f.visual_angle_to_target)]))
-    data["visual_angle_to_target_std"] = float(np.nanstd(
-        [f.visual_angle_to_target for f in fixations if np.isfinite(f.visual_angle_to_target)]))
+
+    # calculate the visual angle to closest target for each fixation, and discard NaNs and Inf
+    vis_angle_to_closest_target = [min(f.visual_angle_to_targets) for f in fixations]
+    vis_angle_to_closest_target = list(filter(lambda x: np.isfinite(x), vis_angle_to_closest_target))
+
+    # these may warn `RuntimeWarning: Mean of empty slice`
+    data["mean_visual_angle_to_closest_target"] = float(np.nanmean(vis_angle_to_closest_target))
+    data["std_visual_angle_to_closest_target"] = float(np.nanstd(vis_angle_to_closest_target))
     return data
