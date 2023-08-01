@@ -50,10 +50,6 @@ class LWSFixationEvent(FixationEvent):
             return float(min_dist)
         return np.nan
 
-    @visual_angle_to_closest_target.setter
-    def visual_angle_to_closest_target(self, visual_angle: float):
-        self.__visual_angle_to_target = visual_angle
-
     def get_triggers_with_timestamps(self, values: List[int] = None) -> List[Tuple[float, int]]:
         """
         Returns a list of tuples (timestamp, trigger) for each trigger that occurred during the fixation.
@@ -80,6 +76,6 @@ class LWSFixationEvent(FixationEvent):
             return False
         if not np.array_equal(self.__triggers, other.__triggers, equal_nan=True):
             return False
-        if not np.array_equal(self.__visual_angle_to_target, other.__visual_angle_to_target, equal_nan=True):
+        if not np.array_equal(self.visual_angle_to_targets, other.visual_angle_to_targets, equal_nan=True):
             return False
         return True
