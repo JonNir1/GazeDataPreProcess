@@ -1,6 +1,8 @@
 # LWS PreProcessing Pipeline
 
 import numpy as np
+import pandas as pd
+from typing import List
 
 import Config.experiment_config as cnfg
 import Utils.angle_utils as angle_utils
@@ -25,21 +27,20 @@ def visual_angle_gaze_to_targets(trial: LWSTrial) -> np.ndarray:
     return angular_distances
 
 
-def visual_angle_fixation_to_targets(fix: LWSFixationEvent, trial: LWSTrial) -> float:
+def visual_angle_fixation_to_targets(fix: LWSFixationEvent, trial: LWSTrial) -> List[float]:
     """
-    Calculates the visual angle between the fixation's center-of-mass, and the trial's nearest target.
+    Calculates the visual angle between the fixation's center-of-mass, and each of the trial's targets.
     Returns np.inf if the fixation event's center-of-mass is missing or invalid.
     """
-    # TODO: calculate distance to each target separately and return all of them
-    x, y = fix.center_of_mass
+    fix_x, fix_y = fix.center_of_mass
     target_data = trial.get_stimulus().get_target_data()
 
-    angular_distance = np.inf
-    for i, row in target_data.iterrows():
+    angular_distances = []
+    for _i, row in target_data.iterrows():
         tx, ty = row['center_x'], row['center_y']
-        dist = _calculate_visual_angle_to_target(tx, ty, np.array([x]), np.array([y]), trial.subject.distance_to_screen)
-        angular_distance = np.nanmin([angular_distance, dist[0]])
-    return angular_distance
+        dist = _calculate_visual_angle_to_target(tx, ty, np.array([fix_x]), np.array([fix_y]), trial.subject.distance_to_screen)
+        angular_distances.append(dist[0])
+    return angular_distances
 
 
 def _calculate_visual_angle_to_target(target_x: float, target_y: float,
