@@ -65,11 +65,11 @@ class LWSFixationEvent(FixationEvent):
         creates a pandas Series with summary of fixation information.
         :return: a pd.Series with the same values as super().to_series() and the following additional values:
             - trigger: list of tuples (timestamp, trigger) for each trigger that occurred during the fixation
-            - visual_angle_to_target: angular distance from the fixation's center of mass to the closest target's center of mass
+            - visual_angle_to_targets: angular distance from the fixation's center of mass to each target's center of mass
         """
         series = super().to_series()
         series[cnst.TRIGGER] = self.get_triggers_with_timestamps()
-        series["visual_angle_to_target"] = self.visual_angle_to_target
+        series["visual_angle_to_targets"] = self.visual_angle_to_targets
         return series
 
     def __eq__(self, other):
