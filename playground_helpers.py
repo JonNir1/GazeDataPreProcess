@@ -14,8 +14,11 @@ def full_pipline(name: str, save: bool = True, skip_analysis: bool = False, verb
     print(f"Processing subject `{name}`...")
     subject = process_subject(name=name, save=save, verbose=verbose)
     subject = load_subject(subject_id=subject.subject_id, verbose=verbose)
-    subject_analysis = analyze_subject(subject=subject, save=save, verbose=verbose)
-    failed_trials = visualize_all_trials(subject=subject, save=save, verbose=verbose)
+    subject_analysis = None
+    failed_trials = None
+    if not skip_analysis:
+        subject_analysis = analyze_subject(subject=subject, save=save, verbose=verbose)
+        failed_trials = visualize_all_trials(subject=subject, save=save, verbose=verbose)
     end = time.time()
     if verbose:
         print(f"\nFinished processing subject {name}: {(end - start):.2f} seconds\n###############\n")
