@@ -72,13 +72,13 @@ class LWSBaseTrialVisualizer(ABC):
         """
         res = self._screen_resolution
         if kwargs.pop("show_stimulus", True):
-            bg_img = trial.get_stimulus().get_image(color_format='BGR')
+            bg_img = trial.get_stimulus_image(color_format='BGR')
         else:
             bg_img = np.zeros((*res, 3), dtype=np.uint8)
         if kwargs.pop("show_targets", True):
             color = kwargs.pop("show_targets_color", (255, 0, 0))  # BGR format
             edge_size = int(kwargs.pop("target_edge_size", 4))
-            target_info = trial.get_stimulus().get_target_data()
+            target_info = trial.get_targets()
             for _, target in target_info.iterrows():
                 center_x, center_y = int(target['center_x']), int(target['center_y'])
                 cv2.rectangle(bg_img, (center_x - 25, center_y - 25), (center_x + 25, center_y + 25), color, edge_size)

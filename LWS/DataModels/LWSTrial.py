@@ -4,6 +4,8 @@ import pickle as pkl
 import warnings as w
 from typing import Tuple, List, Optional
 
+import pandas as pd
+
 import constants as cnst
 import Utils.io_utils as ioutils
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
@@ -85,8 +87,12 @@ class LWSTrial:
             raise RuntimeError("Cannot set is_processed to False after it has been set to True.")
         self.__is_processed = is_processed
 
-    def get_stimulus(self) -> LWSArrayStimulus:
-        return self.__stimulus
+    def get_stimulus_image(self, color_format: str = 'bgr') -> np.ndarray:
+        return self.__stimulus.get_image(color_format=color_format)
+
+    def get_targets(self) -> pd.DataFrame:
+        df = self.__stimulus.get_target_data()
+        return df
 
     def get_behavioral_data(self) -> LWSBehavioralData:
         return self.__behavioral_data

@@ -17,10 +17,9 @@ def visual_angle_gaze_to_targets(trial: LWSTrial) -> np.ndarray:
     Returns a 2D array of shape (num_targets, num_gaze_points).
     """
     _ts, xs, ys, _ps = trial.get_raw_gaze_data(eye='dominant')
-    stimulus = trial.get_stimulus()
-    target_data = stimulus.get_target_data()
-    angular_distances = np.zeros((stimulus.num_targets, len(xs)))
-    for i, row in target_data.iterrows():
+    target_info = trial.get_targets()
+    angular_distances = np.zeros((target_info.shape[0], len(xs)))
+    for i, row in target_info.iterrows():
         tx, ty = row['center_x'], row['center_y']
         dists = _calculate_visual_angle_to_target(tx, ty, xs, ys, trial.subject.distance_to_screen)
         angular_distances[i] = dists
@@ -33,10 +32,10 @@ def visual_angle_fixation_to_targets(fix: LWSFixationEvent, trial: LWSTrial) -> 
     Returns np.inf if the fixation event's center-of-mass is missing or invalid.
     """
     fix_x, fix_y = fix.center_of_mass
-    target_data = trial.get_stimulus().get_target_data()
+    target_info = trial.get_targets()
 
     angular_distances = []
-    for _i, row in target_data.iterrows():
+    for _i, row in target_info.iterrows():
         tx, ty = row['center_x'], row['center_y']
         dist = _calculate_visual_angle_to_target(tx, ty, np.array([fix_x]), np.array([fix_y]), trial.subject.distance_to_screen)
         angular_distances.append(dist[0])
