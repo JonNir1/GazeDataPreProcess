@@ -9,7 +9,7 @@ from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 import Visualization.visualization_utils as visutils
 
 
-def full_pipline(name: str, save: bool = True, verbose: bool = True):
+def full_pipline(name: str, save: bool = True, skip_analysis: bool = False, verbose: bool = True):
     start = time.time()
     print(f"Processing subject `{name}`...")
     subject = process_subject(name=name, save=save, verbose=verbose)
