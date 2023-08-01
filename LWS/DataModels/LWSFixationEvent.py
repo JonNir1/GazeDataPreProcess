@@ -36,11 +36,11 @@ class LWSFixationEvent(FixationEvent):
         return len(mark_target_triggers) > 0
 
     @property
-    def visual_angle_to_target(self) -> float:
-        return self.__visual_angle_to_target
+    def visual_angle_to_closest_target(self) -> float:
+        return min(self.__visual_angle_to_targets)
 
-    @visual_angle_to_target.setter
-    def visual_angle_to_target(self, visual_angle: float):
+    @visual_angle_to_closest_target.setter
+    def visual_angle_to_closest_target(self, visual_angle: float):
         self.__visual_angle_to_target = visual_angle
 
     @property
