@@ -3,6 +3,7 @@ import numpy as np
 from typing import Tuple
 
 from Config import experiment_config as cnfg
+from Config.ExperimentTriggerEnum import ExperimentTriggerEnum
 import Utils.io_utils as ioutils
 from LWS.TrialVisualizer.LWSBaseTrialVisualizer import LWSBaseTrialVisualizer
 from LWS.DataModels.LWSTrial import LWSTrial
@@ -103,17 +104,17 @@ class LWSTrialVideoVisualizer(LWSBaseTrialVisualizer):
 
             # if there is a current trigger, draw it and keep it for future frames
             if curr_trigger is not None:
-                if curr_trigger == cnfg.MARK_TARGET_SUCCESSFUL_TRIGGER:
+                if curr_trigger == ExperimentTriggerEnum.MARK_TARGET_SUCCESSFUL.value:
                     # draw a circle around the marked target in future frames until action is confirmed/rejected
                     cv2.circle(bg_img, (curr_x, curr_y), target_radius, marked_target_color, target_edge_size)
                     circle_center = np.array([curr_x, curr_y])  # store for confirmation frame
 
-                elif curr_trigger == cnfg.CONFIRM_TARGET_SUCCESSFUL_TRIGGER:
+                elif curr_trigger == ExperimentTriggerEnum.CONFIRM_TARGET_SUCCESSFUL.value:
                     # draw a circle around the marked target in all future frames
                     cv2.circle(bg_img, circle_center, target_radius, confirmed_target_color, target_edge_size)
                     prev_bg_img = bg_img.copy()  # write over the prev_bg_img to make sure the circle stays in future frames
 
-                elif curr_trigger == cnfg.REJECT_TARGET_SUCCESSFUL_TRIGGER:
+                elif curr_trigger == ExperimentTriggerEnum.REJECT_TARGET_SUCCESSFUL.value:
                     # revert to previous bg image
                     bg_img = prev_bg_img.copy()
 

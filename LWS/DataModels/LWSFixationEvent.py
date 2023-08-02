@@ -3,7 +3,7 @@ import pandas as pd
 from typing import Tuple, List
 
 import constants as cnst
-from Config import experiment_config as cnfg
+from Config.ExperimentTriggerEnum import ExperimentTriggerEnum
 from GazeEvents.FixationEvent import FixationEvent
 
 
@@ -43,7 +43,8 @@ class LWSFixationEvent(FixationEvent):
         Returns true if the subject attempted to mark a target during the fixation.
         """
         mark_target_triggers = self.get_triggers_with_timestamps(
-            values=[cnfg.MARK_TARGET_SUCCESSFUL_TRIGGER, cnfg.MARK_TARGET_UNSUCCESSFUL_TRIGGER]
+            values=[ExperimentTriggerEnum.MARK_TARGET_SUCCESSFUL.value,
+                    ExperimentTriggerEnum.MARK_TARGET_UNSUCCESSFUL.value]
         )
         return len(mark_target_triggers) > 0
 

@@ -31,18 +31,5 @@ DEFAULT_SACCADE_MINIMUM_DURATION = 5  # minimum duration of a saccade in millise
 DEFAULT_FIXATION_MINIMUM_DURATION = 55  # minimum duration of a fixation in milliseconds
 DEFAULT_FIXATION_MAX_VELOCITY = 20  # degrees per second
 
-# LWS TRIGGERS CONFIGURATION
-START_RECORDING_TRIGGER = 254  # trigger indicating the start of a trial
-END_RECORDING_TRIGGER = 255  # trigger indicating the end of a trial
-STIMULUS_ON_TRIGGER = 15  # trigger indicating the start of a stimulus presentation
-STIMULUS_OFF_TRIGGER = 16  # trigger indicating the end of a stimulus presentation
-
-MARK_TARGET_SUCCESSFUL_TRIGGER = 211  # trigger indicating the subject attempted to mark a target successfully
-MARK_TARGET_UNSUCCESSFUL_TRIGGER = 212  # trigger indicating the subject attempted to mark target unsuccessfully
-CONFIRM_TARGET_SUCCESSFUL_TRIGGER = 221  # trigger indicating the subject attempted to confirm a target successfully
-CONFIRM_TARGET_UNSUCCESSFUL_TRIGGER = 222  # trigger indicating the subject attempted to confirm a target unsuccessfully
-REJECT_TARGET_SUCCESSFUL_TRIGGER = 231  # trigger indicating the subject attempted to reject a target successfully
-REJECT_TARGET_UNSUCCESSFUL_TRIGGER = 232  # trigger indicating the subject attempted to reject a target unsuccessfully
-
 # LWS ANALYSIS CONFIGURATION
 THRESHOLD_VISUAL_ANGLE = 1.5  # threshold for the visual angle between a target and a gaze datapoint, in degrees

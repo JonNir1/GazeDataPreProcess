@@ -8,6 +8,7 @@ from typing import List, Union
 
 import constants as cnst
 from Config import experiment_config as cnfg
+from Config.ExperimentTriggerEnum import ExperimentTriggerEnum
 from DataParser.TobiiCSVEyeTrackingParser import TobiiCSVEyeTrackingParser
 from DataParser.EPrimeTriggerLogParser import EPrimeTriggerLogParser
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
@@ -91,8 +92,8 @@ def parse_gaze_and_triggers(et_path, trigger_path,
     et_parser = TobiiCSVEyeTrackingParser(additional_columns=additional_columns)
 
     # get trigger parser:
-    start_trigger = kwargs.get('start_trigger', cnfg.STIMULUS_ON_TRIGGER)
-    end_trigger = kwargs.get('end_trigger', cnfg.STIMULUS_OFF_TRIGGER)
+    start_trigger = kwargs.get('start_trigger', ExperimentTriggerEnum.STIMULUS_ON.value)
+    end_trigger = kwargs.get('end_trigger', ExperimentTriggerEnum.STIMULUS_OFF.value)
     trigger_parser = EPrimeTriggerLogParser(start_trigger=start_trigger, end_trigger=end_trigger)
 
     # parse the data and split it into trials:
