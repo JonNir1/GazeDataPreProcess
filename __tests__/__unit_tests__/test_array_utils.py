@@ -41,6 +41,20 @@ class TestUtils(unittest.TestCase):
         for i in range(len(arr) - n, len(arr)):
             self.assertTrue(np.isnan(shifted_minus[i]))
 
+    def test_find_sequences_in_sparse_array(self):
+        seq = np.array([1, 2, 3])
+
+        arr = np.array([np.nan, 2, 3, np.nan, 1, 2, np.nan, 3, 2, np.nan, np.nan, 3, 1, np.nan, np.nan, np.nan, 2,
+                        np.nan, 3, 1, 1, np.nan])
+        exp = [(4, 7), (12, 18)]
+        res = au.find_sequences_in_sparse_array(arr, seq)
+        self.assertEqual(exp, res)
+
+        arr = np.array([3, 2, 1, 2, 1])
+        exp = []
+        res = au.find_sequences_in_sparse_array(arr, seq)
+        self.assertEqual(exp, res)
+
     def test_numerical_derivative(self):
         arr = np.ones(10)
         self.assertRaises(ValueError, au.numerical_derivative, arr, 0)

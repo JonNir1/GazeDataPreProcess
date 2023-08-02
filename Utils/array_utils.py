@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from typing import List
+from typing import List, Tuple
 
 
 def normalize_array(arr: np.ndarray) -> np.ndarray:
@@ -27,6 +27,26 @@ def shift_array(array: np.ndarray, shift: int) -> np.ndarray:
     elif shift < 0:
         shifted_array[shift:] = np.nan
     return shifted_array
+
+
+def find_sequences_in_sparse_array(sparse_array: np.ndarray, sequence: np.ndarray) -> List[Tuple[int, int]]:
+    """
+    Finds all occurrences of the given sequence in the given sparse array, while ignoring intermediate NaN values.
+    :param sparse_array: array to search in, may contain NaN values
+    :param sequence: sequence to search for
+    :return: list of (start_idx, end_idx) tuples for each occurrence of the sequence in the array
+
+    see examples in https://stackoverflow.com/a/76812495/8543025
+    """
+    from numpy.lib.stride_tricks import sliding_window_view as swv
+    n = len(sequence)
+    non_nan_idxs = np.where(~np.isnan(sparse_array))[0]
+    if len(non_nan_idxs) < n:
+        return []
+    swv_non_nan_array = swv(sparse_array[non_nan_idxs], n)
+    is_sequence = np.all(swv_non_nan_array == sequence, axis=1)
+    start_end_idxs = list(zip(non_nan_idxs[:1-n][is_sequence], non_nan_idxs[n-1:][is_sequence]))
+    return start_end_idxs
 
 
 def calculate_distribution(data: np.ndarray, nbins: int, min_threshold: float = 0) -> (np.ndarray, np.ndarray):
