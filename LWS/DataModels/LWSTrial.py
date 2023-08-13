@@ -57,6 +57,10 @@ class LWSTrial:
         return len(timestamps)
 
     @property
+    def num_targets(self) -> int:
+        return self.__stimulus.num_targets
+
+    @property
     def sampling_rate(self) -> float:
         return self.__behavioral_data.sampling_rate
 
