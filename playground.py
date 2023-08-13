@@ -17,10 +17,15 @@ import Visualization.visualization_utils as visutils
 ##########################################
 
 # subjects: "GalChen Demo" (001), "Rotem Demo" (002)
-
 pipline_config = {'save': True, 'skip_analysis': True, 'verbose': True}
+
 subject1, subject1_analysis, failed_trials1 = ph.full_pipline(name="GalChen Demo", **pipline_config)
-subject2, subject2_analysis, failed_trials2 = ph.full_pipline(name="Rotem Demo", **pipline_config)
+del subject1_analysis, failed_trials1
+
+# subject2, subject2_analysis, failed_trials2 = ph.full_pipline(name="Rotem Demo", **pipline_config)
+# del subject2_analysis, failed_trials2
+
+del pipline_config
 
 # subject1 = ph.load_subject(subject_id=1, verbose=True)
 # subject2 = ph.load_subject(subject_id=2, verbose=True)
@@ -30,10 +35,14 @@ subject2, subject2_analysis, failed_trials2 = ph.full_pipline(name="Rotem Demo",
 ### PLAYGROUND  ##########################
 ##########################################
 
-trial = subject1.get_all_trials()[0]
-triggers = trial.get_triggers()
-behavioral_data = trial.get_behavioral_data()
-target_info = trial.get_targets()
-gaze_events = trial.get_gaze_events()
+import LWS.analysis_scripts.looking_without_seeing as lws
 
+all_trials = subject1.get_all_trials()
+thresholds = np.arange(0.1 * cnfg.THRESHOLD_VISUAL_ANGLE,
+                       1.2 * cnfg.THRESHOLD_VISUAL_ANGLE,
+                       0.1 * cnfg.THRESHOLD_VISUAL_ANGLE)
+lws_counts = np.zeros((subject1.num_trials, len(thresholds)))
+
+for i, thrsh in enumerate(thresholds):
+    lws_counts[:, i] = [lws.count_lws_fixations_per_trial(trial, proximity_threshold=thrsh) for trial in all_trials]
 
