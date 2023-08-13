@@ -20,7 +20,7 @@ class LWSFixationEvent(FixationEvent):
         super().__init__(timestamps=timestamps, x=x, y=y, pupil=pupil, viewer_distance=viewer_distance)
         triggers_with_timestamps = [(timestamps[i], triggers[i]) for i in range(len(timestamps)) if
                                     not np.isnan(triggers[i])]
-        self.__triggers: List[Tuple[float, int]] = sorted(triggers_with_timestamps, key=lambda tup: tup[0])
+        self._triggers: List[Tuple[float, int]] = sorted(triggers_with_timestamps, key=lambda tup: tup[0])
         self.__visual_angle_to_targets: List[float] = [] if visual_angle_to_targets is None else visual_angle_to_targets
 
     @property
@@ -54,9 +54,9 @@ class LWSFixationEvent(FixationEvent):
         timestamp. If `values` is not None, returns only triggers whose value is in `values`.
         """
         if values is None:
-            values_triggers = self.__triggers
+            values_triggers = self._triggers
         else:
-            values_triggers = [tup for tup in self.__triggers if tup[1] in values]
+            values_triggers = [tup for tup in self._triggers if tup[1] in values]
         return sorted(values_triggers, key=lambda tup: tup[0])
 
     def to_series(self) -> pd.Series:
