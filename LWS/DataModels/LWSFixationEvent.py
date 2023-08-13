@@ -38,6 +38,13 @@ class LWSFixationEvent(FixationEvent):
             return float(min_dist)
         return np.nan
 
+    @property
+    def closest_target(self) -> int:
+        min_dist = np.nanmin(self._visual_angle_to_targets)
+        if np.isfinite(min_dist):
+            return int(np.nanargmin(self._visual_angle_to_targets)) + 1
+        return np.nan
+
     def is_mark_target_attempt(self) -> bool:
         """
         Returns true if the subject attempted to mark a target during the fixation.
