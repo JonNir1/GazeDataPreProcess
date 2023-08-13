@@ -91,8 +91,7 @@ class LWSTrial:
         return self.__stimulus.get_image(color_format=color_format)
 
     def get_targets(self) -> pd.DataFrame:
-        df = self.__stimulus.get_target_data()
-        return df
+        return self.__stimulus.get_target_data()
 
     def get_behavioral_data(self) -> LWSBehavioralData:
         return self.__behavioral_data
