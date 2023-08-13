@@ -69,8 +69,9 @@ def process_trial(trial: LWSTrial, save_pickle: bool = False, **kwargs):
     # calculate visual angles between gaze and targets
     target_distances = visual_angle_gaze_to_targets(trial)
     num_targets, _ = target_distances.shape
+    colname_prefix = f"{cnst.DISTANCE}_{cnst.TARGET}"
     target_distances_df = pd.DataFrame(
-        {f'{cnst.DISTANCE}_{cnst.TARGET}{i + 1}': target_distances[i] for i in range(num_targets)},
+        {f'{colname_prefix}{i + 1}': target_distances[i] for i in range(num_targets)},
         index=bd.index)
 
     # add the new columns to the behavioral data:
