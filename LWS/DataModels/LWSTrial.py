@@ -97,20 +97,28 @@ class LWSTrial:
     def get_stimulus_image(self, color_format: str = 'bgr') -> np.ndarray:
         return self.__stimulus.get_image(color_format=color_format)
 
-    def get_targets(self) -> pd.DataFrame:
+    def get_targets(self, basic_only: bool = True) -> pd.DataFrame:
         """
-        Returns a DataFrame with the following columns:
+        Returns a dataframe containing information about the trial's targets.
+        :param basic_only: if True, return only the basic information about the targets. If False, return additional
+            information about the targets.
+
+        Basic information:
             - icon_path: full path to the icon file
             - icon_category: category of the icon (face, animal, etc.)
             - center_x: x coordinate of the icon center
             - center_y: y coordinate of the icon center
-            - time_identified: time (in milliseconds) when the target was identified by the subject
-            - time_confirmed: time (in milliseconds) when the target was confirmed by the subject
+
+        Additional information:
             - distance_identified: distance (in visual angle) between the target and the gaze when the target was
                 identified by the subject
+            - time_identified: time (in milliseconds) when the target was identified by the subject
+            - time_confirmed: time (in milliseconds) when the target was confirmed by the subject
         """
-        # add columns to the targets DataFrame
         targets_df = self.__stimulus.get_target_data()
+        if basic_only:
+            return targets_df
+
         target_identification_data = self._extract_target_identification_data()
         final_df = pd.concat([targets_df, target_identification_data], axis=1)
         return final_df
