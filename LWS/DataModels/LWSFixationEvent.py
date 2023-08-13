@@ -21,19 +21,19 @@ class LWSFixationEvent(FixationEvent):
         triggers_with_timestamps = [(timestamps[i], triggers[i]) for i in range(len(timestamps)) if
                                     not np.isnan(triggers[i])]
         self._triggers: List[Tuple[float, int]] = sorted(triggers_with_timestamps, key=lambda tup: tup[0])
-        self.__visual_angle_to_targets: List[float] = [] if visual_angle_to_targets is None else visual_angle_to_targets
+        self._visual_angle_to_targets: List[float] = [] if visual_angle_to_targets is None else visual_angle_to_targets
 
     @property
     def visual_angle_to_targets(self) -> List[float]:
-        return self.__visual_angle_to_targets
+        return self._visual_angle_to_targets
 
     @visual_angle_to_targets.setter
     def visual_angle_to_targets(self, visual_angles: List[float]):
-        self.__visual_angle_to_targets = visual_angles
+        self._visual_angle_to_targets = visual_angles
 
     @property
     def visual_angle_to_closest_target(self) -> float:
-        min_dist = np.nanmin(self.__visual_angle_to_targets)
+        min_dist = np.nanmin(self._visual_angle_to_targets)
         if np.isfinite(min_dist):
             return float(min_dist)
         return np.nan
