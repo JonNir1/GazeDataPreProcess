@@ -36,8 +36,8 @@ def target_proximal_comparison(fixations: List[LWSFixationEvent], ignore_outlier
                             title="Durations", xlabel="Duration (ms)", **kwargs)
     # dispersion
     ax4 = fig.add_subplot(2, 3, 4)  # bottom left
-    dispersion_data = [np.array([f.max_dispersion for f in marking_fixations]),
-                       np.array([f.max_dispersion for f in non_marking_proximal_fixations])]
+    dispersion_data = [np.array([f.dispersion for f in marking_fixations]),
+                       np.array([f.dispersion for f in non_marking_proximal_fixations])]
     distributions.bar_chart(ax=ax4, datasets=dispersion_data, data_labels=data_labels,
                             title="Max Dispersion", xlabel="Max Dispersion (pixels)", **kwargs)
     # angle to target
@@ -142,9 +142,9 @@ def distributions_figure(fixations: List[LWSFixationEvent], ignore_outliers: boo
                             title="Durations (ms)", **kwargs)
     # max dispersion
     ax2 = fig.add_subplot(2, 3, 2)
-    max_dispersion_data = [np.array([f.max_dispersion for f in fixations]),
-                           np.array([f.max_dispersion for f in target_proximal_fixations]),
-                           np.array([f.max_dispersion for f in target_marking_fixations])]
+    max_dispersion_data = [np.array([f.dispersion for f in fixations]),
+                           np.array([f.dispersion for f in target_proximal_fixations]),
+                           np.array([f.dispersion for f in target_marking_fixations])]
     distributions.bar_chart(ax=ax2, datasets=max_dispersion_data, data_labels=data_labels,
                             title="Max Dispersion (px)", **kwargs)
     # angle to target

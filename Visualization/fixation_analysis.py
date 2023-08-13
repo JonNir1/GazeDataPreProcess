@@ -21,7 +21,7 @@ def distributions_figure(fixations: List[FixationEvent], ignore_outliers: bool =
 
     # dispersion distribution
     ax2 = fig.add_subplot(2, 2, 2)
-    dispersions_data = [np.array([f.max_dispersion for f in fixations])]
+    dispersions_data = [np.array([f.dispersion for f in fixations])]
     distributions.bar_chart(ax=ax2, datasets=dispersions_data,
                             data_labels=["All Fixations"], title="Dispersions (px)", **kwargs)
 
