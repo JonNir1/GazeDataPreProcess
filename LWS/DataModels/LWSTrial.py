@@ -145,7 +145,7 @@ class LWSTrial:
             gaze_events = list(filter(lambda e: e.event_type() == event_type, self.__gaze_events))
         if not ignore_outliers:
             return gaze_events
-        return list(filter(lambda e: not e.is_outlier(), gaze_events))
+        return list(filter(lambda e: not e.is_outlier, gaze_events))
 
     def set_gaze_events(self, gaze_events: List[BaseGazeEvent]):
         if self.is_processed:
