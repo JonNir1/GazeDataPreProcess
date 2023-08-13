@@ -8,6 +8,9 @@ import pandas as pd
 
 import constants as cnst
 import Utils.io_utils as ioutils
+import Utils.array_utils as au
+from Config import experiment_config as cnfg
+from Config.ExperimentTriggerEnum import ExperimentTriggerEnum
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
@@ -95,7 +98,22 @@ class LWSTrial:
         return self.__stimulus.get_image(color_format=color_format)
 
     def get_targets(self) -> pd.DataFrame:
-        return self.__stimulus.get_target_data()
+        """
+        Returns a DataFrame with the following columns:
+            - icon_path: full path to the icon file
+            - icon_category: category of the icon (face, animal, etc.)
+            - center_x: x coordinate of the icon center
+            - center_y: y coordinate of the icon center
+            - time_identified: time (in milliseconds) when the target was identified by the subject
+            - time_confirmed: time (in milliseconds) when the target was confirmed by the subject
+            - distance_identified: distance (in visual angle) between the target and the gaze when the target was
+                identified by the subject
+        """
+        # add columns to the targets DataFrame
+        targets_df = self.__stimulus.get_target_data()
+        target_identification_data = self._extract_target_identification_data()
+        final_df = pd.concat([targets_df, target_identification_data], axis=1)
+        return final_df
 
     def get_behavioral_data(self) -> LWSBehavioralData:
         return self.__behavioral_data
@@ -186,6 +204,60 @@ class LWSTrial:
         with open(full_path, "wb") as f:
             pkl.dump(self, f)
         return full_path
+
+    def _extract_target_identification_data(self) -> pd.DataFrame:
+        """
+        For each of the trial's targets, extracts the following information:
+            - distance_identified: distance (in visual angle) between the target and the gaze when the target was
+                identified by the subject
+            - time_identified: time (in milliseconds) when the target was identified by the subject
+            - time_confirmed: time (in milliseconds) when the target was confirmed by the subject
+
+        Returns a dataframe with shape (num_targets, 3), where each row corresponds to a target.
+        """
+        FULL_IDENTIFICATION_SEQUENCE = np.array([ExperimentTriggerEnum.MARK_TARGET_SUCCESSFUL,
+                                                 ExperimentTriggerEnum.NULL,
+                                                 ExperimentTriggerEnum.CONFIRM_TARGET_SUCCESSFUL,
+                                                 ExperimentTriggerEnum.NULL])
+
+        # extract relevant columns from the behavioral data
+        behavioral_data = self.get_behavioral_data()
+        columns = ([cnst.MICROSECONDS, cnst.TRIGGER, "closest_target"] +
+                   [col for col in behavioral_data.columns if col.startswith(f"{cnst.DISTANCE}_{cnst.TARGET}")])
+        behavioral_df = behavioral_data.get(columns)
+
+        res = pd.DataFrame(np.full((self.num_targets, 3), np.nan),
+                           columns=["distance_identified", "time_identified", "time_confirmed"])
+        for i in range(self.num_targets):
+            proximal_behavioral_df = behavioral_df[behavioral_df["closest_target"] == i + 1]
+
+            # check if target was ever identified by the subject
+            identification_idxs = au.find_sequences_in_sparse_array(proximal_behavioral_df[cnst.TRIGGER].values,
+                                                                    sequence=FULL_IDENTIFICATION_SEQUENCE)
+            if len(identification_idxs) == 0:
+                # this target was never identified
+                continue
+
+            # check if any of the target's identification attempts were from below the threshold distance
+            identification_distances = np.array(
+                [proximal_behavioral_df.iloc[first_idx][f"{cnst.DISTANCE}_{cnst.TARGET}{i + 1}"]
+                 for first_idx, last_idx in identification_idxs])
+            proximal_identifications = np.where(identification_distances < cnfg.THRESHOLD_VISUAL_ANGLE)[0]
+            if len(proximal_identifications) == 0:
+                # no proximal identification attempts
+                continue
+
+            # find the start & end idxs of the first identification attempt that was from below the threshold distance
+            first_proximal_identification = min(proximal_identifications)
+            first_proximal_identification_idxs = identification_idxs[first_proximal_identification]
+            first_idx, last_idx = first_proximal_identification_idxs
+            res.loc[i, "distance_identified"] = proximal_behavioral_df.iloc[first_idx][
+                f"{cnst.DISTANCE}_{cnst.TARGET}{i + 1}"]
+            res.loc[i, "time_identified"] = proximal_behavioral_df.iloc[first_idx][
+                                                       cnst.MICROSECONDS] / cnst.MICROSECONDS_PER_MILLISECOND
+            res.loc[i, "time_confirmed"] = proximal_behavioral_df.iloc[last_idx][
+                                                      cnst.MICROSECONDS] / cnst.MICROSECONDS_PER_MILLISECOND
+        return res
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}_{str(self.subject)}_{str(self)}"
