@@ -6,6 +6,7 @@ import numpy as np
 
 import constants as cnst
 from Config.ScreenMonitor import ScreenMonitor
+from Config.ExperimentTriggerEnum import ExperimentTriggerEnum
 
 # DIRECTORIES
 BASE_DIR = r"S:\Lab-Shared\Experiments\LWS Free Viewing Demo"
@@ -33,3 +34,7 @@ DEFAULT_FIXATION_MAX_VELOCITY = 20  # degrees per second
 
 # LWS ANALYSIS CONFIGURATION
 THRESHOLD_VISUAL_ANGLE = 1.5  # threshold for the visual angle between a target and a gaze datapoint, in degrees
+TARGET_IDENTIFICATION_SEQUENCE = np.array([ExperimentTriggerEnum.MARK_TARGET_SUCCESSFUL,
+                                           ExperimentTriggerEnum.NULL,
+                                           ExperimentTriggerEnum.CONFIRM_TARGET_SUCCESSFUL,
+                                           ExperimentTriggerEnum.NULL])  # sequence of triggers indicating that a target was identified by the subject (in order)
