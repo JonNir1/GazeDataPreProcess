@@ -73,6 +73,9 @@ def process_trial(trial: LWSTrial, save_pickle: bool = False, **kwargs):
     target_distances_df = pd.DataFrame(
         {f'{colname_prefix}{i + 1}': target_distances[i] for i in range(num_targets)},
         index=bd.index)
+    closest_target = target_distances_df.idxmin(axis=1, skipna=True, numeric_only=True)
+    closest_target = closest_target.apply(lambda x: str(x).removeprefix(f"{cnst.DISTANCE}_{cnst.TARGET}")).astype(float)
+    target_distances_df["closest_target"] = closest_target
 
     # add the new columns to the behavioral data:
     new_behavioral_data = bd.concat(is_event_df, target_distances_df)
