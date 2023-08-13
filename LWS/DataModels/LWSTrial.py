@@ -232,7 +232,7 @@ class LWSTrial:
         behavioral_data = self.get_behavioral_data()
         columns = ([cnst.MICROSECONDS, cnst.TRIGGER, "closest_target"] +
                    [col for col in behavioral_data.columns if col.startswith(f"{cnst.DISTANCE}_{cnst.TARGET}")])
-        behavioral_df = behavioral_data.get(columns)
+        behavioral_df = pd.DataFrame(behavioral_data.get(columns), columns=columns)
 
         res = pd.DataFrame(np.full((self.num_targets, 3), np.nan),
                            columns=["distance_identified", "time_identified", "time_confirmed"])
