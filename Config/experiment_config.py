@@ -18,6 +18,11 @@ ADDITIONAL_COLUMNS = ["ConditionName", "BlockNum", "TrialNum", "ImageNum"]  # ad
 SCREEN_MONITOR: ScreenMonitor = ScreenMonitor.from_default()  # global variable: screen monitor object
 VIEWER_DISTANCE = 65  # global variable: distance between subject and screen center (cm)
 
+# STIMULUS CONFIGURATIONS
+# taken from the previously generated stimuli (see ExpInfo.mat and ArrayInfo.mat)
+STIMULUS_BOTTOM_STRIP_TOP_LEFT = (730, 915)  # top left corner of the bottom strip of the stimulus
+STIMULUS_BOTTOM_STRIP_TOP_RIGHT = (1190, 915)  # top right corner of the bottom strip of the stimulus
+STIMULUS_BOTTOM_STRIP_BOTTOM_RIGHT = (STIMULUS_BOTTOM_STRIP_TOP_RIGHT[0], SCREEN_MONITOR.resolution[1])  # bottom right corner of the bottom strip of the stimulus
 
 # GAZE DATA & GAZE EVENTS CONFIGURATION
 DEFAULT_MINIMUM_SAMPLES_PER_EVENT = 2  # minimum number of samples in an event (saccade, fixation, etc.)
