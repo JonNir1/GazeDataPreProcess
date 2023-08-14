@@ -10,7 +10,6 @@ import constants as cnst
 import Utils.io_utils as ioutils
 import Utils.array_utils as au
 from Config import experiment_config as cnfg
-from Config.ExperimentTriggerEnum import ExperimentTriggerEnum
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
