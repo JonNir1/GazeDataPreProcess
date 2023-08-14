@@ -138,7 +138,7 @@ class LWSTrial:
 
     def get_gaze_events(self,
                         event_type: Optional[GazeEventTypeEnum] = None,
-                        ignore_outliers: bool = False) -> List[BaseGazeEvent]:
+                        ignore_outliers: bool = False) -> list:
         if self.__gaze_events is None:
             return []
         if len(self.__gaze_events) == 0:
