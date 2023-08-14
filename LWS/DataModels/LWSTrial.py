@@ -205,7 +205,7 @@ class LWSTrial:
         timestamps, _, _, _ = self.get_raw_gaze_data()
         events = np.full(timestamps.shape, GazeEventTypeEnum.UNDEFINED)
         for ev in self.get_gaze_events():
-            events[(ev.start_time <= timestamps) & (timestamps <= ev.end_time)] = ev.event_type()
+            events[ev.start_time <= timestamps <= ev.end_time] = ev.event_type()
         return list(events)
 
     def to_pickle(self, output_dir: Optional[str] = None) -> str:
