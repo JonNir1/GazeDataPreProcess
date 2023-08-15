@@ -4,10 +4,16 @@ import pandas as pd
 import cv2
 import matplotlib.pyplot as plt
 from scipy.io import loadmat
+from enum import StrEnum
 from typing import Tuple
 
 from Config import experiment_config as cnfg
-from LWS.DataModels.LWSEnums import LWSStimulusTypeEnum
+
+
+class LWSStimulusTypeEnum(StrEnum):
+    BW = 'bw'
+    COLOR = 'color'
+    NOISE = 'noise'
 
 
 class LWSArrayStimulus:
