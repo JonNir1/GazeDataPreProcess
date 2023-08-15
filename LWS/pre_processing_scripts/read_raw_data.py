@@ -64,7 +64,6 @@ def read_behavioral_data(subject_dir: str, **kwargs) -> List[LWSBehavioralData]:
     if len(gaze_files) != len(trigger_files):
         raise ValueError(f"Number of gaze files ({len(gaze_files)}) and trigger files ({len(trigger_files)}) "
                          f"does not match.")
-
     if len(gaze_files) != 1:
         # TODO: support multiple sessions
         raise NotImplementedError("Multiple sessions for a single subject are not supported yet.")
