@@ -12,14 +12,20 @@ from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 from GazeEvents.SaccadeEvent import SaccadeEvent
 
 
-def calculate_lws_rate(trial: LWSTrial, proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE) -> float:
+def calculate_lws_rate(trial: LWSTrial,
+                       proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
+                       proximal_fixations_only: bool = False) -> float:
     """
-    Calculates the LWS rate for the given trial, which is the fraction of fixations that are LWS instances out of all
-    fixations in the trial.
+    Calculates the LWS rate for the given trial, which is the fraction of fixations that are LWS instances out of
+    (a) all fixations in the trial; or (b) only the proximal fixations in the trial, depending on the value of the flag
+    `proximal_fixations_only`.
     """
     is_lws_instance = identify_lws_instances(trial, proximity_threshold=proximity_threshold)
     num_lws_instances = np.nansum(is_lws_instance)
-    num_fixations = len(trial.get_gaze_events(event_type=GazeEventTypeEnum.FIXATION))
+    fixations = trial.get_gaze_events(event_type=GazeEventTypeEnum.FIXATION)
+    if proximal_fixations_only:
+        fixations = list(filter(lambda f: f.visual_angle_to_closest_target <= proximity_threshold, fixations))
+    num_fixations = len(fixations)
     return num_lws_instances / num_fixations
 
 
