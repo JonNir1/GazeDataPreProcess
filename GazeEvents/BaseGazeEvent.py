@@ -96,3 +96,6 @@ class BaseGazeEvent(ABC):
         if not np.allclose(self._timestamps, other._timestamps):
             return False
         return True
+
+    def __hash__(self):
+        return hash(self.__repr__())

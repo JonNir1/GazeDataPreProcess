@@ -222,6 +222,9 @@ class LWSTrial:
                 return False
         return True
 
+    def __hash__(self):
+        return hash(self.__repr__())
+
 
 # import at the bottom to avoid circular imports
 from LWS.DataModels.LWSSubject import LWSSubject

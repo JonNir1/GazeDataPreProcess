@@ -94,6 +94,9 @@ class LWSSubject:
             if self.__trials[i] != other.__trials[i]:
                 return False
         return True
+    
+    def __hash__(self):
+        return hash(self.__repr__())
 
 
 # import at the bottom to avoid circular imports
