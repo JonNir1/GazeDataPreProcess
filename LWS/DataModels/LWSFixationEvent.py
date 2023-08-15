@@ -39,7 +39,7 @@ class LWSFixationEvent(FixationEvent):
         return np.nan
 
     @property
-    def closest_target(self) -> int:
+    def closest_target_id(self) -> int:
         min_dist = np.nanmin(self._visual_angle_to_targets)
         if np.isfinite(min_dist):
             return int(np.nanargmin(self._visual_angle_to_targets))
