@@ -58,9 +58,9 @@ def load_subject(subject_id: int, verbose: bool = True) -> LWSSubject:
 def analyze_subject(subject: LWSSubject, save: bool = False, verbose: bool = True):
     start = time.time()
     import Utils.io_utils as ioutils
-    import LWS.analysis_scripts.trial_summary as trsum
+    import LWS.subject_analysis.trial_summary as trsum
     import Visualization.saccade_analysis as sacan
-    import LWS.analysis_scripts.fixation_analysis as fixan
+    import LWS.subject_analysis.fixation_analysis as fixan
 
     trials = subject.get_all_trials()
     all_saccades: List[SaccadeEvent] = [s for tr in trials for s in tr.get_gaze_events(GazeEventTypeEnum.SACCADE)]
