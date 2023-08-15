@@ -71,7 +71,7 @@ def process_trial(trial: LWSTrial, save_pickle: bool = False, **kwargs):
     num_targets, _ = target_distances.shape
     colname_prefix = f"{cnst.DISTANCE}_{cnst.TARGET}"
     target_distances_df = pd.DataFrame(
-        {f'{colname_prefix}{i + 1}': target_distances[i] for i in range(num_targets)},
+        {f'{colname_prefix}{i}': target_distances[i] for i in range(num_targets)},
         index=bd.index)
     closest_target = target_distances_df.idxmin(axis=1, skipna=True, numeric_only=True)
     closest_target = closest_target.apply(lambda x: str(x).removeprefix(f"{cnst.DISTANCE}_{cnst.TARGET}")).astype(float)
