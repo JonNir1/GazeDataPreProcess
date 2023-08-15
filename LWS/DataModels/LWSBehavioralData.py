@@ -4,7 +4,6 @@ from typing import Tuple, List, Union
 
 import constants as cnst
 from Utils.calculate_sampling_rate import calculate_sampling_rate_from_microseconds
-from LWS.DataModels.LWSEnums import LWSStimulusTypeEnum
 
 
 class LWSBehavioralData:
