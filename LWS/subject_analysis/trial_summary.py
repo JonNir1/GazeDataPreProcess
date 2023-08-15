@@ -10,7 +10,7 @@ from GazeEvents.BaseGazeEvent import BaseGazeEvent
 from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 
-def summarize_all_trials(trials: List[LWSTrial], safe=False) -> pd.DataFrame:
+def summarize_all_trials(trials: List[LWSTrial], catch_exceptions=False, catch_warnings=True) -> pd.DataFrame:
     """
     Extracts a summary of events during each trial, containing the following information:
         - trial (trial number, int) - index
@@ -28,10 +28,10 @@ def summarize_all_trials(trials: List[LWSTrial], safe=False) -> pd.DataFrame:
     series_list = []
     for tr in trials:
         try:
-            s = summarize_single_trial(tr, suppress_warnings=safe)
+            s = summarize_single_trial(tr, suppress_warnings=catch_warnings)
             series_list.append(s)
         except RuntimeError as e:
-            if not safe:
+            if not catch_exceptions:
                 raise e
     df = pd.DataFrame(series_list).set_index(cnst.TRIAL)
     df.index = df.index.astype(int)  # convert trial number to int
