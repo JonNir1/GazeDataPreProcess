@@ -10,8 +10,8 @@ from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 class SaccadeEvent(BaseVisualGazeEvent):
     _EVENT_TYPE = GazeEventTypeEnum.SACCADE
-    MIN_DURATION = 5  # minimum duration of a saccade in milliseconds
-    MAX_DURATION = 500  # maximum duration of a saccade in milliseconds
+    MIN_DURATION = 5    # (milliseconds)
+    MAX_DURATION = 250  # (milliseconds)
 
     @property
     def start_point(self) -> Tuple[float, float]:
