@@ -11,7 +11,6 @@ from Config import experiment_config as cnfg
 from Config.ExperimentTriggerEnum import ExperimentTriggerEnum
 from DataParser.TobiiCSVEyeTrackingParser import TobiiCSVEyeTrackingParser
 from DataParser.EPrimeTriggerLogParser import EPrimeTriggerLogParser
-from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 
 
@@ -35,7 +34,7 @@ def read_subject_info(subject_dir: str) -> LWSSubjectInfo:
     return LWSSubjectInfo.from_eprime_file(subject_info_paths[0])
 
 
-def read_eye_tracking_data(subject_dir: str, **kwargs) -> List[LWSBehavioralData]:
+def read_eye_tracking_data(subject_dir: str, **kwargs) -> List[pd.DataFrame]:
     """
     Reads the eye-tracking data (Tobii+EPrime CSV format) and trigger data (EPrime tsv format) from the specified paths,
     parses them to a predefined format and merges them into a single dataframe for each trial.
@@ -46,7 +45,7 @@ def read_eye_tracking_data(subject_dir: str, **kwargs) -> List[LWSBehavioralData
     :keyword start_trigger: trigger indicating start of a trial; if None, will be taken from the config file
     :keyword end_trigger: trigger indicating end of a trial; if None, will be taken from the config file
 
-    :return: A list of LWSBehavioralData objects, one for each trial.
+    :return: A list of pd.dataFrame objects, one for each trial.
 
     :raise FileNotFoundError: if no gaze files or no trigger files were found in the provided directory.
     :raise ValueError: if the number of gaze files and trigger files does not match.
@@ -66,8 +65,7 @@ def read_eye_tracking_data(subject_dir: str, **kwargs) -> List[LWSBehavioralData
         # TODO: support multiple sessions
         raise NotImplementedError("Multiple sessions for a single subject are not supported yet.")
     trial_dataframes = parse_gaze_and_triggers(et_path=gaze_files[0], trigger_path=trigger_files[0], split_trials=True, **kwargs)
-    behavioral_data = [LWSBehavioralData(trial_df) for trial_df in trial_dataframes]
-    return behavioral_data
+    return trial_dataframes
 
 
 def parse_gaze_and_triggers(et_path, trigger_path,
