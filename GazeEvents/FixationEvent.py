@@ -8,8 +8,8 @@ from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 class FixationEvent(BaseVisualGazeEvent):
     _EVENT_TYPE = GazeEventTypeEnum.FIXATION
-    MIN_DURATION = 55  # minimum duration of a fixation in milliseconds
-    MAX_DURATION = 2000  # maximum duration of a fixation in milliseconds
+    MIN_DURATION = 55    # (milliseconds)
+    MAX_DURATION = 2500  # (milliseconds)
 
     def __init__(self, timestamps: np.ndarray, x: np.ndarray, y: np.ndarray, pupil: np.ndarray, viewer_distance: float):
         super().__init__(timestamps=timestamps, x=x, y=y, viewer_distance=viewer_distance)
