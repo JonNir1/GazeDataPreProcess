@@ -46,8 +46,8 @@ def read_subject_from_raw_data(subject_dir: str,
     trial_dfs = read_eye_tracking_data(subject_dir, **kwargs)
     for i, df in enumerate(trial_dfs):
         behavioral_data = LWSBehavioralData(df)
-        stimulus = LWSArrayStimulus.from_stimulus_name(stim_id=behavioral_data.image_num,
-                                                       stim_type=behavioral_data.stim_type,
+        stimulus = LWSArrayStimulus.from_stimulus_name(stim_id=df["ImageNum"].iloc[0],
+                                                       stim_type=df["ConditionName"].iloc[0],
                                                        stim_directory=stimuli_dir)
         trial = LWSTrial(trial_num=i + 1, behavioral_data=behavioral_data, stimulus=stimulus, subject=subject)
         subject.add_trial(trial)
