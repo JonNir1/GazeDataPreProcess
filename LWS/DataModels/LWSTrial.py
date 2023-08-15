@@ -8,7 +8,7 @@ import pandas as pd
 
 import constants as cnst
 import Utils.io_utils as ioutils
-from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
+from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus, LWSStimulusTypeEnum
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
 from GazeEvents.GazeEventEnums import GazeEventTypeEnum
@@ -52,13 +52,17 @@ class LWSTrial:
         return self.__trial_num
 
     @property
+    def num_targets(self) -> int:
+        return self.__stimulus.num_targets
+
+    @property
+    def stim_type(self) -> LWSStimulusTypeEnum:
+        return self.__stimulus.stim_type
+
+    @property
     def num_samples(self) -> int:
         timestamps = self.__behavioral_data.get(cnst.MICROSECONDS)
         return len(timestamps)
-
-    @property
-    def num_targets(self) -> int:
-        return self.__stimulus.num_targets
 
     @property
     def sampling_rate(self) -> float:
