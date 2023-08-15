@@ -10,7 +10,7 @@ from GazeEvents.BaseGazeEvent import BaseGazeEvent
 from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
 
-def summarize_all_trials(trials: List[LWSTrial], safe=True) -> pd.DataFrame:
+def summarize_all_trials(trials: List[LWSTrial], safe=False) -> pd.DataFrame:
     """
     Extracts a summary of events during each trial, containing the following information:
         - trial (trial number, int) - index
@@ -65,32 +65,43 @@ def __summarize_single_trial_unsafe(trial: LWSTrial) -> pd.Series:
     if not trial.is_processed:
         raise RuntimeError(f"Trial {trial} is not processed")
     trial_data = {cnst.TRIAL: trial.trial_num, 'duration': trial.duration}
+
     for et in GazeEventTypeEnum:
+        if et == GazeEventTypeEnum.UNDEFINED:
+            continue
+
+        et_name = et.name.lower()
         events: List[BaseGazeEvent] = trial.get_gaze_events(event_type=et)
         events_count = len(events)
         events_outlier_count = len([e for e in events if e.is_outlier])
-        trial_data[f"{et}_count"] = events_count
-        trial_data[f"{et}_outlier_count"] = events_outlier_count
-        trial_data[f"{et}_mean_duration"] = np.nanmean([e.duration for e in events])
-        trial_data[f"{et}_mean_duration_no_outliers"] = np.nanmean([e.duration for e in events if not e.is_outlier])
+        trial_data[f"{et_name}_count"] = events_count
+        trial_data[f"{et_name}_outlier_count"] = events_outlier_count
+        trial_data[f"{et_name}_mean_duration"] = np.nanmean([e.duration for e in events])
+        trial_data[f"{et_name}_mean_duration_no_outliers"] = np.nanmean(
+            [e.duration for e in events if not e.is_outlier])
 
         if et == GazeEventTypeEnum.FIXATION:
             from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
             events: List[LWSFixationEvent]
-            trial_data[f"{et}_mean_distance_to_target"] = np.nanmean([e.visual_angle_to_closest_target for e in events if
-                                                                      np.isfinite(e.visual_angle_to_closest_target)])
-            trial_data[f"{et}_mean_distance_to_target_no_outliers"] = np.nanmean(
+            trial_data[f"{et_name}_mean_distance_to_target"] = np.nanmean(
+                [e.visual_angle_to_closest_target for e in events if
+                 np.isfinite(e.visual_angle_to_closest_target)])
+            trial_data[f"{et_name}_mean_distance_to_target_no_outliers"] = np.nanmean(
                 [e.visual_angle_to_closest_target for e in events if
                  np.isfinite(e.visual_angle_to_closest_target) and not e.is_outlier])
+
         elif et == GazeEventTypeEnum.SACCADE:
             from GazeEvents.SaccadeEvent import SaccadeEvent
             events: List[SaccadeEvent]
-            trial_data[f"{et}_mean_visual_angle"] = np.nanmean(
+            trial_data[f"{et_name}_mean_visual_angle"] = np.nanmean(
                 [e.amplitude for e in events if np.isfinite(e.amplitude)])
-            trial_data[f"{et}_mean_visual_angle_no_outliers"] = np.nanmean([e.amplitude for e in events if
-                                                                            np.isfinite(
-                                                                                e.amplitude) and not e.is_outlier])
+            trial_data[f"{et_name}_mean_visual_angle_no_outliers"] = np.nanmean([e.amplitude for e in events if
+                                                                                 np.isfinite(
+                                                                                     e.amplitude) and not e.is_outlier])
 
-    trial_data["total_events_count"] = sum([trial_data[f"{et.name.lower()}_count"] for et in GazeEventTypeEnum])
-    trial_data["total_outliers_count"] = sum([trial_data[f"{et.name.lower()}_outlier_count"] for et in GazeEventTypeEnum])
+    trial_data["total_events_count"] = sum(
+        [trial_data[f"{et.name.lower()}_count"] for et in GazeEventTypeEnum if et != GazeEventTypeEnum.UNDEFINED])
+    trial_data["total_outliers_count"] = sum(
+        [trial_data[f"{et.name.lower()}_outlier_count"] for et in GazeEventTypeEnum if
+         et != GazeEventTypeEnum.UNDEFINED])
     return pd.Series(trial_data)
