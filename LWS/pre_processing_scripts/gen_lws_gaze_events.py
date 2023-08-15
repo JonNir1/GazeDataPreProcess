@@ -61,11 +61,10 @@ def _gen_lws_gaze_events(event_type: GazeEventTypeEnum, trial: LWSTrial) -> List
         # create LWSFixationEvents
         from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
         from LWS.pre_processing_scripts.visual_angle_to_targets import visual_angle_fixation_to_targets
-        triggers = trial.get_triggers()
         fixations_list = []
         for idxs in separate_event_idxs:
             fix = LWSFixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], pupil=p[idxs],
-                                   viewer_distance=viewer_distance, triggers=triggers[idxs])
+                                   viewer_distance=viewer_distance, trial=trial)
             fix.visual_angle_to_targets = visual_angle_fixation_to_targets(fix=fix, trial=trial)
             fixations_list.append(fix)
         return fixations_list

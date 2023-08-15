@@ -5,6 +5,7 @@ from typing import Tuple, List
 import constants as cnst
 from Config.ExperimentTriggerEnum import ExperimentTriggerEnum
 from GazeEvents.FixationEvent import FixationEvent
+from LWS.DataModels.LWSTrial import LWSTrial
 
 
 class LWSFixationEvent(FixationEvent):
@@ -16,12 +17,17 @@ class LWSFixationEvent(FixationEvent):
 
     def __init__(self,
                  timestamps: np.ndarray, x: np.ndarray, y: np.ndarray, pupil: np.ndarray, viewer_distance: float,
-                 triggers: np.ndarray, visual_angle_to_targets: List[float] = None):
+                 trial: LWSTrial, visual_angle_to_targets: List[float] = None):
         super().__init__(timestamps=timestamps, x=x, y=y, pupil=pupil, viewer_distance=viewer_distance)
-        triggers_with_timestamps = [(timestamps[i], triggers[i]) for i in range(len(timestamps)) if
-                                    not np.isnan(triggers[i])]
+        self._trial: LWSTrial = trial
+        triggers_with_timestamps = [(ts, trg) for ts, trg in zip(timestamps, self.trial.get_triggers()) if
+                                    not np.isnan(trg)]
         self._triggers: List[Tuple[float, int]] = sorted(triggers_with_timestamps, key=lambda tup: tup[0])
         self._visual_angle_to_targets: List[float] = [] if visual_angle_to_targets is None else visual_angle_to_targets
+
+    @property
+    def trial(self) -> LWSTrial:
+        return self._trial
 
     @property
     def visual_angle_to_targets(self) -> List[float]:
