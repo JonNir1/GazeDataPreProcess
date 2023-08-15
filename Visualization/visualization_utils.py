@@ -74,6 +74,10 @@ def set_figure_properties(fig: Optional[plt.Figure], **kwargs) -> plt.Figure:
 def set_axes_properties(ax: plt.Axes, ax_title: Optional[str],
                         xlabel: Optional[str], ylabel: Optional[str],
                         **kwargs) -> plt.Axes:
+    """
+    Sets properties of the given axis, such as title, labels, ticks, etc.
+    :param ax: plt.Axes object to set properties on.
+    """
     if ax_title:
         ax.set_title(ax_title, fontsize=kwargs.get("subtitle_size", 14))
     if xlabel:
