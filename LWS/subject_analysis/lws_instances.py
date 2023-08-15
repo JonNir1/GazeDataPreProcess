@@ -26,7 +26,11 @@ def calculate_lws_rate(trial: LWSTrial,
     if proximal_fixations_only:
         fixations = list(filter(lambda f: f.visual_angle_to_closest_target <= proximity_threshold, fixations))
     num_fixations = len(fixations)
-    return num_lws_instances / num_fixations
+    if num_fixations > 0:
+        return num_lws_instances / num_fixations
+    if num_lws_instances == 0:
+        return 0
+    raise ZeroDivisionError(f"num_lws_instances = {num_lws_instances},\tnum_fixations = {num_fixations}")
 
 
 def identify_lws_instances(trial: LWSTrial,
