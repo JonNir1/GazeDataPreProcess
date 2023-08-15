@@ -25,19 +25,6 @@ class LWSBehavioralData:
         return calculate_sampling_rate_from_microseconds(microseconds)
 
     @property
-    def trial_num(self) -> int:
-        return self.get(cnst.TRIAL)[0]
-
-    @property
-    def stim_type(self) -> LWSStimulusTypeEnum:
-        stim_type_str = self.get("ConditionName")[0]
-        return LWSStimulusTypeEnum(stim_type_str)
-
-    @property
-    def image_num(self) -> int:
-        return self.get("ImageNum")[0]
-
-    @property
     def columns(self) -> list:
         return self.__data.columns.to_list()
 
@@ -68,4 +55,5 @@ class LWSBehavioralData:
         return f"{self.__class__.__name__}:{str(self.shape)}"
 
     def __str__(self) -> str:
-        return f"{self.__class__.__name__}_T{self.trial_num}({self.stim_type.value}-{self.image_num})"
+        trial_num = self.get(cnst.TRIAL)[0]
+        return f"{self.__class__.__name__}_T{trial_num:03d}"
