@@ -30,7 +30,7 @@ def summarize_all_trials(trials: List[LWSTrial], safe=False) -> pd.DataFrame:
         try:
             s = summarize_single_trial(tr, suppress_warnings=safe)
             series_list.append(s)
-        except Exception as e:
+        except RuntimeError as e:
             if not safe:
                 raise e
     df = pd.DataFrame(series_list).set_index(cnst.TRIAL)
