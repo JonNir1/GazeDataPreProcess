@@ -39,11 +39,9 @@ def read_eye_tracking_data(subject_dir: str, **kwargs) -> List[LWSBehavioralData
     """
     Reads the eye-tracking data (Tobii+EPrime CSV format) and trigger data (EPrime tsv format) from the specified paths,
     parses them to a predefined format and merges them into a single dataframe for each trial.
-    Lastly,
 
     :param subject_dir: The directory containing the subject's data.
 
-    :keyword screen_monitor: screen monitor object; if None, will be created from the config file
     :keyword additional_columns: additional columns to parse from the eye-tracking data file; if None, will be taken from the config file
     :keyword start_trigger: trigger indicating start of a trial; if None, will be taken from the config file
     :keyword end_trigger: trigger indicating end of a trial; if None, will be taken from the config file
