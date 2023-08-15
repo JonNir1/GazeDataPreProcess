@@ -1,5 +1,6 @@
 import os
 import time
+import numpy as np
 import matplotlib.pyplot as plt
 from typing import List
 
@@ -61,6 +62,7 @@ def analyze_subject(subject: LWSSubject, save: bool = False, verbose: bool = Tru
     import LWS.subject_analysis.trial_summary as trsum
     import Visualization.saccade_analysis as sacan
     import LWS.subject_analysis.fixation_analysis as fixan
+    import LWS.subject_analysis.lws_figures as lws_fig
 
     trials = subject.get_all_trials()
     all_saccades: List[SaccadeEvent] = [s for tr in trials for s in tr.get_gaze_events(GazeEventTypeEnum.SACCADE)]
@@ -95,6 +97,14 @@ def analyze_subject(subject: LWSSubject, save: bool = False, verbose: bool = Tru
     if save:
         visutils.save_figure(fixation_proximity_comparison,
                              full_path=os.path.join(subject_figures_dir, "target-proximal fixation comparison.png"))
+
+    lws_rates = lws_fig.lws_rates_figure(subject, proximity_thresholds=np.arange(0.1 * cnfg.THRESHOLD_VISUAL_ANGLE,
+                                                                                 1.2 * cnfg.THRESHOLD_VISUAL_ANGLE,
+                                                                                 0.1 * cnfg.THRESHOLD_VISUAL_ANGLE))
+    if save:
+        visutils.save_figure(lws_rates,
+                             full_path=os.path.join(subject_figures_dir, "lws rates.png"))
+
     end = time.time()
     if verbose:
         print(f"Finished analyzing subject {subject.subject_id}: {(end - start):.2f} seconds")
