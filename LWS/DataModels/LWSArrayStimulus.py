@@ -60,7 +60,7 @@ class LWSArrayStimulus:
         return LWSArrayStimulus(stim_id, stim_type, image, icon_paths, icon_centers, icon_categories, is_target_icon)
 
     @staticmethod
-    def from_stimulus_name(stim_id: int, stim_type: str, stim_directory: str = cnfg.STIMULI_DIR) -> "LWSArrayStimulus":
+    def from_type_and_id(stim_id: int, stim_type: str, stim_directory: str = cnfg.STIMULI_DIR) -> "LWSArrayStimulus":
         """
         Reads the stimulus based on the provided stimulus ID and type and returns a LWSArrayStimulus object.
         """
