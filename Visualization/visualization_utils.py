@@ -71,19 +71,29 @@ def set_figure_properties(fig: Optional[plt.Figure], **kwargs) -> plt.Figure:
     return fig
 
 
-def set_axes_properties(ax: plt.Axes, ax_title: Optional[str],
-                        xlabel: Optional[str], ylabel: Optional[str],
-                        **kwargs) -> plt.Axes:
+def set_axes_properties(ax: plt.Axes, **kwargs) -> plt.Axes:
     """
     Sets properties of the given axis, such as title, labels, ticks, etc.
     :param ax: plt.Axes object to set properties on.
+
+    keyword arguments:
+        - ax_title: the title of the axis. default: ""
+        - subtitle_size: the font size of the axis title. default: 14.
+        - xlabel: the label of the x-axis. default: ""
+        - ylabel: the label of the y-axis. default: ""
+        - label_size: the font size of the axis labels. default: 12.
+        - show_legend: whether to show the legend. default: False.
+        - legend_location: the location of the legend. default: "upper right".
+        - hide_axes: whether to hide the axes. default: False.
+        - text_size: the font size of the axis ticks. default: 10.
+        - invert_yaxis: whether to invert the y-axis. default: False.
     """
-    if ax_title:
-        ax.set_title(ax_title, fontsize=kwargs.get("subtitle_size", 14))
-    if xlabel:
-        ax.set_xlabel(xlabel, fontsize=kwargs.get("label_size", 12))
-    if ylabel:
-        ax.set_ylabel(ylabel, fontsize=kwargs.get("label_size", 12))
+    if kwargs.get("ax_title", ""):
+        ax.set_title(kwargs.pop("ax_title", ""), fontsize=kwargs.get("subtitle_size", 14))
+    if kwargs.get("xlabel", ""):
+        ax.set_xlabel(kwargs.pop("xlabel", ""), fontsize=kwargs.get("label_size", 12))
+    if kwargs.get("ylabel", ""):
+        ax.set_ylabel(kwargs.pop("ylabel", ""), fontsize=kwargs.get("label_size", 12))
 
     text_size = kwargs.get("text_size", 10)
     if kwargs.get("show_legend", False):

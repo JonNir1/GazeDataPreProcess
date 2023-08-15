@@ -48,8 +48,7 @@ def bar_chart(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) -> plt.Axes:
     ax = visutils.generic_bar_chart(ax=ax, centers=centers, values=percentages, bar_width=width, **kwargs)
 
     # set axes properties:
-    visutils.set_axes_properties(ax=ax, ax_title=kwargs.pop("title", ""),
-                                 xlabel=kwargs.pop("xlabel", "%"), ylabel=kwargs.pop("ylabel", ""), **kwargs)
+    visutils.set_axes_properties(ax=ax, xlabel=kwargs.pop("xlabel", "%"), **kwargs)
     return ax
 
 
@@ -99,8 +98,7 @@ def rose_chart(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) -> plt.Axes:
     ax = visutils.generic_bar_chart(ax=ax, centers=angles, values=percentages, bar_width=width, **kwargs)
 
     # set axes properties:
-    visutils.set_axes_properties(ax=ax, ax_title=kwargs.pop("title", ""),
-                                 xlabel=kwargs.pop("xlabel", ""), ylabel=kwargs.pop("ylabel", ""), **kwargs)
+    visutils.set_axes_properties(ax=ax, **kwargs)
     ax.set_theta_zero_location(kwargs.get("zero_location", "E"))  # set 0° to the provided location (default: East)
     if kwargs.get("clockwise_angles", False):
         ax.set_theta_direction(-1)
