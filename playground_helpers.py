@@ -1,5 +1,6 @@
 import os
 import time
+import traceback
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import List
@@ -137,7 +138,7 @@ def visualize_all_trials(subject: LWSSubject, save: bool = False, verbose: bool 
             if verbose:
                 print(f"\t{tr.__repr__()}:\t{(end_trial - start_trial):.2f} s")
         except Exception as e:
-            failed_trials.append((tr, e))
+            failed_trials.append((tr, traceback.format_exc()))
             if verbose:
                 print(f"\tFailed to visualize trial {tr.__repr__()}:\n\t{e}\n")
 
