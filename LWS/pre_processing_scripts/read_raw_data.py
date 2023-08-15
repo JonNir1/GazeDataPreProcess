@@ -35,7 +35,7 @@ def read_subject_info(subject_dir: str) -> LWSSubjectInfo:
     return LWSSubjectInfo.from_eprime_file(subject_info_paths[0])
 
 
-def read_behavioral_data(subject_dir: str, **kwargs) -> List[LWSBehavioralData]:
+def read_eye_tracking_data(subject_dir: str, **kwargs) -> List[LWSBehavioralData]:
     """
     Reads the eye-tracking data (Tobii+EPrime CSV format) and trigger data (EPrime tsv format) from the specified paths,
     parses them to a predefined format and merges them into a single dataframe for each trial.

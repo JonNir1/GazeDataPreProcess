@@ -6,7 +6,7 @@ from Config import experiment_config as cnfg
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSTrial import LWSTrial
 from LWS.DataModels.LWSSubject import LWSSubject
-from LWS.pre_processing_scripts.read_raw_data import read_behavioral_data, read_subject_info
+from LWS.pre_processing_scripts.read_raw_data import read_eye_tracking_data, read_subject_info
 
 
 def read_subject_from_raw_data(subject_dir: str,
@@ -42,7 +42,7 @@ def read_subject_from_raw_data(subject_dir: str,
     subject = LWSSubject(info=subject_info, output_directory=output_directory)
 
     # read the trials and assign them to the subject:
-    behavioral_trials_data = read_behavioral_data(subject_dir, **kwargs)
+    behavioral_trials_data = read_eye_tracking_data(subject_dir, **kwargs)
     for i, bd in enumerate(behavioral_trials_data):
         stimulus = LWSArrayStimulus.from_stimulus_name(stim_id=bd.image_num,
                                                        stim_type=bd.stim_type,
