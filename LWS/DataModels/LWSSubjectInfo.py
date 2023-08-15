@@ -2,9 +2,24 @@ import os
 import io
 import datetime
 import pandas as pd
+from enum import StrEnum
 from typing import Optional, List
 
-from LWS.DataModels.LWSEnums import LWSSubjectSexEnum, LWSSubjectDominantHandEnum, LWSSubjectDominantEyeEnum
+
+class LWSSubjectSexEnum(StrEnum):
+    Male = 'male'
+    Female = 'female'
+    Other = 'other'
+
+
+class LWSSubjectDominantHandEnum(StrEnum):
+    Right = 'right'
+    Left = 'left'
+
+
+class LWSSubjectDominantEyeEnum(StrEnum):
+    Right = 'right'
+    Left = 'left'
 
 
 class LWSSubjectInfo:
