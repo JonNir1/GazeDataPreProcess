@@ -65,7 +65,7 @@ def read_eye_tracking_data(subject_dir: str, **kwargs) -> List[LWSBehavioralData
     if len(gaze_files) != 1:
         # TODO: support multiple sessions
         raise NotImplementedError("Multiple sessions for a single subject are not supported yet.")
-    trials = parse_gaze_and_triggers(et_path=gaze_files[0], trigger_path=trigger_files[0], **kwargs)
+    trials = parse_gaze_and_triggers(et_path=gaze_files[0], trigger_path=trigger_files[0], split_trials=True, **kwargs)
     behavioral_data = [LWSBehavioralData(trial_df) for trial_df in trials]
     return behavioral_data
 
