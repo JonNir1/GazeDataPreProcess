@@ -30,7 +30,7 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
                  min_duration: float = cnfg.DEFAULT_SACCADE_MINIMUM_DURATION,
                  iet: float = cnfg.DEFAULT_INTER_EVENT_TIME,
                  derivation_window_size: int = DEFAULT_DERIVATION_WINDOW_SIZE,
-                 lambda_noise_threshold: int = DEFAULT_LAMBDA_NOISE_THRESHOLD):
+                 lambda_noise_threshold: float = DEFAULT_LAMBDA_NOISE_THRESHOLD):
         super().__init__(sr=sr, min_duration=min_duration, iet=iet)
         self.__derivation_window_size = derivation_window_size
         self.__lambda_noise_threshold = lambda_noise_threshold
