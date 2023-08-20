@@ -2,6 +2,8 @@ import os
 import pickle as pkl
 from typing import List, Optional
 
+import pandas as pd
+
 from Config import experiment_config as cnfg
 import Utils.io_utils as ioutils
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
@@ -72,6 +74,11 @@ class LWSSubject:
         with open(full_path, "wb") as f:
             pkl.dump(self, f)
         return full_path
+
+    def _get_full_raw_data(self) -> pd.DataFrame:
+        """ Returns a DataFrame with all the raw data from all trials """
+        # access the private __data attribute of each trial, and concatenate them all together
+        return pd.concat([tr.get_behavioral_data()._LWSBehavioralData__data for tr in self.get_all_trials()], axis=0)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}_{self.subject_id:03d}"
