@@ -137,10 +137,11 @@ def visualize_all_trials(subject: LWSSubject, save: bool = False, verbose: bool 
             end_trial = time.time()
             if verbose:
                 print(f"\t{tr.__repr__()}:\t{(end_trial - start_trial):.2f} s")
-        except Exception as e:
-            failed_trials.append((tr, traceback.format_exc()))
+        except Exception as _e:
+            trace = traceback.format_exc()
+            failed_trials.append((tr, trace))
             if verbose:
-                print(f"\tFailed to visualize trial {tr.__repr__()}:\n\t{e}\n")
+                print(f"######\n\tFailed to visualize trial {tr.__repr__()}:\n\t{trace}\n")
 
     end = time.time()
     if verbose:
