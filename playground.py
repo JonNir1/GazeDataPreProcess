@@ -17,28 +17,21 @@ import Visualization.visualization_utils as visutils
 ##########################################
 
 # subjects: "GalChen Demo" (001), "Rotem Demo" (002)
-pipline_config = {'save': True, 'skip_analysis': False, 'verbose': True}
-
-subject1, subject1_analysis, failed_trials1 = ph.full_pipline(name="GalChen Demo", **pipline_config)
+# pipline_config = {'save': True, 'skip_analysis': False, 'verbose': True}
+#
+# subject1, subject1_analysis, failed_trials1 = ph.full_pipline(name="GalChen Demo", **pipline_config)
 # del subject1_analysis, failed_trials1
-
-subject2, subject2_analysis, failed_trials2 = ph.full_pipline(name="Rotem Demo", **pipline_config)
+#
+# subject2, subject2_analysis, failed_trials2 = ph.full_pipline(name="Rotem Demo", **pipline_config)
 # del subject2_analysis, failed_trials2
+#
+# del pipline_config
 
-del pipline_config
-
-# subject1 = ph.load_subject(subject_id=1, verbose=True)
-# subject2 = ph.load_subject(subject_id=2, verbose=True)
+subject1 = ph.load_subject(subject_id=1, verbose=True)
+subject2 = ph.load_subject(subject_id=2, verbose=True)
 
 
 ##########################################
 ### PLAYGROUND  ##########################
 ##########################################
 
-from LWS.subject_analysis.lws_figures import lws_rates_figure
-
-thresholds = np.arange(0.1 * cnfg.THRESHOLD_VISUAL_ANGLE,
-                       1.2 * cnfg.THRESHOLD_VISUAL_ANGLE,
-                       0.1 * cnfg.THRESHOLD_VISUAL_ANGLE)
-fig = lws_rates_figure(subject1, thresholds)
-visutils.show_figure(fig)
