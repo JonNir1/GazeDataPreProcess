@@ -3,6 +3,7 @@ from typing import Optional, Union
 
 from Config import experiment_config as cnfg
 
+TEXT_EXTENSION = 'txt'
 IMAGE_EXTENSION = 'png'
 VIDEO_EXTENSION = 'mp4'
 PICKLE_EXTENSION = 'pkl'
@@ -34,6 +35,8 @@ def get_filename(name: str, extension: Optional[str] = None) -> str:
     if len(split_name) > 2:
         raise ValueError(f'Invalid filename: {name}')
     if len(split_name) == 2:
+        if extension is not None:
+            raise ValueError(f'File already has an extension: {extension[1]}')
         name, extension = split_name
     if extension is None:
         raise ValueError(f'No extension provided for filename: {name}')
