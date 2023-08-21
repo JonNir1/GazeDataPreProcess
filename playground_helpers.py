@@ -7,6 +7,7 @@ from typing import List
 
 import constants as cnst
 import Config.experiment_config as cnfg
+import Utils.io_utils as ioutils
 from LWS.DataModels.LWSSubject import LWSSubject
 from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 from GazeEvents.SaccadeEvent import SaccadeEvent
@@ -33,7 +34,8 @@ def full_pipline(name: str, save: bool = True,
     failed_trials = failed_analysis_trials + failed_visualization_trials
     end = time.time()
     if verbose:
-        print(f"\nFinished processing subject {name}: {(end - start):.2f} seconds\n###############\n")
+        ioutils.log_and_print(msg=f"\nFinished processing subject {name}: {(end - start):.2f} seconds\n###############\n",
+                              log_file=subject.log_file)
     return subject, subject_analysis, failed_trials
 
 
@@ -49,7 +51,8 @@ def process_subject(name: str, save: bool = False, verbose: bool = True) -> LWSS
                                  drop_outlier_events=False)
     end = time.time()
     if verbose:
-        print(f"Finished preprocessing subject `{name}`: {(end - start):.2f} seconds")
+        ioutils.log_and_print(msg=f"Finished preprocessing subject `{name}`: {(end - start):.2f} seconds",
+                              log_file=subject.log_file)
     return subject
 
 
@@ -60,7 +63,8 @@ def load_subject(subject_id: int, verbose: bool = True) -> LWSSubject:
     subject = LWSSubject.from_pickle(os.path.join(cnfg.OUTPUT_DIR, subdir, f"LWSSubject_{subject_id}.pkl"))
     end = time.time()
     if verbose:
-        print(f"Finished loading subject {subject_id}: {(end - start):.2f} seconds")
+        ioutils.log_and_print(msg=f"Finished loading subject {subject_id}: {(end - start):.2f} seconds",
+                              log_file=subject.log_file)
     return subject
 
 
@@ -115,7 +119,8 @@ def analyze_subject(subject: LWSSubject, save: bool = False, verbose: bool = Tru
 
     end = time.time()
     if verbose:
-        print(f"Finished analyzing subject {subject.subject_id}: {(end - start):.2f} seconds")
+        ioutils.log_and_print(msg=f"Finished analyzing subject {subject.subject_id}: {(end - start):.2f} seconds",
+                              log_file=subject.log_file)
     return trial_summary, saccade_distributions, fixation_distributions, fixation_dynamics, fixation_proximity_comparison
 
 
@@ -140,16 +145,19 @@ def analyze_all_trials(subject: LWSSubject, save: bool = False, verbose: bool = 
             plt.close('all')  # close all open figures from memory
             end_trial = time.time()
             if verbose:
-                print(f"\t{tr.__repr__()}:\t{(end_trial - start_trial):.2f} s")
+                ioutils.log_and_print(
+                    msg=f"\t{tr.__repr__()} Analysis:\t{(end_trial - start_trial):.2f} s", log_file=subject.log_file)
         except Exception as _e:
             trace = traceback.format_exc()
             failed_trials.append((tr, trace))
             if verbose:
-                print(f"######\n\tFailed to analyze trial {tr.__repr__()}:\n\t{trace}\n")
+                ioutils.log_and_print(
+                    msg=f"######\n\tFailed to analyze trial {tr.__repr__()}:\n\t{trace}\n", log_file=subject.log_file)
 
     end = time.time()
     if verbose:
-        print(f"Finished analyzing all trials: {(end - start):.2f} seconds")
+        ioutils.log_and_print(
+            msg=f"Finished analyzing all trials: {(end - start):.2f} seconds", log_file=subject.log_file)
     return failed_trials
 
 
@@ -165,14 +173,18 @@ def visualize_all_trials(subject: LWSSubject, save: bool = False, verbose: bool 
             plt.close('all')  # close all open figures from memory
             end_trial = time.time()
             if verbose:
-                print(f"\t{tr.__repr__()}:\t{(end_trial - start_trial):.2f} s")
+                ioutils.log_and_print(
+                    msg=f"\t{tr.__repr__()} Visualization:\t{(end_trial - start_trial):.2f} s",
+                    log_file=subject.log_file)
         except Exception as _e:
             trace = traceback.format_exc()
             failed_trials.append((tr, trace))
             if verbose:
-                print(f"######\n\tFailed to visualize trial {tr.__repr__()}:\n\t{trace}\n")
+                ioutils.log_and_print(
+                    msg=f"######\n\tFailed to visualize trial {tr.__repr__()}:\n\t{trace}\n", log_file=subject.log_file)
 
     end = time.time()
     if verbose:
-        print(f"Finished visualizing all trials: {(end - start):.2f} seconds")
+        ioutils.log_and_print(
+            msg=f"Finished visualizing all trials: {(end - start):.2f} seconds", log_file=subject.log_file)
     return failed_trials
