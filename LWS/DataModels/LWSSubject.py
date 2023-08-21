@@ -39,6 +39,10 @@ class LWSSubject:
         return self.__output_directory
 
     @property
+    def log_file(self) -> str:
+        return os.path.join(self.output_dir, f"log.{ioutils.TEXT_EXTENSION}")
+
+    @property
     def dominant_eye(self) -> str:
         return self.__subject_info.dominant_eye
 
