@@ -1,5 +1,4 @@
 import numpy as np
-from typing import List, Tuple
 
 from Config import experiment_config as cnfg
 import Utils.array_utils as au
@@ -53,7 +52,6 @@ class EngbertSaccadeDetector(BaseSaccadeDetector):
         if len(x) < 2 * self.__derivation_window_size:
             raise ValueError(
                 f"x and y must be of length at least 2 * derivation_window_size (={2 * self.__derivation_window_size})")
-
         vel_x = au.numerical_derivative(x, n=self.__derivation_window_size)
         sd_x = au.median_standard_deviation(vel_x)
         vel_y = au.numerical_derivative(y, n=self.__derivation_window_size)
