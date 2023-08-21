@@ -32,11 +32,6 @@ def create_gaze_events(event_type: GazeEventTypeEnum, timestamps: np.ndarray, is
     """
     if len(timestamps) != len(is_event):
         raise ValueError("Arrays of `timestamps` and `is_event` must have the same length")
-
-    allowed_event_types = [et.name.lower() for et in GazeEventTypeEnum]
-    if event_type not in allowed_event_types:
-        raise ValueError(f"Attempting to extract unknown event type {event_type}. "
-                         f"Argument event_type must be one of {str(allowed_event_types)}")
     if event_type in [GazeEventTypeEnum.SACCADE, GazeEventTypeEnum.FIXATION] and (x is None or y is None):
         raise ValueError(f"Attempting to extract {event_type} without providing x and y coordinates")
 
