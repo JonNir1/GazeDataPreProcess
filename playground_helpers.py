@@ -14,16 +14,23 @@ from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 import Visualization.visualization_utils as visutils
 
 
-def full_pipline(name: str, save: bool = True, skip_analysis: bool = False, verbose: bool = True):
+def full_pipline(name: str, save: bool = True,
+                 skip_analysis: bool = False,
+                 skip_visualization: bool = False,
+                 verbose: bool = True):
     start = time.time()
     print(f"Processing subject `{name}`...")
     subject = process_subject(name=name, save=save, verbose=verbose)
     subject = load_subject(subject_id=subject.subject_id, verbose=verbose)
     subject_analysis = None
-    failed_trials = None
+    failed_analysis_trials = []
+    failed_visualization_trials = []
     if not skip_analysis:
         subject_analysis = analyze_subject(subject=subject, save=save, verbose=verbose)
-        failed_trials = visualize_all_trials(subject=subject, save=save, verbose=verbose)
+        failed_analysis_trials = analyze_all_trials(subject=subject, save=save, verbose=verbose)
+    if not skip_visualization:
+        failed_visualization_trials = visualize_all_trials(subject=subject, save=save, verbose=verbose)
+    failed_trials = failed_analysis_trials + failed_visualization_trials
     end = time.time()
     if verbose:
         print(f"\nFinished processing subject {name}: {(end - start):.2f} seconds\n###############\n")
@@ -112,12 +119,11 @@ def analyze_subject(subject: LWSSubject, save: bool = False, verbose: bool = Tru
     return trial_summary, saccade_distributions, fixation_distributions, fixation_dynamics, fixation_proximity_comparison
 
 
-def visualize_all_trials(subject: LWSSubject, save: bool = False, verbose: bool = True):
+def analyze_all_trials(subject: LWSSubject, save: bool = False, verbose: bool = True):
     start = time.time()
     from LWS.TrialVisualizer.LWSTrialGazeVisualizer import LWSTrialGazeVisualizer
     from LWS.TrialVisualizer.LWSTrialTargetDistancesVisualizer import LWSTrialTargetDistancesVisualizer
     from LWS.TrialVisualizer.LWSTrialHeatmapVisualizer import LWSTrialGazeHeatmapVisualizer, LWSTrialFixationsHeatmapVisualizer
-    from LWS.TrialVisualizer.LWSTrialVideoVisualizer import LWSTrialVideoVisualizer
 
     failed_trials = []
     for tr in subject.get_all_trials():
@@ -131,6 +137,29 @@ def visualize_all_trials(subject: LWSSubject, save: bool = False, verbose: bool 
                                                           output_directory=cnfg.OUTPUT_DIR).visualize(tr, should_save=save)
             _fixation_heatmap = LWSTrialFixationsHeatmapVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution,
                                                                    output_directory=cnfg.OUTPUT_DIR).visualize(tr, should_save=save)
+            plt.close('all')  # close all open figures from memory
+            end_trial = time.time()
+            if verbose:
+                print(f"\t{tr.__repr__()}:\t{(end_trial - start_trial):.2f} s")
+        except Exception as _e:
+            trace = traceback.format_exc()
+            failed_trials.append((tr, trace))
+            if verbose:
+                print(f"######\n\tFailed to analyze trial {tr.__repr__()}:\n\t{trace}\n")
+
+    end = time.time()
+    if verbose:
+        print(f"Finished analyzing all trials: {(end - start):.2f} seconds")
+    return failed_trials
+
+
+def visualize_all_trials(subject: LWSSubject, save: bool = False, verbose: bool = True):
+    start = time.time()
+    from LWS.TrialVisualizer.LWSTrialVideoVisualizer import LWSTrialVideoVisualizer
+    failed_trials = []
+    for tr in subject.get_all_trials():
+        try:
+            start_trial = time.time()
             _video = LWSTrialVideoVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution,
                                              output_directory=cnfg.OUTPUT_DIR).visualize(tr, should_save=save)
             plt.close('all')  # close all open figures from memory

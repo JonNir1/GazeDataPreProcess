@@ -17,7 +17,7 @@ import Visualization.visualization_utils as visutils
 ##########################################
 
 # subjects: "GalChen Demo" (001), "Rotem Demo" (002)
-# pipline_config = {'save': True, 'skip_analysis': False, 'verbose': True}
+# pipline_config = {'save': True, 'skip_analysis': False, 'skip_visualization': False, 'verbose': True}
 #
 # subject1, subject1_analysis, failed_trials1 = ph.full_pipline(name="GalChen Demo", **pipline_config)
 # del subject1_analysis, failed_trials1
