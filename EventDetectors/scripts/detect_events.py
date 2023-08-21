@@ -3,7 +3,7 @@ import numpy as np
 from typing import Optional
 
 from EventDetectors.BaseDetector import BaseDetector
-from EventDetectors.scripts.gen_event_detector import gen_event_detector
+from EventDetectors.scripts.create_event_detector import create_event_detector
 
 
 def detect_event(x: np.ndarray, y: np.ndarray, sampling_rate: float,
@@ -22,11 +22,11 @@ def detect_event(x: np.ndarray, y: np.ndarray, sampling_rate: float,
             - 'right': detect events using right eye data only
             - 'most': detect events using the eye with the most events
     :param detector_type: name of the detector type to use. See gen_event_detector for details.
-    :param detector_kwargs: keyword arguments for the specified detector type. see gen_event_detector for details.
+    :param detector_kwargs: keyword arguments for the specified detector type. see create_event_detector for details.
 
     :return: is_event: array of booleans, where True indicates an event
     """
-    detector = gen_event_detector(detector_type, sampling_rate, **detector_kwargs)
+    detector = create_event_detector(detector_type, sampling_rate, **detector_kwargs)
     is_event = _detect_event_generic(detector, x, y, detect_by)
     return is_event
 

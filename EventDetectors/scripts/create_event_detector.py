@@ -7,7 +7,7 @@ from EventDetectors.BaseSaccadeDetector import BaseSaccadeDetector
 from EventDetectors.BaseFixationDetector import BaseFixationDetector
 
 
-def gen_event_detector(detector_type: Optional[str], sampling_rate: float, **kwargs) -> Optional[BaseDetector]:
+def create_event_detector(detector_type: Optional[str], sampling_rate: float, **kwargs) -> Optional[BaseDetector]:
     """
     Creates an event detector of the given type.
     :param detector_type: type of the event detector
@@ -29,16 +29,16 @@ def gen_event_detector(detector_type: Optional[str], sampling_rate: float, **kwa
         return None
     detector_type = detector_type.lower()
     if detector_type in ["missing data", "missing_data", "pupil size", "pupil_size"]:
-        return gen_blink_detector(detector_type, sampling_rate, **kwargs)
+        return create_blink_detector(detector_type, sampling_rate, **kwargs)
     if detector_type in ["engbert"]:
-        return gen_saccade_detector(detector_type, sampling_rate, **kwargs)
+        return create_saccade_detector(detector_type, sampling_rate, **kwargs)
     if detector_type in ["ivt", "idt"]:
-        return gen_fixation_detector(detector_type, sampling_rate, **kwargs)
+        return create_fixation_detector(detector_type, sampling_rate, **kwargs)
     # reached here if the detector type is unknown
     raise ValueError("Unknown event detector type: {}".format(detector_type))
 
 
-def gen_blink_detector(blink_detector_type: str, sampling_rate: float, **kwargs) -> BaseBlinkDetector:
+def create_blink_detector(blink_detector_type: str, sampling_rate: float, **kwargs) -> BaseBlinkDetector:
     """
     Creates a blink detector of the given type, or raises a ValueError if the given type is unknown.
     :param blink_detector_type: type of the blink detector
@@ -66,7 +66,7 @@ def gen_blink_detector(blink_detector_type: str, sampling_rate: float, **kwargs)
     raise ValueError("Unknown blink detector type: {}".format(blink_detector_type))
 
 
-def gen_saccade_detector(saccade_detector_type: str, sampling_rate: float, **kwargs) -> BaseSaccadeDetector:
+def create_saccade_detector(saccade_detector_type: str, sampling_rate: float, **kwargs) -> BaseSaccadeDetector:
     """
     Creates a saccade detector of the given type, or raises a ValueError if the given type is unknown.
     :param saccade_detector_type:
@@ -92,7 +92,7 @@ def gen_saccade_detector(saccade_detector_type: str, sampling_rate: float, **kwa
     raise ValueError("Unknown saccade detector type: {}".format(saccade_detector_type))
 
 
-def gen_fixation_detector(fixation_detector_type: str, sampling_rate: float, **kwargs) -> BaseFixationDetector:
+def create_fixation_detector(fixation_detector_type: str, sampling_rate: float, **kwargs) -> BaseFixationDetector:
     """
     Creates a fixation detector of the given type, or raises a ValueError if the given type is unknown.
     :param fixation_detector_type:
