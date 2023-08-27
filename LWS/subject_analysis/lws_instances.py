@@ -72,6 +72,7 @@ def identify_lws_instances(trial: LWSTrial,
                                                                        proximity_threshold)
         pairwise_criterion = _check_lws_instance_pairwise_criteria(curr_fixation,
                                                                    next_fixation,
+                                                                   proximity_threshold=proximity_threshold,
                                                                    min_time_difference=time_difference_threshold,
                                                                    is_other_fixation_lws_instance=is_next_lws_instance)
         is_lws_instance[curr_fixation_idx] = standalone_criterion and pairwise_criterion
