@@ -14,13 +14,16 @@ from GazeEvents.SaccadeEvent import SaccadeEvent
 
 def calculate_lws_rate(trial: LWSTrial,
                        proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
+                       time_difference_threshold: float = SaccadeEvent.MAX_DURATION,
                        proximal_fixations_only: bool = False) -> float:
     """
     Calculates the LWS rate for the given trial, which is the fraction of fixations that are LWS instances out of
     (a) all fixations in the trial; or (b) only the proximal fixations in the trial, depending on the value of the flag
     `proximal_fixations_only`.
     """
-    is_lws_instance = identify_lws_instances(trial, proximity_threshold=proximity_threshold)
+    is_lws_instance = identify_lws_instances(trial,
+                                             proximity_threshold=proximity_threshold,
+                                             time_difference_threshold=time_difference_threshold)
     num_lws_instances = np.nansum(is_lws_instance)
     fixations = trial.get_gaze_events(event_type=GazeEventTypeEnum.FIXATION)
     if proximal_fixations_only:
@@ -34,7 +37,8 @@ def calculate_lws_rate(trial: LWSTrial,
 
 
 def identify_lws_instances(trial: LWSTrial,
-                           proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE) -> List[Union[bool, float]]:
+                           proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
+                           time_difference_threshold: float = SaccadeEvent.MAX_DURATION) -> List[Union[bool, float]]:
     """
     Identifies the LWS instances in the given trial, and returns a list of the same length as the trial's gaze events,
     where each element is either:
@@ -68,6 +72,7 @@ def identify_lws_instances(trial: LWSTrial,
                                                                        proximity_threshold)
         pairwise_criterion = _check_lws_instance_pairwise_criteria(curr_fixation,
                                                                    next_fixation,
+                                                                   min_time_difference=time_difference_threshold,
                                                                    is_other_fixation_lws_instance=is_next_lws_instance)
         is_lws_instance[curr_fixation_idx] = standalone_criterion and pairwise_criterion
     return list(is_lws_instance)
@@ -163,6 +168,7 @@ def _check_lws_instance_standalone_criteria(fixation: LWSFixationEvent,
 
 def _check_lws_instance_pairwise_criteria(curr_fixation: LWSFixationEvent,
                                           other_fixation: LWSFixationEvent,
+                                          min_time_difference: float,
                                           is_other_fixation_lws_instance: bool) -> bool:
     """
     Checks if the given fixation meets the pairwise criteria required for a LWS instance:
@@ -180,7 +186,7 @@ def _check_lws_instance_pairwise_criteria(curr_fixation: LWSFixationEvent,
     if other_fixation.closest_target_id != curr_fixation.closest_target_id:
         # next fixation is on a different target --> the current fixation could be a LWS instance
         return True
-    if other_fixation.start_time - curr_fixation.end_time > SaccadeEvent.MAX_DURATION:
+    if other_fixation.start_time - curr_fixation.end_time > min_time_difference:
         # both fixations are on the same target, but the next fixation started too long after the current fixation
         # ended --> the current fixation could be a LWS instance
         return True
