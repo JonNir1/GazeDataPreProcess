@@ -2,12 +2,13 @@ import os
 import numpy as np
 import pickle as pkl
 import warnings as w
-from typing import Tuple, List, Optional
+from typing import Tuple, List, Optional, Dict
 
 import pandas as pd
 
 import constants as cnst
 import Utils.io_utils as ioutils
+from Config.ExperimentTriggerEnum import ExperimentTriggerEnum
 from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus, LWSStimulusTypeEnum
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
@@ -177,6 +178,14 @@ class LWSTrial:
     def get_triggers(self) -> np.ndarray:
         """ Returns the trigger values for this trial. """
         return self.__behavioral_data.get(cnst.TRIGGER)
+
+    def get_trigger_counts(self) -> Dict[ExperimentTriggerEnum, int]:
+        """ Returns a dictionary mapping each trigger to the number of times it occurred during the trial. """
+        triggers = self.get_triggers()
+        trigger_counts = {}
+        for trgr in ExperimentTriggerEnum:
+            trigger_counts[trgr] = int(np.sum(triggers == trgr.value))
+        return trigger_counts
 
     def get_event_per_sample(self) -> List[GazeEventTypeEnum]:
         """
