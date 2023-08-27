@@ -62,17 +62,14 @@ def identify_lws_instances(trial: LWSTrial,
     for curr_fixation_idx, next_fixation_idx in fixation_pair_idxs[::-1]:
         curr_fixation = events[curr_fixation_idx]
         next_fixation = events[next_fixation_idx]
-        if not _check_lws_instance_standalone_criteria(curr_fixation, target_info, proximity_threshold):
-            # current fixation does not meet the standalone criteria for a LWS instance
-            is_lws_instance[curr_fixation_idx] = False
-            continue
-        if not _check_lws_instance_pairwise_criteria(curr_fixation, next_fixation,
-                                                     is_other_fixation_lws_instance=is_lws_instance[next_fixation_idx]):
-            # current fixation does not meet the pairwise criteria for a LWS instance
-            is_lws_instance[curr_fixation_idx] = False
-            continue
-        # current fixation meets both the standalone and pairwise criteria for a LWS instance
-        is_lws_instance[curr_fixation_idx] = True
+        is_next_lws_instance = is_lws_instance[next_fixation_idx]
+        standalone_criterion = _check_lws_instance_standalone_criteria(curr_fixation,
+                                                                       target_info,
+                                                                       proximity_threshold)
+        pairwise_criterion = _check_lws_instance_pairwise_criteria(curr_fixation,
+                                                                   next_fixation,
+                                                                   is_other_fixation_lws_instance=is_next_lws_instance)
+        is_lws_instance[curr_fixation_idx] = standalone_criterion and pairwise_criterion
     return list(is_lws_instance)
 
 
