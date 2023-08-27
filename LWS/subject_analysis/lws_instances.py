@@ -168,23 +168,30 @@ def _check_lws_instance_standalone_criteria(fixation: LWSFixationEvent,
 
 def _check_lws_instance_pairwise_criteria(curr_fixation: LWSFixationEvent,
                                           other_fixation: LWSFixationEvent,
+                                          proximity_threshold: float,
                                           min_time_difference: float,
                                           is_other_fixation_lws_instance: bool) -> bool:
     """
     Checks if the given fixation meets the pairwise criteria required for a LWS instance:
-        - If the other fixation is in the target-helper region of the stimulus, then the current fixation doesn't meet
+        1- If the other fixation is in the target-helper region of the stimulus, then the current fixation doesn't meet
             the criteria.
-        - If the other fixation is on a different target, then the current fixation meets the criteria.
-        - If the other fixation is on the same target, but it started too long after the current fixation ended, then
+        2- If the other fixation is closer to a different target, then the current fixation meets the criteria.
+        3- If the other fixation is on the same target, but it's not close enough to the target, then the current
+            fixation meets the criteria.
+        4- If the other fixation is on the same target, but it started too long after the current fixation ended, then
             the current fixation meets the criteria.
-        - Otherwise the current fixation only meets the criteria if the other fixation is a LWS instance.
+        5- Otherwise the current fixation only meets the criteria if the other fixation is a LWS instance.
     """
     if other_fixation.is_in_rectangle(cnfg.STIMULUS_BOTTOM_STRIP_TOP_LEFT, cnfg.STIMULUS_BOTTOM_STRIP_BOTTOM_RIGHT):
         # next fixation is in the target-helper region of the stimulus, meaning that the subject (rightfully) suspects
         # that the current fixation is on a target --> the current fixation cannot be a LWS instance
         return False
     if other_fixation.closest_target_id != curr_fixation.closest_target_id:
-        # next fixation is on a different target --> the current fixation could be a LWS instance
+        # next fixation is closer to a different target --> the current fixation could be a LWS instance
+        return True
+    if other_fixation.visual_angle_to_closest_target > proximity_threshold:
+        # next fixation is on the same target, but it's not close enough to the target --> the current fixation could
+        # be a LWS instance
         return True
     if other_fixation.start_time - curr_fixation.end_time > min_time_difference:
         # both fixations are on the same target, but the next fixation started too long after the current fixation
