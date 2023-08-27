@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 from typing import Tuple
 
+import Config.experiment_config as cnfg
+import Utils.angle_utils as angle_utils
 from GazeEvents.BaseVisualGazeEvent import BaseVisualGazeEvent
 from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
@@ -60,6 +62,35 @@ class FixationEvent(BaseVisualGazeEvent):
         """
         timestamps = self.get_timestamps(round_decimals=round_decimals, zero_corrected=zero_corrected)
         return pd.Series(data=self._pupil, index=timestamps, name="pupil_size")
+
+    def is_close_to_pixel(self, pixel: Tuple[float, float], threshold: float, threshold_units: str = 'deg') -> bool:
+        """
+        Returns True if the fixation's center of mass is within the given threshold away from the target pixel.
+        Parameter `threshold_units` sets the type of threshold distance to measure: 'deg', 'rad', or 'px'.
+
+        :raises ValueError: if the pixel's coordinates are not finite numbers
+        :raises ValueError: if the threshold is not a finite non-negative number
+        :raises ValueError: if the threshold_units is not one of 'deg', 'rad', or 'px'
+        """
+        if not np.isfinite(pixel[0]) or not np.isfinite(pixel[1]):
+            raise ValueError(f"Pixel coordinates must be finite numbers: {pixel}")
+        if not np.isfinite(threshold) or threshold < 0:
+            raise ValueError(f"Threshold must be a finite non-negative number: {threshold}")
+        if threshold_units not in ['deg', 'rad', 'pix']:
+            raise ValueError(f"Threshold units must be 'deg'/'rad'/'px': {threshold_units}")
+
+        center_x, center_y = self.center_of_mass
+        if np.isnan(center_x) or np.isnan(center_y):
+            return False
+        if threshold_units == 'px':
+            distance = np.sqrt(np.power(center_x - pixel[0], 2) + np.power(center_y - pixel[1], 2))
+        else:
+            use_radians = threshold_units == 'rad'
+            distance = angle_utils.calculate_visual_angle(p1=self.center_of_mass, p2=pixel,
+                                                          d=self._viewer_distance,
+                                                          pixel_size=cnfg.SCREEN_MONITOR.pixel_size,
+                                                          use_radians=use_radians)
+        return distance <= threshold
 
     def is_in_rectangle(self, top_left: Tuple[float, float], bottom_right: Tuple[float, float]) -> bool:
         """
