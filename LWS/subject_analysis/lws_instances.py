@@ -67,7 +67,7 @@ def identify_lws_instances(trial: LWSTrial,
             is_lws_instance[curr_fixation_idx] = False
             continue
         if not _check_lws_instance_pairwise_criteria(curr_fixation, next_fixation,
-                                                     is_next_fixation_lws_instance=is_lws_instance[next_fixation_idx]):
+                                                     is_other_fixation_lws_instance=is_lws_instance[next_fixation_idx]):
             # current fixation does not meet the pairwise criteria for a LWS instance
             is_lws_instance[curr_fixation_idx] = False
             continue
@@ -165,25 +165,25 @@ def _check_lws_instance_standalone_criteria(fixation: LWSFixationEvent,
 
 
 def _check_lws_instance_pairwise_criteria(curr_fixation: LWSFixationEvent,
-                                          next_fixation: LWSFixationEvent,
-                                          is_next_fixation_lws_instance: bool) -> bool:
+                                          other_fixation: LWSFixationEvent,
+                                          is_other_fixation_lws_instance: bool) -> bool:
     """
     Checks if the given fixation meets the pairwise criteria required for a LWS instance:
-        - If the next fixation is in the target-helper region of the stimulus, then the current fixation doesn't meet
+        - If the other fixation is in the target-helper region of the stimulus, then the current fixation doesn't meet
             the criteria.
-        - If the next fixation is on a different target, then the current fixation meets the criteria.
-        - If the next fixation is on the same target, but it started too long after the current fixation ended, then
+        - If the other fixation is on a different target, then the current fixation meets the criteria.
+        - If the other fixation is on the same target, but it started too long after the current fixation ended, then
             the current fixation meets the criteria.
-        - Otherwise the current fixation only meets the criteria if the next fixation is a LWS instance.
+        - Otherwise the current fixation only meets the criteria if the other fixation is a LWS instance.
     """
-    if next_fixation.is_in_rectangle(cnfg.STIMULUS_BOTTOM_STRIP_TOP_LEFT, cnfg.STIMULUS_BOTTOM_STRIP_BOTTOM_RIGHT):
+    if other_fixation.is_in_rectangle(cnfg.STIMULUS_BOTTOM_STRIP_TOP_LEFT, cnfg.STIMULUS_BOTTOM_STRIP_BOTTOM_RIGHT):
         # next fixation is in the target-helper region of the stimulus, meaning that the subject (rightfully) suspects
         # that the current fixation is on a target --> the current fixation cannot be a LWS instance
         return False
-    if next_fixation.closest_target_id != curr_fixation.closest_target_id:
+    if other_fixation.closest_target_id != curr_fixation.closest_target_id:
         # next fixation is on a different target --> the current fixation could be a LWS instance
         return True
-    if next_fixation.start_time - curr_fixation.end_time > SaccadeEvent.MAX_DURATION:
+    if other_fixation.start_time - curr_fixation.end_time > SaccadeEvent.MAX_DURATION:
         # both fixations are on the same target, but the next fixation started too long after the current fixation
         # ended --> the current fixation could be a LWS instance
         return True
@@ -191,4 +191,4 @@ def _check_lws_instance_pairwise_criteria(curr_fixation: LWSFixationEvent,
     # reached here if the subject uses both fixations to examine the same target, and they are close enough in time
     # for us to extrapolate from the next fixation onto the current one. so the current fixation is a LWS instance iff
     # the next fixation is also a LWS instance.
-    return is_next_fixation_lws_instance
+    return is_other_fixation_lws_instance
