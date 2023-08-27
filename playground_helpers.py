@@ -5,7 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from typing import List
 
-import constants as cnst
 import Config.experiment_config as cnfg
 import Utils.io_utils as ioutils
 from LWS.DataModels.LWSSubject import LWSSubject
@@ -16,8 +15,8 @@ import Visualization.visualization_utils as visutils
 
 
 def full_pipline(name: str, save: bool = True,
-                 skip_analysis: bool = False,
-                 skip_visualization: bool = False,
+                 run_analysis: bool = True,
+                 run_visualization: bool = True,
                  verbose: bool = True):
     start = time.time()
     print(f"Processing subject `{name}`...")
@@ -26,10 +25,10 @@ def full_pipline(name: str, save: bool = True,
     subject_analysis = None
     failed_analysis_trials = []
     failed_visualization_trials = []
-    if not skip_analysis:
+    if run_analysis:
         subject_analysis = analyze_subject(subject=subject, save=save, verbose=verbose)
         failed_analysis_trials = analyze_all_trials(subject=subject, save=save, verbose=verbose)
-    if not skip_visualization:
+    if run_visualization:
         failed_visualization_trials = visualize_all_trials(subject=subject, save=save, verbose=verbose)
     failed_trials = failed_analysis_trials + failed_visualization_trials
     end = time.time()
