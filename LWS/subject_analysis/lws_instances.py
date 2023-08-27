@@ -31,8 +31,8 @@ def calculate_lws_rate(trial: LWSTrial,
     num_fixations = len(fixations)
     if num_fixations > 0:
         return num_lws_instances / num_fixations
-    if num_lws_instances == 0:
-        return 0
+    if num_lws_instances == 0 and num_fixations == 0:
+        return np.nan
     raise ZeroDivisionError(f"num_lws_instances = {num_lws_instances},\tnum_fixations = {num_fixations}")
 
 
