@@ -187,7 +187,9 @@ class LWSBaseTrialVisualizer(ABC):
         Returns the figure and axes with the updated properties.
         """
         fig = visutils.set_figure_properties(fig=fig, **kwargs)
-        ax = visutils.set_axes_properties(ax=ax, **kwargs)
+        ax = visutils.set_axes_properties(ax=ax, ax_title=kwargs.pop("subtitle", ""),
+                                          subtitle_size=kwargs.pop("title_size", 14), ylabel=kwargs.pop("ylabel", "%"),
+                                          **kwargs)
         return fig, ax
 
     def __repr__(self) -> str:

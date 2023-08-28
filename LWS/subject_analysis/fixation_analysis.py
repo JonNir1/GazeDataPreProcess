@@ -139,7 +139,7 @@ def distributions_figure(fixations: List[LWSFixationEvent], ignore_outliers: boo
                       np.array([f.duration for f in target_proximal_fixations]),
                       np.array([f.duration for f in target_marking_fixations])]
     distributions.bar_chart(ax=ax1, datasets=durations_data, data_labels=data_labels,
-                            title="Durations (ms)", **kwargs)
+                            xlabel="Duration (ms)", title="Duration Distribution", **kwargs)
     # max dispersion
     ax2 = fig.add_subplot(2, 3, 2)
     max_dispersion_data = [np.array([f.dispersion for f in fixations]),

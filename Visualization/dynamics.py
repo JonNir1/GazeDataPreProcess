@@ -82,6 +82,8 @@ def dynamic_profile(ax: plt.Axes, datasets: List[List[pd.Series]], **kwargs) -> 
                                      sems=[s.values for s in sems],
                                      **kwargs)
     # set axes properties:
-    visutils.set_axes_properties(ax=ax, **kwargs)
+    visutils.set_axes_properties(ax=ax, ax_title=kwargs.pop("title", "Dynamics"),
+                                 subtitle_size=kwargs.pop("title_size", 14), ylabel=kwargs.pop("ylabel", "%"),
+                                 **kwargs)
     return ax
 
