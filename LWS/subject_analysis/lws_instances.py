@@ -43,24 +43,6 @@ def identify_lws_for_varying_thresholds(subject: LWSSubject,
     return is_lws_instance
 
 
-def calculate_lws_rates_for_varying_thresholds(trial: LWSTrial,
-                                               proximity_thresholds: np.ndarray,
-                                               time_difference_thresholds: np.ndarray,
-                                               proximal_fixations_only: bool = False) -> np.ndarray:
-    """
-    Calculates the LWS rate for the given trial for each of the given proximity thresholds, and returns the results as
-    a 2D array of shape (num_proximity_thresholds, num_time_difference_thresholds).
-    """
-    lws_rates = np.full((len(proximity_thresholds), len(time_difference_thresholds)), np.nan)
-    for i, prox in enumerate(proximity_thresholds):
-        for j, td in enumerate(time_difference_thresholds):
-            lws_rates[i, j] = calculate_lws_rate(trial,
-                                                 proximity_threshold=prox,
-                                                 time_difference_threshold=td,
-                                                 proximal_fixations_only=proximal_fixations_only)
-    return lws_rates
-
-
 def calculate_lws_rate(trial: LWSTrial,
                        proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
                        time_difference_threshold: float = SaccadeEvent.MAX_DURATION,
