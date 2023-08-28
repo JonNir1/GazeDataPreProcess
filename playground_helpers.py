@@ -27,7 +27,7 @@ def full_pipline(name: str, save: bool = True,
     failed_visualization_trials = []
     if run_analysis:
         subject_dfs = create_subject_dataframes(subject=subject, save=save, verbose=verbose)
-        subject_analysis = analyze_subject(subject=subject, save=save, verbose=verbose)
+        subject_figures = create_subject_figures(subject=subject, save=save, verbose=verbose)
         failed_analysis_trials = analyze_all_trials(subject=subject, save=save, verbose=verbose)
     if run_visualization:
         failed_visualization_trials = visualize_all_trials(subject=subject, save=save, verbose=verbose)
@@ -90,7 +90,7 @@ def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: 
     return trial_summary, trigger_counts
 
 
-def analyze_subject(subject: LWSSubject, save: bool = False, verbose: bool = True):
+def create_subject_figures(subject: LWSSubject, save: bool = False, verbose: bool = True):
     start = time.time()
     import Utils.io_utils as ioutils
 
