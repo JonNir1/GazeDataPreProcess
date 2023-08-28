@@ -26,9 +26,6 @@ def full_pipline(name: str,
     subject = process_subject(name=name, save=save, verbose=verbose)
     subject = load_subject(subject_id=subject.subject_id, verbose=verbose)
 
-    failed_analysis_trials = []
-    failed_video_trials = []
-
     subject_dfs = None
     if include_subject_dfs:
         subject_dfs = create_subject_dataframes(subject=subject, save=save, verbose=verbose)
