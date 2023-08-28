@@ -7,9 +7,39 @@ import constants as cnst
 import Config.experiment_config as cnfg
 import Utils.array_utils as arr_utils
 from LWS.DataModels.LWSTrial import LWSTrial
+from LWS.DataModels.LWSSubject import LWSSubject
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 from GazeEvents.SaccadeEvent import SaccadeEvent
+
+
+def identify_lws_for_varying_thresholds(subject: LWSSubject,
+                                        proximity_thresholds: np.ndarray,
+                                        time_difference_thresholds: np.ndarray) -> pd.DataFrame:
+    """
+    For each (trial, proximity_threshold, time_difference_threshold) triplet, identifies the LWS instances in the
+    trial. Returns a 3D dataframe where each cell contains a boolean array of the same length as the trial's gaze
+    events, where each element of the array is either True/False/np.nan, depending on whether the corresponding gaze
+    event is a LWS instance or not.
+
+    The resulting DataFrame's is indexed by LWSTrial and the columns are a MultiIndex of the proximity-thresholds and
+    time-difference thresholds.
+
+    NOTE this may take 30-60 minutes to run for a single subject!
+    """
+    columns_multiindex = pd.MultiIndex.from_product([proximity_thresholds, time_difference_thresholds],
+                                                    names=["proximity_threshold", "time_difference_threshold"])
+    all_trials = subject.get_all_trials()
+    is_lws_instance = pd.DataFrame(index=all_trials, columns=columns_multiindex)
+    is_lws_instance.index.name = "trial"
+
+    for trial in all_trials:
+        for prox in proximity_thresholds:
+            for td in time_difference_thresholds:
+                is_lws_instance.loc[trial, (prox, td)] = identify_lws_instances(trial,
+                                                                                proximity_threshold=prox,
+                                                                                time_difference_threshold=td)
+    return is_lws_instance
 
 
 def calculate_lws_rates_for_varying_thresholds(trial: LWSTrial,
