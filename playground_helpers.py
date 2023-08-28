@@ -24,14 +24,14 @@ def full_pipline(name: str, save: bool = True,
     subject = load_subject(subject_id=subject.subject_id, verbose=verbose)
     subject_dfs, subject_figures = None, None
     failed_analysis_trials = []
-    failed_visualization_trials = []
+    failed_video_trials = []
     if run_analysis:
         subject_dfs = create_subject_dataframes(subject=subject, save=save, verbose=verbose)
         subject_figures = create_subject_figures(subject=subject, save=save, verbose=verbose)
         failed_analysis_trials = analyze_all_trials(subject=subject, save=save, verbose=verbose)
     if run_visualization:
-        failed_visualization_trials = visualize_all_trials(subject=subject, save=save, verbose=verbose)
-    failed_trials = failed_analysis_trials + failed_visualization_trials
+        failed_video_trials = create_trial_videos(subject=subject, save=save, verbose=verbose)
+    failed_trials = failed_analysis_trials + failed_video_trials
     end = time.time()
     if verbose:
         ioutils.log_and_print(msg=f"\nFinished processing subject {name}: {(end - start):.2f} seconds\n###############\n",
@@ -178,7 +178,7 @@ def analyze_all_trials(subject: LWSSubject, save: bool = False, verbose: bool = 
     return failed_trials
 
 
-def visualize_all_trials(subject: LWSSubject, save: bool = False, verbose: bool = True):
+def create_trial_videos(subject: LWSSubject, save: bool = False, verbose: bool = True):
     start = time.time()
     from LWS.TrialVisualizer.LWSTrialVideoVisualizer import LWSTrialVideoVisualizer
     failed_trials = []
