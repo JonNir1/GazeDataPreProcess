@@ -14,6 +14,9 @@ from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 from GazeEvents.SaccadeEvent import SaccadeEvent
 
 
+DF_NAME = "lws_instances"
+
+
 def identify_lws_for_varying_thresholds(subject: LWSSubject,
                                         proximity_thresholds: np.ndarray,
                                         time_difference_thresholds: np.ndarray) -> pd.DataFrame:
@@ -74,7 +77,7 @@ def load_or_identify_lws_instances(trial: LWSTrial,
     To avoid re-identifying LWS instances for the same trial and threshold values, we save the results in a dataframe
     and load them if they exist. Otherwise, we identify the LWS instances and save them in the dataframe.
     """
-    df_path = os.path.join(trial.subject.output_dir, "dataframes", "lws_instances")
+    df_path = trial.subject.get_dataframe_path(DF_NAME)
     try:
         df = pd.read_pickle(df_path)
         if (proximity_threshold, time_difference_threshold) in df.columns:

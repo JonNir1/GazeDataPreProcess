@@ -79,6 +79,9 @@ class LWSSubject:
             pkl.dump(self, f)
         return full_path
 
+    def get_dataframe_path(self, df_name: str) -> str:
+        return os.path.join(self.output_dir, "dataframes", f"{df_name}.{ioutils.PICKLE_EXTENSION}")
+
     def _get_full_raw_data(self) -> pd.DataFrame:
         """ Returns a DataFrame with all the raw data from all trials """
         # access the private __data attribute of each trial, and concatenate them all together
