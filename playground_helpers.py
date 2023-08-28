@@ -134,6 +134,12 @@ def create_subject_figures(subject: LWSSubject, save: bool = False, verbose: boo
         visutils.save_figure(lws_rates,
                              full_path=os.path.join(subject_figures_dir, "lws rates.png"))
 
+    import LWS.subject_analysis.triggers_analysis as trig
+    trigger_rates = trig.plot_trigger_rates_by_block_position(subject)
+    if save:
+        visutils.save_figure(trigger_rates,
+                             full_path=os.path.join(subject_figures_dir, "trigger rates.png"))
+
     end = time.time()
     if verbose:
         ioutils.log_and_print(msg=f"Finished analyzing subject {subject.subject_id}: {(end - start):.2f} seconds",
