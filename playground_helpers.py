@@ -26,6 +26,7 @@ def full_pipline(name: str, save: bool = True,
     failed_analysis_trials = []
     failed_visualization_trials = []
     if run_analysis:
+        subject_dfs = create_subject_dataframes(subject=subject, save=save, verbose=verbose)
         subject_analysis = analyze_subject(subject=subject, save=save, verbose=verbose)
         failed_analysis_trials = analyze_all_trials(subject=subject, save=save, verbose=verbose)
     if run_visualization:
@@ -67,6 +68,28 @@ def load_subject(subject_id: int, verbose: bool = True) -> LWSSubject:
     return subject
 
 
+def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: bool = True):
+    start = time.time()
+    subject_dataframes_dir = ioutils.create_directory(dirname="dataframes", parent_dir=subject.output_dir)
+
+    import LWS.subject_analysis.trial_summary as trsum
+    trial_summary = trsum.summarize_all_trials(subject.get_all_trials())
+    if save:
+        trial_summary.to_pickle(os.path.join(subject_dataframes_dir, "trials_summary.pkl"))
+
+    import LWS.subject_analysis.triggers_analysis as trig
+    trigger_counts = trig.count_triggers_per_trial(subject)
+    if save:
+        trigger_counts.to_pickle(os.path.join(subject_dataframes_dir, "trigger_counts.pkl"))
+
+    end = time.time()
+    if verbose:
+        ioutils.log_and_print(msg="Finished creating DataFrames for subject " +
+                                  f"{subject.subject_id}: {(end - start):.2f} seconds",
+                              log_file=subject.log_file)
+    return trial_summary, trigger_counts
+
+
 def analyze_subject(subject: LWSSubject, save: bool = False, verbose: bool = True):
     start = time.time()
     import Utils.io_utils as ioutils
@@ -75,11 +98,6 @@ def analyze_subject(subject: LWSSubject, save: bool = False, verbose: bool = Tru
     all_saccades: List[SaccadeEvent] = [s for tr in trials for s in tr.get_gaze_events(GazeEventTypeEnum.SACCADE)]
     all_fixations: List[LWSFixationEvent] = [f for tr in trials for f in tr.get_gaze_events(GazeEventTypeEnum.FIXATION)]
     subject_figures_dir = ioutils.create_directory(dirname="subject_figures", parent_dir=subject.output_dir)
-
-    import LWS.subject_analysis.trial_summary as trsum
-    trial_summary = trsum.summarize_all_trials(trials)
-    if save:
-        trial_summary.to_pickle(os.path.join(subject_figures_dir, "trials_summary.pkl"))
 
     import Visualization.saccade_analysis as sacan
     saccade_distributions = sacan.distributions_figure(all_saccades, ignore_outliers=True,
@@ -120,7 +138,7 @@ def analyze_subject(subject: LWSSubject, save: bool = False, verbose: bool = Tru
     if verbose:
         ioutils.log_and_print(msg=f"Finished analyzing subject {subject.subject_id}: {(end - start):.2f} seconds",
                               log_file=subject.log_file)
-    return trial_summary, saccade_distributions, fixation_distributions, fixation_dynamics, fixation_proximity_comparison
+    return saccade_distributions, fixation_distributions, fixation_dynamics, fixation_proximity_comparison
 
 
 def analyze_all_trials(subject: LWSSubject, save: bool = False, verbose: bool = True):
