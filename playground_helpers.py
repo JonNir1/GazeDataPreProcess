@@ -70,7 +70,7 @@ def load_subject(subject_id: int, verbose: bool = True) -> LWSSubject:
 
 def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: bool = True):
     start = time.time()
-    subject_dataframes_dir = ioutils.create_directory(dirname="dataframes", parent_dir=subject.output_dir)
+    _subject_dataframes_dir = ioutils.create_directory(dirname="dataframes", parent_dir=subject.output_dir)
 
     import LWS.subject_analysis.trial_summary as trsum
     trial_summary = trsum.summarize_all_trials(subject.get_all_trials())
