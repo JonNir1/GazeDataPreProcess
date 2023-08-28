@@ -88,16 +88,16 @@ def load_or_identify_lws_instances(trial: LWSTrial,
                                                              names=["proximity_threshold", "time_difference_threshold"]))
         df.index.name = "trial"
 
-    is_lws_instance = _identify_lws_instances(trial, proximity_threshold=proximity_threshold,
-                                              time_difference_threshold=time_difference_threshold)
+    is_lws_instance = identify_lws_instances(trial, proximity_threshold=proximity_threshold,
+                                             time_difference_threshold=time_difference_threshold)
     df.loc[trial, (proximity_threshold, time_difference_threshold)] = is_lws_instance
     df.to_pickle(df_path)
     return is_lws_instance
 
 
-def _identify_lws_instances(trial: LWSTrial,
-                            proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
-                            time_difference_threshold: float = SaccadeEvent.MAX_DURATION) -> List[Union[bool, float]]:
+def identify_lws_instances(trial: LWSTrial,
+                           proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
+                           time_difference_threshold: float = SaccadeEvent.MAX_DURATION) -> List[Union[bool, float]]:
     """
     Identifies the LWS instances in the given trial, and returns a list of the same length as the trial's gaze events,
     where each element is either:
