@@ -21,7 +21,7 @@ def target_proximal_comparison(fixations: List[LWSFixationEvent], ignore_outlier
     data_labels = ["Marking Fixations", "Non-Marking Proximal Fixations"]
     fig = visutils.set_figure_properties(fig=None,
                                          title=kwargs.pop("title", f"Comparison of Target-Proximal Fixations"),
-                                         figsize=kwargs.pop("figsize", (21, 27)),
+                                         figsize=kwargs.pop("figsize", (30, 24)),
                                          title_height=kwargs.pop("title_height", 0.93),
                                          **kwargs)
     # % outliers
@@ -84,7 +84,7 @@ def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = T
     marking_fixations = [f for f in fixations if f.is_mark_target_attempt()]
     fig = visutils.set_figure_properties(fig=None,
                                          title=kwargs.pop("title", f"Fixation Dynamics"),
-                                         figsize=kwargs.pop("figsize", (27, 21)),
+                                         figsize=kwargs.pop("figsize", (30, 24)),
                                          title_height=kwargs.pop("title_height", 0.93),
                                          **kwargs)
     # velocities
