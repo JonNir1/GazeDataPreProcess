@@ -82,7 +82,7 @@ def analyze_subject(subject: LWSSubject, save: bool = False, verbose: bool = Tru
 
     trial_summary = trsum.summarize_all_trials(trials)
     if save:
-        trial_summary.to_pickle(os.path.join(subject.output_dir, "trials_summary.pkl"))
+        trial_summary.to_pickle(os.path.join(subject_figures_dir, "trials_summary.pkl"))
 
     saccade_distributions = sacan.distributions_figure(all_saccades, ignore_outliers=True,
                                                        title="Saccades Property Distributions", show_legend=True)
