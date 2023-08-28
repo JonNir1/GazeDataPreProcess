@@ -82,12 +82,19 @@ def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: 
     if save:
         trigger_counts.to_pickle(subject.get_dataframe_path(trig.DF_NAME))
 
+    import LWS.subject_analysis.lws_instances as lws_inst
+    lws_instances = lws_inst.identify_lws_for_varying_thresholds(subject,
+                                                                 proximity_thresholds=np.arange(0.1, 7.1, 0.1),
+                                                                 time_difference_thresholds=np.arange(0, 251, 10))
+    if save:
+        lws_instances.to_pickle(subject.get_dataframe_path(lws_inst.DF_NAME))
+
     end = time.time()
     if verbose:
         ioutils.log_and_print(msg="Finished creating DataFrames for subject " +
                                   f"{subject.subject_id}: {(end - start):.2f} seconds",
                               log_file=subject.log_file)
-    return trial_summary, trigger_counts
+    return trial_summary, trigger_counts, lws_instances
 
 
 def create_subject_figures(subject: LWSSubject, save: bool = False, verbose: bool = True):
