@@ -14,23 +14,37 @@ from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 import Visualization.visualization_utils as visutils
 
 
-def full_pipline(name: str, save: bool = True,
-                 run_analysis: bool = True,
-                 run_visualization: bool = True,
+def full_pipline(name: str,
+                 save: bool = True,
+                 include_subject_dfs: bool = True,
+                 include_subject_figures: bool = True,
+                 include_trial_figures: bool = True,
+                 include_trial_videos: bool = True,
                  verbose: bool = True):
     start = time.time()
     print(f"Processing subject `{name}`...")
     subject = process_subject(name=name, save=save, verbose=verbose)
     subject = load_subject(subject_id=subject.subject_id, verbose=verbose)
-    subject_dfs, subject_figures = None, None
+
     failed_analysis_trials = []
     failed_video_trials = []
-    if run_analysis:
+
+    subject_dfs = None
+    if include_subject_dfs:
         subject_dfs = create_subject_dataframes(subject=subject, save=save, verbose=verbose)
+
+    subject_figures = None
+    if include_subject_figures:
         subject_figures = create_subject_figures(subject=subject, save=save, verbose=verbose)
+
+    failed_analysis_trials = []
+    if include_trial_figures:
         failed_analysis_trials = analyze_all_trials(subject=subject, save=save, verbose=verbose)
-    if run_visualization:
+
+    failed_video_trials = []
+    if include_trial_videos:
         failed_video_trials = create_trial_videos(subject=subject, save=save, verbose=verbose)
+
     failed_trials = failed_analysis_trials + failed_video_trials
     end = time.time()
     if verbose:
