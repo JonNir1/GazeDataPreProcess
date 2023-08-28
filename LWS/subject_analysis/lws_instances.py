@@ -40,9 +40,9 @@ def identify_lws_for_varying_thresholds(subject: LWSSubject,
     for trial in all_trials:
         for prox in proximity_thresholds:
             for td in time_difference_thresholds:
-                is_lws_instance.loc[trial, (prox, td)] = load_or_identify_lws_instances(trial,
-                                                                                        proximity_threshold=prox,
-                                                                                        time_difference_threshold=td)
+                is_lws_instance.loc[trial, (prox, td)] = _identify_lws_instances(trial,
+                                                                                 proximity_threshold=prox,
+                                                                                 time_difference_threshold=td)
     return is_lws_instance
 
 
