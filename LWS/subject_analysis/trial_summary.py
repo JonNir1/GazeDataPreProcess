@@ -4,10 +4,11 @@ import warnings as w  # to suppress numpy warnings
 from typing import List
 
 import constants as cnst
-from Config import experiment_config as cnfg
 from LWS.DataModels.LWSTrial import LWSTrial
 from GazeEvents.BaseGazeEvent import BaseGazeEvent
 from GazeEvents.GazeEventEnums import GazeEventTypeEnum
+
+DF_NAME = "trial_summary"
 
 
 def summarize_all_trials(trials: List[LWSTrial], catch_exceptions=False, catch_warnings=True) -> pd.DataFrame:

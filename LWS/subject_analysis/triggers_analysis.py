@@ -6,6 +6,8 @@ import Visualization.visualization_utils as visutils
 from LWS.DataModels.LWSSubject import LWSSubject
 from LWS.DataModels.LWSTrial import LWSTrial
 
+DF_NAME = "trigger_counts"
+
 
 def plot_trigger_rates_by_block_position(subject: LWSSubject, block_size: int = 10):
     trigger_counts = count_triggers_per_trial(subject)
