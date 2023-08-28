@@ -22,7 +22,7 @@ def full_pipline(name: str, save: bool = True,
     print(f"Processing subject `{name}`...")
     subject = process_subject(name=name, save=save, verbose=verbose)
     subject = load_subject(subject_id=subject.subject_id, verbose=verbose)
-    subject_analysis = None
+    subject_dfs, subject_figures = None, None
     failed_analysis_trials = []
     failed_visualization_trials = []
     if run_analysis:
@@ -36,7 +36,7 @@ def full_pipline(name: str, save: bool = True,
     if verbose:
         ioutils.log_and_print(msg=f"\nFinished processing subject {name}: {(end - start):.2f} seconds\n###############\n",
                               log_file=subject.log_file)
-    return subject, subject_analysis, failed_trials
+    return subject, subject_dfs, subject_figures, failed_trials
 
 
 def process_subject(name: str, save: bool = False, verbose: bool = True) -> LWSSubject:
