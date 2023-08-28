@@ -75,12 +75,12 @@ def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: 
     import LWS.subject_analysis.trial_summary as trsum
     trial_summary = trsum.summarize_all_trials(subject.get_all_trials())
     if save:
-        trial_summary.to_pickle(os.path.join(subject_dataframes_dir, "trials_summary.pkl"))
+        trial_summary.to_pickle(os.path.join(subject_dataframes_dir, f"trials_summary.{ioutils.PICKLE_EXTENSION}"))
 
     import LWS.subject_analysis.triggers_analysis as trig
     trigger_counts = trig.count_triggers_per_trial(subject)
     if save:
-        trigger_counts.to_pickle(os.path.join(subject_dataframes_dir, "trigger_counts.pkl"))
+        trigger_counts.to_pickle(os.path.join(subject_dataframes_dir, f"trigger_counts.{ioutils.PICKLE_EXTENSION}"))
 
     end = time.time()
     if verbose:
