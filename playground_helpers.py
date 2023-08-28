@@ -70,26 +70,25 @@ def load_subject(subject_id: int, verbose: bool = True) -> LWSSubject:
 def analyze_subject(subject: LWSSubject, save: bool = False, verbose: bool = True):
     start = time.time()
     import Utils.io_utils as ioutils
-    import LWS.subject_analysis.trial_summary as trsum
-    import Visualization.saccade_analysis as sacan
-    import LWS.subject_analysis.fixation_analysis as fixan
-    import LWS.subject_analysis.lws_figures as lws_fig
 
     trials = subject.get_all_trials()
     all_saccades: List[SaccadeEvent] = [s for tr in trials for s in tr.get_gaze_events(GazeEventTypeEnum.SACCADE)]
     all_fixations: List[LWSFixationEvent] = [f for tr in trials for f in tr.get_gaze_events(GazeEventTypeEnum.FIXATION)]
     subject_figures_dir = ioutils.create_directory(dirname="subject_figures", parent_dir=subject.output_dir)
 
+    import LWS.subject_analysis.trial_summary as trsum
     trial_summary = trsum.summarize_all_trials(trials)
     if save:
         trial_summary.to_pickle(os.path.join(subject_figures_dir, "trials_summary.pkl"))
 
+    import Visualization.saccade_analysis as sacan
     saccade_distributions = sacan.distributions_figure(all_saccades, ignore_outliers=True,
                                                        title="Saccades Property Distributions", show_legend=True)
     if save:
         visutils.save_figure(saccade_distributions,
                              full_path=os.path.join(subject_figures_dir, "saccade distributions.png"))
 
+    import LWS.subject_analysis.fixation_analysis as fixan
     fixation_distributions = fixan.distributions_figure(all_fixations, ignore_outliers=True,
                                                         title="Fixations Property Distributions", show_legend=True)
     if save:
@@ -109,6 +108,7 @@ def analyze_subject(subject: LWSSubject, save: bool = False, verbose: bool = Tru
         visutils.save_figure(fixation_proximity_comparison,
                              full_path=os.path.join(subject_figures_dir, "target-proximal fixation comparison.png"))
 
+    import LWS.subject_analysis.lws_figures as lws_fig
     lws_rates = lws_fig.lws_rates_figure(subject, proximity_thresholds=np.arange(0.1 * cnfg.THRESHOLD_VISUAL_ANGLE,
                                                                                  1.2 * cnfg.THRESHOLD_VISUAL_ANGLE,
                                                                                  0.1 * cnfg.THRESHOLD_VISUAL_ANGLE))
