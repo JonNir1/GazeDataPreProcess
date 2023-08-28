@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 from typing import List, Union
@@ -36,9 +37,9 @@ def identify_lws_for_varying_thresholds(subject: LWSSubject,
     for trial in all_trials:
         for prox in proximity_thresholds:
             for td in time_difference_thresholds:
-                is_lws_instance.loc[trial, (prox, td)] = identify_lws_instances(trial,
-                                                                                proximity_threshold=prox,
-                                                                                time_difference_threshold=td)
+                is_lws_instance.loc[trial, (prox, td)] = load_or_identify_lws_instances(trial,
+                                                                                        proximity_threshold=prox,
+                                                                                        time_difference_threshold=td)
     return is_lws_instance
 
 
@@ -69,9 +70,9 @@ def calculate_lws_rate(trial: LWSTrial,
     (a) all fixations in the trial; or (b) only the proximal fixations in the trial, depending on the value of the flag
     `proximal_fixations_only`.
     """
-    is_lws_instance = identify_lws_instances(trial,
-                                             proximity_threshold=proximity_threshold,
-                                             time_difference_threshold=time_difference_threshold)
+    is_lws_instance = load_or_identify_lws_instances(trial,
+                                                     proximity_threshold=proximity_threshold,
+                                                     time_difference_threshold=time_difference_threshold)
     num_lws_instances = np.nansum(is_lws_instance)
     fixations = trial.get_gaze_events(event_type=GazeEventTypeEnum.FIXATION)
     if proximal_fixations_only:
@@ -84,9 +85,34 @@ def calculate_lws_rate(trial: LWSTrial,
     raise ZeroDivisionError(f"num_lws_instances = {num_lws_instances},\tnum_fixations = {num_fixations}")
 
 
-def identify_lws_instances(trial: LWSTrial,
-                           proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
-                           time_difference_threshold: float = SaccadeEvent.MAX_DURATION) -> List[Union[bool, float]]:
+def load_or_identify_lws_instances(trial: LWSTrial,
+                                   proximity_threshold,
+                                   time_difference_threshold) -> List[Union[bool, float]]:
+    """
+    To avoid re-identifying LWS instances for the same trial and threshold values, we save the results in a dataframe
+    and load them if they exist. Otherwise, we identify the LWS instances and save them in the dataframe.
+    """
+    df_path = os.path.join(trial.subject.output_dir, "dataframes", "lws_instances")
+    try:
+        df = pd.read_pickle(df_path)
+        if (proximity_threshold, time_difference_threshold) in df.columns:
+            return df.loc[trial, (proximity_threshold, time_difference_threshold)]
+    except FileNotFoundError:
+        df = pd.DataFrame(index=trial.subject.get_all_trials(),
+                          columns=pd.MultiIndex.from_product(iterables=[[proximity_threshold], [time_difference_threshold]],
+                                                             names=["proximity_threshold", "time_difference_threshold"]))
+        df.index.name = "trial"
+
+    is_lws_instance = _identify_lws_instances(trial, proximity_threshold=proximity_threshold,
+                                              time_difference_threshold=time_difference_threshold)
+    df.loc[trial, (proximity_threshold, time_difference_threshold)] = is_lws_instance
+    df.to_pickle(df_path)
+    return is_lws_instance
+
+
+def _identify_lws_instances(trial: LWSTrial,
+                            proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
+                            time_difference_threshold: float = SaccadeEvent.MAX_DURATION) -> List[Union[bool, float]]:
     """
     Identifies the LWS instances in the given trial, and returns a list of the same length as the trial's gaze events,
     where each element is either:
