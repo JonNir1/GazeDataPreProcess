@@ -10,52 +10,53 @@ from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 
 def split_by_target_proximity(fixations: List[LWSFixationEvent],
-                              proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE) -> Tuple[
-    List[LWSFixationEvent], List[LWSFixationEvent], List[LWSFixationEvent]]:
+                              proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
+                              ignore_outliers: bool = True) -> Tuple[
+        List[LWSFixationEvent], List[LWSFixationEvent], List[LWSFixationEvent]]:
     if not np.isfinite(proximity_threshold) or proximity_threshold <= 0:
         raise ValueError(f"Invalid proximity threshold: {proximity_threshold}")
     target_proximal_fixations = [f for f in fixations if f.visual_angle_to_closest_target <= proximity_threshold]
     target_marking_fixations = [f for f in fixations if f.is_mark_target_attempt()]
     target_distal_fixations = [f for f in fixations if f.visual_angle_to_closest_target > proximity_threshold]
+    if ignore_outliers:
+        target_proximal_fixations = [f for f in target_proximal_fixations if not f.is_outlier]
+        target_marking_fixations = [f for f in target_marking_fixations if not f.is_outlier]
+        target_distal_fixations = [f for f in target_distal_fixations if not f.is_outlier]
     return target_proximal_fixations, target_marking_fixations, target_distal_fixations
 
 
-def target_proximal_comparison(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
-                               proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
-    if not np.isfinite(proximity_threshold) or proximity_threshold <= 0:
-        raise ValueError(f"Invalid proximity threshold: {proximity_threshold}")
+def plot_fixation_comparison(fixation_groups: List[List[LWSFixationEvent]], group_names: List[str],
+                             ignore_outliers: bool = True, **kwargs) -> plt.Figure:
+    if len(fixation_groups) != len(group_names):
+        raise ValueError(
+            f"Number of groups ({len(fixation_groups)}) must match number of group names ({len(group_names)})")
     if ignore_outliers:
-        fixations = [f for f in fixations if not f.is_outlier]
-    marking_fixations = [f for f in fixations if f.is_mark_target_attempt()]
-    non_marking_proximal_fixations = [f for f in fixations if
-                                      f.visual_angle_to_closest_target <= proximity_threshold and not f.is_mark_target_attempt()]
-    data_labels = ["Marking Fixations", "Non-Marking Proximal Fixations"]
-    fig = visutils.set_figure_properties(fig=None,
-                                         title=kwargs.pop("title", f"Comparison of Target-Proximal Fixations"),
-                                         figsize=kwargs.pop("figsize", (30, 24)),
-                                         title_height=kwargs.pop("title_height", 0.93),
-                                         **kwargs)
+        fixation_groups = [[f for f in group if not f.is_outlier] for group in fixation_groups]
+
+    title = "Fixation Feature Comparison"
+    if "title" in kwargs:
+        title = title + f"\n{kwargs.pop('title')}"
+    fig = visutils.set_figure_properties(fig=None, title=title, figsize=kwargs.pop("figsize", (30, 24)),
+                                         title_height=kwargs.pop("title_height", 0.93), **kwargs)
+
     # % outliers
     ax1 = fig.add_subplot(2, 3, 1)  # top left
-    # TODO: create a stacked bar chart with the % of outliers in each group
+    # TODO: create a bar chart with the % of outliers in each group
 
     # durations
     ax2 = fig.add_subplot(2, 3, 2)  # top middle
-    durations_data = [np.array([f.duration for f in marking_fixations]),
-                      np.array([f.duration for f in non_marking_proximal_fixations])]
-    distributions.bar_chart(ax=ax2, datasets=durations_data, data_labels=data_labels,
+    durations_data = [np.array([f.duration for f in group]) for group in fixation_groups]
+    distributions.bar_chart(ax=ax2, datasets=durations_data, data_labels=group_names,
                             title="Durations", xlabel="Duration (ms)", **kwargs)
     # dispersion
     ax4 = fig.add_subplot(2, 3, 4)  # bottom left
-    dispersion_data = [np.array([f.dispersion for f in marking_fixations]),
-                       np.array([f.dispersion for f in non_marking_proximal_fixations])]
-    distributions.bar_chart(ax=ax4, datasets=dispersion_data, data_labels=data_labels,
+    dispersion_data = [np.array([f.dispersion for f in group]) for group in fixation_groups]
+    distributions.bar_chart(ax=ax4, datasets=dispersion_data, data_labels=group_names,
                             title="Max Dispersion", xlabel="Max Dispersion (pixels)", **kwargs)
     # angle to target
     ax5 = fig.add_subplot(2, 3, 5)  # bottom middle
-    distance_data = [np.array([f.visual_angle_to_closest_target for f in marking_fixations]),
-                     np.array([f.visual_angle_to_closest_target for f in non_marking_proximal_fixations])]
-    distributions.bar_chart(ax=ax5, datasets=distance_data, data_labels=data_labels,
+    distance_data = [np.array([f.visual_angle_to_closest_target for f in group]) for group in fixation_groups]
+    distributions.bar_chart(ax=ax5, datasets=distance_data, data_labels=group_names,
                             title="Angle to Target", xlabel="Angle to Target (°)", **kwargs)
 
     # velocity dynamics & pupil size dynamics - in the right column with shared x-axis
@@ -65,14 +66,12 @@ def target_proximal_comparison(fixations: List[LWSFixationEvent], ignore_outlier
     ax3 = fig.add_subplot(2, 3, 3, sharex=ax6)  # top right
 
     # velocity dynamics
-    velocity_data = [[f.get_velocity_series() for f in marking_fixations],
-                     [f.get_velocity_series() for f in non_marking_proximal_fixations]]
-    dynamics.dynamic_profile(ax=ax3, datasets=velocity_data, data_labels=data_labels,
+    velocity_data = [[f.get_velocity_series() for f in group] for group in fixation_groups]
+    dynamics.dynamic_profile(ax=ax3, datasets=velocity_data, data_labels=group_names,
                              title="Velocity Dynamics", xlabel="Time (ms)", ylabel="Velocity (°/s)", **kwargs)
     # pupil size dynamics
-    pupil_data = [[f.get_pupil_series() for f in marking_fixations],
-                  [f.get_pupil_series() for f in non_marking_proximal_fixations]]
-    dynamics.dynamic_profile(ax=ax6, datasets=pupil_data, data_labels=data_labels,
+    pupil_data = [[f.get_pupil_series() for f in group] for group in fixation_groups]
+    dynamics.dynamic_profile(ax=ax6, datasets=pupil_data, data_labels=group_names,
                              title="Pupil Size Dynamics", xlabel="Time (ms)", ylabel="Pupil Size (mm)", **kwargs)
     return fig
 

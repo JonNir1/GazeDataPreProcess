@@ -111,7 +111,6 @@ def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: 
 def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
                            save: bool = False, verbose: bool = True):
     start = time.time()
-    import Utils.io_utils as ioutils
 
     trials = subject.get_all_trials()
     all_saccades: List[SaccadeEvent] = [s for tr in trials for s in tr.get_gaze_events(GazeEventTypeEnum.SACCADE)]
@@ -158,13 +157,6 @@ def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnf
     if save:
         visutils.save_figure(fixation_dynamics,
                              full_path=os.path.join(subject_figures_dir, "fixation dynamics - all_fixations.png"))
-
-    fixation_proximity_comparison = fixan.target_proximal_comparison(all_fixations, ignore_outliers=True,
-                                                                     title="Fixations Proximity Comparison",
-                                                                     show_legend=True)
-    if save:
-        visutils.save_figure(fixation_proximity_comparison,
-                             full_path=os.path.join(subject_figures_dir, "target-proximal fixation comparison.png"))
 
     import LWS.subject_analysis.lws_figures as lws_fig
     lws_rates = lws_fig.lws_rates_figure(subject, proximity_thresholds=np.arange(0.1 * cnfg.THRESHOLD_VISUAL_ANGLE,
