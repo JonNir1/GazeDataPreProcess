@@ -152,14 +152,12 @@ def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnf
         visutils.save_figure(distal_distribution_comparison,
                              full_path=os.path.join(subject_figures_dir, "feature distribution - distal_fixations.png"))
 
-
-
-
-    fixation_dynamics = fixan.dynamics_figure(all_fixations, ignore_outliers=True,
-                                              title="Fixations Temporal Dynamics", show_legend=True)
+    # plot_feature_dynamics
+    fixation_dynamics = fixan.plot_feature_dynamics(fixation_groups, group_names,
+                                                    title="Fixations Temporal Dynamics", show_legend=True)
     if save:
         visutils.save_figure(fixation_dynamics,
-                             full_path=os.path.join(subject_figures_dir, "fixation dynamics.png"))
+                             full_path=os.path.join(subject_figures_dir, "fixation dynamics - all_fixations.png"))
 
     fixation_proximity_comparison = fixan.target_proximal_comparison(all_fixations, ignore_outliers=True,
                                                                      title="Fixations Proximity Comparison",

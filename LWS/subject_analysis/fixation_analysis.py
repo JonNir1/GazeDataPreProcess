@@ -77,50 +77,62 @@ def target_proximal_comparison(fixations: List[LWSFixationEvent], ignore_outlier
     return fig
 
 
-def dynamics_figure(fixations: List[LWSFixationEvent], ignore_outliers: bool = True,
-                    proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE, **kwargs) -> plt.Figure:
+def plot_feature_dynamics(fixation_groups: List[List[LWSFixationEvent]], group_names: List[str],
+                          ignore_outliers: bool = True, **kwargs) -> plt.Figure:
     """
-    Creates a 3×2 figure depicting the temporal dynamics of velocity (left column) and pupil size (right column) for
-    all fixations (top), target-proximal fixations (middle), and marking fixations (bottom).
+    Creates a N×2 figure with the temporal dynamics of velocity (left column) and pupil size (right column) for
+    each group of fixations (N is the number of groups).
+    Each subplot shows the temporal dynamics of the given feature for a different group.
 
-    target-proximal fixations are defined as fixations with a visual angle to target less than or equal to the
-    proximity threshold (default: 1.5°). target-marking fixations are defined as fixations during which the subject
-    attempted to mark the target (i.e., the target-marking triggers were recorded).
+    :param fixation_groups: A list of lists of fixations. Each list of fixations represents a group.
+    :param group_names: A list of names for each group.
+    :param ignore_outliers: If True, outliers will be ignored.
+
+    :return: A matplotlib Figure object.
+
+    :raises ValueError: If the number of groups does not match the number of group names.
     """
-    if not np.isfinite(proximity_threshold) or proximity_threshold <= 0:
-        raise ValueError(f"Invalid proximity threshold: {proximity_threshold}")
+    if len(fixation_groups) != len(group_names):
+        raise ValueError(
+            f"Number of groups ({len(fixation_groups)}) must match number of group names ({len(group_names)})")
     if ignore_outliers:
-        fixations = [f for f in fixations if not f.is_outlier]
-    proximal_fixations = [f for f in fixations if f.visual_angle_to_closest_target <= proximity_threshold]
-    marking_fixations = [f for f in fixations if f.is_mark_target_attempt()]
+        fixation_groups = [[f for f in group if not f.is_outlier] for group in fixation_groups]
+    if ("colors" not in kwargs) or (len(kwargs["colors"]) != len(fixation_groups)):
+        colors = [plt.get_cmap("tab20")(2*i+1) for i in range(len(fixation_groups))]
+    else:
+        colors = kwargs.pop("colors")
+
+    title = "Fixation Feature Dynamics"
+    if "title" in kwargs:
+        title = title + f"\n{kwargs.pop('title')}"
     fig = visutils.set_figure_properties(fig=None,
-                                         title=kwargs.pop("title", f"Fixation Dynamics"),
+                                         title=title,
                                          figsize=kwargs.pop("figsize", (30, 24)),
                                          title_height=kwargs.pop("title_height", 0.93),
                                          **kwargs)
-    # velocities
-    ax5 = fig.add_subplot(3, 2, 5)
-    ax3 = fig.add_subplot(3, 2, 3, sharex=ax5)  # use same x-axis as plot at the bottom of the column
-    ax1 = fig.add_subplot(3, 2, 1, sharex=ax5)  # use same x-axis as plot at the bottom of the column
-    dynamics.velocity_profile(fixations, ax1, show_individual=False, show_peak=True,
-                              title="Velocity Dynamics", data_labels=["All Fixations"], xlabel="",
-                              primary_color='darkblue', **kwargs)
-    dynamics.velocity_profile(proximal_fixations, ax3, show_individual=False, show_peak=True,
-                              title="", data_labels=["Proximal Fixations"], xlabel="", primary_color='darkred', **kwargs)
-    dynamics.velocity_profile(marking_fixations, ax5, show_individual=False, show_peak=True,
-                              title="", data_labels=["Marking Fixations"], primary_color='darkgreen', **kwargs)
 
-    # pupils
-    ax6 = fig.add_subplot(3, 2, 6)
-    ax4 = fig.add_subplot(3, 2, 4, sharex=ax6)  # use same x-axis as plot at the bottom of the column
-    ax2 = fig.add_subplot(3, 2, 2, sharex=ax6)  # use same x-axis as plot at the bottom of the column
-    dynamics.pupil_size_profile(fixations, ax2, show_individual=False, show_peak=True,
-                                title="Pupil Size Dynamics", data_labels=["All Fixations"], xlabel="",
-                                primary_color='darkblue', **kwargs)
-    dynamics.pupil_size_profile(proximal_fixations, ax4, show_individual=False, show_peak=True,
-                                title="", data_labels=["Proximal Fixations"], xlabel="", primary_color='darkred', **kwargs)
-    dynamics.pupil_size_profile(marking_fixations, ax6, show_individual=False, show_peak=True,
-                                title="", data_labels=["Marking Fixations"], primary_color='darkgreen', **kwargs)
+    n_groups = len(fixation_groups)
+    axes = np.full((n_groups, 2), np.nan, dtype=object)
+    for i in range(n_groups):
+        i = n_groups - i - 1  # reverse order
+        if i == n_groups - 1:
+            axes[i, 0] = fig.add_subplot(n_groups, 2, 2 * i + 1)
+            axes[i, 1] = fig.add_subplot(n_groups, 2, 2 * i + 2)
+        else:
+            # use same x-axis as plot at the bottom of the column
+            axes[i, 0] = fig.add_subplot(n_groups, 2, 2 * i + 1, sharex=axes[n_groups-1, 0])
+            axes[i, 1] = fig.add_subplot(n_groups, 2, 2 * i + 2, sharex=axes[n_groups-1, 1])
+
+    for i, (group, name) in enumerate(zip(fixation_groups, group_names)):
+        # velocities
+        left_title = "Velocity Dynamics" if i == 0 else ""
+        dynamics.velocity_profile(group, axes[i, 0], show_individual=False, show_peak=True,
+                                  title=left_title, data_labels=[name], xlabel="", primary_color=colors[i], **kwargs)
+
+        # pupils
+        right_title = "Pupil Size Dynamics" if i == 0 else ""
+        dynamics.pupil_size_profile(group, axes[i, 1], show_individual=False, show_peak=True,
+                                    title=right_title, data_labels=[name], xlabel="", primary_color=colors[i], **kwargs)
     return fig
 
 
