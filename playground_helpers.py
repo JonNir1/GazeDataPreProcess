@@ -108,7 +108,8 @@ def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: 
     return trial_summary, trigger_counts, lws_instances
 
 
-def create_subject_figures(subject: LWSSubject, save: bool = False, verbose: bool = True):
+def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
+                           save: bool = False, verbose: bool = True):
     start = time.time()
     import Utils.io_utils as ioutils
 
@@ -125,11 +126,34 @@ def create_subject_figures(subject: LWSSubject, save: bool = False, verbose: boo
                              full_path=os.path.join(subject_figures_dir, "saccade distributions.png"))
 
     import LWS.subject_analysis.fixation_analysis as fixan
-    fixation_distributions = fixan.distributions_figure(all_fixations, ignore_outliers=True,
-                                                        title="Fixations Property Distributions", show_legend=True)
+    target_proximal_fixations, target_marking_fixations, target_distal_fixations = fixan.split_by_target_proximity(
+        all_fixations, proximity_threshold)
+    fixation_groups = [all_fixations, target_distal_fixations, target_proximal_fixations, target_marking_fixations]
+    group_names = ["All Fixations", "Distal Fixations", "Proximal Fixations", "Marking Fixations"]
+
+    all_distribution_comparison = fixan.plot_feature_distributions(fixation_groups, group_names,
+                                                                   title="All Fixation Types",
+                                                                   show_legend=True)
     if save:
-        visutils.save_figure(fixation_distributions,
-                             full_path=os.path.join(subject_figures_dir, "fixation distributions.png"))
+        visutils.save_figure(all_distribution_comparison,
+                             full_path=os.path.join(subject_figures_dir, "feature distribution - all_fixations.png"))
+
+    proximal_distribution_comparison = fixan.plot_feature_distributions(fixation_groups[2:], group_names[2:],
+                                                                        title="Proximal (Non-Marking) vs. Marking Fixations",
+                                                                        show_legend=True)
+    if save:
+        visutils.save_figure(proximal_distribution_comparison,
+                             full_path=os.path.join(subject_figures_dir, "feature distribution - proximal_fixations.png"))
+
+    distal_distribution_comparison = fixan.plot_feature_distributions(fixation_groups[1:3], group_names[1:3],
+                                                                        title="Distal vs. Proximal (Non-Marking) Fixations",
+                                                                        show_legend=True)
+    if save:
+        visutils.save_figure(distal_distribution_comparison,
+                             full_path=os.path.join(subject_figures_dir, "feature distribution - distal_fixations.png"))
+
+
+
 
     fixation_dynamics = fixan.dynamics_figure(all_fixations, ignore_outliers=True,
                                               title="Fixations Temporal Dynamics", show_legend=True)
