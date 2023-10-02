@@ -217,8 +217,7 @@ def _check_lws_instance_standalone_criteria(fixation: LWSFixationEvent,
     if fixation.visual_angle_to_closest_target > proximity_threshold:
         # fixation is not close to any target, so it cannot be a LWS fixation --> return False
         return False
-    closest_target_id = fixation.closest_target_id
-    time_identified = target_identification_data.loc[closest_target_id, "time_identified"]
+    time_identified = target_identification_data.loc[fixation.closest_target_id, "time_identified"]
     if np.isnan(time_identified):
         # fixation is close to a never-identified target, so it may be a LWS fixation --> return True
         return True
