@@ -44,7 +44,7 @@ def bar_chart(ax: plt.Axes, datasets: List[np.ndarray], **kwargs) -> plt.Axes:
         centers.append(c)
 
     # plot the distributions:
-    width = min([np.min(np.diff(c)) for c in centers]) * 0.9
+    width = min([np.min(np.diff(c)) for c in centers if len(c) > 0]) * 0.9
     ax = visutils.generic_bar_chart(ax=ax, centers=centers, values=percentages, bar_width=width, **kwargs)
 
     # set axes properties:
