@@ -145,8 +145,8 @@ def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnf
                              full_path=os.path.join(subject_figures_dir, "feature distribution - proximal_fixations.png"))
 
     distal_distribution_comparison = fixan.plot_feature_distributions(fixation_groups[1:3], group_names[1:3],
-                                                                        title="Distal vs. Proximal (Non-Marking) Fixations",
-                                                                        show_legend=True)
+                                                                      title="Distal vs. Proximal (Non-Marking) Fixations",
+                                                                      show_legend=True)
     if save:
         visutils.save_figure(distal_distribution_comparison,
                              full_path=os.path.join(subject_figures_dir, "feature distribution - distal_fixations.png"))
