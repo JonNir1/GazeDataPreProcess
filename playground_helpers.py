@@ -93,7 +93,7 @@ def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: 
     if save:
         trigger_counts.to_pickle(subject.get_dataframe_path(trig.DF_NAME))
 
-    import LWS.subject_analysis.lws_instances as lws_inst
+    import LWS.search_analysis.lws_instances as lws_inst
     lws_instances = lws_inst.identify_lws_for_varying_thresholds(subject,
                                                                  proximity_thresholds=np.arange(0.1, 7.1, 0.1),
                                                                  time_difference_thresholds=np.arange(0, 251, 10))
@@ -158,7 +158,7 @@ def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnf
         visutils.save_figure(fixation_dynamics,
                              full_path=os.path.join(subject_figures_dir, "fixation dynamics - all_fixations.png"))
 
-    import LWS.subject_analysis.lws_figures as lws_fig
+    import LWS.search_analysis.lws_figures as lws_fig
     lws_rates = lws_fig.lws_rates_figure(subject, proximity_thresholds=np.arange(0.1 * cnfg.THRESHOLD_VISUAL_ANGLE,
                                                                                  1.2 * cnfg.THRESHOLD_VISUAL_ANGLE,
                                                                                  0.1 * cnfg.THRESHOLD_VISUAL_ANGLE))
