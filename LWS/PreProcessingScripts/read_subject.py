@@ -7,7 +7,7 @@ from LWS.DataModels.LWSArrayStimulus import LWSArrayStimulus
 from LWS.DataModels.LWSTrial import LWSTrial
 from LWS.DataModels.LWSSubject import LWSSubject
 from LWS.DataModels.LWSBehavioralData import LWSBehavioralData
-from LWS.pre_processing_scripts.read_raw_data import read_eye_tracking_data, read_subject_info
+from LWS.PreProcessingScripts.read_raw_data import read_eye_tracking_data, read_subject_info
 
 
 def read_subject_from_raw_data(subject_dir: str,

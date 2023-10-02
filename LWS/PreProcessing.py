@@ -7,10 +7,10 @@ from LWS.DataModels.LWSTrial import LWSTrial
 from LWS.DataModels.LWSSubject import LWSSubject
 from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 
-from LWS.pre_processing_scripts.read_subject import read_subject_from_raw_data
-from LWS.pre_processing_scripts.visual_angle_to_targets import visual_angle_gaze_to_targets
-from LWS.pre_processing_scripts.detect_events import detect_all_events
-from LWS.pre_processing_scripts.gen_lws_gaze_events import gen_all_lws_events
+from LWS.PreProcessingScripts.read_subject import read_subject_from_raw_data
+from LWS.PreProcessingScripts.visual_angle_to_targets import visual_angle_gaze_to_targets
+from LWS.PreProcessingScripts.detect_events import detect_all_events
+from LWS.PreProcessingScripts.gen_lws_gaze_events import gen_all_lws_events
 
 
 def process_subject(subject_dir: str,
@@ -29,7 +29,7 @@ def process_subject(subject_dir: str,
 
     keyword arguments:
         - output_directory: The experiment's output directory, for saving the trials' pickle files if `save_pickle` is True.
-        - see gaze detection keyword arguments in `LWS.pre_processing_scripts.detect_events.detect_all_events()`
+        - see gaze detection keyword arguments in `LWS.PreProcessingScripts.detect_events.detect_all_events()`
 
     :return: A list of LWSTrial objects, one for each trial of the subject, processed and ready to be analyzed.
     """
@@ -54,7 +54,7 @@ def process_trial(trial: LWSTrial, save_pickle: bool = False, **kwargs):
     Processes the given trial and adds the processed data to the trial object.
 
     keyword arguments:
-        - see gaze detection keyword arguments in `LWS.pre_processing_scripts.detect_events.detect_all_events()`
+        - see gaze detection keyword arguments in `LWS.PreProcessingScripts.detect_events.detect_all_events()`
     """
     trial.is_processed = False
     bd = trial.get_behavioral_data()

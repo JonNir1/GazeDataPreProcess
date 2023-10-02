@@ -29,7 +29,7 @@ def _gen_lws_gaze_events(event_type: GazeEventTypeEnum, trial: LWSTrial) -> List
     """
     Identifies all chunks of data that belong to this type of event within the trial and creates a GazeEvent object
     for each chunk and returns the list of events.
-    For more information see the generic implementation in GazeEvents.pre_processing_scripts.create_gaze_events.py
+    For more information see the generic implementation in GazeEvents.PreProcessingScripts.create_gaze_events.py
 
     :param event_type: type of event to extract
     :param trial: LWSTrial object
@@ -60,7 +60,7 @@ def _gen_lws_gaze_events(event_type: GazeEventTypeEnum, trial: LWSTrial) -> List
     if event_type == GazeEventTypeEnum.FIXATION:
         # create LWSFixationEvents
         from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
-        from LWS.pre_processing_scripts.visual_angle_to_targets import visual_angle_fixation_to_targets
+        from LWS.PreProcessingScripts.visual_angle_to_targets import visual_angle_fixation_to_targets
         fixations_list = []
         for idxs in separate_event_idxs:
             fix = LWSFixationEvent(timestamps=timestamps[idxs], x=x[idxs], y=y[idxs], pupil=p[idxs],
