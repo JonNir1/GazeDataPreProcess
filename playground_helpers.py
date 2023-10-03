@@ -113,7 +113,6 @@ def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: 
         r2roi_counts_exclude_rect.to_pickle(subject.get_dataframe_path(r2roi.DF_NAME + "_exclude_rect"))
         r2roi_counts_include_rect.to_pickle(subject.get_dataframe_path(r2roi.DF_NAME + "_include_rect"))
 
-
     end = time.time()
     if verbose:
         ioutils.log_and_print(msg="Finished creating DataFrames for subject " +
