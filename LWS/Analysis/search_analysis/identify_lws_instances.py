@@ -16,8 +16,7 @@ DF_NAME = "lws_instances"
 
 def identify_lws_for_varying_thresholds(subject: LWSSubject,
                                         proximity_thresholds: np.ndarray,
-                                        time_difference_thresholds: np.ndarray = np.array(
-                                            [SaccadeEvent.MAX_DURATION])) -> pd.DataFrame:
+                                        time_difference_thresholds: np.ndarray) -> pd.DataFrame:
     """
     For each (trial, proximity_threshold, time_difference_threshold) triplet, identifies the LWS instances in the
     trial. Returns a 3D dataframe where each cell contains a boolean array of the same length as the trial's fixations,
