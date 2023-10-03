@@ -190,7 +190,8 @@ def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnf
     if verbose:
         ioutils.log_and_print(msg=f"Finished analyzing subject {subject.subject_id}: {(end - start):.2f} seconds",
                               log_file=subject.log_file)
-    return saccade_distributions, fixation_distributions, fixation_dynamics, fixation_proximity_comparison
+    return (saccade_distributions, all_distribution_comparison, proximal_distribution_comparison,
+            distal_distribution_comparison, fixation_dynamics, lws_rates, trigger_rates)
 
 
 def analyze_all_trials(subject: LWSSubject, save: bool = False, verbose: bool = True):
