@@ -43,6 +43,31 @@ def identify_lws_for_varying_thresholds(subject: LWSSubject,
     return is_lws_instance
 
 
+def load_or_compute_lws_instances(trial: LWSTrial,
+                                  proximity_threshold: float,
+                                  time_difference_threshold: float) -> List[bool]:
+    # attempt to load the data from disk
+    df_path = trial.subject.get_dataframe_path(DF_NAME)
+    try:
+        is_lws_df = pd.read_pickle(df_path)
+    except FileNotFoundError:
+        is_lws_df = pd.DataFrame(index=trial.subject.get_trials(),
+                          columns=pd.MultiIndex.from_product(
+                              iterables=[[proximity_threshold], [time_difference_threshold]],
+                              names=["proximity_threshold", "time_difference_threshold"]))
+        is_lws_df.index.name = "trial"
+
+    try:
+        trial_is_lws = is_lws_df.loc[trial, (proximity_threshold, time_difference_threshold)]
+    except KeyError:
+        trial_is_lws = _identify_lws_instances(trial,
+                                               proximity_threshold=proximity_threshold,
+                                               time_difference_threshold=time_difference_threshold)
+        is_lws_df.loc[trial, (proximity_threshold, time_difference_threshold)] = trial_is_lws
+        is_lws_df.to_pickle(df_path)
+    return trial_is_lws
+
+
 def _identify_lws_instances(trial: LWSTrial,
                             proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
                             time_difference_threshold: float = SaccadeEvent.MAX_DURATION) -> List[Union[bool, float]]:
