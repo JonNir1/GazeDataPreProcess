@@ -37,7 +37,8 @@ def _draw_lws_rates(ax: plt.Axes,
                     proximity_thresholds: np.ndarray,
                     time_difference_threshold: float,
                     proximal_fixations_only: bool) -> plt.Axes:
-    lws_rate_dict = {thrsh: {trial: _calculate_lws_rate(trial, proximity_threshold=thrsh,
+    lws_rate_dict = {thrsh: {trial: _calculate_lws_rate(trial,
+                                                        proximity_threshold=thrsh,
                                                         proximal_fixations_only=proximal_fixations_only,
                                                         time_difference_threshold=time_difference_threshold)
                              for trial in subject.get_trials()} for thrsh in proximity_thresholds}
