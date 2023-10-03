@@ -41,9 +41,8 @@ def process_subject(subject_dir: str,
         raise NotADirectoryError(f"Directory {output_directory} does not exist.")
 
     subject = read_subject_from_raw_data(subject_dir, stimuli_dir, output_directory, **kwargs)
-    for i in range(subject.num_trials):
-        trial = subject.get_trial(i+1)  # trial numbers start from 1
-        process_trial(trial, **kwargs)
+    for tr in subject.get_trials():
+        process_trial(tr, **kwargs)
     if save_pickle:
         subject.to_pickle()
     return subject

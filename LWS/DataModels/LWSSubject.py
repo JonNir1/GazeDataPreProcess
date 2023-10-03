@@ -69,14 +69,6 @@ class LWSSubject:
             return all_trials
         return list(filter(lambda t: t.stim_type == stim_type, all_trials))
 
-    def get_trial(self, trial_num: int) -> "LWSTrial":
-        trials = list(filter(lambda t: t.trial_num == trial_num, self.__trials))
-        if len(trials) == 0:
-            raise IndexError(f"Trial {trial_num} does not exist for Subject {self.subject_id}")
-        if len(trials) > 1:
-            raise RuntimeError(f"Subject {self.subject_id} has more than one trial with number {trial_num}")
-        return trials[0]
-
     def to_pickle(self) -> str:
         filename = ioutils.get_filename(name=self.__repr__(), extension=ioutils.PICKLE_EXTENSION)
         full_path = os.path.join(self.output_dir, filename)
