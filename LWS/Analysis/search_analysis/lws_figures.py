@@ -25,10 +25,9 @@ def lws_rates_figure(subject: LWSSubject, proximity_thresholds: np.ndarray) -> p
 def _draw_lws_rates(subject: LWSSubject,
                     proximity_thresholds: np.ndarray, ax: plt.Axes,
                     proximal_fixations_only: bool) -> plt.Axes:
-    all_trials = subject.get_trials()
     lws_rate_dict = {
         thrsh: {trial: lws_rate(trial, proximity_threshold=thrsh, proximal_fixations_only=proximal_fixations_only)
-                for trial in all_trials} for thrsh in proximity_thresholds}
+                for trial in subject.get_trials()} for thrsh in proximity_thresholds}
     lws_rate_df = pd.DataFrame.from_dict(lws_rate_dict, orient='columns')
 
     # extract mean of lws rate for each stimulus type:
