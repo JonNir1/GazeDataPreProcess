@@ -16,7 +16,8 @@ DF_NAME = "lws_instances"
 
 def identify_lws_for_varying_thresholds(subject: LWSSubject,
                                         proximity_thresholds: np.ndarray,
-                                        time_difference_thresholds: np.ndarray) -> pd.DataFrame:
+                                        time_difference_thresholds: np.ndarray = np.array(
+                                            [SaccadeEvent.MAX_DURATION])) -> pd.DataFrame:
     """
     For each (trial, proximity_threshold, time_difference_threshold) triplet, identifies the LWS instances in the
     trial. Returns a 3D dataframe where each cell contains a boolean array of the same length as the trial's fixations,
@@ -40,55 +41,6 @@ def identify_lws_for_varying_thresholds(subject: LWSSubject,
                 is_lws_instance.loc[trial, (prox, td)] = _identify_lws_instances(trial,
                                                                                  proximity_threshold=prox,
                                                                                  time_difference_threshold=td)
-    return is_lws_instance
-
-
-def calculate_lws_rate(trial: LWSTrial,
-                       proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
-                       time_difference_threshold: float = SaccadeEvent.MAX_DURATION,
-                       proximal_fixations_only: bool = False) -> float:
-    """
-    Calculates the LWS rate for the given trial, which is the fraction of fixations that are LWS instances out of
-    (a) all fixations in the trial; or (b) only the proximal fixations in the trial, depending on the value of the flag
-    `proximal_fixations_only`.
-    """
-    is_lws_instance = _load_or_identify_lws_instances(trial, proximity_threshold=proximity_threshold,
-                                                      time_difference_threshold=time_difference_threshold)
-    num_lws_instances = np.nansum(is_lws_instance)
-    fixations = trial.get_gaze_events(event_type=GazeEventTypeEnum.FIXATION)
-    if proximal_fixations_only:
-        fixations = list(filter(lambda f: f.visual_angle_to_closest_target <= proximity_threshold, fixations))
-    num_fixations = len(fixations)
-    if num_fixations > 0:
-        return num_lws_instances / num_fixations
-    if num_lws_instances == 0 and num_fixations == 0:
-        return np.nan
-    raise ZeroDivisionError(f"num_lws_instances = {num_lws_instances},\tnum_fixations = {num_fixations}")
-
-
-def _load_or_identify_lws_instances(trial: LWSTrial,
-                                    proximity_threshold,
-                                    time_difference_threshold) -> List[Union[bool, float]]:
-    """
-    To avoid re-identifying LWS instances for the same trial and threshold values, we save the results in a dataframe
-    and load them if they exist. Otherwise, we identify the LWS instances and save them in the dataframe.
-    """
-    df_path = trial.subject.get_dataframe_path(DF_NAME)
-    try:
-        df = pd.read_pickle(df_path)
-        if (proximity_threshold, time_difference_threshold) in df.columns:
-            return df.loc[trial, (proximity_threshold, time_difference_threshold)]
-    except FileNotFoundError:
-        df = pd.DataFrame(index=trial.subject.get_trials(),
-                          columns=pd.MultiIndex.from_product(
-                              iterables=[[proximity_threshold], [time_difference_threshold]],
-                              names=["proximity_threshold", "time_difference_threshold"]))
-        df.index.name = "trial"
-
-    is_lws_instance = _identify_lws_instances(trial, proximity_threshold=proximity_threshold,
-                                              time_difference_threshold=time_difference_threshold)
-    df.loc[trial, (proximity_threshold, time_difference_threshold)] = pd.Series([is_lws_instance], index=[trial])
-    df.to_pickle(df_path)
     return is_lws_instance
 
 
