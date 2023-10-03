@@ -6,6 +6,7 @@ import pandas as pd
 
 from Config import experiment_config as cnfg
 import Utils.io_utils as ioutils
+from LWS.DataModels.LWSArrayStimulus import LWSStimulusTypeEnum
 from LWS.DataModels.LWSSubjectInfo import LWSSubjectInfo
 
 
@@ -61,8 +62,12 @@ class LWSSubject:
     def add_trial(self, trial: "LWSTrial"):
         self.__trials.append(trial)
 
-    def get_trials(self) -> List["LWSTrial"]:
-        return self.__trials
+    def get_trials(self, stim_type: Optional[LWSStimulusTypeEnum] = None) -> List["LWSTrial"]:
+        """ Returns a list of the subject's trials, optionally filtered by stimulus type """
+        all_trials = self.__trials
+        if stim_type is None:
+            return all_trials
+        return list(filter(lambda t: t.stim_type == stim_type, all_trials))
 
     def get_trial(self, trial_num: int) -> "LWSTrial":
         trials = list(filter(lambda t: t.trial_num == trial_num, self.__trials))
