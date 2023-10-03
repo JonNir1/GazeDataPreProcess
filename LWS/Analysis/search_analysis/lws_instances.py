@@ -30,7 +30,7 @@ def identify_lws_for_varying_thresholds(subject: LWSSubject,
     """
     columns_multiindex = pd.MultiIndex.from_product([proximity_thresholds, time_difference_thresholds],
                                                     names=["proximity_threshold", "time_difference_threshold"])
-    all_trials = subject.get_all_trials()
+    all_trials = subject.get_trials()
     is_lws_instance = pd.DataFrame(index=all_trials, columns=columns_multiindex)
     is_lws_instance.index.name = "trial"
 
@@ -79,7 +79,7 @@ def _load_or_identify_lws_instances(trial: LWSTrial,
         if (proximity_threshold, time_difference_threshold) in df.columns:
             return df.loc[trial, (proximity_threshold, time_difference_threshold)]
     except FileNotFoundError:
-        df = pd.DataFrame(index=trial.subject.get_all_trials(),
+        df = pd.DataFrame(index=trial.subject.get_trials(),
                           columns=pd.MultiIndex.from_product(
                               iterables=[[proximity_threshold], [time_difference_threshold]],
                               names=["proximity_threshold", "time_difference_threshold"]))

@@ -39,7 +39,7 @@ def count_triggers_per_trial(subject: LWSSubject) -> pd.DataFrame:
         - total: total number of triggers
         - num_targets: number of targets in the trial
     """
-    trigger_counts = pd.DataFrame([_trigger_count_by_category(trial) for trial in subject.get_all_trials()])
+    trigger_counts = pd.DataFrame([_trigger_count_by_category(trial) for trial in subject.get_trials()])
     trigger_counts.index.name = "trial_num"
     return trigger_counts
 

@@ -84,7 +84,7 @@ def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: 
     _subject_dataframes_dir = ioutils.create_directory(dirname="dataframes", parent_dir=subject.output_dir)
 
     import LWS.Analysis.event_analysis.trial_summary as trsum
-    trial_summary = trsum.summarize_all_trials(subject.get_all_trials())
+    trial_summary = trsum.summarize_all_trials(subject.get_trials())
     if save:
         trial_summary.to_pickle(subject.get_dataframe_path(trsum.DF_NAME))
 
@@ -126,7 +126,7 @@ def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnf
                            save: bool = False, verbose: bool = True):
     start = time.time()
 
-    trials = subject.get_all_trials()
+    trials = subject.get_trials()
     all_saccades: List[SaccadeEvent] = [s for tr in trials for s in tr.get_gaze_events(GazeEventTypeEnum.SACCADE)]
     all_fixations: List[LWSFixationEvent] = [f for tr in trials for f in tr.get_gaze_events(GazeEventTypeEnum.FIXATION)]
     subject_figures_dir = ioutils.create_directory(dirname="subject_figures", parent_dir=subject.output_dir)
@@ -201,7 +201,7 @@ def analyze_all_trials(subject: LWSSubject, save: bool = False, verbose: bool = 
     from LWS.TrialVisualizer.LWSTrialHeatmapVisualizer import LWSTrialGazeHeatmapVisualizer, LWSTrialFixationsHeatmapVisualizer
 
     failed_trials = []
-    for tr in subject.get_all_trials():
+    for tr in subject.get_trials():
         try:
             start_trial = time.time()
             _gaze = LWSTrialGazeVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution,
@@ -235,7 +235,7 @@ def create_trial_videos(subject: LWSSubject, save: bool = False, verbose: bool =
     start = time.time()
     from LWS.TrialVisualizer.LWSTrialVideoVisualizer import LWSTrialVideoVisualizer
     failed_trials = []
-    for tr in subject.get_all_trials():
+    for tr in subject.get_trials():
         try:
             start_trial = time.time()
             _video = LWSTrialVideoVisualizer(screen_resolution=cnfg.SCREEN_MONITOR.resolution,

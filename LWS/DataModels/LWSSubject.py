@@ -61,7 +61,7 @@ class LWSSubject:
     def add_trial(self, trial: "LWSTrial"):
         self.__trials.append(trial)
 
-    def get_all_trials(self) -> List["LWSTrial"]:
+    def get_trials(self) -> List["LWSTrial"]:
         return self.__trials
 
     def get_trial(self, trial_num: int) -> "LWSTrial":
@@ -85,7 +85,7 @@ class LWSSubject:
     def _get_full_raw_data(self) -> pd.DataFrame:
         """ Returns a DataFrame with all the raw data from all trials """
         # access the private __data attribute of each trial, and concatenate them all together
-        return pd.concat([tr.get_behavioral_data()._LWSBehavioralData__data for tr in self.get_all_trials()], axis=0)
+        return pd.concat([tr.get_behavioral_data()._LWSBehavioralData__data for tr in self.get_trials()], axis=0)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}_{self.subject_id:03d}"

@@ -23,8 +23,8 @@ def count_fixations_between_roi_visits_for_varying_thresholds(subject: LWSSubjec
     occurred between the current fixation and the next time that the subject had a fixation inside this RoI (or np.inf
     if the RoI was never revisited).
     """
-    all_trials = subject.get_all_trials()
-    return_to_roi_counts = pd.DataFrame(index=subject.get_all_trials(), columns=proximity_thresholds)
+    all_trials = subject.get_trials()
+    return_to_roi_counts = pd.DataFrame(index=subject.get_trials(), columns=proximity_thresholds)
     return_to_roi_counts.index.name = "trial"
     for trial in all_trials:
         for prox_thresh in proximity_thresholds:
