@@ -9,8 +9,7 @@ from LWS.DataModels.LWSSubject import LWSSubject
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 from GazeEvents.SaccadeEvent import SaccadeEvent
-from LWS.Analysis.search_analysis.target_identification import target_identification_data
-
+from LWS.Analysis.search_analysis.target_identification import get_target_identification_data
 
 DF_NAME = "lws_instances"
 
@@ -81,8 +80,9 @@ def _load_or_identify_lws_instances(trial: LWSTrial,
             return df.loc[trial, (proximity_threshold, time_difference_threshold)]
     except FileNotFoundError:
         df = pd.DataFrame(index=trial.subject.get_all_trials(),
-                          columns=pd.MultiIndex.from_product(iterables=[[proximity_threshold], [time_difference_threshold]],
-                                                             names=["proximity_threshold", "time_difference_threshold"]))
+                          columns=pd.MultiIndex.from_product(
+                              iterables=[[proximity_threshold], [time_difference_threshold]],
+                              names=["proximity_threshold", "time_difference_threshold"]))
         df.index.name = "trial"
 
     is_lws_instance = _identify_lws_instances(trial, proximity_threshold=proximity_threshold,
@@ -107,7 +107,7 @@ def _identify_lws_instances(trial: LWSTrial,
 
     Note: this function assumes that the trial's gaze events are sorted by their start time.
     """
-    target_info = target_identification_data(trial, proximity_threshold=proximity_threshold)
+    target_info = get_target_identification_data(trial, proximity_threshold=proximity_threshold)
     events = trial.get_gaze_events()
     fixation_idxs = np.where([e.event_type() == GazeEventTypeEnum.FIXATION for e in events])[0]
     is_lws_instance = np.full_like(events, np.nan)

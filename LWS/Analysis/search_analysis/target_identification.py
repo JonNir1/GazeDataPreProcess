@@ -7,9 +7,9 @@ import Utils.array_utils as arr_utils
 from LWS.DataModels.LWSTrial import LWSTrial
 
 
-def target_identification_data(trial: LWSTrial,
-                               proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
-                               identification_seq: np.ndarray = cnfg.TARGET_IDENTIFICATION_SEQUENCE) -> pd.DataFrame:
+def get_target_identification_data(trial: LWSTrial,
+                                   proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
+                                   identification_seq: np.ndarray = cnfg.TARGET_IDENTIFICATION_SEQUENCE) -> pd.DataFrame:
     """
     For each of the trial's targets, extracts the following information:
         - icon_path: full path to the icon file
