@@ -19,9 +19,9 @@ def identify_lws_for_varying_thresholds(subject: LWSSubject,
                                         time_difference_thresholds: np.ndarray) -> pd.DataFrame:
     """
     For each (trial, proximity_threshold, time_difference_threshold) triplet, identifies the LWS instances in the
-    trial. Returns a 3D dataframe where each cell contains a boolean array of the same length as the trial's gaze
-    events, where each element of the array is either True/False/np.nan, depending on whether the corresponding gaze
-    event is a LWS instance or not.
+    trial. Returns a 3D dataframe where each cell contains a boolean array of the same length as the trial's fixations,
+    where each element of the array is either True/False, depending on whether the corresponding gaze event is a
+    LWS instance or not.
 
     The resulting DataFrame's is indexed by LWSTrial and the columns are a MultiIndex of the proximity-thresholds and
     time-difference thresholds.
@@ -96,11 +96,10 @@ def _identify_lws_instances(trial: LWSTrial,
                             proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
                             time_difference_threshold: float = SaccadeEvent.MAX_DURATION) -> List[Union[bool, float]]:
     """
-    Identifies the LWS instances in the given trial, and returns a list of the same length as the trial's gaze events,
-    where each element is either:
+    Identifies the LWS instances in the given trial, and returns a list of the same length as the number of fixations
+    in the trial, where each element is either:
         - True: if the corresponding fixation event is a LWS instance
         - False: if the corresponding fixation event is not a LWS instance
-        - np.nan: if the corresponding gaze event is not a fixation
 
     See identification criteria in the docstring of `_check_lws_instance_standalone_criteria` and
     `_check_lws_instance_pairwise_criteria`.
@@ -108,21 +107,14 @@ def _identify_lws_instances(trial: LWSTrial,
     Note: this function assumes that the trial's gaze events are sorted by their start time.
     """
     target_info = get_target_identification_data(trial, proximity_threshold=proximity_threshold)
-    events = trial.get_gaze_events()
-    fixation_idxs = np.where([e.event_type() == GazeEventTypeEnum.FIXATION for e in events])[0]
-    is_lws_instance = np.full_like(events, np.nan)
+    fixations = trial.get_gaze_events(event_type=GazeEventTypeEnum.FIXATION)
 
     # start with the last fixation
-    last_fixation_idx = fixation_idxs[-1]
-    is_lws_instance[last_fixation_idx] = _check_lws_instance_standalone_criteria(events[last_fixation_idx], target_info,
-                                                                                 proximity_threshold)
+    is_lws_instance = [_check_lws_instance_standalone_criteria(fixations[-1], target_info, proximity_threshold)]
 
     # work our way backwards in pairs of fixations
-    fixation_pair_idxs = list(pairwise(fixation_idxs))
-    for curr_fixation_idx, next_fixation_idx in fixation_pair_idxs[::-1]:
-        curr_fixation = events[curr_fixation_idx]
-        next_fixation = events[next_fixation_idx]
-        is_next_lws_instance = is_lws_instance[next_fixation_idx]
+    fixation_pairs = list(pairwise(fixations))
+    for curr_fixation, next_fixation in fixation_pairs[::-1]:
         standalone_criterion = _check_lws_instance_standalone_criteria(curr_fixation,
                                                                        target_info,
                                                                        proximity_threshold)
@@ -130,9 +122,12 @@ def _identify_lws_instances(trial: LWSTrial,
                                                                    next_fixation,
                                                                    proximity_threshold=proximity_threshold,
                                                                    min_time_difference=time_difference_threshold,
-                                                                   is_other_fixation_lws_instance=is_next_lws_instance)
-        is_lws_instance[curr_fixation_idx] = standalone_criterion and pairwise_criterion
-    return list(is_lws_instance)
+                                                                   is_other_fixation_lws_instance=is_lws_instance[-1])
+        is_lws_instance.append(standalone_criterion and pairwise_criterion)
+
+    # reverse the list so that it's in the same order as the trial's fixations
+    is_lws_instance = is_lws_instance[::-1]
+    return is_lws_instance
 
 
 def _check_lws_instance_standalone_criteria(fixation: LWSFixationEvent,
