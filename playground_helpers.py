@@ -93,7 +93,7 @@ def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: 
     if save:
         trigger_counts.to_pickle(subject.get_dataframe_path(trig.DF_NAME))
 
-    import LWS.Analysis.search_analysis.lws_instances as lws_inst
+    import LWS.Analysis.search_analysis.identify_lws_instances as lws_inst
     lws_instances = lws_inst.identify_lws_for_varying_thresholds(subject,
                                                                  proximity_thresholds=np.arange(0.1, 7.1, 0.1),
                                                                  time_difference_thresholds=np.arange(0, 251, 10))

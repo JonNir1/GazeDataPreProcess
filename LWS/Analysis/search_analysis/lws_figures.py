@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from LWS.DataModels.LWSSubject import LWSSubject
 from LWS.DataModels.LWSArrayStimulus import LWSStimulusTypeEnum
-from LWS.Analysis.search_analysis.lws_instances import calculate_lws_rate as lws_rate
+from LWS.Analysis.search_analysis.identify_lws_instances import calculate_lws_rate as lws_rate
 import Visualization.visualization_utils as visutils
 
 
