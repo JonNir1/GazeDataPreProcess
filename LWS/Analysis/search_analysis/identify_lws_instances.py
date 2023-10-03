@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from typing import List, Union
+from typing import List
 from itertools import pairwise
 
 import Config.experiment_config as cnfg
@@ -70,7 +70,7 @@ def load_or_compute_lws_instances(trial: LWSTrial,
 
 def _identify_lws_instances(trial: LWSTrial,
                             proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
-                            time_difference_threshold: float = SaccadeEvent.MAX_DURATION) -> List[Union[bool, float]]:
+                            time_difference_threshold: float = SaccadeEvent.MAX_DURATION) -> List[bool]:
     """
     Identifies the LWS instances in the given trial, and returns a list of the same length as the number of fixations
     in the trial, where each element is either:
