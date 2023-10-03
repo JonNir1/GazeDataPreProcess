@@ -87,7 +87,7 @@ def _load_or_identify_lws_instances(trial: LWSTrial,
 
     is_lws_instance = _identify_lws_instances(trial, proximity_threshold=proximity_threshold,
                                               time_difference_threshold=time_difference_threshold)
-    df.loc[[trial], (proximity_threshold, time_difference_threshold)] = pd.Series([is_lws_instance], index=[trial])
+    df.loc[trial, (proximity_threshold, time_difference_threshold)] = pd.Series([is_lws_instance], index=[trial])
     df.to_pickle(df_path)
     return is_lws_instance
 
