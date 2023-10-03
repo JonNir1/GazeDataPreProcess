@@ -172,7 +172,7 @@ def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnf
         visutils.save_figure(fixation_dynamics,
                              full_path=os.path.join(subject_figures_dir, "fixation dynamics - all_fixations.png"))
 
-    import LWS.Analysis.search_analysis.lws_figures as lws_fig
+    import LWS.Analysis.search_analysis.lws_instance_rate as lws_fig
     lws_rates = lws_fig.lws_rates_figure(subject, proximity_thresholds=np.arange(cnfg.THRESHOLD_VISUAL_ANGLE / 15,
                                                                                  21 * cnfg.THRESHOLD_VISUAL_ANGLE / 15,
                                                                                  cnfg.THRESHOLD_VISUAL_ANGLE / 15))
