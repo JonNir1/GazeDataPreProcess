@@ -19,7 +19,7 @@ import Visualization.visualization_utils as visutils
 
 # subjects: "GalChen Demo" (001), "Rotem Demo" (002), "Netta Demo" (003)
 pipline_config = {'save': True, 'include_subject_dfs': True, 'include_subject_figures': True,
-                  'include_trial_figures': False, 'include_trial_videos': False, 'verbose': False}
+                  'include_trial_figures': False, 'include_trial_videos': False, 'verbose': True}
 
 subject1, subject1_dfs, subject1_figures, failed_trials1 = ph.full_pipline(name="GalChen Demo", **pipline_config)
 
