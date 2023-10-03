@@ -100,6 +100,20 @@ def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: 
     if save:
         lws_instances.to_pickle(subject.get_dataframe_path(lws_inst.DF_NAME))
 
+    import LWS.Analysis.search_analysis.return_to_roi as r2roi
+    r2roi_counts_exclude_rect = r2roi.count_fixations_between_roi_visits_for_varying_thresholds(subject,
+                                                                                                proximity_thresholds=np.arange(
+                                                                                                    0.1, 7.1, 0.1),
+                                                                                                is_targets_rect_part_of_roi=False)
+    r2roi_counts_include_rect = r2roi.count_fixations_between_roi_visits_for_varying_thresholds(subject,
+                                                                                                proximity_thresholds=np.arange(
+                                                                                                    0.1, 7.1, 0.1),
+                                                                                                is_targets_rect_part_of_roi=True)
+    if save:
+        r2roi_counts_exclude_rect.to_pickle(subject.get_dataframe_path(r2roi.DF_NAME + "_exclude_rect"))
+        r2roi_counts_include_rect.to_pickle(subject.get_dataframe_path(r2roi.DF_NAME + "_include_rect"))
+
+
     end = time.time()
     if verbose:
         ioutils.log_and_print(msg="Finished creating DataFrames for subject " +
