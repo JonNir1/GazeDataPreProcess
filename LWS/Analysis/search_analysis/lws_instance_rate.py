@@ -57,7 +57,7 @@ def _draw_lws_rates(ax: plt.Axes,
                                 xs=[proximity_thresholds for _ in range(len(data_labels))],
                                 ys=[100 * mean_rates[i] for i in range(len(data_labels))])
 
-    ax_title = f"Time-Difference Threshold:\t{time_difference_threshold:.1f} (ms)"
+    ax_title = f"Δt Threshold: {time_difference_threshold:.1f} (ms)" if not proximal_fixations_only else ""
     x_label = "Threshold Visual Angle (°)" if proximal_fixations_only else ""
     visutils.set_axes_properties(ax=ax,
                                  ax_title=ax_title,
