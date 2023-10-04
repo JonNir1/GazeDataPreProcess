@@ -17,7 +17,7 @@ def lws_rates_figure(subject: LWSSubject,
     Plot the LWS rate for each stimulus type as a function of proximity threshold.
     """
     nrows, ncols = 2, len(time_difference_thresholds)
-    fig = visutils.set_figure_properties(fig=None, figsize=(10, 12), tight_layout=True,
+    fig = visutils.set_figure_properties(fig=None, figsize=(27, 15), tight_layout=True,
                                          title=f"LWS Rate for Varying Stimulus Types\n" +
                                                "(top:\tout of all fixations\n" +
                                                "bottom:\tout of target-proximal fixations)",
