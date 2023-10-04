@@ -19,8 +19,8 @@ def lws_rates_figure(subject: LWSSubject,
     nrows, ncols = 2, len(time_difference_thresholds)
     fig = visutils.set_figure_properties(fig=None, figsize=(27, 15), tight_layout=True,
                                          title=f"LWS Rate for Varying Stimulus Types\n" +
-                                               "(top:\tout of all fixations\n" +
-                                               "bottom:\tout of target-proximal fixations)",
+                                               "(top: out of all fixations\n" +
+                                               "bottom: out of target-proximal fixations)",
                                          title_height=0.94)
 
     for col, td in enumerate(time_difference_thresholds):
