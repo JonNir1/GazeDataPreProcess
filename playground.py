@@ -59,3 +59,13 @@ subject1, subject1_figures, failed_trials1 = ph.full_pipline(name_or_id="GalChen
 ### PLAYGROUND  ##########################
 ##########################################
 
+from LWS.SubjectAnalysis.search_analysis.target_identification import get_target_identification_data
+
+subject1 = ph.load_or_preprocess_subject(name_or_id=1, verbose=True)
+target_identifications = pd.DataFrame({tr: get_target_identification_data(tr, 2)['distance_identified']
+                                       for tr in subject1.get_trials()}).T
+num_targets_per_trial = target_identifications.isna().sum(axis=1)
+num_unidentified_per_trial = np.isinf(target_identifications).sum(axis=1)
+
+
+
