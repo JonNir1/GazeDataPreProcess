@@ -56,7 +56,7 @@ def process_subject(subject_dir: str,
 
     save_results = kwargs.get('save_results', False)
     if kwargs.get('perform_subject_analysis', False):
-        create_subject_dataframes(subject, save=save_results)
+        subject_dfs = create_subject_dataframes(subject, save=save_results)
 
     if save_results:
         subject.to_pickle()

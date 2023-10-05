@@ -18,16 +18,18 @@ _TIME_DIFF_THRESHOLDS = np.arange(0, SaccadeEvent.MAX_DURATION + 1, 50)
 def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: bool = True):
     start = time.time()
     _subject_dataframes_dir = ioutils.create_directory(dirname="dataframes", parent_dir=subject.output_dir)
-    _trial_summary(subject, save)
-    _trigger_summary(subject, save)
-    _lws_identification(subject, save)
-    _lws_rate(subject, save)
-    _return_to_roi(subject, save)
+    trial_summary_df = _trial_summary(subject, save)
+    trigger_counts = _trigger_summary(subject, save)
+    lws_instances = _lws_identification(subject, save)
+    lws_rates_all_fixations, lws_rates_proximal_fixations = _lws_rate(subject, save)
+    r2roi_counts_exclude_rect, r2roi_counts_include_rect = _return_to_roi(subject, save)
     end = time.time()
     if verbose:
         ioutils.log_and_print(msg="Finished creating DataFrames for subject " +
                                   f"{subject.subject_id}: {(end - start):.2f} seconds",
                               log_file=subject.log_file)
+    return (trial_summary_df, trigger_counts, lws_instances, lws_rates_all_fixations, lws_rates_proximal_fixations,
+            r2roi_counts_exclude_rect, r2roi_counts_include_rect)
 
 
 def _trial_summary(subject: LWSSubject, save: bool):
