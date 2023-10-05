@@ -19,7 +19,7 @@ def lws_rates_figure(subject: LWSSubject,
                              figsize=(27, 15), tight_layout=True,
                              sharex='col', sharey='row')
 
-    for col, td in enumerate(time_difference_thresholds):
+    for col, td in enumerate(reversed(time_difference_thresholds)):
         top_ax = _draw_lws_rates(axes[0, col], subject, td, proximal_fixations_only=False)
         bottom_ax = _draw_lws_rates(axes[1, col], subject, td, proximal_fixations_only=True)
         if col == 0:
