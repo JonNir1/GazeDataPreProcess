@@ -10,12 +10,12 @@ from LWS.DataModels.LWSTrial import LWSTrial
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 from LWS.SubjectAnalysis.search_analysis.target_identification import get_target_identification_data
 
-DF_NAME = 'return_to_roi'
+BASE_DF_NAME = 'return_to_roi'
 
 
 def count_fixations_between_roi_visits_for_varying_thresholds(subject: LWSSubject,
                                                               proximity_thresholds: np.ndarray,
-                                                              is_targets_rect_part_of_roi: bool = False):
+                                                              is_targets_rect_part_of_roi: bool = False) -> pd.DataFrame:
     """
     Returns a DataFrame of shape (num_trials, num_thresholds) where each cell contains an 2D numpy array of shape
     (num_targets, num_fixations) of the specific trial. Each value in the array indicates if the current fixation is
@@ -31,6 +31,7 @@ def count_fixations_between_roi_visits_for_varying_thresholds(subject: LWSSubjec
             counts = count_fixations_between_roi_visits(trial, proximity_threshold=prox_thresh,
                                                         is_targets_rect_part_of_roi=is_targets_rect_part_of_roi)
             return_to_roi_counts.loc[trial, prox_thresh] = counts
+    return_to_roi_counts.name = BASE_DF_NAME + ("_include_rect" if is_targets_rect_part_of_roi else "_exclude_rect")
     return return_to_roi_counts
 
 

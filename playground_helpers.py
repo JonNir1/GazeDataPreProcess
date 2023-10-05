@@ -118,8 +118,8 @@ def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: 
                                                                                                     0.1, 7.1, 0.1),
                                                                                                 is_targets_rect_part_of_roi=True)
     if save:
-        r2roi_counts_exclude_rect.to_pickle(subject.get_dataframe_path(r2roi.DF_NAME + "_exclude_rect"))
-        r2roi_counts_include_rect.to_pickle(subject.get_dataframe_path(r2roi.DF_NAME + "_include_rect"))
+        r2roi_counts_exclude_rect.to_pickle(subject.get_dataframe_path(r2roi.BASE_DF_NAME + "_exclude_rect"))
+        r2roi_counts_include_rect.to_pickle(subject.get_dataframe_path(r2roi.BASE_DF_NAME + "_include_rect"))
 
     end = time.time()
     if verbose:
