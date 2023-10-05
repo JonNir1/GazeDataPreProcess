@@ -69,56 +69,6 @@ def load_or_preprocess_subject(name_or_id: Union[str, int], save: bool = True, v
     return subject
 
 
-def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: bool = True):
-    start = time.time()
-    _subject_dataframes_dir = ioutils.create_directory(dirname="dataframes", parent_dir=subject.output_dir)
-
-    import LWS.SubjectAnalysis.event_analysis.trial_summary as trsum
-    trial_summary = trsum.summarize_all_trials(subject.get_trials())
-    if save:
-        trial_summary.to_pickle(subject.get_dataframe_path(trsum.DF_NAME))
-
-    import LWS.SubjectAnalysis.event_analysis.triggers_counts as trig
-    trigger_counts = trig.count_triggers_per_trial(subject)
-    if save:
-        trigger_counts.to_pickle(subject.get_dataframe_path(trig.DF_NAME))
-
-    import LWS.SubjectAnalysis.search_analysis.identify_lws_instances as lws_inst
-    lws_instances = lws_inst.identify_lws_for_varying_thresholds(subject,
-                                                                 proximity_thresholds=np.arange(0.1, 7.1, 0.1),
-                                                                 time_difference_thresholds=np.arange(0, 251, 10))
-    if save:
-        lws_instances.to_pickle(subject.get_dataframe_path(lws_inst.INSTANCES_DF_NAME))
-
-    lws_rates_all_fixations = lws_inst.calculate_lws_rates(subject, proximal_fixations_only=False)
-    if save:
-        lws_rates_all_fixations.to_pickle(subject.get_dataframe_path(lws_inst.RATES_DF_BASE_NAME + "_all_fixations"))
-
-    lws_rates_proximal_fixations = lws_inst.calculate_lws_rates(subject, proximal_fixations_only=True)
-    if save:
-        lws_rates_proximal_fixations.to_pickle(subject.get_dataframe_path(lws_inst.RATES_DF_BASE_NAME + "_proximal_fixations"))
-
-    import LWS.SubjectAnalysis.search_analysis.return_to_roi as r2roi
-    r2roi_counts_exclude_rect = r2roi.count_fixations_between_roi_visits_for_varying_thresholds(subject,
-                                                                                                proximity_thresholds=np.arange(
-                                                                                                    0.1, 7.1, 0.1),
-                                                                                                is_targets_rect_part_of_roi=False)
-    r2roi_counts_include_rect = r2roi.count_fixations_between_roi_visits_for_varying_thresholds(subject,
-                                                                                                proximity_thresholds=np.arange(
-                                                                                                    0.1, 7.1, 0.1),
-                                                                                                is_targets_rect_part_of_roi=True)
-    if save:
-        r2roi_counts_exclude_rect.to_pickle(subject.get_dataframe_path(r2roi.BASE_DF_NAME + "_exclude_rect"))
-        r2roi_counts_include_rect.to_pickle(subject.get_dataframe_path(r2roi.BASE_DF_NAME + "_include_rect"))
-
-    end = time.time()
-    if verbose:
-        ioutils.log_and_print(msg="Finished creating DataFrames for subject " +
-                                  f"{subject.subject_id}: {(end - start):.2f} seconds",
-                              log_file=subject.log_file)
-    return trial_summary, trigger_counts, lws_instances
-
-
 def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
                            save: bool = False, verbose: bool = True):
     start = time.time()
