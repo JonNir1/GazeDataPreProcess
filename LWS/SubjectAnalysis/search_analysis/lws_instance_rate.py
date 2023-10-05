@@ -14,19 +14,22 @@ def lws_rates_figure(subject: LWSSubject,
     """
     Plot the LWS rate for each stimulus type as a function of proximity threshold.
     """
-    nrows, ncols = 2, len(time_difference_thresholds)
-    fig = visutils.set_figure_properties(fig=None, figsize=(27, 15), tight_layout=True,
+    fig, axes = plt.subplots(nrows=2, ncols=len(time_difference_thresholds),
+                             figsize=(27, 15), tight_layout=True,
+                             sharex='col', sharey='row')
+
+    for col, td in enumerate(time_difference_thresholds):
+        top_ax = _draw_lws_rates(axes[0, col], subject, proximity_thresholds, td, proximal_fixations_only=False)
+        bottom_ax = _draw_lws_rates(axes[1, col], subject, proximity_thresholds, td, proximal_fixations_only=True)
+        if col == 0:
+            top_ax.set_ylabel("LWS Rate (% fixations)")
+            bottom_ax.set_ylabel("LWS Rate (% fixations)")
+
+    fig = visutils.set_figure_properties(fig=fig, figsize=(27, 12), tight_layout=True,
                                          title=f"LWS Rate for Varying Stimulus Types\n" +
                                                "(top: out of all fixations\n" +
                                                "bottom: out of target-proximal fixations)",
                                          title_height=0.98)
-
-    for col, td in enumerate(time_difference_thresholds):
-        bottom_ax = fig.add_subplot(nrows, ncols, ncols + col + 1)
-        bottom_ax = _draw_lws_rates(bottom_ax, subject, proximity_thresholds, td, proximal_fixations_only=True)
-
-        top_ax = fig.add_subplot(nrows, ncols, col + 1, sharex=bottom_ax)
-        top_ax = _draw_lws_rates(top_ax, subject, proximity_thresholds, td, proximal_fixations_only=False)
     return fig
 
 
@@ -61,6 +64,5 @@ def _draw_lws_rates(ax: plt.Axes,
     visutils.set_axes_properties(ax=ax,
                                  ax_title=ax_title,
                                  xlabel=x_label,
-                                 ylabel="LWS Rate (% fixations)",
                                  show_legend=True)
     return ax
