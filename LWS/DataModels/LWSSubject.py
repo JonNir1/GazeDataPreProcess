@@ -1,6 +1,6 @@
 import os
 import pickle as pkl
-from typing import List, Optional
+from typing import List, Dict, Optional
 
 import pandas as pd
 
@@ -20,6 +20,7 @@ class LWSSubject:
         self.__trials: List[LWSTrial] = trials if trials is not None else []
         self.__output_directory: str = ioutils.create_subject_output_directory(subject_id=self.subject_id,
                                                                                output_dir=output_directory)
+        self.__dataframes: Dict[str, pd.DataFrame] = {}
 
     @staticmethod
     def from_pickle(pickle_path: str) -> "LWSSubject":
@@ -69,15 +70,26 @@ class LWSSubject:
             return all_trials
         return list(filter(lambda t: t.stim_type == stim_type, all_trials))
 
+    def get_dataframe(self, df_name: str) -> Optional[pd.DataFrame]:
+        """ Returns a DataFrame with the given name, or None if it doesn't exist """
+        df = self.__dataframes.get(df_name, None)
+        if df is None:
+            df_path = self.get_dataframe_path(df_name)
+            if not os.path.exists(df_path):
+                return None
+            df = pd.read_pickle(df_path)
+            self.__dataframes[df_name] = df
+        return df
+
+    def get_dataframe_path(self, df_name: str) -> str:
+        return os.path.join(self.output_dir, "dataframes", f"{df_name}.{ioutils.PICKLE_EXTENSION}")
+
     def to_pickle(self) -> str:
         filename = ioutils.get_filename(name=self.__repr__(), extension=ioutils.PICKLE_EXTENSION)
         full_path = os.path.join(self.output_dir, filename)
         with open(full_path, "wb") as f:
             pkl.dump(self, f)
         return full_path
-
-    def get_dataframe_path(self, df_name: str) -> str:
-        return os.path.join(self.output_dir, "dataframes", f"{df_name}.{ioutils.PICKLE_EXTENSION}")
 
     def _get_full_raw_data(self) -> pd.DataFrame:
         """ Returns a DataFrame with all the raw data from all trials """
