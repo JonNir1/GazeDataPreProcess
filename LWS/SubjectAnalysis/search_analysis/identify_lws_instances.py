@@ -69,14 +69,14 @@ def calculate_lws_rates(subject: LWSSubject, proximal_fixations_only: bool) -> p
 
     rates_df = pd.DataFrame(np.nan, index=is_lws_df.index, columns=is_lws_df.columns)
     for trial in is_lws_df.index:
-        # count the number of fixations in the trial:
-        fixations = trial.get_gaze_events(event_type=GazeEventTypeEnum.FIXATION)
-        if proximal_fixations_only:
-            fixations = list(filter(lambda f: f.visual_angle_to_closest_target <= proximity_threshold, fixations))
-        num_fixations = len(fixations)
-
-        # calculate the LWS rate of this trial, for each (proximity_threshold, time_difference_threshold) pair:
         for (prox, td) in is_lws_df.columns:
+            # count the number of fixations in the trial:
+            fixations = trial.get_gaze_events(event_type=GazeEventTypeEnum.FIXATION)
+            if proximal_fixations_only:
+                fixations = list(filter(lambda f: f.visual_angle_to_closest_target <= prox, fixations))
+            num_fixations = len(fixations)
+
+            # calculate the LWS rate of this trial, for each (proximity_threshold, time_difference_threshold) pair:
             if num_fixations == 0:
                 rates_df.loc[trial, (prox, td)] = np.nan
                 continue
