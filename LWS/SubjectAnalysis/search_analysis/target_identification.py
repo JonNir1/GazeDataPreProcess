@@ -34,7 +34,7 @@ def get_target_identification_data(trial: LWSTrial,
                [col for col in behavioral_data.columns if col.startswith(f"{cnst.DISTANCE}_{cnst.TARGET}")])
     behavioral_df = pd.DataFrame(behavioral_data.get(columns), columns=columns)
 
-    res = pd.DataFrame(np.full((trial.num_targets, 3), np.nan),
+    res = pd.DataFrame(np.full((trial.num_targets, 3), np.inf),
                        columns=["distance_identified", "time_identified", "time_confirmed"])
     for i in range(trial.num_targets):
         proximal_behavioral_df = behavioral_df[behavioral_df["closest_target"] == i]
