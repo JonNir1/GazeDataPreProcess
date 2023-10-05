@@ -14,7 +14,7 @@ BASE_DF_NAME = 'return_to_roi'
 
 
 def count_fixations_between_roi_visits_for_varying_thresholds(subject: LWSSubject,
-                                                              proximity_thresholds: np.ndarray,
+                                                              proximity_thresholds: np.ndarray = cnfg.PROX_THRESHOLDS,
                                                               is_targets_rect_part_of_roi: bool = False) -> pd.DataFrame:
     """
     Returns a DataFrame of shape (num_trials, num_thresholds) where each cell contains an 2D numpy array of shape

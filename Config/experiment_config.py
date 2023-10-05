@@ -42,3 +42,7 @@ TARGET_IDENTIFICATION_SEQUENCE = np.array([ExperimentTriggerEnum.MARK_TARGET_SUC
                                            ExperimentTriggerEnum.NULL,
                                            ExperimentTriggerEnum.CONFIRM_TARGET_SUCCESSFUL,
                                            ExperimentTriggerEnum.NULL])  # sequence of triggers indicating that a target was identified by the subject (in order)
+PROX_THRESHOLDS = np.arange(THRESHOLD_VISUAL_ANGLE / 15,
+                            26 * THRESHOLD_VISUAL_ANGLE / 15,
+                            THRESHOLD_VISUAL_ANGLE / 15)    # proximity thresholds for identifying LWS instances
+TIME_DIFF_THRESHOLDS = np.array([0, 10, 20, 50, 100, 200])  # Δt Threshold for identifying LWS instances

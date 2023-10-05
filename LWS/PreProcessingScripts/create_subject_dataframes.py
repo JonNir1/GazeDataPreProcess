@@ -1,18 +1,9 @@
 # LWS PreProcessing Pipeline
 
 import time
-import numpy as np
 
-import Config.experiment_config as cnfg
 import Utils.io_utils as ioutils
-from GazeEvents.SaccadeEvent import SaccadeEvent
 from LWS.DataModels.LWSSubject import LWSSubject
-
-
-_PROX_THRESHOLDS = np.arange(cnfg.THRESHOLD_VISUAL_ANGLE / 15,
-                             26 * cnfg.THRESHOLD_VISUAL_ANGLE / 15,
-                             cnfg.THRESHOLD_VISUAL_ANGLE / 15)
-_TIME_DIFF_THRESHOLDS = np.arange(0, SaccadeEvent.MAX_DURATION + 1, 50)
 
 
 def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: bool = True):
@@ -52,9 +43,7 @@ def _trigger_summary(subject: LWSSubject, save: bool):
 
 def _lws_identification(subject: LWSSubject, save: bool):
     import LWS.SubjectAnalysis.search_analysis.identify_lws_instances as lws_inst
-    lws_instances = lws_inst.identify_lws_for_varying_thresholds(subject,
-                                                                 proximity_thresholds=_PROX_THRESHOLDS,
-                                                                 time_difference_thresholds=_TIME_DIFF_THRESHOLDS)
+    lws_instances = lws_inst.identify_lws_for_varying_thresholds(subject)
     subject.set_dataframe(lws_inst.INSTANCES_DF_NAME, lws_instances)
     if save:
         lws_instances.to_pickle(subject.get_dataframe_path(lws_inst.INSTANCES_DF_NAME))
@@ -86,14 +75,12 @@ def _return_to_roi(subject: LWSSubject, save: bool):
     # calculate return-to-ROI counts when the bottom rectangle is not part of the ROI:
     exclude_rect_df_name = r2roi.BASE_DF_NAME + "_exclude_rect"
     r2roi_counts_exclude_rect = r2roi.count_fixations_between_roi_visits_for_varying_thresholds(subject,
-                                                                                                proximity_thresholds=_PROX_THRESHOLDS,
                                                                                                 is_targets_rect_part_of_roi=False)
     subject.set_dataframe(exclude_rect_df_name, r2roi_counts_exclude_rect)
 
     # calculate return-to-ROI counts when the bottom rectangle is part of the ROI:
     include_rect_df_name = r2roi.BASE_DF_NAME + "_include_rect"
     r2roi_counts_include_rect = r2roi.count_fixations_between_roi_visits_for_varying_thresholds(subject,
-                                                                                                proximity_thresholds=_PROX_THRESHOLDS,
                                                                                                 is_targets_rect_part_of_roi=True)
     subject.set_dataframe(include_rect_df_name, r2roi_counts_include_rect)
 

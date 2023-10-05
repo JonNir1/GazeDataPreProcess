@@ -16,8 +16,8 @@ RATES_DF_BASE_NAME = "lws_rates"
 
 
 def identify_lws_for_varying_thresholds(subject: LWSSubject,
-                                        proximity_thresholds: np.ndarray,
-                                        time_difference_thresholds: np.ndarray) -> pd.DataFrame:
+                                        proximity_thresholds: np.ndarray = cnfg.PROX_THRESHOLDS,
+                                        time_difference_thresholds: np.ndarray = cnfg.TIME_DIFF_THRESHOLDS) -> pd.DataFrame:
     """
     For each (trial, proximity_threshold, time_difference_threshold) triplet, identifies the LWS instances in the
     trial. Returns a 3D dataframe where each cell contains a boolean array of the same length as the trial's fixations,
