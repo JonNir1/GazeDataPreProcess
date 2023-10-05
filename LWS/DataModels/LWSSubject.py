@@ -81,6 +81,10 @@ class LWSSubject:
             self.__dataframes[df_name] = df
         return df
 
+    def set_dataframe(self, df_name: str, df: pd.DataFrame):
+        """ Sets the DataFrame with the given name """
+        self.__dataframes[df_name] = df
+
     def get_dataframe_path(self, df_name: str) -> str:
         return os.path.join(self.output_dir, "dataframes", f"{df_name}.{ioutils.PICKLE_EXTENSION}")
 
