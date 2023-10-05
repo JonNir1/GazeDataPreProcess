@@ -49,9 +49,10 @@ def load_or_preprocess_subject(name_or_id: Union[str, int], save: bool = True, v
         import LWS.PreProcessing as pp
         name = str(name_or_id)
         subject = pp.process_subject(subject_dir=os.path.join(cnfg.RAW_DATA_DIR, name),
-                                     screen_monitor=cnfg.SCREEN_MONITOR,
                                      save_results=save,
                                      verbose=verbose,
+                                     perform_subject_analysis=True,
+                                     screen_monitor=cnfg.SCREEN_MONITOR,
                                      stuff_with='fixation',
                                      blink_detector_type='missing data',
                                      saccade_detector_type='engbert',

@@ -31,6 +31,7 @@ def process_subject(subject_dir: str,
 
     keyword arguments:
         - save_results: If true, saves the processed pickle files to the output directory.
+        - perform_subject_analysis: If true, performs the subject post-processing analysis.
         - see gaze detection keyword arguments in `LWS.PreProcessingScripts.detect_events.detect_all_events()`
 
     :return: A list of LWSTrial objects, one for each trial of the subject, processed and ready to be analyzed.
@@ -54,7 +55,8 @@ def process_subject(subject_dir: str,
         process_trial(tr, **kwargs)
 
     save_results = kwargs.get('save_results', False)
-    create_subject_dataframes(subject, save=save_results)
+    if kwargs.get('perform_subject_analysis', False):
+        create_subject_dataframes(subject, save=save_results)
 
     if save_results:
         subject.to_pickle()
