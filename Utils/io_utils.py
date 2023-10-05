@@ -1,5 +1,6 @@
 import os
 import traceback
+from datetime import datetime
 from typing import Optional, Union
 
 from Config import experiment_config as cnfg
@@ -51,10 +52,8 @@ def print_and_log(msg: str, log_file: Optional[str] = None) -> None:
             if not log_file.endswith(TEXT_EXTENSION):
                 log_file = get_filename(name=log_file, extension=TEXT_EXTENSION)
             with open(log_file, 'a') as f:
-                f.write(msg + '\n')
+                current_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                f.write(f"[{current_time}] {msg}\n")
     except Exception as e:
         trace = traceback.format_exc()
         print(f"\tFailed to write to log file: {e}\n\t{trace}\n")
-
-
-
