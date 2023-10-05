@@ -39,7 +39,7 @@ def full_pipline(name_or_id: Union[str, int],
     failed_trials = failed_analysis_trials + failed_video_trials
     end = time.time()
     if verbose:
-        ioutils.log_and_print(msg=f"\nFinished processing subject {name}: {(end - start):.2f} seconds\n###############\n",
+        ioutils.log_and_print(msg=f"\nFinished processing subject {name_or_id}: {(end - start):.2f} seconds\n###############\n",
                               log_file=subject.log_file)
     return subject, subject_figures, failed_trials
 
