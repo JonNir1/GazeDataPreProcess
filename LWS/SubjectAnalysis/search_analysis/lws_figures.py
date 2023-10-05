@@ -25,6 +25,9 @@ def lws_rates_figure(subject: LWSSubject,
         if col == 0:
             top_ax.set_ylabel("LWS Rate (% fixations)")
             bottom_ax.set_ylabel("LWS Rate (% fixations)")
+        if col != len(time_difference_thresholds) - 1:
+            top_ax.get_legend().remove()
+            bottom_ax.get_legend().remove()
 
     fig = visutils.set_figure_properties(fig=fig, figsize=(27, 12), tight_layout=True,
                                          title=f"LWS Rate for Varying Stimulus Types\n" +
