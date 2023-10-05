@@ -41,7 +41,6 @@ def identify_lws_for_varying_thresholds(subject: LWSSubject,
                 is_lws_instance.loc[trial, (prox, td)] = _identify_lws_instances(trial,
                                                                                  proximity_threshold=prox,
                                                                                  time_difference_threshold=td)
-    is_lws_instance.name = INSTANCES_DF_NAME
     return is_lws_instance
 
 
@@ -86,8 +85,6 @@ def calculate_lws_rates(subject: LWSSubject, proximal_fixations_only: bool) -> p
                 continue
             num_lws_instances = np.sum(is_lws_lst)
             rates_df.loc[trial, (prox, td)] = num_lws_instances / num_fixations
-
-    rates_df.name = RATES_DF_BASE_NAME + ("_proximal_fixations" if proximal_fixations_only else "_all_fixations")
     return rates_df
 
 

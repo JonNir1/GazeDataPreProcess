@@ -36,7 +36,6 @@ def summarize_all_trials(trials: List[LWSTrial], catch_exceptions=False, catch_w
                 raise e
     df = pd.DataFrame(series_list).set_index(cnst.TRIAL)
     df.index = df.index.astype(int)  # convert trial number to int
-    df.name = DF_NAME
     return df
 
 

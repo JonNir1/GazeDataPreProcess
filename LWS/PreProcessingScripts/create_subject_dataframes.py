@@ -72,22 +72,22 @@ def _lws_rate(subject: LWSSubject, save: bool):
     import LWS.SubjectAnalysis.search_analysis.identify_lws_instances as lws_inst
 
     # calculate LWS rates out of all fixations:
-    df_name = lws_inst.RATES_DF_BASE_NAME + "_all_fixations"
-    lws_rates_all_fixations = subject.get_dataframe(df_name)
+    all_fixs_df_name = lws_inst.RATES_DF_BASE_NAME + "_all_fixations"
+    lws_rates_all_fixations = subject.get_dataframe(all_fixs_df_name)
     if lws_rates_all_fixations is None:
         lws_rates_all_fixations = lws_inst.calculate_lws_rates(subject, proximal_fixations_only=False)
-        subject.set_dataframe(df_name, lws_rates_all_fixations)
+        subject.set_dataframe(all_fixs_df_name, lws_rates_all_fixations)
 
     # calculate LWS rates out of target-proximal fixations:
-    df_name = lws_inst.RATES_DF_BASE_NAME + "_proximal_fixations"
-    lws_rates_proximal_fixations = subject.get_dataframe(df_name)
+    prox_fixs_df_name = lws_inst.RATES_DF_BASE_NAME + "_proximal_fixations"
+    lws_rates_proximal_fixations = subject.get_dataframe(prox_fixs_df_name)
     if lws_rates_proximal_fixations is None:
         lws_rates_proximal_fixations = lws_inst.calculate_lws_rates(subject, proximal_fixations_only=True)
-        subject.set_dataframe(df_name, lws_rates_proximal_fixations)
+        subject.set_dataframe(prox_fixs_df_name, lws_rates_proximal_fixations)
 
     if save:
-        lws_rates_all_fixations.to_pickle(subject.get_dataframe_path(lws_rates_all_fixations.name))
-        lws_rates_proximal_fixations.to_pickle(subject.get_dataframe_path(lws_rates_proximal_fixations.name))
+        lws_rates_all_fixations.to_pickle(subject.get_dataframe_path(all_fixs_df_name))
+        lws_rates_proximal_fixations.to_pickle(subject.get_dataframe_path(prox_fixs_df_name))
     return lws_rates_all_fixations, lws_rates_proximal_fixations
 
 
@@ -95,25 +95,25 @@ def _return_to_roi(subject: LWSSubject, save: bool):
     import LWS.SubjectAnalysis.search_analysis.return_to_roi as r2roi
 
     # calculate return-to-ROI counts when the bottom rectangle is not part of the ROI:
-    df_name = r2roi.BASE_DF_NAME + "_exclude_rect"
-    r2roi_counts_exclude_rect = subject.get_dataframe(df_name)
+    exclude_rect_df_name = r2roi.BASE_DF_NAME + "_exclude_rect"
+    r2roi_counts_exclude_rect = subject.get_dataframe(exclude_rect_df_name)
     if r2roi_counts_exclude_rect is None:
         r2roi_counts_exclude_rect = r2roi.count_fixations_between_roi_visits_for_varying_thresholds(subject,
-                                                                                                proximity_thresholds=_PROX_THRESHOLDS,
-                                                                                                is_targets_rect_part_of_roi=False)
-        subject.set_dataframe(df_name, r2roi_counts_exclude_rect)
+                                                                                                    proximity_thresholds=_PROX_THRESHOLDS,
+                                                                                                    is_targets_rect_part_of_roi=False)
+        subject.set_dataframe(exclude_rect_df_name, r2roi_counts_exclude_rect)
 
     # calculate return-to-ROI counts when the bottom rectangle is part of the ROI:
-    df_name = r2roi.BASE_DF_NAME + "_include_rect"
-    r2roi_counts_include_rect = subject.get_dataframe(df_name)
+    include_rect_df_name = r2roi.BASE_DF_NAME + "_include_rect"
+    r2roi_counts_include_rect = subject.get_dataframe(include_rect_df_name)
     if r2roi_counts_include_rect is None:
         r2roi_counts_include_rect = r2roi.count_fixations_between_roi_visits_for_varying_thresholds(subject,
-                                                                                                proximity_thresholds=_PROX_THRESHOLDS,
-                                                                                                is_targets_rect_part_of_roi=True)
-        subject.set_dataframe(df_name, r2roi_counts_include_rect)
+                                                                                                    proximity_thresholds=_PROX_THRESHOLDS,
+                                                                                                    is_targets_rect_part_of_roi=True)
+        subject.set_dataframe(include_rect_df_name, r2roi_counts_include_rect)
 
     if save:
-        r2roi_counts_exclude_rect.to_pickle(subject.get_dataframe_path(r2roi.BASE_DF_NAME + "_exclude_rect"))
-        r2roi_counts_include_rect.to_pickle(subject.get_dataframe_path(r2roi.BASE_DF_NAME + "_include_rect"))
+        r2roi_counts_exclude_rect.to_pickle(subject.get_dataframe_path(exclude_rect_df_name))
+        r2roi_counts_include_rect.to_pickle(subject.get_dataframe_path(include_rect_df_name))
     return r2roi_counts_exclude_rect, r2roi_counts_include_rect
 

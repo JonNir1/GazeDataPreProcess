@@ -31,7 +31,6 @@ def count_fixations_between_roi_visits_for_varying_thresholds(subject: LWSSubjec
             counts = count_fixations_between_roi_visits(trial, proximity_threshold=prox_thresh,
                                                         is_targets_rect_part_of_roi=is_targets_rect_part_of_roi)
             return_to_roi_counts.loc[trial, prox_thresh] = counts
-    return_to_roi_counts.name = BASE_DF_NAME + ("_include_rect" if is_targets_rect_part_of_roi else "_exclude_rect")
     return return_to_roi_counts
 
 
