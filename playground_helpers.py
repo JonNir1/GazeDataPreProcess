@@ -88,7 +88,7 @@ def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: 
     if save:
         trial_summary.to_pickle(subject.get_dataframe_path(trsum.DF_NAME))
 
-    import LWS.SubjectAnalysis.event_analysis.triggers_analysis as trig
+    import LWS.SubjectAnalysis.event_analysis.triggers_counts as trig
     trigger_counts = trig.count_triggers_per_trial(subject)
     if save:
         trigger_counts.to_pickle(subject.get_dataframe_path(trig.DF_NAME))
@@ -191,7 +191,7 @@ def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnf
         visutils.save_figure(lws_rates_fig,
                              full_path=os.path.join(subject_figures_dir, "lws rates.png"))
 
-    import LWS.SubjectAnalysis.event_analysis.triggers_analysis as trig
+    import LWS.SubjectAnalysis.event_analysis.triggers_counts as trig
     trigger_rates = trig.plot_trigger_rates_by_block_position(subject)
     if save:
         visutils.save_figure(trigger_rates,
