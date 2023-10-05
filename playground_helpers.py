@@ -169,7 +169,7 @@ def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnf
         visutils.save_figure(fixation_dynamics,
                              full_path=os.path.join(subject_figures_dir, "fixation dynamics - all_fixations.png"))
 
-    import LWS.SubjectAnalysis.search_analysis.lws_instance_rate as lws_rate
+    import LWS.SubjectAnalysis.search_analysis.lws_figures as lws_rate
     lws_rates_fig = lws_rate.lws_rates_figure(subject, time_difference_thresholds=np.arange(0,
                                                                                             SaccadeEvent.MAX_DURATION + 1,
                                                                                             50))
