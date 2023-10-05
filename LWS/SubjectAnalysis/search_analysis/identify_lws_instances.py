@@ -77,9 +77,6 @@ def calculate_lws_rates(subject: LWSSubject, proximal_fixations_only: bool) -> p
                 rates_df.loc[trial, (prox, td)] = np.nan
                 continue
             is_lws_lst = is_lws_df.loc[trial, (prox, td)]
-            if not is_lws_lst:
-                rates_df.loc[trial, (prox, td)] = np.nan
-                continue
             num_lws_instances = np.sum(is_lws_lst)
             rates_df.loc[trial, (prox, td)] = num_lws_instances / num_fixations
     return rates_df
