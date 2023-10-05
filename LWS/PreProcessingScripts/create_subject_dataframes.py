@@ -10,7 +10,7 @@ from LWS.DataModels.LWSSubject import LWSSubject
 
 
 _PROX_THRESHOLDS = np.arange(cnfg.THRESHOLD_VISUAL_ANGLE / 15,
-                             21 * cnfg.THRESHOLD_VISUAL_ANGLE / 15,
+                             26 * cnfg.THRESHOLD_VISUAL_ANGLE / 15,
                              cnfg.THRESHOLD_VISUAL_ANGLE / 15)
 _TIME_DIFF_THRESHOLDS = np.arange(0, SaccadeEvent.MAX_DURATION + 1, 50)
 
