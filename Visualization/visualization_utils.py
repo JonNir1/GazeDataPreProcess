@@ -210,12 +210,12 @@ def generic_line_chart(ax: plt.Axes,
         ax.vlines(x=peak_xs, ymin=ymin, ymax=ymax, color=peak_colors, lw=secondary_line_width, ls='--')
 
     # set axis ticks and labels:
-    _set_axis_ticks(ax=ax, min_val=min_x, max_val=max_x, axis='x', **kwargs)
-    _set_axis_ticks(ax=ax, min_val=min_y, max_val=max_y, axis='y', **kwargs)
+    set_axis_ticks(ax=ax, min_val=min_x, max_val=max_x, axis='x', **kwargs)
+    set_axis_ticks(ax=ax, min_val=min_y, max_val=max_y, axis='y', **kwargs)
     return ax
 
 
-def _set_axis_ticks(ax, min_val: float, max_val: float, axis: str, **kwargs):
+def set_axis_ticks(ax, min_val: float, max_val: float, axis: str, **kwargs):
     """
     Sets the ticks of the given axis to the given values.
     :param ax: The plt.Axes object.
