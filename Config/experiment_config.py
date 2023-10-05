@@ -37,11 +37,11 @@ DEFAULT_FIXATION_MINIMUM_DURATION = 55  # minimum duration of a fixation in mill
 DEFAULT_FIXATION_MAX_VELOCITY = 20  # degrees per second
 
 # LWS ANALYSIS CONFIGURATION
-THRESHOLD_VISUAL_ANGLE = 1.5  # threshold for the visual angle between a target and a gaze datapoint, in degrees
 TARGET_IDENTIFICATION_SEQUENCE = np.array([ExperimentTriggerEnum.MARK_TARGET_SUCCESSFUL,
                                            ExperimentTriggerEnum.NULL,
                                            ExperimentTriggerEnum.CONFIRM_TARGET_SUCCESSFUL,
                                            ExperimentTriggerEnum.NULL])  # sequence of triggers indicating that a target was identified by the subject (in order)
+THRESHOLD_VISUAL_ANGLE = 1.5  # threshold for the visual angle between a target and a gaze datapoint, in degrees
 PROX_THRESHOLDS = np.arange(THRESHOLD_VISUAL_ANGLE / 15,
                             26 * THRESHOLD_VISUAL_ANGLE / 15,
                             THRESHOLD_VISUAL_ANGLE / 15)    # proximity thresholds for identifying LWS instances
