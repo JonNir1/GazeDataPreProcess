@@ -11,6 +11,7 @@ from LWS.PreProcessingScripts.read_subject import read_subject_from_raw_data
 from LWS.PreProcessingScripts.visual_angle_to_targets import visual_angle_gaze_to_targets
 from LWS.PreProcessingScripts.detect_events import detect_all_events
 from LWS.PreProcessingScripts.gen_lws_gaze_events import gen_all_lws_events
+from LWS.PreProcessingScripts.create_subject_dataframes import create_subject_dataframes
 
 
 def process_subject(subject_dir: str,
@@ -43,6 +44,8 @@ def process_subject(subject_dir: str,
     subject = read_subject_from_raw_data(subject_dir, stimuli_dir, output_directory, **kwargs)
     for tr in subject.get_trials():
         process_trial(tr, **kwargs)
+
+    create_subject_dataframes(subject, save=save_pickle)
     if save_pickle:
         subject.to_pickle()
     return subject

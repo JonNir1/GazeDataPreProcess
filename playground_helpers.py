@@ -16,7 +16,6 @@ from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 def full_pipline(name: str,
                  save: bool = True,
-                 include_subject_dfs: bool = True,
                  include_subject_figures: bool = True,
                  include_trial_figures: bool = True,
                  include_trial_videos: bool = True,
@@ -25,10 +24,6 @@ def full_pipline(name: str,
     print(f"Processing subject `{name}`...")
     subject = process_subject(name=name, save=save, verbose=verbose)
     subject = load_subject(subject_id=subject.subject_id, verbose=verbose)
-
-    subject_dfs = None
-    if include_subject_dfs:
-        subject_dfs = create_subject_dataframes(subject=subject, save=save, verbose=verbose)
 
     subject_figures = None
     if include_subject_figures:
@@ -47,7 +42,7 @@ def full_pipline(name: str,
     if verbose:
         ioutils.log_and_print(msg=f"\nFinished processing subject {name}: {(end - start):.2f} seconds\n###############\n",
                               log_file=subject.log_file)
-    return subject, subject_dfs, subject_figures, failed_trials
+    return subject, subject_figures, failed_trials
 
 
 def process_subject(name: str, save: bool = False, verbose: bool = True) -> LWSSubject:
