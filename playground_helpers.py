@@ -3,7 +3,7 @@ import time
 import traceback
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import List
+from typing import List, Union
 
 import Config.experiment_config as cnfg
 import Utils.io_utils as ioutils
@@ -14,16 +14,15 @@ from GazeEvents.SaccadeEvent import SaccadeEvent
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 
 
-def full_pipline(name: str,
+def full_pipline(name_or_id: Union[str, int],
                  save: bool = True,
                  include_subject_figures: bool = True,
                  include_trial_figures: bool = True,
                  include_trial_videos: bool = True,
                  verbose: bool = True):
     start = time.time()
-    print(f"Processing subject `{name}`...")
-    subject = process_subject(name=name, save=save, verbose=verbose)
-    subject = load_subject(subject_id=subject.subject_id, verbose=verbose)
+    print(f"Running full pipeline for subject `{name_or_id}`...")
+    subject = load_or_preprocess_subject(name_or_id=name_or_id, save=save, verbose=verbose)
 
     subject_figures = None
     if include_subject_figures:
@@ -45,32 +44,29 @@ def full_pipline(name: str,
     return subject, subject_figures, failed_trials
 
 
-def process_subject(name: str, save: bool = False, verbose: bool = True) -> LWSSubject:
-    start = time.time()
-    import LWS.PreProcessing as pp
-    subject = pp.process_subject(subject_dir=os.path.join(cnfg.RAW_DATA_DIR, name),
-                                 screen_monitor=cnfg.SCREEN_MONITOR,
-                                 save_pickle=save,
-                                 stuff_with='fixation',
-                                 blink_detector_type='missing data',
-                                 saccade_detector_type='engbert',
-                                 drop_outlier_events=False)
-    end = time.time()
-    if verbose:
-        ioutils.log_and_print(msg=f"Finished preprocessing subject `{name}`: {(end - start):.2f} seconds",
-                              log_file=subject.log_file)
-    return subject
-
-
-def load_subject(subject_id: int, verbose: bool = True) -> LWSSubject:
-    start = time.time()
-    subject_id = f"{subject_id:03d}"
-    subdir = f"S{subject_id}"
-    subject = LWSSubject.from_pickle(os.path.join(cnfg.OUTPUT_DIR, subdir, f"LWSSubject_{subject_id}.pkl"))
-    end = time.time()
-    if verbose:
-        ioutils.log_and_print(msg=f"Finished loading subject {subject_id}: {(end - start):.2f} seconds",
-                              log_file=subject.log_file)
+def load_or_preprocess_subject(name_or_id: Union[str, int], save: bool = True, verbose: bool = True) -> LWSSubject:
+    if isinstance(name_or_id, str):
+        import LWS.PreProcessing as pp
+        name = name_or_id
+        subject = pp.process_subject(subject_dir=os.path.join(cnfg.RAW_DATA_DIR, name),
+                                     screen_monitor=cnfg.SCREEN_MONITOR,
+                                     save_results=save,
+                                     verbose=verbose,
+                                     stuff_with='fixation',
+                                     blink_detector_type='missing data',
+                                     saccade_detector_type='engbert',
+                                     drop_outlier_events=False)
+    elif isinstance(name_or_id, int):
+        start = time.time()
+        subject_id = name_or_id
+        subdir = f"S{subject_id:03d}"
+        subject = LWSSubject.from_pickle(os.path.join(cnfg.OUTPUT_DIR, subdir, f"LWSSubject_{subject_id}.pkl"))
+        end = time.time()
+        if verbose:
+            ioutils.log_and_print(msg=f"Finished loading subject {str(subject)}: {(end - start):.2f} seconds",
+                                  log_file=subject.log_file)
+    else:
+        raise ValueError(f"Invalid subject identifier: {name_or_id}")
     return subject
 
 
