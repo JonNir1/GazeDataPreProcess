@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from LWS.DataModels.LWSSubject import LWSSubject
 from LWS.DataModels.LWSArrayStimulus import LWSStimulusTypeEnum
 import Visualization.visualization_utils as visutils
-import LWS.Analysis.search_analysis.identify_lws_instances as identify_lws
+import LWS.SubjectAnalysis.search_analysis.identify_lws_instances as identify_lws
 
 
 def lws_rates_figure(subject: LWSSubject,

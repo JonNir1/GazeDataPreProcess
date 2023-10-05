@@ -8,7 +8,7 @@ from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 from LWS.DataModels.LWSSubject import LWSSubject
 from LWS.DataModels.LWSTrial import LWSTrial
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
-from LWS.Analysis.search_analysis.target_identification import get_target_identification_data
+from LWS.SubjectAnalysis.search_analysis.target_identification import get_target_identification_data
 
 DF_NAME = 'return_to_roi'
 

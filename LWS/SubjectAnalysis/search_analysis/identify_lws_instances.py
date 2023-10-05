@@ -9,7 +9,7 @@ from LWS.DataModels.LWSSubject import LWSSubject
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
 from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 from GazeEvents.SaccadeEvent import SaccadeEvent
-from LWS.Analysis.search_analysis.target_identification import get_target_identification_data
+from LWS.SubjectAnalysis.search_analysis.target_identification import get_target_identification_data
 
 INSTANCES_DF_NAME = "lws_instances"
 RATES_DF_BASE_NAME = "lws_rates"
