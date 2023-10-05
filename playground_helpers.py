@@ -47,7 +47,7 @@ def full_pipline(name_or_id: Union[str, int],
 def load_or_preprocess_subject(name_or_id: Union[str, int], save: bool = True, verbose: bool = True) -> LWSSubject:
     if isinstance(name_or_id, str):
         import LWS.PreProcessing as pp
-        name = name_or_id
+        name = str(name_or_id)
         subject = pp.process_subject(subject_dir=os.path.join(cnfg.RAW_DATA_DIR, name),
                                      screen_monitor=cnfg.SCREEN_MONITOR,
                                      save_results=save,
@@ -58,9 +58,8 @@ def load_or_preprocess_subject(name_or_id: Union[str, int], save: bool = True, v
                                      drop_outlier_events=False)
     elif isinstance(name_or_id, int):
         start = time.time()
-        subject_id = name_or_id
-        subdir = f"S{subject_id:03d}"
-        subject = LWSSubject.from_pickle(os.path.join(cnfg.OUTPUT_DIR, subdir, f"LWSSubject_{subject_id}.pkl"))
+        subject_id = f"{name_or_id:03d}"
+        subject = LWSSubject.from_pickle(os.path.join(cnfg.OUTPUT_DIR, f"S{subject_id}", f"LWSSubject_{subject_id}.pkl"))
         end = time.time()
         if verbose:
             ioutils.log_and_print(msg=f"Finished loading subject {str(subject)}: {(end - start):.2f} seconds",
