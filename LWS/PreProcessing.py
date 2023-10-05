@@ -39,7 +39,7 @@ def process_subject(subject_dir: str,
     start = time.time()
     verbose = kwargs.get('verbose', True)
     if verbose:
-        ioutils.log_and_print(msg="###################\n" +
+        ioutils.print_and_log(msg="###################\n" +
                                   f"Pre-processing subject `{os.path.basename(subject_dir)}`...",
                               log_file=None)
 
@@ -63,7 +63,7 @@ def process_subject(subject_dir: str,
 
     end = time.time()
     if verbose:
-        ioutils.log_and_print(msg=f"Finished preprocessing subject `{str(subject)}`: {(end - start):.2f} seconds",
+        ioutils.print_and_log(msg=f"Finished preprocessing subject `{str(subject)}`: {(end - start):.2f} seconds",
                               log_file=None)
     return subject
 

@@ -44,7 +44,7 @@ def get_filename(name: str, extension: Optional[str] = None) -> str:
     return f"{name}.{extension}"
 
 
-def log_and_print(msg: str, log_file: Optional[str] = None) -> None:
+def print_and_log(msg: str, log_file: Optional[str] = None) -> None:
     print(msg)
     try:
         if log_file is not None:

@@ -25,7 +25,7 @@ def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: 
     r2roi_counts_exclude_rect, r2roi_counts_include_rect = _return_to_roi(subject, save)
     end = time.time()
     if verbose:
-        ioutils.log_and_print(msg="Finished creating DataFrames for subject " +
+        ioutils.print_and_log(msg="Finished creating DataFrames for subject " +
                                   f"{subject.subject_id}: {(end - start):.2f} seconds",
                               log_file=subject.log_file)
     return (trial_summary_df, trigger_counts, lws_instances, lws_rates_all_fixations, lws_rates_proximal_fixations,

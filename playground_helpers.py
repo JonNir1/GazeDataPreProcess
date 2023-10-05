@@ -39,7 +39,7 @@ def full_pipline(name_or_id: Union[str, int],
     failed_trials = failed_analysis_trials + failed_video_trials
     end = time.time()
     if verbose:
-        ioutils.log_and_print(msg=f"\nFinished processing subject {name_or_id}: {(end - start):.2f} seconds\n###############\n",
+        ioutils.print_and_log(msg=f"\nFinished processing subject {name_or_id}: {(end - start):.2f} seconds\n###############\n",
                               log_file=subject.log_file)
     return subject, subject_figures, failed_trials
 
@@ -63,7 +63,7 @@ def load_or_preprocess_subject(name_or_id: Union[str, int], save: bool = True, v
         subject = LWSSubject.from_pickle(os.path.join(cnfg.OUTPUT_DIR, f"S{subject_id}", f"LWSSubject_{subject_id}.pkl"))
         end = time.time()
         if verbose:
-            ioutils.log_and_print(msg=f"Finished loading subject {str(subject)}: {(end - start):.2f} seconds",
+            ioutils.print_and_log(msg=f"Finished loading subject {str(subject)}: {(end - start):.2f} seconds",
                                   log_file=subject.log_file)
     else:
         raise ValueError(f"Invalid subject identifier: {name_or_id}")
@@ -136,7 +136,7 @@ def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnf
 
     end = time.time()
     if verbose:
-        ioutils.log_and_print(msg=f"Finished analyzing subject {subject.subject_id}: {(end - start):.2f} seconds",
+        ioutils.print_and_log(msg=f"Finished analyzing subject {subject.subject_id}: {(end - start):.2f} seconds",
                               log_file=subject.log_file)
     return (saccade_distributions, all_distribution_comparison, proximal_distribution_comparison,
             distal_distribution_comparison, fixation_dynamics, lws_rates_fig, trigger_rates)
@@ -163,18 +163,18 @@ def analyze_all_trials(subject: LWSSubject, save: bool = False, verbose: bool = 
             plt.close('all')  # close all open figures from memory
             end_trial = time.time()
             if verbose:
-                ioutils.log_and_print(
+                ioutils.print_and_log(
                     msg=f"\t{tr.__repr__()} Analysis:\t{(end_trial - start_trial):.2f} s", log_file=subject.log_file)
         except Exception as _e:
             trace = traceback.format_exc()
             failed_trials.append((tr, trace))
             if verbose:
-                ioutils.log_and_print(
+                ioutils.print_and_log(
                     msg=f"######\n\tFailed to analyze trial {tr.__repr__()}:\n\t{trace}\n", log_file=subject.log_file)
 
     end = time.time()
     if verbose:
-        ioutils.log_and_print(
+        ioutils.print_and_log(
             msg=f"Finished analyzing all trials: {(end - start):.2f} seconds", log_file=subject.log_file)
     return failed_trials
 
@@ -191,18 +191,18 @@ def create_trial_videos(subject: LWSSubject, save: bool = False, verbose: bool =
             plt.close('all')  # close all open figures from memory
             end_trial = time.time()
             if verbose:
-                ioutils.log_and_print(
+                ioutils.print_and_log(
                     msg=f"\t{tr.__repr__()} Visualization:\t{(end_trial - start_trial):.2f} s",
                     log_file=subject.log_file)
         except Exception as _e:
             trace = traceback.format_exc()
             failed_trials.append((tr, trace))
             if verbose:
-                ioutils.log_and_print(
+                ioutils.print_and_log(
                     msg=f"######\n\tFailed to visualize trial {tr.__repr__()}:\n\t{trace}\n", log_file=subject.log_file)
 
     end = time.time()
     if verbose:
-        ioutils.log_and_print(
+        ioutils.print_and_log(
             msg=f"Finished visualizing all trials: {(end - start):.2f} seconds", log_file=subject.log_file)
     return failed_trials
