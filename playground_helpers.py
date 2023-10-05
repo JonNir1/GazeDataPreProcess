@@ -7,11 +7,11 @@ from typing import List
 
 import Config.experiment_config as cnfg
 import Utils.io_utils as ioutils
+import Visualization.visualization_utils as visutils
 from LWS.DataModels.LWSSubject import LWSSubject
 from GazeEvents.GazeEventEnums import GazeEventTypeEnum
 from GazeEvents.SaccadeEvent import SaccadeEvent
 from LWS.DataModels.LWSFixationEvent import LWSFixationEvent
-import Visualization.visualization_utils as visutils
 
 
 def full_pipline(name: str,
@@ -98,7 +98,15 @@ def create_subject_dataframes(subject: LWSSubject, save: bool = False, verbose: 
                                                                  proximity_thresholds=np.arange(0.1, 7.1, 0.1),
                                                                  time_difference_thresholds=np.arange(0, 251, 10))
     if save:
-        lws_instances.to_pickle(subject.get_dataframe_path(lws_inst.DF_NAME))
+        lws_instances.to_pickle(subject.get_dataframe_path(lws_inst.INSTANCES_DF_NAME))
+
+    lws_rates_all_fixations = lws_inst.calculate_lws_rates(subject, proximal_fixations_only=False)
+    if save:
+        lws_rates_all_fixations.to_pickle(subject.get_dataframe_path(lws_inst.RATES_DF_BASE_NAME + "_all_fixations"))
+
+    lws_rates_proximal_fixations = lws_inst.calculate_lws_rates(subject, proximal_fixations_only=True)
+    if save:
+        lws_rates_proximal_fixations.to_pickle(subject.get_dataframe_path(lws_inst.RATES_DF_BASE_NAME + "_proximal_fixations"))
 
     import LWS.Analysis.search_analysis.return_to_roi as r2roi
     r2roi_counts_exclude_rect = r2roi.count_fixations_between_roi_visits_for_varying_thresholds(subject,
@@ -172,13 +180,15 @@ def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnf
                              full_path=os.path.join(subject_figures_dir, "fixation dynamics - all_fixations.png"))
 
     import LWS.Analysis.search_analysis.lws_instance_rate as lws_rate
-    lws_rates = lws_rate.lws_rates_figure(subject,
-                                          proximity_thresholds=np.arange(cnfg.THRESHOLD_VISUAL_ANGLE / 15,
-                                                                         21 * cnfg.THRESHOLD_VISUAL_ANGLE / 15,
-                                                                         cnfg.THRESHOLD_VISUAL_ANGLE / 15),
-                                          time_difference_thresholds=np.arange(10, SaccadeEvent.MAX_DURATION + 1, 10))
+    lws_rates_fig = lws_rate.lws_rates_figure(subject,
+                                              proximity_thresholds=np.arange(cnfg.THRESHOLD_VISUAL_ANGLE / 15,
+                                                                             21 * cnfg.THRESHOLD_VISUAL_ANGLE / 15,
+                                                                             cnfg.THRESHOLD_VISUAL_ANGLE / 15),
+                                              time_difference_thresholds=np.arange(0,
+                                                                                   SaccadeEvent.MAX_DURATION + 1,
+                                                                                   50))
     if save:
-        visutils.save_figure(lws_rates,
+        visutils.save_figure(lws_rates_fig,
                              full_path=os.path.join(subject_figures_dir, "lws rates.png"))
 
     import LWS.Analysis.event_analysis.triggers_analysis as trig
@@ -192,7 +202,7 @@ def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnf
         ioutils.log_and_print(msg=f"Finished analyzing subject {subject.subject_id}: {(end - start):.2f} seconds",
                               log_file=subject.log_file)
     return (saccade_distributions, all_distribution_comparison, proximal_distribution_comparison,
-            distal_distribution_comparison, fixation_dynamics, lws_rates, trigger_rates)
+            distal_distribution_comparison, fixation_dynamics, lws_rates_fig, trigger_rates)
 
 
 def analyze_all_trials(subject: LWSSubject, save: bool = False, verbose: bool = True):
