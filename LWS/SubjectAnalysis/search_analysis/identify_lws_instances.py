@@ -54,11 +54,8 @@ def calculate_lws_rates(subject: LWSSubject, proximal_fixations_only: bool) -> p
     proximity_threshold, time_difference_threshold) triplets, then the returned DataFrame will have NaN values for those
     triplets.
     """
-    # attempt to load the data from disk
-    df_path = subject.get_dataframe_path(INSTANCES_DF_NAME)
-    try:
-        is_lws_df = pd.read_pickle(df_path)
-    except FileNotFoundError:
+    is_lws_df = subject.get_dataframe(INSTANCES_DF_NAME)
+    if is_lws_df is None:
         is_lws_df = pd.DataFrame(np.nan,
                                  index=subject.get_trials(),
                                  columns=pd.MultiIndex.from_product(
