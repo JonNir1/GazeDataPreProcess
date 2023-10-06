@@ -13,6 +13,8 @@ def distributions_figure(saccades: List[SaccadeEvent], ignore_outliers: bool = T
     fig = visutils.set_figure_properties(fig=None, title=kwargs.pop("title", "Saccade Summary"),
                                          figsize=kwargs.pop("figsize", (21, 14)), **kwargs)
 
+    # TODO: add main sequence plot
+
     # durations distribution
     ax1 = fig.add_subplot(2, 2, 1)
     durations_data = [np.array([s.duration for s in saccades])]
