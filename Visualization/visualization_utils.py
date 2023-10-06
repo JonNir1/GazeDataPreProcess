@@ -235,7 +235,7 @@ def set_axis_ticks(ax, min_val: float, max_val: float, axis: str, **kwargs):
         raise ValueError(f"Invalid axis '{axis}'! Must be either 'x' or 'y'.")
     scale = round(float(np.nan_to_num(np.log10(max_val - min_val) - 1, nan=0)))
     jumps = 2 * np.power(10., scale)
-    ticks = np.arange(min_val, max_val + jumps, jumps)
+    ticks = np.arange(min_val, max_val + jumps / 2, jumps)
     labels = [np.round(tck, 1 - scale) for tck in ticks]
     if axis == 'x':
         ax.set_xticks(ticks=ticks, labels=labels,
