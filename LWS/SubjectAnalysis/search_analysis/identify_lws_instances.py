@@ -16,28 +16,35 @@ RATES_DF_BASE_NAME = "lws_rates"
 
 
 def identify_lws_for_varying_thresholds(subject: LWSSubject,
-                                        proximity_thresholds: np.ndarray = cnfg.PROX_THRESHOLDS,
-                                        time_difference_thresholds: np.ndarray = cnfg.TIME_DIFF_THRESHOLDS) -> pd.DataFrame:
+                                        proximity_thresholds: np.ndarray = cnfg.PROX_THRESHOLDS) -> pd.DataFrame:
     """
-    For each (trial, proximity_threshold, time_difference_threshold) triplet, identifies the LWS instances in the
-    trial. Returns a 3D dataframe where each cell contains a boolean array of the same length as the trial's fixations,
-    where each element of the array is either True/False, depending on whether the corresponding gaze event is a
+    Extract all the subject's saccade durations and calculate the 5th, 25th, 50th, 75th, and 95th percentiles.
+    These time-difference thresholds are used alongside the proximity-thresholds to identify LWS instances within
+    each trial (see `_identify_lws_instances`).
+
+    Returns a 3D dataframe where each cell contains a boolean array of the same length as the number of fixations in the
+    trial, where each element of the array is either True/False, depending on whether the corresponding gaze event is a
     LWS instance or not.
 
-    The resulting DataFrame's is indexed by LWSTrial and the columns are a MultiIndex of the proximity-thresholds and
+    The resulting DataFrame is indexed by LWSTrial and the columns are a MultiIndex of the proximity-thresholds and
     time-difference thresholds.
 
     NOTE depending on the amount of varying thresholds, this may take 30-60 minutes to run for a single subject!
     """
-    columns_multiindex = pd.MultiIndex.from_product([proximity_thresholds, time_difference_thresholds],
-                                                    names=["proximity_threshold", "time_difference_threshold"])
     all_trials = subject.get_trials()
+    all_saccade_durations = [s.duration for trial in all_trials
+                             for s in trial.get_gaze_events(event_type=GazeEventTypeEnum.SACCADE)]
+    if len(all_saccade_durations) == 0:
+        raise RuntimeError(f"Subject {subject} has no saccades")
+    duration_percentiles = cnfg.TIME_DIFF_PERCENTILE_THRESHOLDS
+    columns_multiindex = pd.MultiIndex.from_product([proximity_thresholds, duration_percentiles],
+                                                    names=["proximity_threshold", "time_difference_threshold"])
     is_lws_instance = pd.DataFrame(index=all_trials, columns=columns_multiindex)
     is_lws_instance.index.name = "trial"
 
     for trial in all_trials:
         for prox in proximity_thresholds:
-            for td in time_difference_thresholds:
+            for td in duration_percentiles:
                 is_lws_instance.loc[trial, (prox, td)] = _identify_lws_instances(trial,
                                                                                  proximity_threshold=prox,
                                                                                  time_difference_threshold=td)
