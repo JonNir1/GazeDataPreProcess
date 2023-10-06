@@ -119,7 +119,7 @@ def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnf
                              full_path=os.path.join(subject_figures_dir, "fixation dynamics - all_fixations.png"))
 
     import LWS.SubjectAnalysis.search_analysis.lws_figures as lws_rate
-    lws_rates_fig = lws_rate.plot_lws_rates(subject, time_difference_thresholds=cnfg.TIME_DIFF_THRESHOLDS)
+    lws_rates_fig = lws_rate.plot_lws_rates(subject)
     if save:
         visutils.save_figure(lws_rates_fig,
                              full_path=os.path.join(subject_figures_dir, "lws rates.png"))
