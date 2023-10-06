@@ -190,10 +190,13 @@ def generic_line_chart(ax: plt.Axes,
         ax.plot(x, y, label=label, color=color, linewidth=primary_line_width, zorder=i)
 
         # calculate the min/max values:
-        min_x = min(min_x, np.nanmin(x))
-        max_x = max(max_x, np.nanmax(x))
-        min_y = min(min_y, np.nanmin(y - sems[i])) if len(sems) > 0 else min(min_y, np.nanmin(y))
-        max_y = max(max_y, np.nanmax(y + sems[i])) if len(sems) > 0 else max(max_y, np.nanmax(y))
+        try:
+            min_x = min(min_x, np.nanmin(x))
+            max_x = max(max_x, np.nanmax(x))
+            min_y = min(min_y, np.nanmin(y - sems[i])) if len(sems) > 0 else min(min_y, np.nanmin(y))
+            max_y = max(max_y, np.nanmax(y + sems[i])) if len(sems) > 0 else max(max_y, np.nanmax(y))
+        except ValueError:
+            pass
 
         # plot the SEMs:
         if len(sems) > 0:
