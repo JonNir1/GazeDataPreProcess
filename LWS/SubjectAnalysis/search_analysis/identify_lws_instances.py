@@ -36,7 +36,7 @@ def identify_lws_for_varying_thresholds(subject: LWSSubject,
                              for s in trial.get_gaze_events(event_type=GazeEventTypeEnum.SACCADE)]
     if len(all_saccade_durations) == 0:
         raise RuntimeError(f"Subject {subject} has no saccades")
-    duration_percentiles = cnfg.TIME_DIFF_PERCENTILE_THRESHOLDS
+    duration_percentiles = np.percentile(all_saccade_durations, cnfg.TIME_DIFF_PERCENTILE_THRESHOLDS)
     columns_multiindex = pd.MultiIndex.from_product([proximity_thresholds, duration_percentiles],
                                                     names=["proximity_threshold", "time_difference_threshold"])
     is_lws_instance = pd.DataFrame(index=all_trials, columns=columns_multiindex)
