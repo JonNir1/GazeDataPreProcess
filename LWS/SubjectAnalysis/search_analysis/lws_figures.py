@@ -10,8 +10,8 @@ import LWS.SubjectAnalysis.search_analysis.identify_lws_instances as identify_lw
 _FRAC_ALLOWED_NANS = 0.5
 
 
-def lws_rates_figure(subject: LWSSubject,
-                     time_difference_thresholds: np.ndarray) -> plt.Figure:
+def plot_lws_rates(subject: LWSSubject,
+                   time_difference_thresholds: np.ndarray) -> plt.Figure:
     """
     Plot the LWS rate for each stimulus type as a function of proximity threshold.
     """
