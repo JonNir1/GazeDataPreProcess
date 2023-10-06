@@ -1,15 +1,17 @@
 import numpy as np
 import pandas as pd
+from typing import Optional
 
 import constants as cnst
 import Config.experiment_config as cnfg
 import Utils.array_utils as arr_utils
 from LWS.DataModels.LWSTrial import LWSTrial
 from LWS.DataModels.LWSSubject import LWSSubject
+from LWS.DataModels.LWSArrayStimulus import LWSStimulusTypeEnum
 
 
 def get_target_identification_data(trial: LWSTrial,
-                                   max_angle_from_target: float = np.inf,
+                                   max_angle_from_target: float = 2 * cnfg.THRESHOLD_VISUAL_ANGLE,
                                    identification_seq: np.ndarray = cnfg.TARGET_IDENTIFICATION_SEQUENCE) -> pd.DataFrame:
     """
     For each of the trial's targets, extracts the following information:
@@ -21,6 +23,10 @@ def get_target_identification_data(trial: LWSTrial,
             identified by the subject
         - time_identified: time (in milliseconds) when the target was identified by the subject
         - time_confirmed: time (in milliseconds) when the target was confirmed by the subject
+
+    :param trial: the trial to analyze
+    :param max_angle_from_target: float - maximum visual angle (in deg) from target to count as identified
+    :param identification_seq: np.ndarray - sequence of triggers indicating that a target was identified by the subject
 
     Returns a dataframe with shape (num_targets, 7), where each row corresponds to a target.
     """
@@ -69,12 +75,17 @@ def get_target_identification_data(trial: LWSTrial,
     return pd.concat([trial.get_targets(), res], axis=1)
 
 
-def calc_identification_angle_histogram(subject: LWSSubject, nbins: int = 20) -> pd.Series:
+def _calc_identification_angle_histogram(subject: LWSSubject,
+                                         max_angle_from_target: float = 2 * cnfg.THRESHOLD_VISUAL_ANGLE,
+                                         stim_type: Optional[LWSStimulusTypeEnum] = None,
+                                         nbins: int = 20) -> pd.Series:
     """
     Calculates the distribution of visual-angles from targets when they were identified by the subject.
     Unidentified targets are counted as angle = np.inf.
 
     :param subject: the subject to analyze
+    :param max_angle_from_target: float - maximum visual angle (in deg) from target to count as identified
+    :param stim_type: LWSStimulusTypeEnum - if given, only trials with this stimulus type will be analyzed
     :param nbins: int - number of bins to use for the identified targets' angles histogram (must be positive)
 
     :return: a pd.Series indexed by the centers of the hostogram bins and values are % of identified targets with
@@ -83,7 +94,8 @@ def calc_identification_angle_histogram(subject: LWSSubject, nbins: int = 20) ->
     if nbins <= 0:
         raise ValueError(f"Invalid `nbins`: {nbins}")
     target_identification_data = pd.DataFrame.from_dict(
-        {tr: get_target_identification_data(tr, 2)['distance_identified'] for tr in subject.get_trials()},
+        {tr: get_target_identification_data(tr, max_angle_from_target)['distance_identified']
+         for tr in subject.get_trials(stim_type)},
         orient='index')
 
     # nan values indicate there was no such target in the trial
