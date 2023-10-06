@@ -9,7 +9,7 @@ from LWS.DataModels.LWSSubject import LWSSubject
 
 
 def get_target_identification_data(trial: LWSTrial,
-                                   max_angle_from_target: float = cnfg.THRESHOLD_VISUAL_ANGLE,
+                                   max_angle_from_target: float = np.inf,
                                    identification_seq: np.ndarray = cnfg.TARGET_IDENTIFICATION_SEQUENCE) -> pd.DataFrame:
     """
     For each of the trial's targets, extracts the following information:
