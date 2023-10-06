@@ -27,7 +27,7 @@ def plot_lws_rates(subject: LWSSubject) -> plt.Figure:
     fig, axes = plt.subplots(nrows=2, ncols=len(td_thresholds__all),
                              figsize=(27, 15), tight_layout=True,
                              sharex='col', sharey='row')
-    for col, td in enumerate(reversed(td_thresholds__all)):
+    for col, td in enumerate(td_thresholds__all):
         top_ax = axes[0, col]
         bottom_ax = axes[1, col]
 
