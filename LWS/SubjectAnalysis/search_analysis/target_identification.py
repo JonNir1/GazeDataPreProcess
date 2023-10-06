@@ -69,7 +69,7 @@ def get_target_identification_data(trial: LWSTrial,
     return pd.concat([trial.get_targets(), res], axis=1)
 
 
-def _calc_identification_angle_histogram(subject: LWSSubject, nbins: int) -> pd.Series:
+def calc_identification_angle_histogram(subject: LWSSubject, nbins: int = 20) -> pd.Series:
     """
     Calculates the distribution of visual-angles from targets when they were identified by the subject.
     Unidentified targets are counted as angle = np.inf.
