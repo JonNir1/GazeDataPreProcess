@@ -5,6 +5,7 @@ import constants as cnst
 import Config.experiment_config as cnfg
 import Utils.array_utils as arr_utils
 from LWS.DataModels.LWSTrial import LWSTrial
+from LWS.DataModels.LWSSubject import LWSSubject
 
 
 def get_target_identification_data(trial: LWSTrial,
@@ -66,3 +67,38 @@ def get_target_identification_data(trial: LWSTrial,
         res.loc[i, "time_confirmed"] = proximal_behavioral_df.iloc[last_idx][
                                            cnst.MICROSECONDS] / cnst.MICROSECONDS_PER_MILLISECOND
     return pd.concat([trial.get_targets(), res], axis=1)
+
+
+def _calc_identification_angle_histogram(subject: LWSSubject, nbins: int) -> pd.Series:
+    """
+    Calculates the distribution of visual-angles from targets when they were identified by the subject.
+    Unidentified targets are counted as angle = np.inf.
+
+    :param subject: the subject to analyze
+    :param nbins: int - number of bins to use for the identified targets' angles histogram (must be positive)
+
+    :return: a pd.Series indexed by the centers of the hostogram bins and values are % of identified targets with
+    identification angle within each bin (including bin `np.inf` for unidentified targets).
+    """
+    if nbins <= 0:
+        raise ValueError(f"Invalid `nbins`: {nbins}")
+    target_identification_data = pd.DataFrame.from_dict(
+        {tr: get_target_identification_data(tr, 2)['distance_identified'] for tr in subject.get_trials()},
+        orient='index')
+
+    # nan values indicate there was no such target in the trial
+    num_targets = target_identification_data.size - np.isnan(target_identification_data).sum().sum()
+
+    # inf values indicate the target was never identified
+    percent_unidentified = 100 * np.isinf(target_identification_data).sum().sum() / num_targets
+
+    # finite values indicate the target was identified when gaze was at angle < `max_angle_from_target`
+    identification_angles = target_identification_data.values.flatten()
+    identification_angles = identification_angles[np.isfinite(identification_angles)]  # remove unidentified targets
+    ident_percentages, ident_centers = arr_utils.calculate_distribution(data=identification_angles, nbins=nbins)
+
+    # normalize percentages to account for unidentified targets
+    ident_percentages = ident_percentages * len(identification_angles) / num_targets
+    ident_distribution = pd.Series(ident_percentages, index=ident_centers)
+    ident_distribution[np.inf] = percent_unidentified  # add percentage of unidentified targets
+    return ident_distribution
