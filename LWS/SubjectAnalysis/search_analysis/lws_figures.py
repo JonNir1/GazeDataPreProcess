@@ -44,12 +44,14 @@ def _draw_lws_rates(ax: plt.Axes,
     # load the LWS rate dataframe:
     df_name = identify_lws.RATES_DF_BASE_NAME + ("_proximal_fixations" if proximal_fixations_only else "_all_fixations")
     lws_rate_df = subject.get_dataframe(df_name)
-    if lws_rate_df is None or lws_rate_df.empty:
-        raise KeyError(f"No data for time difference threshold {td_threshold}")
+    if lws_rate_df is None:
+        raise AttributeError(f"Subject {subject} does not have a dataframe named {df_name}")
 
     # filter by time difference threshold:
     lws_rate_df = lws_rate_df.loc[:, lws_rate_df.columns.get_level_values(1) == td_threshold]
     lws_rate_df.columns = lws_rate_df.columns.droplevel(1)  # drop the `Δt threshold` level
+    if lws_rate_df.empty:
+        raise KeyError(f"No data for Δt threshold {td_threshold}")
 
     # extract mean of lws rate for each stimulus type:
     data_labels = ["all"] + [f"{stim_type}" for stim_type in LWSStimulusTypeEnum]
