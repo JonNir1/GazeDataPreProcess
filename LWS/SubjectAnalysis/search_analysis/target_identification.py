@@ -93,19 +93,19 @@ def _calc_identification_angle_histogram(subject: LWSSubject,
     """
     if nbins <= 0:
         raise ValueError(f"Invalid `nbins`: {nbins}")
-    target_identification_data = pd.DataFrame.from_dict(
+    target_identification_angles = pd.DataFrame.from_dict(
         {tr: get_target_identification_data(tr, max_angle_from_target)['distance_identified']
          for tr in subject.get_trials(stim_type)},
         orient='index')
 
     # nan values indicate there was no such target in the trial
-    num_targets = target_identification_data.size - np.isnan(target_identification_data).sum().sum()
+    num_targets = target_identification_angles.size - np.isnan(target_identification_angles).sum().sum()
 
     # inf values indicate the target was never identified
-    percent_unidentified = 100 * np.isinf(target_identification_data).sum().sum() / num_targets
+    percent_unidentified = 100 * np.isinf(target_identification_angles).sum().sum() / num_targets
 
     # finite values indicate the target was identified when gaze was at angle < `max_angle_from_target`
-    identification_angles = target_identification_data.values.flatten()
+    identification_angles = target_identification_angles.values.flatten()
     identification_angles = identification_angles[np.isfinite(identification_angles)]  # remove unidentified targets
     ident_percentages, ident_centers = arr_utils.calculate_distribution(data=identification_angles, nbins=nbins)
 
