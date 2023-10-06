@@ -1,13 +1,49 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from typing import Optional
 
 import constants as cnst
 import Config.experiment_config as cnfg
 import Utils.array_utils as arr_utils
+import Visualization.visualization_utils as visutils
 from LWS.DataModels.LWSTrial import LWSTrial
 from LWS.DataModels.LWSSubject import LWSSubject
 from LWS.DataModels.LWSArrayStimulus import LWSStimulusTypeEnum
+
+
+def plot_identification_angle_distribution(subject: LWSSubject,
+                                           max_angle_from_target: float = 2 * cnfg.THRESHOLD_VISUAL_ANGLE) -> plt.Figure:
+    data_labels = ["all"] + [f"{stim_type}" for stim_type in LWSStimulusTypeEnum]
+
+    # extract the angles of which each target was identified:
+    all_identification_angles = pd.DataFrame.from_dict(
+        {tr: get_target_identification_data(tr, max_angle_from_target)['distance_identified']
+         for tr in subject.get_trials()},
+        orient='index')
+    identification_angles = {}
+    for label, stim_type in zip(data_labels, [None] + list(LWSStimulusTypeEnum)):
+        angles = all_identification_angles.loc[subject.get_trials(stim_type)].values.flatten()
+        num_targets = angles.size - np.isnan(angles).sum()
+        angles = angles[np.isfinite(angles)]  # remove unidentified targets
+        angles = pd.Series(np.sort(angles), name=label)
+        angles.index = np.arange(1, len(angles) + 1) / num_targets
+        identification_angles[label] = angles
+
+    fig, ax = plt.subplots(tight_layout=True)
+    ax = visutils.generic_line_chart(ax,
+                                     data_labels=[label for label in identification_angles.keys()],
+                                     xs=[identification_angles[label].values for label in identification_angles.keys()],
+                                     ys=[100 * identification_angles[label].index.values for label in
+                                         identification_angles.keys()])
+    ax = visutils.set_axes_properties(ax,
+                                      xlabel="Identification Angle (°)",
+                                      ylabel="% Targets Identified",
+                                      show_legend=True)
+    fig = visutils.set_figure_properties(fig=fig, figsize=(12, 8), tight_layout=True,
+                                         title="Angle from Target When Identified\n(Cumulative Distribution)",
+                                         title_height=0.98)
+    return fig
 
 
 def get_target_identification_data(trial: LWSTrial,

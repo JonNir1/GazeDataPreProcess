@@ -130,6 +130,12 @@ def create_subject_figures(subject: LWSSubject, proximity_threshold: float = cnf
         visutils.save_figure(trigger_rates,
                              full_path=os.path.join(subject_figures_dir, "trigger rates.png"))
 
+    import LWS.SubjectAnalysis.search_analysis.target_identification as targ_id
+    angle_dist_fig = targ_id.plot_identification_angle_distribution(subject)
+    if save:
+        visutils.save_figure(angle_dist_fig,
+                             full_path=os.path.join(subject_figures_dir, "identification angle distribution.png"))
+
     end = time.time()
     if verbose:
         ioutils.print_and_log(msg=f"Finished analyzing subject {subject.subject_id}: {(end - start):.2f} seconds",
