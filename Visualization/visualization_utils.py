@@ -160,6 +160,7 @@ def generic_line_chart(ax: plt.Axes,
         - data_labels: A list of labels for the datasets. If specified, must be of the same length as the xs/ys lists.
         - sems: A list of SEMs for the datasets. If specified, must be of the same length as the xs/ys lists.
         - cmap: The colormap to use for the lines. default: plt.cm.get_cmap("tab20").
+        - ls/line_style/linestyle: The style of the primary line. default: "-".
         - lw/line_width/linewidth: The width of the primary line. default: 2.
         - show_peak: Whether to show the peak of each line. default: False.
         - text_size: The size of the axis label and ticks. default: 10.
@@ -180,6 +181,7 @@ def generic_line_chart(ax: plt.Axes,
 
     # plot the lines:
     cmap_name = kwargs.get("cmap", "tab20")
+    linestyle = kwargs.get("ls", None) or kwargs.get("line_style", None) or kwargs.get("linestyle", "-")
     primary_line_width = kwargs.get("lw", None) or kwargs.get("line_width", None) or kwargs.get("linewidth", 2)
     secondary_line_width = max(1, primary_line_width // 2)
     min_x, min_y = np.inf, np.inf
@@ -187,7 +189,7 @@ def generic_line_chart(ax: plt.Axes,
     for i, (x, y) in enumerate(zip(xs, ys)):
         label = data_labels[i] if len(data_labels) > 0 else None
         color = get_rgba_color(color=2*i, cmap_name=cmap_name)
-        ax.plot(x, y, label=label, color=color, linewidth=primary_line_width, zorder=i)
+        ax.plot(x, y, label=label, color=color, linestyle=linestyle, linewidth=primary_line_width, zorder=i)
 
         # calculate the min/max values:
         try:
