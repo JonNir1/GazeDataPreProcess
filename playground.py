@@ -23,11 +23,11 @@ pipline_config = {'save': True, 'include_subject_figures': True,
 
 subject1, subject1_figures, failed_trials1 = ph.full_pipline(name_or_id="GalChen Demo", **pipline_config)
 
-# subject2, subject2_figures, failed_trials2 = ph.full_pipline(name_or_id="Rotem Demo", **pipline_config)
-#
-# subject3, subject3_figures, failed_trials3 = ph.full_pipline(name_or_id="Netta Demo", **pipline_config)
-#
-# del pipline_config, subject1_figures, failed_trials1, subject2_figures, failed_trials2, subject3_figures, failed_trials3
+subject2, subject2_figures, failed_trials2 = ph.full_pipline(name_or_id="Rotem Demo", **pipline_config)
+
+subject3, subject3_figures, failed_trials3 = ph.full_pipline(name_or_id="Netta Demo", **pipline_config)
+
+del pipline_config, subject1_figures, failed_trials1, subject2_figures, failed_trials2, subject3_figures, failed_trials3
 
 # subject1 = ph.load_or_preprocess_subject(name_or_id=1, verbose=True)
 # subject2 = ph.load_or_preprocess_subject(name_or_id=2, verbose=True)
