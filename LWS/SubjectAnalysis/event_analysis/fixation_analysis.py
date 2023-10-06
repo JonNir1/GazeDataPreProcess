@@ -101,7 +101,7 @@ def plot_feature_dynamics(fixation_groups: List[List[LWSFixationEvent]], group_n
     else:
         colors = kwargs.pop("colors")
 
-    title = "Fixation Feature Dynamics"
+    title = "Fixation Temporal Dynamics"
     if "title" in kwargs:
         title = title + f"\n{kwargs.pop('title')}"
     fig = visutils.set_figure_properties(fig=None,
