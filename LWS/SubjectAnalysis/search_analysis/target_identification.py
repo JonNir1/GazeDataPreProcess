@@ -8,7 +8,7 @@ from LWS.DataModels.LWSTrial import LWSTrial
 
 
 def get_target_identification_data(trial: LWSTrial,
-                                   proximity_threshold: float = cnfg.THRESHOLD_VISUAL_ANGLE,
+                                   max_angle_from_target: float = cnfg.THRESHOLD_VISUAL_ANGLE,
                                    identification_seq: np.ndarray = cnfg.TARGET_IDENTIFICATION_SEQUENCE) -> pd.DataFrame:
     """
     For each of the trial's targets, extracts the following information:
@@ -23,10 +23,10 @@ def get_target_identification_data(trial: LWSTrial,
 
     Returns a dataframe with shape (num_targets, 7), where each row corresponds to a target.
     """
-    if proximity_threshold is not None and (proximity_threshold <= 0 or np.isinf(proximity_threshold)):
-        raise ValueError(f"Invalid `proximity_threshold`: {proximity_threshold}")
-    if np.isnan(proximity_threshold):
-        proximity_threshold = None
+    if max_angle_from_target <= 0:
+        raise ValueError(f"Invalid `max_angle_from_target`: {max_angle_from_target}")
+    if max_angle_from_target is None or np.isnan(max_angle_from_target):
+        max_angle_from_target = np.inf
 
     # extract relevant columns from the behavioral data
     behavioral_data = trial.get_behavioral_data()
@@ -50,7 +50,7 @@ def get_target_identification_data(trial: LWSTrial,
         identification_distances = np.array(
             [proximal_behavioral_df.iloc[first_idx][f"{cnst.DISTANCE}_{cnst.TARGET}{i}"]
              for first_idx, last_idx in identification_idxs])
-        proximal_identifications = np.where(identification_distances < proximity_threshold)[0]
+        proximal_identifications = np.where(identification_distances < max_angle_from_target)[0]
         if len(proximal_identifications) == 0:
             # no proximal identification attempts
             continue

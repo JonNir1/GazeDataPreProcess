@@ -96,7 +96,7 @@ def _identify_lws_instances(trial: LWSTrial,
 
     Note: this function assumes that the trial's gaze events are sorted by their start time.
     """
-    target_info = get_target_identification_data(trial, proximity_threshold=proximity_threshold)
+    target_info = get_target_identification_data(trial, max_angle_from_target=proximity_threshold)
     fixations = trial.get_gaze_events(event_type=GazeEventTypeEnum.FIXATION)
 
     # start with the last fixation

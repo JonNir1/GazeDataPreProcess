@@ -43,7 +43,7 @@ def count_fixations_between_roi_visits(trial: LWSTrial,
     that occurred between the current fixation and the next time that the subject had a fixation inside this RoI (or
     np.inf if the RoI was never revisited).
     """
-    targets_info = get_target_identification_data(trial, proximity_threshold=proximity_threshold)
+    targets_info = get_target_identification_data(trial, max_angle_from_target=proximity_threshold)
     fixations = trial.get_gaze_events(event_type=GazeEventTypeEnum.FIXATION)
 
     fixation_counts = np.full((targets_info.shape[0], len(fixations)), np.nan)
